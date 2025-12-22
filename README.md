@@ -47,7 +47,23 @@ karl/
 pip install -r requirements.txt
 ```
 
-### 2. Process the Contract
+### 2. Set Up API Key (Optional but Recommended)
+
+The system works without an API key, but for full functionality (synthesized answers), you'll want a Gemini API key:
+
+1. Get a free API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Create a `.env` file in the project root:
+   ```bash
+   # Copy the example file
+   cp env.example .env
+   
+   # Then edit .env and add your key:
+   GEMINI_API_KEY=your_actual_api_key_here
+   ```
+
+**Note:** Without an API key, Karl will still work but will show raw contract chunks instead of synthesized answers. Wage lookups and retrieval work perfectly without a key.
+
+### 3. Process the Contract
 
 ```bash
 # Parse contract into chunks
@@ -60,15 +76,17 @@ python backend/ingest/extract_wages.py
 python backend/retrieval/vector_store.py
 ```
 
-### 3. Start the API Server
+**Note:** If you're cloning from GitHub, the processed data files may already be included. You can skip this step if `data/chunks/contract_chunks.json` and `data/wages/wage_tables.json` already exist.
+
+### 4. Start the API Server
 
 ```bash
 python -m uvicorn backend.api:app --host 127.0.0.1 --port 8000
 ```
 
-### 4. Open the Frontend
+### 5. Open the Frontend
 
-Open `frontend/index.html` in a browser.
+Open `frontend/index.html` in a browser, or navigate to `http://127.0.0.1:8000` in your browser.
 
 ## API Endpoints
 
@@ -149,16 +167,32 @@ Note: Some articles are not yet being parsed. Improving the parser regex will in
 
 ## Configuration
 
-Set environment variables or edit `backend/config.py`:
+### Environment Variables
 
-```bash
-export GEMINI_API_KEY="your-api-key"  # For LLM responses
+The easiest way to configure Karl is using a `.env` file (see Quick Start step 2).
+
+Alternatively, you can set environment variables:
+
+**Windows (PowerShell):**
+```powershell
+$env:GEMINI_API_KEY="your-api-key"
 ```
 
-Without an API key, the system still provides:
-- Accurate wage lookups
-- Relevant contract chunk retrieval
-- Intent classification
+**Linux/Mac:**
+```bash
+export GEMINI_API_KEY="your-api-key"
+```
+
+### What Works Without an API Key?
+
+The system gracefully handles missing API keys and still provides:
+- ✅ Accurate wage lookups (100% deterministic from JSON)
+- ✅ Relevant contract chunk retrieval (vector search)
+- ✅ Intent classification
+- ✅ Citation extraction
+- ⚠️ **Limited:** Shows raw contract chunks instead of synthesized answers
+
+For the best experience, add your Gemini API key to enable full LLM-powered responses.
 
 ## Design Principles
 
