@@ -139,16 +139,41 @@ python backend/evaluate.py
 
 ### Current Performance
 
-| Category | Accuracy |
-|----------|----------|
-| **Wage Lookups** | 100% |
-| Classification | 100% |
-| Overtime | 100% |
-| Scheduling | 100% |
-| Grievance | 100% |
-| Holiday | 100% |
-| Time Cards | 100% |
-| **Overall Retrieval** | 58.2% |
+### Current Performance
+
+Based on evaluation against 55 golden test cases:
+
+| Category | Accuracy | Notes |
+|----------|----------|-------|
+| **Wage Lookups** | 100% | Perfect accuracy on all wage queries |
+| **Escalation Detection** | 100% | High-stakes topics correctly flagged |
+| Classification | 100% | Job classification queries |
+| Breaks | 100% | Rest period queries |
+| Grievance | 100% | Grievance procedure queries |
+| Holiday | 100% | Holiday pay and scheduling |
+| Layoff | 100% | Layoff and bumping procedures |
+| Refusal | 100% | Correctly refuses when context insufficient |
+| Safety | 100% | Safety-related queries |
+| Sick Leave | 100% | Sick leave provisions |
+| Time Cards | 100% | Time card requirements |
+| Vacation | 100% | Vacation accrual and scheduling |
+| Benefits | 67% | Some benefit queries need improvement |
+| Discipline | 75% | Most discipline queries work |
+| Overtime | 50% | Some overtime scheduling queries fail |
+| Union | 50% | Union-related queries need work |
+| Seniority | 33% | Seniority calculation queries need improvement |
+| Scheduling | 0% | Article 10 scheduling provisions not well parsed |
+| Dress Code | 0% | LOU provisions not in test set |
+| **Overall Retrieval** | **76.4%** | 42/55 test cases pass |
+
+**Known Issues:**
+- Article 10 (Scheduling) sections are not being parsed correctly
+- Article 27 (Seniority) sections 63 and 66 need better parsing
+- Some Letter of Understanding (LOU) provisions are missing from chunks
+
+**Improvement Areas:**
+- Parser regex needs updates for Article 10 and Article 27
+- LOU provisions should be added to the chunking process
 
 Note: Some articles are not yet being parsed. Improving the parser regex will increase retrieval accuracy.
 
