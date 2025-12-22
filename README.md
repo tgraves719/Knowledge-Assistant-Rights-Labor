@@ -203,5 +203,10 @@ For the best experience, add your Gemini API key to enable full LLM-powered resp
 
 ## License
 
-Internal prototype for UFCW Local 7.
+KARL is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+
+If you deploy KARL as a service, you must provide the source code to your users.
+
+Unions and workers: use it freely.
+Employers: see COMMERCIAL-LICENSE.md.
 
