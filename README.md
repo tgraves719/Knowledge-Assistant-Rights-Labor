@@ -139,8 +139,6 @@ python backend/evaluate.py
 
 ### Current Performance
 
-### Current Performance
-
 Based on evaluation against 55 golden test cases:
 
 | Category | Accuracy | Notes |
