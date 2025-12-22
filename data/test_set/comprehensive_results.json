@@ -1,0 +1,890 @@
+{
+  "summary": {
+    "total": 55,
+    "passed": 51,
+    "accuracy": 0.9272727272727272,
+    "by_level": {
+      "1": {
+        "passed": 4,
+        "total": 5
+      },
+      "2": {
+        "passed": 5,
+        "total": 5
+      },
+      "3": {
+        "passed": 4,
+        "total": 5
+      },
+      "4": {
+        "passed": 5,
+        "total": 5
+      },
+      "5": {
+        "passed": 5,
+        "total": 5
+      },
+      "6": {
+        "passed": 5,
+        "total": 5
+      },
+      "7": {
+        "passed": 5,
+        "total": 5
+      },
+      "8": {
+        "passed": 4,
+        "total": 5
+      },
+      "9": {
+        "passed": 4,
+        "total": 5
+      },
+      "10": {
+        "passed": 10,
+        "total": 10
+      }
+    }
+  },
+  "results": [
+    {
+      "test_id": 1,
+      "level": 1,
+      "category": "direct_retrieval",
+      "question": "What is the exact term of this collective bargaining agreement?",
+      "expected": [
+        "Article 58"
+      ],
+      "retrieved": [
+        "Article 58"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 2,
+      "level": 1,
+      "category": "direct_retrieval",
+      "question": "What is the starting hourly rate for an All Purpose Clerk as of January 21, 2024?",
+      "expected": [
+        "Appendix A"
+      ],
+      "retrieved": [
+        "Article 8",
+        "Article 42",
+        "Article 58",
+        "Article 15",
+        "Appendix A"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 3,
+      "level": 1,
+      "category": "direct_retrieval",
+      "question": "How many hours constitute the probationary period for new employees?",
+      "expected": [
+        "Article 26"
+      ],
+      "retrieved": [
+        "Article 10",
+        "Article 25"
+      ],
+      "passed": false,
+      "notes": "Expected ['Article 26'], got ['Article 10', 'Article 25']"
+    },
+    {
+      "test_id": 4,
+      "level": 1,
+      "category": "direct_retrieval",
+      "question": "What is the Sunday premium pay rate for employees hired before March 27, 2005?",
+      "expected": [
+        "Article 13"
+      ],
+      "retrieved": [
+        "Article 13",
+        "Article 15",
+        "Article 8",
+        "Article 16"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 5,
+      "level": 1,
+      "category": "direct_retrieval",
+      "question": "How many personal holidays are employees hired after March 27, 2005 entitled to after four years of service?",
+      "expected": [
+        "Article 16"
+      ],
+      "retrieved": [
+        "Article 16",
+        "Article 17"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 6,
+      "level": 2,
+      "category": "calculation",
+      "question": "An All Purpose Clerk was hired on February 1, 2023, and has worked 3,000 hours by January 2024. What should their hourly rate be as of January 22, 2024?",
+      "expected": [
+        "Appendix A",
+        "Article 8"
+      ],
+      "retrieved": [
+        "Article 8",
+        "Article 10",
+        "Article 42",
+        "Appendix A"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 7,
+      "level": 2,
+      "category": "calculation",
+      "question": "A part-time employee worked 88 hours in a 4-week month. Are they eligible for health benefits for the following month?",
+      "expected": [
+        "Article 40",
+        "Article 18"
+      ],
+      "retrieved": [
+        "Article 40",
+        "Article 18",
+        "Article 25"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 8,
+      "level": 2,
+      "category": "calculation",
+      "question": "An employee hired in 2010 is laid off. How long do they retain recall rights?",
+      "expected": [
+        "Article 27",
+        "Article 29"
+      ],
+      "retrieved": [
+        "Article 27",
+        "Article 29"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 9,
+      "level": 2,
+      "category": "calculation",
+      "question": "Calculate the severance pay for a full-time employee with 7 years and 4 months of continuous service whose store closes.",
+      "expected": [
+        "Article 48"
+      ],
+      "retrieved": [
+        "Article 48",
+        "Article 54"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 10,
+      "level": 2,
+      "category": "calculation",
+      "question": "An employee works 9 hours on Monday, 8 hours Tuesday-Thursday, and 6 hours on Friday. How many overtime hours are owed?",
+      "expected": [
+        "Article 12"
+      ],
+      "retrieved": [
+        "Article 12",
+        "Article 10",
+        "Article 56",
+        "Article 17"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 11,
+      "level": 3,
+      "category": "multi_article",
+      "question": "An employee is promoted from Courtesy Clerk to All Purpose Clerk. They have 5,500 company hours total. Under the 'basket hours' provision, what rate should they receive, and how many more hours must they work before their next increase?",
+      "expected": [
+        "Article 8",
+        "Article 9",
+        "Appendix A"
+      ],
+      "retrieved": [
+        "Article 15",
+        "Article 9",
+        "Article 8",
+        "Article 2",
+        "Article 10"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 12,
+      "level": 3,
+      "category": "multi_article",
+      "question": "A full-time employee scheduled for 40 hours/week can only select 32 hours during shift selection because available shifts were claimed by senior employees. The average hours for part-time employees in their classification/department is 26 hours. What are the employee's options under Article 10, Section 25?",
+      "expected": [
+        "Article 10"
+      ],
+      "retrieved": [
+        "Article 10"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 13,
+      "level": 3,
+      "category": "multi_article",
+      "question": "An employee requests bereavement leave for their spouse's grandmother's funeral, then needs to attend the funeral which is 800 miles away. How many paid days are they entitled to, how many additional unpaid days can they request, and must they provide verification?",
+      "expected": [
+        "Article 33"
+      ],
+      "retrieved": [
+        "Article 33",
+        "Article 35",
+        "Article 17"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 14,
+      "level": 3,
+      "category": "multi_article",
+      "question": "A Pharmacy Technician works their regular 8-hour shift on Sunday, then is called in for 4 additional hours that same day. They were hired after March 27, 2005. Calculate their total pay for that Sunday, including all applicable premiums.",
+      "expected": [
+        "Article 13",
+        "Article 12",
+        "Appendix A"
+      ],
+      "retrieved": [
+        "Article 15",
+        "Article 56",
+        "Article 10"
+      ],
+      "passed": false,
+      "notes": "Expected ['Article 13', 'Article 12', 'Appendix A'], got ['Article 15', 'Article 56', 'Article 10']"
+    },
+    {
+      "test_id": 15,
+      "level": 3,
+      "category": "multi_article",
+      "question": "An employee on the Estes Park store transfer list has been working at another store in the bargaining unit. A Head Clerk position opens in Estes Park, and they transfer in. They have 12 years of company seniority. After 18 months in Estes Park, a layoff occurs. What seniority do they have for layoff purposes?",
+      "expected": [
+        "Article 27",
+        "Article 29",
+        "Article 31"
+      ],
+      "retrieved": [
+        "Article 29",
+        "Article 27"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 16,
+      "level": 4,
+      "category": "edge_cases",
+      "question": "An employee is enrolled in Plan B health coverage. Their spouse becomes eligible for coverage through their own employer but chooses not to enroll. What fee applies, and what happens if the employee fails to notify the Plan within the required timeframe?",
+      "expected": [
+        "Article 40",
+        "Letter of Understanding"
+      ],
+      "retrieved": [
+        "Article 40"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 17,
+      "level": 4,
+      "category": "edge_cases",
+      "question": "A 'specially trained' Cake Decorator is subject to layoff. Another employee with more seniority wants to claim their position but has only worked 4 months as a Cake Decorator within the last 3 years. Can the senior employee displace the Cake Decorator? What if they had worked 7 months as a Cake Decorator 18 months ago?",
+      "expected": [
+        "Article 29"
+      ],
+      "retrieved": [
+        "Article 29"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 18,
+      "level": 4,
+      "category": "edge_cases",
+      "question": "An employee requests a Union leave of absence for 6 months. There is already one employee from their store on Union leave scheduled to overlap for 2 months of the requested period. The store employs 150 clerks. Can the request be denied? What options does the Union have?",
+      "expected": [
+        "Article 32"
+      ],
+      "retrieved": [
+        "Article 32",
+        "Article 45",
+        "Article 3",
+        "Article 17",
+        "Article 4"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 19,
+      "level": 4,
+      "category": "edge_cases",
+      "question": "A full-time employee working four 10-hour shifts under Article 10, Section 21 is scheduled to work during a week containing a holiday. They work Monday-Thursday (10 hours each day) and the holiday falls on Friday. How many hours of holiday pay do they receive? How is overtime calculated if they work Friday?",
+      "expected": [
+        "Article 10",
+        "Article 16",
+        "Article 12"
+      ],
+      "retrieved": [
+        "Article 17",
+        "Article 10"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 20,
+      "level": 4,
+      "category": "edge_cases",
+      "question": "An employee is laid off and accepts a lower classification position at a store 45 miles from their previous location. They are later offered recall to their original classification at a store 12 miles from their previous location. Can they refuse this recall and maintain recall rights? What if the offer was for a store 8 miles away?",
+      "expected": [
+        "Article 29",
+        "Article 48"
+      ],
+      "retrieved": [
+        "Article 29",
+        "Article 48"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 21,
+      "level": 5,
+      "category": "ambiguity",
+      "question": "Article 29, Section 77 states layoffs begin 'in departments' but then references 'classification.' An All Purpose Clerk works primarily in the grocery department but occasionally works in produce. For layoff purposes, which department are they in, and how is this determined?",
+      "expected": [
+        "Article 29"
+      ],
+      "retrieved": [
+        "Article 29"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 22,
+      "level": 5,
+      "category": "ambiguity",
+      "question": "Article 10, Section 21 allows management to change schedules for 'significant fluctuations in sales volume.' A store consistently experiences 20% lower sales every January. Can management invoke this provision to reduce schedules every January, or does 'significant fluctuation' require unpredictability?",
+      "expected": [
+        "Article 10"
+      ],
+      "retrieved": [
+        "Article 10"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 23,
+      "level": 5,
+      "category": "ambiguity",
+      "question": "An employee exercises their 'second week bump' under Article 10, Section 25, displacing another employee. The displaced employee is now below minimum hours. Can that employee immediately exercise their own bump rights, potentially creating a chain reaction, or must they wait until the next schedule period?",
+      "expected": [
+        "Article 10"
+      ],
+      "retrieved": [
+        "Article 10"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 24,
+      "level": 5,
+      "category": "ambiguity",
+      "question": "The contract states employees must 'actually work the hours' to progress (Article 8, Section 19), but also states vacation and holiday hours count as 'hours worked' for some purposes (Article 44, Section 118 for pension). Do paid vacation hours count toward wage progression or not?",
+      "expected": [
+        "Article 8",
+        "Article 42"
+      ],
+      "retrieved": [
+        "Article 8",
+        "Article 17"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 25,
+      "level": 5,
+      "category": "ambiguity",
+      "question": "An employee files a grievance about a verbal warning. Under Article 46, Section 134, they notify the Employer but the warning is not relied upon for further discipline within 12 months. The contract states it 'will not be progressed after 12 months if not relied upon.' Does this mean it's automatically removed from the file, or merely that it cannot be used as the basis for progressive discipline?",
+      "expected": [
+        "Article 46"
+      ],
+      "retrieved": [
+        "Article 46"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 26,
+      "level": 6,
+      "category": "temporal",
+      "question": "An employee was hired on March 15, 2005. Are they entitled to Sunday premium pay? What about personal holidays\u2014how many and when do they become eligible?",
+      "expected": [
+        "Article 13",
+        "Article 16"
+      ],
+      "retrieved": [
+        "Article 16"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 27,
+      "level": 6,
+      "category": "temporal",
+      "question": "The contract shows wage rates effective 1/23/2022, 1/22/2023, and 1/21/2024, with some rates marked 'up to' for 2023-2024. A grievance is filed in March 2023 claiming underpayment. Which wage table applies, and how is the 'up to' provision implemented?",
+      "expected": [
+        "Appendix A",
+        "Article 8"
+      ],
+      "retrieved": [
+        "Article 8",
+        "Article 46",
+        "Article 40"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 28,
+      "level": 6,
+      "category": "temporal",
+      "question": "An employee was classified as a Sanitation Clerk on May 11, 1996. Article 2, Section 4 provides specific job security for such employees. The employee is promoted to All Purpose Clerk in 2015, then subject to layoff in 2023. Do they still retain the May 11, 1996 job security protections?",
+      "expected": [
+        "Article 2"
+      ],
+      "retrieved": [
+        "Article 9",
+        "Article 2",
+        "Article 29"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 29,
+      "level": 6,
+      "category": "temporal",
+      "question": "The 2022-2025 contract states that the 'Pension Protection Act (PPA) section' is deleted effective November 30, 2015 (in a previous contract). An employee retiring in 2024 accrued pension benefits from 2010-2024. Which accrual rates apply to which years of service, and how does the deletion of PPA affect their calculation?",
+      "expected": [
+        "Article 42"
+      ],
+      "retrieved": [
+        "Article 42",
+        "Article 17",
+        "Article 27"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 30,
+      "level": 6,
+      "category": "temporal",
+      "question": "Article 40, Section 116 discusses Plan changes that 'Trustees shall establish' with various effective dates between 2005-2020. An employee files a claim in 2024 for a medical expense. How does the RAG system determine which version of Plan benefits applies to their specific claim date?",
+      "expected": [
+        "Article 40"
+      ],
+      "retrieved": [
+        "Article 58",
+        "Article 40"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 31,
+      "level": 7,
+      "category": "procedural",
+      "question": "An employee believes they weren't paid correctly for hours worked in October 2024. They discover this in January 2025. Article 46, Section 135 has a 90-day retroactive liability limit for wage progression errors, but the error was in hours worked, not classification. What is the deadline for filing this grievance, and how far back can payment be corrected?",
+      "expected": [
+        "Article 46"
+      ],
+      "retrieved": [
+        "Article 8",
+        "Article 46",
+        "Article 58",
+        "Article 26"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 32,
+      "level": 7,
+      "category": "procedural",
+      "question": "A discharge occurs on Monday, December 16, 2024. The Union wants to file a grievance. Counting from the 'date of occurrence,' what is the absolute last day (date and time) the written grievance must be submitted under Article 46, Section 135? What if December 25 falls within this period?",
+      "expected": [
+        "Article 46"
+      ],
+      "retrieved": [
+        "Article 46",
+        "Article 43"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 33,
+      "level": 7,
+      "category": "procedural",
+      "question": "An arbitration is requested on March 1, 2024. The parties cannot agree on an arbitrator within 15 days. A panel is requested from FMCS on March 20. The panel arrives March 25. When must the striking of names occur, who strikes first, and what happens if one party delays the striking process?",
+      "expected": [
+        "Article 46"
+      ],
+      "retrieved": [
+        "Article 46"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 34,
+      "level": 7,
+      "category": "procedural",
+      "question": "An employee requests a family care leave on June 1, 2024 to care for their seriously ill adult child (age 25) living in their home. The requested leave is for 8 months. What documentation can be required, what is the maximum leave that can be granted, and what happens if the employee wants to return after 4 months instead?",
+      "expected": [
+        "Article 32"
+      ],
+      "retrieved": [
+        "Article 32",
+        "Article 33",
+        "Article 35"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 35,
+      "level": 7,
+      "category": "procedural",
+      "question": "The contract requires vacation scheduling posting on December 1, with employee selections by January 31, for a vacation period beginning March 1. An employee is hired January 15, 2024, becomes eligible for vacation January 15, 2025, but the selection period has already passed. How are they accommodated?",
+      "expected": [
+        "Article 17"
+      ],
+      "retrieved": [
+        "Article 17"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 36,
+      "level": 8,
+      "category": "external_law",
+      "question": "The contract's sick leave provisions (Article 35) reference the 'Healthy Family and Workplaces Act' and SAFE leave. An employee requests sick leave to care for their domestic partner who is not legally recognized as a spouse. The contract defines family members by 'blood, marriage, civil union, or adoption' plus C.R.S. \u00a7 8-13-402(6). How is this resolved?",
+      "expected": [
+        "Article 35"
+      ],
+      "retrieved": [
+        "Article 35"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 37,
+      "level": 8,
+      "category": "external_law",
+      "question": "An employee's store is closing due to flood damage. Article 48, Section 152 states 'this Article shall not apply' to closures caused by flood. However, Article 58, Section 175 addresses 'Act of God or natural disaster' and requires effects bargaining. Which provision controls, and what are the employee's rights?",
+      "expected": [
+        "Article 48",
+        "Article 58"
+      ],
+      "retrieved": [
+        "Article 48",
+        "Article 58"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 38,
+      "level": 8,
+      "category": "external_law",
+      "question": "The contract allows employer-required lie detector tests to be refused (Article 51, Section 157). An employee refuses a test, and the Employer claims this creates reasonable suspicion justifying discharge under a 'just cause' standard. Can the refusal itself be used as evidence in a discharge arbitration?",
+      "expected": [
+        "Article 51",
+        "Article 43"
+      ],
+      "retrieved": [
+        "Article 43",
+        "Article 45",
+        "Article 46"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 39,
+      "level": 8,
+      "category": "external_law",
+      "question": "FMLA provides 12 weeks of protected leave; the contract provides up to 18 months for medical leave (Article 32, Section 87). An employee exhausts FMLA but continues on contractual medical leave. Can the Employer fill their position, and what happens when they return after 14 months?",
+      "expected": [
+        "Article 32"
+      ],
+      "retrieved": [
+        "Article 32",
+        "Article 56"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 40,
+      "level": 8,
+      "category": "external_law",
+      "question": "The Colorado minimum wage increases to $15.00/hour mid-contract. The 'Minimum Wage' letter of understanding requires starting rates '$0.40 above the operative minimum wage.' Must wage tables be immediately recalculated, or does this only apply at contract ratification?",
+      "expected": [
+        "Letter of Understanding"
+      ],
+      "retrieved": [
+        "Article 8",
+        "Article 58",
+        "Article 29",
+        "Article 15"
+      ],
+      "passed": false,
+      "notes": "Expected ['Letter of Understanding'], got ['Article 8', 'Article 58', 'Article 29']"
+    },
+    {
+      "test_id": 41,
+      "level": 9,
+      "category": "systemic",
+      "question": "Article 6 grants management rights to 'make necessary reasonable rules' not in conflict with the contract, with the Union reserving 'the right to arbitrate what is reasonable.' Management implements a rule requiring all employees to wear company-branded face masks. The Union claims this is unreasonable. What is the arbitrator's scope of review, and what contractual provisions interact with this management right?",
+      "expected": [
+        "Article 6",
+        "Article 46"
+      ],
+      "retrieved": [
+        "Article 6",
+        "Article 43",
+        "Article 44",
+        "Article 46"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 42,
+      "level": 9,
+      "category": "systemic",
+      "question": "Article 3, Section 5 requires union membership but also references employee rights to revoke checkoff 'upon giving thirty (30) days written notice.' The Supreme Court's Janus decision (2018) affects public sector unions, but this is private sector. However, an employee claims a First Amendment right to not financially support the union. How does the contract's union security clause operate post-Janus, and what is enforceable?",
+      "expected": [
+        "Article 3",
+        "Article 4"
+      ],
+      "retrieved": [
+        "Article 3",
+        "Article 4",
+        "Article 45",
+        "Article 44"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 43,
+      "level": 9,
+      "category": "systemic",
+      "question": "The Joint Labor-Management Committee (letter of understanding #13) 'shall not have the authority to modify the terms of this Agreement.' The Committee unanimously agrees to a new safety protocol requiring specific PPE not mentioned in the contract. Is this enforceable? What if it contradicts Article 36's safety provisions?",
+      "expected": [
+        "Letter of Understanding",
+        "Article 36"
+      ],
+      "retrieved": [
+        "Article 46",
+        "Article 43"
+      ],
+      "passed": false,
+      "notes": "Expected ['Letter of Understanding', 'Article 36'], got ['Article 46', 'Article 43']"
+    },
+    {
+      "test_id": 44,
+      "level": 9,
+      "category": "systemic",
+      "question": "Article 46, Section 140 describes a mediation process that 'may' be used, where settlements are 'non-precedent setting basis.' A mediator issues a ruling (not a settlement) on an interpretation of vacation scheduling. Two years later, an identical issue arises. Can either party cite the prior mediation ruling? What if it was a settlement?",
+      "expected": [
+        "Article 46"
+      ],
+      "retrieved": [
+        "Article 46"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 45,
+      "level": 9,
+      "category": "systemic",
+      "question": "The contract contains multiple grievance deadlines (20 days for filing, 30 days for arbitration, etc.), but Article 46, Section 133 states failure to follow procedures results in 'forfeiture of the grievance.' The Union misses a deadline due to documented reliance on incorrect information from the Company. Can an arbitrator extend deadlines or find waiver/estoppel, or do contractual deadlines create a 'bright line' rule?",
+      "expected": [
+        "Article 46"
+      ],
+      "retrieved": [
+        "Article 46"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 46,
+      "level": 10,
+      "category": "impossible",
+      "question": "An employee hired March 1, 2005 claims they should receive both the pre-March 27, 2005 benefits AND the post-March 27, 2005 benefits because the contract doesn't explicitly exclude March 1-26. Are they correct?",
+      "expected": [
+        "Article 16"
+      ],
+      "retrieved": [
+        "Article 17",
+        "Article 35",
+        "Article 16",
+        "Article 27"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 47,
+      "level": 10,
+      "category": "impossible",
+      "question": "What is the exact street address of Store #2624 mentioned in Article 18, Section 54?",
+      "expected": [],
+      "retrieved": [],
+      "passed": true,
+      "notes": "Correctly found no relevant content"
+    },
+    {
+      "test_id": 48,
+      "level": 10,
+      "category": "impossible",
+      "question": "If the contract is not renewed when it expires January 18, 2025, and the parties negotiate a new agreement with a 5% wage increase, what will the All Purpose Clerk rate be in 2026?",
+      "expected": [],
+      "retrieved": [],
+      "passed": true,
+      "notes": "Correctly found no relevant content"
+    },
+    {
+      "test_id": 49,
+      "level": 10,
+      "category": "impossible",
+      "question": "How does the vacation accrual in this contract compare to the UFCW Local 7 Safeway Denver Clerks contract?",
+      "expected": [],
+      "retrieved": [],
+      "passed": true,
+      "notes": "Correctly found no relevant content"
+    },
+    {
+      "test_id": 50,
+      "level": 10,
+      "category": "impossible",
+      "question": "Is the pension contribution rate in this contract fair to employees given current economic conditions?",
+      "expected": [],
+      "retrieved": [],
+      "passed": true,
+      "notes": "Correctly found no relevant content"
+    },
+    {
+      "test_id": 51,
+      "level": 10,
+      "category": "impossible",
+      "question": "The contract refers to 'May 11, 1996' provisions in Article 2, Section 4, and 'March 26, 2005' distinctions throughout. An employee was hired May 11, 1996 and the contract was signed March 26, 2005. Which date governs their benefits if there's a conflict between the two dates' provisions?",
+      "expected": [
+        "Article 2"
+      ],
+      "retrieved": [
+        "Article 17",
+        "Article 41",
+        "Article 3",
+        "Article 27",
+        "Article 58"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 52,
+      "level": 10,
+      "category": "impossible",
+      "question": "If an employee bumps another employee who bumps a third employee who bumps a fourth employee under layoff provisions, and the fourth employee is a protected Sanitation Clerk from May 11, 1996, but that protection conflicts with a Steward's 'top seniority for layoff' under Article 45, Section 129, what happens?",
+      "expected": [
+        "Article 29",
+        "Article 45",
+        "Article 2"
+      ],
+      "retrieved": [
+        "Article 45",
+        "Article 29"
+      ],
+      "passed": true,
+      "notes": ""
+    },
+    {
+      "test_id": 53,
+      "level": 10,
+      "category": "impossible",
+      "question": "Does this contract incorporate by reference any provisions from the UFCW International Constitution, and if so, which provisions control if there's a conflict?",
+      "expected": [],
+      "retrieved": [],
+      "passed": true,
+      "notes": "Correctly found no relevant content"
+    },
+    {
+      "test_id": 54,
+      "level": 10,
+      "category": "impossible",
+      "question": "The contract doesn't explicitly state that employees must be human beings. Can an AI system be hired as a Courtesy Clerk and claim contract protections?",
+      "expected": [],
+      "retrieved": [],
+      "passed": true,
+      "notes": "Correctly found no relevant content"
+    },
+    {
+      "test_id": 55,
+      "level": 10,
+      "category": "impossible",
+      "question": "If the Union and Employer deadlock in arbitrator selection under Article 46, Section 137, can they arbitrate the dispute about arbitrator selection? Who decides if they've properly followed the FMCS panel process?",
+      "expected": [
+        "Article 46"
+      ],
+      "retrieved": [
+        "Article 46"
+      ],
+      "passed": true,
+      "notes": ""
+    }
+  ]
+}

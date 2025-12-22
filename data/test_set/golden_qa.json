@@ -1,0 +1,452 @@
+{
+  "description": "Golden test set for Karl RAG system - 50+ Q&A pairs with ground truth",
+  "contract": "Safeway Pueblo Clerks 2022-2025",
+  "test_cases": [
+    {
+      "id": 1,
+      "category": "wages",
+      "question": "What is the starting pay for an All Purpose Clerk?",
+      "ground_truth": "The starting pay for an All Purpose Clerk is $16.00/hour effective 1/23/2022, $16.50/hour effective 1/22/2023, and $17.00/hour effective 1/21/2024.",
+      "expected_citation": "Appendix A",
+      "classification": "all_purpose_clerk"
+    },
+    {
+      "id": 2,
+      "category": "wages",
+      "question": "How much does a Courtesy Clerk make after 36 months?",
+      "ground_truth": "A Courtesy Clerk earns $16.55/hour (2022), $17.05/hour (2023), or $17.55/hour (2024) after 36 months.",
+      "expected_citation": "Appendix A",
+      "classification": "courtesy_clerk"
+    },
+    {
+      "id": 3,
+      "category": "wages",
+      "question": "What is the Head Clerk rate of pay?",
+      "ground_truth": "The Head Clerk rate is $22.51/hour (2022), $23.31/hour (2023), or $24.11/hour (2024).",
+      "expected_citation": "Appendix A",
+      "classification": "head_clerk"
+    },
+    {
+      "id": 4,
+      "category": "wages",
+      "question": "What is the night premium?",
+      "ground_truth": "A premium of $2.00 per hour is paid for all work performed between midnight and 6:00 a.m., except for Courtesy Clerks who receive $0.25 per hour extra.",
+      "expected_citation": "Article 15, Section 34",
+      "classification": null
+    },
+    {
+      "id": 5,
+      "category": "wages",
+      "question": "Is there a Sunday premium?",
+      "ground_truth": "Yes, time and one-quarter (1.25x) is paid for Sunday work.",
+      "expected_citation": "Article 13",
+      "classification": null
+    },
+    {
+      "id": 6,
+      "category": "wages",
+      "question": "What is the top pay rate for an All Purpose Clerk?",
+      "ground_truth": "After 7800 hours, an All Purpose Clerk earns $21.01/hour (2022), $21.81/hour (2023), or $22.61/hour (2024). Grandfathered employees earn $21.51/$22.31/$23.11.",
+      "expected_citation": "Appendix A",
+      "classification": "all_purpose_clerk"
+    },
+    {
+      "id": 7,
+      "category": "overtime",
+      "question": "When do I get overtime pay?",
+      "ground_truth": "Overtime at 1.5x rate is paid for: (a) hours over 8 in one day, (b) hours over 40 in one workweek, (c) hours worked before scheduled start when less than 8 hours has elapsed since last quitting time.",
+      "expected_citation": "Article 12, Section 28",
+      "classification": null
+    },
+    {
+      "id": 8,
+      "category": "overtime",
+      "question": "What is the overtime rate?",
+      "ground_truth": "Overtime is paid at time and one-half (1.5x) the employee's base hourly rate.",
+      "expected_citation": "Article 12, Section 28",
+      "classification": null
+    },
+    {
+      "id": 9,
+      "category": "overtime",
+      "question": "Can I work a 4x10 schedule?",
+      "ground_truth": "Yes, upon mutual agreement between the Employer and employee, a full-time employee can work four 10-hour days. Overtime is computed for hours over 40, and hours over 8 do not trigger daily overtime for these shifts.",
+      "expected_citation": "Article 10, Section 21",
+      "classification": null
+    },
+    {
+      "id": 10,
+      "category": "overtime",
+      "question": "Do I have to stay past my scheduled shift?",
+      "ground_truth": "No. No employee shall be subject to discipline for failure to remain at work beyond the end of their scheduled shift. The company should use best efforts to give 2 hours notice if extra work is needed.",
+      "expected_citation": "Article 10, Section 21",
+      "classification": null
+    },
+    {
+      "id": 11,
+      "category": "scheduling",
+      "question": "How far in advance must the schedule be posted?",
+      "ground_truth": "The master schedule must be completed and posted by 9:00 AM on Friday prior to the start of the next workweek.",
+      "expected_citation": "Article 10",
+      "classification": null
+    },
+    {
+      "id": 12,
+      "category": "scheduling",
+      "question": "What is the minimum shift length?",
+      "ground_truth": "Daily scheduled shifts shall not be less than 4 hours or more than 8 hours at straight time.",
+      "expected_citation": "Article 10, Section 21",
+      "classification": null
+    },
+    {
+      "id": 13,
+      "category": "scheduling",
+      "question": "How does schedule bidding work?",
+      "ground_truth": "Employees select their schedule from posted shifts in seniority order within their department. Full-time employees select first, followed by part-time employees.",
+      "expected_citation": "Article 10, Section 21",
+      "classification": null
+    },
+    {
+      "id": 14,
+      "category": "scheduling",
+      "question": "When can I bid to a different department?",
+      "ground_truth": "Department bidding is allowed during the first 15 days of February (effective first week of March) and first 15 days of August (effective first week of September).",
+      "expected_citation": "Article 10, Section 22",
+      "classification": null
+    },
+    {
+      "id": 15,
+      "category": "scheduling",
+      "question": "What are the minimum weekly hours for full-time?",
+      "ground_truth": "Full-time employees should be scheduled 40 hours per week (32 hours in a holiday week).",
+      "expected_citation": "Article 10",
+      "classification": null
+    },
+    {
+      "id": 16,
+      "category": "seniority",
+      "question": "How is seniority calculated?",
+      "ground_truth": "Seniority is the length of continuous employment with the Employer, dated from the first day worked.",
+      "expected_citation": "Article 27, Section 63",
+      "classification": null
+    },
+    {
+      "id": 17,
+      "category": "seniority",
+      "question": "When do I lose my seniority?",
+      "ground_truth": "Seniority terminates for: quit, just cause discharge, layoff exceeding recall period, failure to return from leave, failure to report for 3 consecutive days without notice.",
+      "expected_citation": "Article 27, Section 66",
+      "classification": null
+    },
+    {
+      "id": 18,
+      "category": "seniority",
+      "question": "What is the recall period after layoff?",
+      "ground_truth": "The recall period is typically based on length of service. Employees must return within the specified time or lose seniority.",
+      "expected_citation": "Article 29",
+      "classification": null
+    },
+    {
+      "id": 19,
+      "category": "layoff",
+      "question": "How does bumping work during a layoff?",
+      "ground_truth": "When displaced, a senior employee may claim the schedule of a less senior employee in the same classification. The displaced employee then receives layoff options.",
+      "expected_citation": "Article 29",
+      "classification": null
+    },
+    {
+      "id": 20,
+      "category": "layoff",
+      "question": "What are my options if I'm laid off as a full-time employee?",
+      "ground_truth": "You may: 1) Displace the least senior full-time employee in the bargaining unit, or 2) Step down to part-time and displace the least senior part-time employee.",
+      "expected_citation": "Article 29",
+      "classification": null
+    },
+    {
+      "id": 21,
+      "category": "vacation",
+      "question": "How much vacation do I get?",
+      "ground_truth": "For employees hired on or before March 26, 2005: 1 week after 1 year, 2 weeks after 2 years, 3 weeks after 5 years, 4 weeks after 12 years.",
+      "expected_citation": "Article 17, Section 44",
+      "classification": null
+    },
+    {
+      "id": 22,
+      "category": "vacation",
+      "question": "Does unused vacation roll over?",
+      "ground_truth": "Yes, accrued and unused vacation shall roll over from anniversary year to anniversary year.",
+      "expected_citation": "Article 17, Section 49",
+      "classification": null
+    },
+    {
+      "id": 23,
+      "category": "vacation",
+      "question": "How far in advance must I request vacation?",
+      "ground_truth": "Vacation requests should generally be submitted in advance. Specific timing requirements may apply.",
+      "expected_citation": "Article 17",
+      "classification": null
+    },
+    {
+      "id": 24,
+      "category": "sick_leave",
+      "question": "How does sick leave accrue?",
+      "ground_truth": "Full-time employees hired before 2005 accrue 1 hour per 24 hours worked. Others accrue 1 hour per 30 hours worked. Maximum 48 hours earned per benefit year.",
+      "expected_citation": "Article 35, Section 100",
+      "classification": null
+    },
+    {
+      "id": 25,
+      "category": "sick_leave",
+      "question": "Can I use sick leave for mental health?",
+      "ground_truth": "Yes, sick leave can be used for mental or physical health of the employee or family member.",
+      "expected_citation": "Article 35, Section 100",
+      "classification": null
+    },
+    {
+      "id": 26,
+      "category": "sick_leave",
+      "question": "What is the maximum sick leave I can accrue?",
+      "ground_truth": "Maximum 48 hours earned per benefit year.",
+      "expected_citation": "Article 35",
+      "classification": null
+    },
+    {
+      "id": 27,
+      "category": "discipline",
+      "question": "What are my Weingarten rights?",
+      "ground_truth": "When involved in a disciplinary interview that could lead to discipline or termination, you have the right to request union representation before answering questions.",
+      "expected_citation": "Article 43",
+      "classification": null
+    },
+    {
+      "id": 28,
+      "category": "discipline",
+      "question": "Can I be fired without cause?",
+      "ground_truth": "No. After the probationary period, discharge must be for good and sufficient cause. You have recourse to the grievance and arbitration procedures.",
+      "expected_citation": "Article 43",
+      "classification": null
+    },
+    {
+      "id": 29,
+      "category": "discipline",
+      "question": "What is the probationary period?",
+      "ground_truth": "The first sixty (60) calendar days of employment is the probationary/trial period, during which an employee may be terminated for any reason without recourse to grievance or arbitration.",
+      "expected_citation": "Article 26, Section 62",
+      "classification": null
+    },
+    {
+      "id": 30,
+      "category": "discipline",
+      "question": "How long do I have to file a grievance?",
+      "ground_truth": "Grievance submission must be made within 20 days of the date of occurrence (14 days for discharge cases).",
+      "expected_citation": "Article 46, Section 135",
+      "classification": null
+    },
+    {
+      "id": 31,
+      "category": "grievance",
+      "question": "What is the grievance procedure?",
+      "ground_truth": "The grievance procedure involves multiple steps, starting with informal resolution and potentially proceeding to arbitration.",
+      "expected_citation": "Article 46",
+      "classification": null
+    },
+    {
+      "id": 32,
+      "category": "grievance",
+      "question": "How far back can I get retroactive pay?",
+      "ground_truth": "Retroactive pay error correction is limited to 90 days prior to grievance presentation.",
+      "expected_citation": "Article 46",
+      "classification": null
+    },
+    {
+      "id": 33,
+      "category": "breaks",
+      "question": "What are my break periods?",
+      "ground_truth": "Relief periods are provided for rest breaks. Employees also receive lunch breaks during shifts.",
+      "expected_citation": "Article 24",
+      "classification": null
+    },
+    {
+      "id": 34,
+      "category": "breaks",
+      "question": "How long is my lunch break?",
+      "ground_truth": "Lunch break duration is specified in the contract for different shift lengths.",
+      "expected_citation": "Article 24",
+      "classification": null
+    },
+    {
+      "id": 35,
+      "category": "classification",
+      "question": "What are the duties of a Courtesy Clerk?",
+      "ground_truth": "Courtesy Clerk duties are limited to: sorting, bagging, and packing merchandise; carrying and loading sold merchandise; floor maintenance; cleaning parking lot and store areas; collecting trash; shopping cart collection; hanging signs; returning unsold merchandise; facing shelves; and delivery.",
+      "expected_citation": "Article 7, Section 14(g)",
+      "classification": "courtesy_clerk"
+    },
+    {
+      "id": 36,
+      "category": "classification",
+      "question": "What is a Head Clerk?",
+      "ground_truth": "A Head Clerk is an employee assigned by the Employer to direct or supervise the work of others. The mere fact that two persons work together does not mean one is a Head Clerk.",
+      "expected_citation": "Article 7, Section 14(c)",
+      "classification": "head_clerk"
+    },
+    {
+      "id": 37,
+      "category": "classification",
+      "question": "Can I work in a different classification?",
+      "ground_truth": "Employees may perform incidental work in another classification. Any employee of a higher classification can be assigned work in a lower classification without restriction.",
+      "expected_citation": "Article 7, Section 15",
+      "classification": null
+    },
+    {
+      "id": 38,
+      "category": "union",
+      "question": "Do I have to join the union?",
+      "ground_truth": "Yes. All employees must become and remain union members on the 31st day following employment or the effective date of the agreement.",
+      "expected_citation": "Article 3, Section 5",
+      "classification": null
+    },
+    {
+      "id": 39,
+      "category": "union",
+      "question": "Can a union representative visit the store?",
+      "ground_truth": "Yes. The President of the Union or Business Representative has the right to enter the premises for purposes of collective bargaining representation.",
+      "expected_citation": "Article 44, Section 128",
+      "classification": null
+    },
+    {
+      "id": 40,
+      "category": "holiday",
+      "question": "How many personal holidays do I get?",
+      "ground_truth": "Employees hired before March 26, 2005 get 2 personal holidays. After that date: 1 personal holiday after 2 years, 2 after 3 years, 3 after 4 years of service.",
+      "expected_citation": "Article 16, Section 38",
+      "classification": null
+    },
+    {
+      "id": 41,
+      "category": "holiday",
+      "question": "How do I request a personal holiday?",
+      "ground_truth": "Personal holidays must be requested 2 weeks in advance.",
+      "expected_citation": "Article 16",
+      "classification": null
+    },
+    {
+      "id": 42,
+      "category": "holiday",
+      "question": "What are the recognized holidays?",
+      "ground_truth": "The contract specifies holidays including New Year's Day, Memorial Day, Independence Day, Labor Day, Thanksgiving, and Christmas.",
+      "expected_citation": "Article 16",
+      "classification": null
+    },
+    {
+      "id": 43,
+      "category": "benefits",
+      "question": "Is there a 401k plan?",
+      "ground_truth": "Yes, there is a 401K plan available to employees.",
+      "expected_citation": "Article 39",
+      "classification": null
+    },
+    {
+      "id": 44,
+      "category": "benefits",
+      "question": "Do I get health insurance?",
+      "ground_truth": "Health and welfare coverage is provided under Article 40, with eligibility requirements based on hours worked.",
+      "expected_citation": "Article 40",
+      "classification": null
+    },
+    {
+      "id": 45,
+      "category": "benefits",
+      "question": "Is there a pension plan?",
+      "ground_truth": "Yes, there is a pension plan covered under Article 42.",
+      "expected_citation": "Article 42",
+      "classification": null
+    },
+    {
+      "id": 46,
+      "category": "safety",
+      "question": "What are my safety rights?",
+      "ground_truth": "The contract includes safety provisions to protect employees. Safety-related concerns should be reported immediately.",
+      "expected_citation": "Article 36",
+      "classification": null
+    },
+    {
+      "id": 47,
+      "category": "safety",
+      "question": "What happens if I get injured at work?",
+      "ground_truth": "Article 37 covers injury on the job, including workers compensation and return-to-work procedures.",
+      "expected_citation": "Article 37",
+      "classification": null
+    },
+    {
+      "id": 48,
+      "category": "time_cards",
+      "question": "When do I punch the time clock?",
+      "ground_truth": "Employees shall punch the time clock immediately before beginning work and immediately upon ending work.",
+      "expected_citation": "Article 20, Section 56",
+      "classification": null
+    },
+    {
+      "id": 49,
+      "category": "time_cards",
+      "question": "Can I be disciplined for time clock errors?",
+      "ground_truth": "No employee shall be disciplined for time entry errors caused by equipment or software malfunctions. No free work or off-the-clock work practices are allowed.",
+      "expected_citation": "Article 20",
+      "classification": null
+    },
+    {
+      "id": 50,
+      "category": "high_stakes",
+      "question": "I'm being called to a meeting about my performance. What should I do?",
+      "ground_truth": "If the meeting could lead to discipline, you have the right to request union representation (Weingarten rights). Request a steward before answering questions.",
+      "expected_citation": "Article 45, Section 132",
+      "classification": null,
+      "escalation_expected": true
+    },
+    {
+      "id": 51,
+      "category": "high_stakes",
+      "question": "My manager is harassing me. What are my rights?",
+      "ground_truth": "The contract prohibits discrimination and harassment. Contact your steward immediately to discuss filing a grievance and documenting incidents.",
+      "expected_citation": "Article 43",
+      "classification": null,
+      "escalation_expected": true
+    },
+    {
+      "id": 52,
+      "category": "high_stakes",
+      "question": "I was just terminated. What should I do?",
+      "ground_truth": "You have 14 days to file a grievance for discharge. Contact your steward immediately. You may be entitled to reinstatement if the termination was not for just cause.",
+      "expected_citation": "Article 43",
+      "classification": null,
+      "escalation_expected": true
+    },
+    {
+      "id": 53,
+      "category": "dress_code",
+      "question": "What color shoes can I wear?",
+      "ground_truth": "Shoes must be black or white, clean and in good condition. Open toe or open heel shoes are not permitted.",
+      "expected_citation": "Letter of Understanding",
+      "classification": null
+    },
+    {
+      "id": 54,
+      "category": "refusal",
+      "question": "Can I bring my dog to work?",
+      "ground_truth": "This is not covered in the contract. Please contact your manager or steward.",
+      "expected_citation": null,
+      "classification": null,
+      "should_refuse": true
+    },
+    {
+      "id": 55,
+      "category": "refusal",
+      "question": "Will I win my grievance?",
+      "ground_truth": "I cannot predict outcomes. The arbitration process evaluates each case based on contract language and facts. Contact your steward to discuss your case.",
+      "expected_citation": null,
+      "classification": null,
+      "should_refuse": true
+    }
+  ]
+}
+

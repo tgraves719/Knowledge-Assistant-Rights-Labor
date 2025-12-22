@@ -1,0 +1,309 @@
+{
+  "total_chunks": 194,
+  "long_chunks": [
+    {
+      "citation": "Article 2, Section 3",
+      "char_count": 2002,
+      "article_num": 2,
+      "section_num": 3
+    },
+    {
+      "citation": "Article 7, Section 14",
+      "char_count": 7115,
+      "article_num": 7,
+      "section_num": 14
+    },
+    {
+      "citation": "Article 10, Section 21",
+      "char_count": 5540,
+      "article_num": 10,
+      "section_num": 21
+    },
+    {
+      "citation": "Article 10, Section 23",
+      "char_count": 1672,
+      "article_num": 10,
+      "section_num": 23
+    },
+    {
+      "citation": "Article 10, Section 25",
+      "char_count": 3368,
+      "article_num": 10,
+      "section_num": 25
+    },
+    {
+      "citation": "Article 17, Section 44",
+      "char_count": 2224,
+      "article_num": 17,
+      "section_num": 44
+    },
+    {
+      "citation": "Article 17, Section 52",
+      "char_count": 2193,
+      "article_num": 17,
+      "section_num": 52
+    },
+    {
+      "citation": "Article 18, Section 53",
+      "char_count": 1715,
+      "article_num": 18,
+      "section_num": 53
+    },
+    {
+      "citation": "Article 27, Section 68",
+      "char_count": 1987,
+      "article_num": 27,
+      "section_num": 68
+    },
+    {
+      "citation": "Article 27, Section 71",
+      "char_count": 3094,
+      "article_num": 27,
+      "section_num": 71
+    },
+    {
+      "citation": "Article 27, Section 73",
+      "char_count": 1799,
+      "article_num": 27,
+      "section_num": 73
+    },
+    {
+      "citation": "Article 29, Section 78",
+      "char_count": 8514,
+      "article_num": 29,
+      "section_num": 78
+    },
+    {
+      "citation": "Article 29, Section 82",
+      "char_count": 3080,
+      "article_num": 29,
+      "section_num": 82
+    },
+    {
+      "citation": "Article 29, Section 83",
+      "char_count": 3910,
+      "article_num": 29,
+      "section_num": 83
+    },
+    {
+      "citation": "Article 35",
+      "char_count": 5633,
+      "article_num": 35,
+      "section_num": null
+    },
+    {
+      "citation": "Article 36, Section 108",
+      "char_count": 4766,
+      "article_num": 36,
+      "section_num": 108
+    },
+    {
+      "citation": "Article 40, Section 116",
+      "char_count": 22050,
+      "article_num": 40,
+      "section_num": 116
+    },
+    {
+      "citation": "Article 42",
+      "char_count": 1587,
+      "article_num": 42,
+      "section_num": null
+    },
+    {
+      "citation": "Article 42, Section 118",
+      "char_count": 2358,
+      "article_num": 42,
+      "section_num": 118
+    },
+    {
+      "citation": "Article 46, Section 140",
+      "char_count": 2141,
+      "article_num": 46,
+      "section_num": 140
+    },
+    {
+      "citation": "Article 46, Section 141",
+      "char_count": 7772,
+      "article_num": 46,
+      "section_num": 141
+    },
+    {
+      "citation": "Article 48, Section 145",
+      "char_count": 2044,
+      "article_num": 48,
+      "section_num": 145
+    },
+    {
+      "citation": "Article 54, Section 161",
+      "char_count": 2778,
+      "article_num": 54,
+      "section_num": 161
+    },
+    {
+      "citation": "Article 58, Section 1749",
+      "char_count": 12456,
+      "article_num": 58,
+      "section_num": 1749
+    },
+    {
+      "citation": "Letter of Understanding 1",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 5",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 4",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 5",
+      "char_count": 1768,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 3",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 3",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 3",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 2",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 5",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 3",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 4",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 12",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 2",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 2",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 6",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    },
+    {
+      "citation": "Letter of Understanding 13",
+      "char_count": 2000,
+      "article_num": null,
+      "section_num": null
+    }
+  ],
+  "chunks_with_subsections": [
+    {
+      "citation": "Article 7, Section 14",
+      "char_count": 7115,
+      "subsection_count": 8,
+      "article_num": 7
+    },
+    {
+      "citation": "Article 12, Section 28",
+      "char_count": 319,
+      "subsection_count": 2,
+      "article_num": 12
+    },
+    {
+      "citation": "Article 29, Section 82",
+      "char_count": 3080,
+      "subsection_count": 5,
+      "article_num": 29
+    },
+    {
+      "citation": "Article 35",
+      "char_count": 5633,
+      "subsection_count": 16,
+      "article_num": 35
+    },
+    {
+      "citation": "Article 40, Section 116",
+      "char_count": 22050,
+      "subsection_count": 9,
+      "article_num": 40
+    },
+    {
+      "citation": "Article 46, Section 141",
+      "char_count": 7772,
+      "subsection_count": 9,
+      "article_num": 46
+    },
+    {
+      "citation": "Article 54, Section 161",
+      "char_count": 2778,
+      "subsection_count": 5,
+      "article_num": 54
+    },
+    {
+      "citation": "Letter of Understanding 1",
+      "char_count": 2000,
+      "subsection_count": 1,
+      "article_num": null
+    },
+    {
+      "citation": "Letter of Understanding 4",
+      "char_count": 2000,
+      "subsection_count": 8,
+      "article_num": null
+    }
+  ],
+  "size_distribution": {
+    "500-1000": 36,
+    "2000-3000": 22,
+    "1000-1500": 16,
+    "<500": 102,
+    "3000+": 12,
+    "1500-2000": 6
+  }
+}

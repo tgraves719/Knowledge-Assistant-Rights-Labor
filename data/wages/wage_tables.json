@@ -1,0 +1,635 @@
+{
+  "contract_id": "safeway_pueblo_clerks_2022",
+  "effective_dates": [
+    "2022-01-23",
+    "2023-01-22",
+    "2024-01-21"
+  ],
+  "classifications": {
+    "other_assistant_managers": {
+      "name": "OTHER ASSISTANT MANAGERS",
+      "normalized_name": "other_assistant_managers",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 24.51,
+            "2023-01-22": 25.31,
+            "2024-01-21": 26.11
+          }
+        }
+      ]
+    },
+    "head_clerk": {
+      "name": "HEAD CLERK",
+      "normalized_name": "head_clerk",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 22.51,
+            "2023-01-22": 23.31,
+            "2024-01-21": 24.11
+          }
+        }
+      ]
+    },
+    "produce_department_manager": {
+      "name": "PRODUCE DEPARTMENT MANAGER",
+      "normalized_name": "produce_department_manager",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 24.47,
+            "2023-01-22": 25.27,
+            "2024-01-21": 26.07
+          }
+        }
+      ]
+    },
+    "floral_manager": {
+      "name": "FLORAL MANAGER",
+      "normalized_name": "floral_manager",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 21.51,
+            "2023-01-22": 22.31,
+            "2024-01-21": 23.11
+          }
+        }
+      ]
+    },
+    "head_baker": {
+      "name": "HEAD BAKER",
+      "normalized_name": "head_baker",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 22.51,
+            "2023-01-22": 23.31,
+            "2024-01-21": 24.11
+          }
+        }
+      ]
+    },
+    "bakery_manager": {
+      "name": "BAKERY MANAGER",
+      "normalized_name": "bakery_manager",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 24.51,
+            "2023-01-22": 25.31,
+            "2024-01-21": 26.11
+          }
+        }
+      ]
+    },
+    "variety_manager": {
+      "name": "VARIETY MANAGER",
+      "normalized_name": "variety_manager",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 22.47,
+            "2023-01-22": 23.27,
+            "2024-01-21": 24.07
+          }
+        }
+      ]
+    },
+    "manager_trainee": {
+      "name": "MANAGER TRAINEE",
+      "normalized_name": "manager_trainee",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 21.51,
+            "2023-01-22": 22.31,
+            "2024-01-21": 23.11
+          }
+        }
+      ]
+    },
+    "fuel_lead": {
+      "name": "FUEL LEAD",
+      "normalized_name": "fuel_lead",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 21.51,
+            "2023-01-22": 22.31,
+            "2024-01-21": 23.11
+          }
+        }
+      ]
+    },
+    "fresh_cut_supervisor": {
+      "name": "FRESH CUT SUPERVISOR",
+      "normalized_name": "fresh_cut_supervisor",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 21.51,
+            "2023-01-22": 22.31,
+            "2024-01-21": 23.11
+          }
+        }
+      ]
+    },
+    "all_purpose_clerk": {
+      "name": "ALL PURPOSE CLERK",
+      "normalized_name": "all_purpose_clerk",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Start",
+          "hours_required": 0,
+          "months_required": 0,
+          "rates": {
+            "2022-01-23": 16.0,
+            "2023-01-22": 16.5,
+            "2024-01-21": 17.0
+          }
+        },
+        {
+          "step_name": "After 520 hours",
+          "hours_required": 520,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 16.4,
+            "2023-01-22": 16.95,
+            "2024-01-21": 17.5
+          }
+        },
+        {
+          "step_name": "After 1560 hours",
+          "hours_required": 1560,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 16.8,
+            "2023-01-22": 17.4,
+            "2024-01-21": 18.0
+          }
+        },
+        {
+          "step_name": "After 2600 hours",
+          "hours_required": 2600,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 17.2,
+            "2023-01-22": 17.85,
+            "2024-01-21": 18.5
+          }
+        },
+        {
+          "step_name": "After 3640 hours",
+          "hours_required": 3640,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 17.6,
+            "2023-01-22": 18.3,
+            "2024-01-21": 19.0
+          }
+        },
+        {
+          "step_name": "After 4680 hours",
+          "hours_required": 4680,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.0,
+            "2023-01-22": 18.75,
+            "2024-01-21": 19.5
+          }
+        },
+        {
+          "step_name": "After 5720 hours",
+          "hours_required": 5720,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.4,
+            "2023-01-22": 19.2,
+            "2024-01-21": 20.0
+          }
+        },
+        {
+          "step_name": "After 6760 hours",
+          "hours_required": 6760,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.8,
+            "2023-01-22": 19.65,
+            "2024-01-21": 20.5
+          }
+        },
+        {
+          "step_name": "After 7800 hours",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 21.01,
+            "2023-01-22": 21.81,
+            "2024-01-21": 22.61
+          }
+        },
+        {
+          "step_name": "Grandfathered",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 21.51,
+            "2023-01-22": 22.31,
+            "2024-01-21": 23.11
+          }
+        }
+      ]
+    },
+    "bakery_fresh_cut_liquor_clerk": {
+      "name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+      "normalized_name": "bakery_fresh_cut_liquor_clerk",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Start",
+          "hours_required": 0,
+          "months_required": 0,
+          "rates": {
+            "2022-01-23": 16.0,
+            "2023-01-22": 16.5,
+            "2024-01-21": 17.0
+          }
+        },
+        {
+          "step_name": "After 520 hours",
+          "hours_required": 520,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 16.4,
+            "2023-01-22": 16.95,
+            "2024-01-21": 17.5
+          }
+        },
+        {
+          "step_name": "After 1560 hours",
+          "hours_required": 1560,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 16.8,
+            "2023-01-22": 17.4,
+            "2024-01-21": 18.0
+          }
+        },
+        {
+          "step_name": "After 2600 hours",
+          "hours_required": 2600,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 17.2,
+            "2023-01-22": 17.85,
+            "2024-01-21": 18.5
+          }
+        },
+        {
+          "step_name": "After 3640 hours",
+          "hours_required": 3640,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 17.6,
+            "2023-01-22": 18.3,
+            "2024-01-21": 19.0
+          }
+        },
+        {
+          "step_name": "After 4680 hours",
+          "hours_required": 4680,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.0,
+            "2023-01-22": 18.75,
+            "2024-01-21": 19.5
+          }
+        },
+        {
+          "step_name": "After 5720 hours",
+          "hours_required": 5720,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.4,
+            "2023-01-22": 19.2,
+            "2024-01-21": 20.0
+          }
+        },
+        {
+          "step_name": "After 6760 hours",
+          "hours_required": 6760,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.8,
+            "2023-01-22": 19.65,
+            "2024-01-21": 20.5
+          }
+        },
+        {
+          "step_name": "After 7800 hours",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 21.01,
+            "2023-01-22": 21.81,
+            "2024-01-21": 22.61
+          }
+        }
+      ]
+    },
+    "cake_decorator": {
+      "name": "CAKE DECORATOR",
+      "normalized_name": "cake_decorator",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Start",
+          "hours_required": 0,
+          "months_required": 0,
+          "rates": {
+            "2022-01-23": 16.0,
+            "2023-01-22": 16.5,
+            "2024-01-21": 17.0
+          }
+        },
+        {
+          "step_name": "After 520 hours",
+          "hours_required": 520,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 16.4,
+            "2023-01-22": 16.95,
+            "2024-01-21": 17.5
+          }
+        },
+        {
+          "step_name": "After 1560 hours",
+          "hours_required": 1560,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 16.8,
+            "2023-01-22": 17.4,
+            "2024-01-21": 18.0
+          }
+        },
+        {
+          "step_name": "After 2600 hours",
+          "hours_required": 2600,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 17.2,
+            "2023-01-22": 17.85,
+            "2024-01-21": 18.5
+          }
+        },
+        {
+          "step_name": "After 3640 hours",
+          "hours_required": 3640,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 17.6,
+            "2023-01-22": 18.3,
+            "2024-01-21": 19.0
+          }
+        },
+        {
+          "step_name": "After 4680 hours",
+          "hours_required": 4680,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.0,
+            "2023-01-22": 18.75,
+            "2024-01-21": 19.5
+          }
+        },
+        {
+          "step_name": "After 5720 hours",
+          "hours_required": 5720,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.4,
+            "2023-01-22": 19.2,
+            "2024-01-21": 20.0
+          }
+        },
+        {
+          "step_name": "After 6760 hours",
+          "hours_required": 6760,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.8,
+            "2023-01-22": 19.65,
+            "2024-01-21": 20.5
+          }
+        },
+        {
+          "step_name": "After 7800 hours",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 21.01,
+            "2023-01-22": 21.81,
+            "2024-01-21": 22.61
+          }
+        },
+        {
+          "step_name": "5-STAR CAKE DECORATOR",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 21.51,
+            "2023-01-22": 22.31,
+            "2024-01-21": 23.11
+          }
+        }
+      ]
+    },
+    "nonfood_gm_floral": {
+      "name": "NON-FOOD/GM/FLORAL",
+      "normalized_name": "nonfood_gm_floral",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Start",
+          "hours_required": 0,
+          "months_required": 0,
+          "rates": {
+            "2022-01-23": 16.0,
+            "2023-01-22": 16.5,
+            "2024-01-21": 17.0
+          }
+        },
+        {
+          "step_name": "After 520 hours",
+          "hours_required": 520,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 16.4,
+            "2023-01-22": 16.95,
+            "2024-01-21": 17.5
+          }
+        },
+        {
+          "step_name": "After 1560 hours",
+          "hours_required": 1560,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 16.8,
+            "2023-01-22": 17.4,
+            "2024-01-21": 18.0
+          }
+        },
+        {
+          "step_name": "After 2600 hours",
+          "hours_required": 2600,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 17.2,
+            "2023-01-22": 17.85,
+            "2024-01-21": 18.5
+          }
+        },
+        {
+          "step_name": "After 3640 hours",
+          "hours_required": 3640,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 17.6,
+            "2023-01-22": 18.3,
+            "2024-01-21": 19.0
+          }
+        },
+        {
+          "step_name": "After 4680 hours",
+          "hours_required": 4680,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.0,
+            "2023-01-22": 18.75,
+            "2024-01-21": 19.5
+          }
+        },
+        {
+          "step_name": "After 5720 hours",
+          "hours_required": 5720,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.4,
+            "2023-01-22": 19.2,
+            "2024-01-21": 20.0
+          }
+        },
+        {
+          "step_name": "After 6760 hours",
+          "hours_required": 6760,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 18.8,
+            "2023-01-22": 19.65,
+            "2024-01-21": 20.5
+          }
+        },
+        {
+          "step_name": "After 7800 hours",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2022-01-23": 21.01,
+            "2023-01-22": 21.81,
+            "2024-01-21": 22.61
+          }
+        }
+      ]
+    },
+    "courtesy_clerk": {
+      "name": "COURTESY CLERK",
+      "normalized_name": "courtesy_clerk",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Start",
+          "hours_required": 0,
+          "months_required": 0,
+          "rates": {
+            "2022-01-23": 16.0,
+            "2023-01-22": 16.5,
+            "2024-01-21": 17.0
+          }
+        },
+        {
+          "step_name": "After 36 months",
+          "hours_required": null,
+          "months_required": 36,
+          "rates": {
+            "2022-01-23": 16.55,
+            "2023-01-22": 17.05,
+            "2024-01-21": 17.55
+          }
+        },
+        {
+          "step_name": "After 72 months",
+          "hours_required": null,
+          "months_required": 72,
+          "rates": {
+            "2022-01-23": 17.1,
+            "2023-01-22": 17.6,
+            "2024-01-21": 18.1
+          }
+        },
+        {
+          "step_name": "After 108 months",
+          "hours_required": null,
+          "months_required": 108,
+          "rates": {
+            "2022-01-23": 17.65,
+            "2023-01-22": 18.15,
+            "2024-01-21": 18.65
+          }
+        }
+      ]
+    }
+  }
+}

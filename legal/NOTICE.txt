@@ -1,0 +1,4 @@
+KARL is free software developed for the benefit of workers and unions.
+
+Copyright © 2025 KARL Contributors
+Licensed under the GNU Affero General Public License v3.0
