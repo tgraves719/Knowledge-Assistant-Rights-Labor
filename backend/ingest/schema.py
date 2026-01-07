@@ -157,6 +157,18 @@ class EnrichedChunk(BaseModel):
         None,
         description="One-sentence summary of the provision"
     )
+
+    # ==========================================================================
+    # CONCEPT-INDEXED FIELDS (Phase 4: Vocabulary Bridging at Ingestion Time)
+    # ==========================================================================
+    worker_questions: list[str] = Field(
+        default_factory=list,
+        description="Questions a worker might ask that this chunk answers (informal language)"
+    )
+    alternative_names: list[str] = Field(
+        default_factory=list,
+        description="Informal/slang terms for concepts in this chunk (e.g., 'break' for 'relief period')"
+    )
     
     # ==========================================================================
     # FLAGS
@@ -210,7 +222,7 @@ class EnrichedChunk(BaseModel):
     def to_vector_metadata(self) -> dict:
         """
         Convert to metadata dict for ChromaDB storage.
-        
+
         ChromaDB requires flat metadata values (no nested lists as-is),
         so we serialize lists to JSON strings.
         """
@@ -233,6 +245,9 @@ class EnrichedChunk(BaseModel):
             "is_exception": self.is_exception,
             "hire_date_sensitive": self.hire_date_sensitive,
             "is_high_stakes": self.is_high_stakes,
+            # Phase 4: Concept-indexed fields for vocabulary bridging
+            "worker_questions": json.dumps(self.worker_questions),
+            "alternative_names": json.dumps(self.alternative_names),
         }
     
     @classmethod
@@ -260,6 +275,9 @@ class EnrichedChunk(BaseModel):
             is_exception=metadata.get("is_exception", False),
             hire_date_sensitive=metadata.get("hire_date_sensitive", False),
             is_high_stakes=metadata.get("is_high_stakes", False),
+            # Phase 4: Concept-indexed fields
+            worker_questions=json.loads(metadata.get("worker_questions", "[]")),
+            alternative_names=json.loads(metadata.get("alternative_names", "[]")),
         )
 
 

@@ -19,8 +19,28 @@ from dataclasses import dataclass
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from backend.config import CHUNKS_DIR, TOP_K_RESULTS
+from backend.config import CHUNKS_DIR, TOP_K_RESULTS, BM25_K1, BM25_B
 from backend.retrieval.query_expansion import expand_query, get_keyword_variants
+
+# Phase 4: Concept index for vocabulary bridging
+_concept_index = None
+
+def get_concept_index():
+    """Lazy-load the concept index."""
+    global _concept_index
+    if _concept_index is None:
+        try:
+            from backend.ingest.toc_index import ConceptIndex
+            _concept_index = ConceptIndex()
+            if _concept_index.load():
+                print(f"Loaded concept index with {len(_concept_index.concept_to_articles)} concepts")
+            else:
+                print("Concept index not found, will skip concept-based retrieval")
+                _concept_index = None
+        except Exception as e:
+            print(f"Could not load concept index: {e}")
+            _concept_index = None
+    return _concept_index
 
 
 @dataclass
@@ -49,16 +69,21 @@ class BM25Index:
     Designed for quick rebuilding when new contracts are added.
     """
     
-    def __init__(self, k1: float = 1.5, b: float = 0.75):
+    def __init__(self, k1: float = None, b: float = None):
         """
         Initialize BM25 with tuning parameters.
-        
+
         Args:
-            k1: Term frequency saturation parameter (1.2-2.0 typical)
-            b: Document length normalization (0.75 typical)
+            k1: Term frequency saturation parameter (default from config: 1.8 for legal docs)
+            b: Document length normalization (default from config: 0.75)
+
+        Note: k1=1.8 is higher than typical (1.2-1.5) because legal documents
+        like union contracts use specific terms repeatedly. Higher k1 increases
+        sensitivity to term frequency, rewarding documents that mention
+        "Relief Period" multiple times.
         """
-        self.k1 = k1
-        self.b = b
+        self.k1 = k1 if k1 is not None else BM25_K1
+        self.b = b if b is not None else BM25_B
         
         # Index structures
         self.documents: Dict[str, dict] = {}  # chunk_id -> chunk data
@@ -272,12 +297,51 @@ class HybridSearcher:
             self.chunks_by_id = {c['chunk_id']: c for c in chunks}
         else:
             self.chunks_by_id = {}
+
+        # Phase 4: Preload concept index for vocabulary bridging
+        self.concept_index = get_concept_index()
     
     def _ensure_vector_store(self):
         """Lazy-load vector store if not provided."""
         if self.vector_store is None:
             from backend.retrieval.vector_store import ContractVectorStore
             self.vector_store = ContractVectorStore()
+
+    def get_concept_boost_articles(self, query: str) -> List[int]:
+        """
+        Phase 4: Find articles to boost based on concept index matching.
+
+        Uses pre-computed worker_questions and alternative_names to bridge
+        vocabulary gaps without runtime LLM calls.
+
+        Args:
+            query: User's search query
+
+        Returns:
+            List of article numbers to boost, ordered by match strength
+        """
+        if self.concept_index is None:
+            return []
+
+        # Get articles matching by concept (alternative_names)
+        concept_articles = self.concept_index.find_articles_by_concept(query)
+
+        # Get articles matching by question similarity
+        question_articles = self.concept_index.find_articles_by_question(query)
+
+        # Combine with concept matches taking priority
+        seen = set()
+        combined = []
+        for art in concept_articles[:5]:
+            if art not in seen:
+                combined.append(art)
+                seen.add(art)
+        for art in question_articles[:5]:
+            if art not in seen:
+                combined.append(art)
+                seen.add(art)
+
+        return combined[:5]  # Return top 5 articles to boost
     
     def search(
         self,
@@ -306,9 +370,18 @@ class HybridSearcher:
         """
         if n_results is None:
             n_results = TOP_K_RESULTS
-        
+
         self._ensure_vector_store()
-        
+
+        # Phase 4: Get concept-based article boosts (vocabulary bridging)
+        concept_boost_articles = self.get_concept_boost_articles(query)
+        if concept_boost_articles:
+            if boost_articles:
+                # Combine with explicit boosts, concept-based first
+                boost_articles = list(set(concept_boost_articles + list(boost_articles)))
+            else:
+                boost_articles = concept_boost_articles
+
         # 1. Expand query if enabled
         if use_expansion:
             expanded = expand_query(query)
@@ -378,6 +451,9 @@ class HybridSearcher:
                     'is_exception': chunk.get('is_exception', False),
                     'hire_date_sensitive': chunk.get('hire_date_sensitive', False),
                     'is_high_stakes': chunk.get('is_high_stakes', False),
+                    # Phase 4: Concept-indexed fields
+                    'worker_questions': chunk.get('worker_questions', []),
+                    'alternative_names': chunk.get('alternative_names', []),
                 },
                 vector_score=vector_scores.get(chunk_id, 0),
                 keyword_score=keyword_scores.get(chunk_id, 0),

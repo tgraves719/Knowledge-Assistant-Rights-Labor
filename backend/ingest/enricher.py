@@ -72,6 +72,21 @@ Analyze this provision and respond with a JSON object containing:
 
 8. "is_high_stakes": Does this involve discipline, termination, harassment, discrimination, safety hazards, or grievance procedures? (true/false)
 
+9. "worker_questions": List 3-5 questions a worker might ask that this provision answers.
+   - Use informal, everyday language - how workers actually talk, NOT legal jargon
+   - Good: "When do I get a break?", "Can my boss fire me for being late?"
+   - Bad: "What are the relief period provisions?", "What constitutes just cause?"
+   - Think about what a worker would type into a search box
+
+10. "alternative_names": List informal terms, slang, and abbreviations workers use for concepts here.
+    - Include common variations and casual speech
+    - Examples:
+      * "relief period" -> ["break", "breaks", "rest break", "15 minute break", "bathroom break"]
+      * "personal holiday" -> ["float day", "floater", "floating holiday", "PH"]
+      * "discharge" -> ["fired", "terminated", "let go", "canned", "pink slip"]
+      * "overtime" -> ["OT", "extra hours", "time and a half"]
+    - Be comprehensive - these are used for search matching
+
 Respond with ONLY valid JSON, no markdown or explanation."""
 
 
@@ -181,7 +196,18 @@ class GeminiEnricher:
         result["is_exception"] = bool(enrichment.get("is_exception", False))
         result["hire_date_sensitive"] = bool(enrichment.get("hire_date_sensitive", False))
         result["is_high_stakes"] = bool(enrichment.get("is_high_stakes", False))
-        
+
+        # Phase 4: Concept-indexed fields for vocabulary bridging
+        worker_questions = enrichment.get("worker_questions", [])
+        if isinstance(worker_questions, str):
+            worker_questions = [worker_questions] if worker_questions else []
+        result["worker_questions"] = [q.strip() for q in worker_questions if isinstance(q, str) and q.strip()][:5]
+
+        alternative_names = enrichment.get("alternative_names", [])
+        if isinstance(alternative_names, str):
+            alternative_names = [alternative_names] if alternative_names else []
+        result["alternative_names"] = [n.strip().lower() for n in alternative_names if isinstance(n, str) and n.strip()]
+
         return result
     
     def _default_enrichment(self, chunk: dict) -> dict:
@@ -195,6 +221,9 @@ class GeminiEnricher:
         result["is_exception"] = False
         result["hire_date_sensitive"] = False
         result["is_high_stakes"] = False
+        # Phase 4: Concept-indexed fields
+        result["worker_questions"] = []
+        result["alternative_names"] = []
         return result
 
 

@@ -36,8 +36,13 @@ If someone asks about your name, you can share this. You were built to help work
 
 ## HIGH-STAKES TOPICS
 
-For questions about discipline, termination, harassment, discrimination, safety, or retaliation:
-- Acknowledge the seriousness
+For GENERAL questions about discipline, termination, harassment, discrimination, safety, or retaliation (e.g., "what are my rights if I'm disciplined?"):
+- Provide the relevant contract provisions with citations
+- Ask a clarifying follow-up question like: "Are you currently facing this situation, or just wanting to know your rights in general?"
+- Do NOT immediately recommend contacting a steward for general informational questions
+
+For ACTIVE/URGENT situations (user says they ARE being disciplined, fired, harassed right now, or called into a meeting):
+- Acknowledge the seriousness immediately
 - Provide relevant contract provisions
 - ALWAYS end with: "This is a serious matter. I strongly recommend contacting your steward immediately."
 
@@ -136,16 +141,68 @@ def format_context(chunks: list[dict]) -> str:
     return "\n---\n".join(context_parts)
 
 
-def format_wage_info(wage_info: dict) -> str:
+def format_wage_info(wage_info: dict, is_estimate: bool = False) -> str:
     """Format wage lookup result for the prompt."""
     if not wage_info:
         return "No wage information available for this query."
-    
-    return f"""**Wage Rate (from Appendix A)**:
+
+    base_info = f"""**Wage Rate (from Appendix A)**:
 - Classification: {wage_info.get('classification', 'Unknown')}
 - Step: {wage_info.get('step', 'Unknown')}
 - Rate: ${wage_info.get('rate', 0):.2f}/hour
 - Effective Date: {wage_info.get('effective_date', 'Unknown')}
+"""
+
+    if is_estimate:
+        base_info += """
+**IMPORTANT**: This wage is an ESTIMATE based on the user's tenure. When presenting this:
+- Clearly state it's an estimate
+- Mention their actual rate depends on total hours worked
+- Suggest they verify via pay stub or Company HR Portal
+"""
+
+    return base_info
+
+
+def format_user_profile(profile: dict) -> str:
+    """Format user profile information for personalized responses."""
+    if not profile:
+        return ""
+
+    parts = ["## USER PROFILE"]
+
+    if profile.get("classification_display"):
+        parts.append(f"- Job: **{profile['classification_display']}**")
+
+    if profile.get("months_employed"):
+        parts.append(f"- Tenure: ~{profile['months_employed']} months")
+
+    if profile.get("is_grandfathered") is not None:
+        if profile["is_grandfathered"]:
+            parts.append("- **Grandfathered employee** (hired before March 27, 2005)")
+        else:
+            parts.append("- Hired after March 27, 2005 (standard provisions apply)")
+
+    if profile.get("estimated_hours"):
+        parts.append(f"- Estimated hours worked: ~{profile['estimated_hours']}")
+
+    if len(parts) > 1:
+        parts.append("\nUse this information to personalize your response. Note any provisions that specifically apply to their situation.")
+        return "\n".join(parts)
+
+    return ""
+
+
+VERIFICATION_GUIDANCE = """
+## VERIFICATION GUIDANCE
+
+When providing wage or time-sensitive information based on estimates:
+1. Always clarify that figures are ESTIMATES based on their reported tenure
+2. Recommend they verify exact figures through:
+   - Their most recent pay stub
+   - Company HR Portal
+   - Store manager or HR representative
+3. Never state estimated values as definitive facts
 """
 
 
@@ -194,11 +251,13 @@ def build_prompt(
     requires_escalation: bool = False,
     query_expansions: list = None,
     user_classification: str = None,
-    conversation_context: str = None
+    conversation_context: str = None,
+    user_profile: dict = None,
+    is_wage_estimate: bool = False
 ) -> str:
     """
     Build the full prompt with context for the LLM.
-    
+
     Args:
         query: User's question
         chunks: Retrieved contract chunks
@@ -207,33 +266,44 @@ def build_prompt(
         query_expansions: List of slang->contract term expansions
         user_classification: User's job classification for personalized answers
         conversation_context: Previous conversation turns for follow-up context
-    
+        user_profile: Full user profile dict for personalization
+        is_wage_estimate: Whether wage info is an estimate (triggers verification guidance)
+
     Returns:
         Formatted system prompt
     """
     context = format_context(chunks)
-    wage_str = format_wage_info(wage_info)
+    wage_str = format_wage_info(wage_info, is_estimate=is_wage_estimate)
     escalation_note = ESCALATION_NOTE if requires_escalation else NO_ESCALATION_NOTE
     terminology_note = format_query_expansions(query_expansions)
-    user_context = format_user_context(user_classification)
-    
+
+    # Use profile if provided, otherwise fall back to classification
+    if user_profile:
+        user_context = format_user_profile(user_profile)
+    else:
+        user_context = format_user_context(user_classification)
+
     system = SYSTEM_PROMPT_WITH_CONTEXT.format(
         context=context,
         wage_info=wage_str,
         escalation_note=escalation_note
     )
-    
+
     # Add user context if classification provided
     if user_context:
         system = system + "\n\n" + user_context
-    
+
     # Add terminology note if there were expansions
     if terminology_note:
         system = system + "\n\n" + terminology_note
-    
+
     # Add conversation context for follow-up questions
     if conversation_context:
         system = system + "\n\n" + conversation_context
-    
+
+    # Add verification guidance if dealing with estimates
+    if is_wage_estimate:
+        system = system + "\n\n" + VERIFICATION_GUIDANCE
+
     return system
 

@@ -1,9 +1,9 @@
 {
   "metrics": {
     "total_tests": 55,
-    "passed": 54,
-    "pass_rate": 0.9818181818181818,
-    "retrieval_accuracy": 0.9818181818181818,
+    "passed": 43,
+    "pass_rate": 0.7818181818181819,
+    "retrieval_accuracy": 0.7818181818181819,
     "wage_accuracy": 1.0,
     "escalation_accuracy": 1.0,
     "category_breakdown": {
@@ -13,9 +13,9 @@
         "rate": 1.0
       },
       "overtime": {
-        "passed": 3,
+        "passed": 4,
         "total": 4,
-        "rate": 0.75
+        "rate": 1.0
       },
       "scheduling": {
         "passed": 5,
@@ -33,9 +33,9 @@
         "rate": 1.0
       },
       "vacation": {
-        "passed": 3,
+        "passed": 2,
         "total": 3,
-        "rate": 1.0
+        "rate": 0.6666666666666666
       },
       "sick_leave": {
         "passed": 3,
@@ -53,19 +53,19 @@
         "rate": 1.0
       },
       "breaks": {
-        "passed": 2,
+        "passed": 1,
         "total": 2,
-        "rate": 1.0
+        "rate": 0.5
       },
       "classification": {
-        "passed": 3,
+        "passed": 0,
         "total": 3,
-        "rate": 1.0
+        "rate": 0.0
       },
       "union": {
-        "passed": 2,
+        "passed": 1,
         "total": 2,
-        "rate": 1.0
+        "rate": 0.5
       },
       "holiday": {
         "passed": 3,
@@ -73,19 +73,19 @@
         "rate": 1.0
       },
       "benefits": {
-        "passed": 3,
+        "passed": 1,
         "total": 3,
-        "rate": 1.0
+        "rate": 0.3333333333333333
       },
       "safety": {
-        "passed": 2,
+        "passed": 1,
         "total": 2,
-        "rate": 1.0
+        "rate": 0.5
       },
       "time_cards": {
-        "passed": 2,
+        "passed": 0,
         "total": 2,
-        "rate": 1.0
+        "rate": 0.0
       },
       "high_stakes": {
         "passed": 3,
@@ -93,9 +93,9 @@
         "rate": 1.0
       },
       "dress_code": {
-        "passed": 1,
+        "passed": 0,
         "total": 1,
-        "rate": 1.0
+        "rate": 0.0
       },
       "refusal": {
         "passed": 2,
@@ -112,9 +112,9 @@
       "retrieval_correct": true,
       "expected_citation": "Appendix A",
       "retrieved_citations": [
-        "Letter of Understanding 10",
-        "Article 15, Section 34",
-        "Article 16, Section 43"
+        "Article 8, Section 17",
+        "Article 58, Section 175, Part 10-10",
+        "Article 29, Section 77"
       ],
       "wage_correct": true,
       "escalation_correct": null,
@@ -130,8 +130,8 @@
       "expected_citation": "Appendix A",
       "retrieved_citations": [
         "Article 15, Section 34",
-        "Article 42",
-        "Article 16, Section 43"
+        "Article 8, Section 17",
+        "Article 42, Section 118, Part part3"
       ],
       "wage_correct": true,
       "escalation_correct": null,
@@ -146,9 +146,9 @@
       "retrieval_correct": true,
       "expected_citation": "Appendix A",
       "retrieved_citations": [
-        "Article 12, Section 28",
-        "Article 16, Section 43",
-        "Article 8, Section 17"
+        "Article 8, Section 17",
+        "Article 29, Section 78, Part 2",
+        "Article 29, Section 79, Part 9"
       ],
       "wage_correct": true,
       "escalation_correct": null,
@@ -164,8 +164,8 @@
       "expected_citation": "Article 15, Section 34",
       "retrieved_citations": [
         "Article 15, Section 34",
-        "Article 13, Section 29",
-        "Article 16, Section 36"
+        "Article 13, Section 30",
+        "Article 13, Section 29"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -182,7 +182,7 @@
       "retrieved_citations": [
         "Article 13, Section 29",
         "Article 13, Section 30",
-        "Article 16, Section 36"
+        "Article 15, Section 34"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -198,8 +198,8 @@
       "expected_citation": "Appendix A",
       "retrieved_citations": [
         "Article 8, Section 17",
-        "Article 2, Section 4",
-        "Article 15, Section 34"
+        "Article 58, Section 175, Part 10-10",
+        "Article 29, Section 78, Part 2"
       ],
       "wage_correct": true,
       "escalation_correct": null,
@@ -215,8 +215,8 @@
       "expected_citation": "Article 12, Section 28",
       "retrieved_citations": [
         "Article 12, Section 28",
-        "Article 8, Section 19",
-        "Article 28, Section 76"
+        "Article 10, Section 21, Part part2",
+        "Article 8, Section 19"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -232,8 +232,8 @@
       "expected_citation": "Article 12, Section 28",
       "retrieved_citations": [
         "Article 12, Section 28",
-        "Article 15, Section 34",
-        "Article 8, Section 19"
+        "Article 16, Section 43",
+        "Article 10, Section 21, Part part2"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -248,9 +248,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10, Section 21",
       "retrieved_citations": [
-        "Article 10, Section 21",
-        "Article 25, Section 61",
-        "Article 18, Section 53"
+        "Article 10, Section 21, Part part1",
+        "Article 10, Section 21, Part part2",
+        "Article 10, Section 21, Part part8"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -262,18 +262,18 @@
       "test_id": 10,
       "category": "overtime",
       "question": "Do I have to stay past my scheduled shift?",
-      "retrieval_correct": false,
+      "retrieval_correct": true,
       "expected_citation": "Article 10, Section 21",
       "retrieved_citations": [
-        "Article 14, Section 32",
-        "Article 13, Section 30",
-        "Article 56, Section 166"
+        "Article 10, Section 21, Part part4",
+        "Article 10, Section 21, Part part1",
+        "Article 10, Section 21, Part part2"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": false,
-      "notes": "Expected 'Article 10, Section 21' not found"
+      "passed": true,
+      "notes": ""
     },
     {
       "test_id": 11,
@@ -282,9 +282,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10",
       "retrieved_citations": [
-        "Article 10, Section 23",
-        "Article 56, Section 166",
-        "Article 10, Section 21"
+        "Article 10, Section 21, Part part4",
+        "Article 10, Section 21, Part part1",
+        "Article 10, Section 21, Part part8"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -299,9 +299,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10, Section 21",
       "retrieved_citations": [
-        "Article 27, Section 63",
-        "Article 10, Section 25",
-        "Article 10, Section 21"
+        "Article 10, Section 21, Part part1",
+        "Article 10, Section 21, Part part7",
+        "Article 10, Section 21, Part part4"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -316,9 +316,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10, Section 21",
       "retrieved_citations": [
-        "Article 10, Section 22",
-        "Article 10, Section 23",
-        "Article 24, Section 60"
+        "Article 10, Section 21, Part part1",
+        "Article 10, Section 21, Part part4",
+        "Article 10, Section 23"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -333,9 +333,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10, Section 22",
       "retrieved_citations": [
-        "Article 10, Section 22",
-        "Article 46, Section 138",
-        "Article 29, Section 83"
+        "Article 27, Section 71, Part part1",
+        "Article 58, Section 175, Part 2-2",
+        "Article 10, Section 22"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -350,9 +350,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10",
       "retrieved_citations": [
-        "Article 25, Section 61",
-        "Article 27, Section 68",
-        "Article 24, Section 60"
+        "Article 10, Section 21, Part part1",
+        "Article 17, Section 52, Part part3",
+        "Article 10, Section 21, Part part2"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -368,8 +368,8 @@
       "expected_citation": "Article 27, Section 63",
       "retrieved_citations": [
         "Article 27, Section 63",
-        "Article 27, Section 66",
-        "Article 56, Section 167"
+        "Article 27, Section 67",
+        "Article 27, Section 71, Part part3"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -384,9 +384,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 27, Section 66",
       "retrieved_citations": [
-        "Article 56, Section 167",
+        "Article 27, Section 66",
         "Article 27, Section 63",
-        "Article 27, Section 66"
+        "Article 27, Section 71, Part part1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -401,9 +401,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 29",
       "retrieved_citations": [
-        "Article 29, Section 81",
         "Article 27, Section 66",
-        "Letter of Understanding 1"
+        "Article 29, Section 81",
+        "Article 29, Section 82, Part part2"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -418,9 +418,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 29",
       "retrieved_citations": [
+        "Article 29, Section 77",
         "Article 29, Section 81",
-        "Article 29, Section 77(e)",
-        "Article 29, Section 82"
+        "Article 29, Section 79"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -435,9 +435,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 29",
       "retrieved_citations": [
-        "Article 29, Section 77(d)",
-        "Letter of Understanding 1",
-        "Letter of Understanding 4"
+        "Article 29, Section 82, Part part2",
+        "Article 29, Section 81",
+        "Article 29, Section 77"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -452,9 +452,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 17, Section 44",
       "retrieved_citations": [
-        "Article 16, Section 43",
-        "Article 35, Section 101",
-        "Article 16, Section 40"
+        "Article 17, Section 44, Part part3",
+        "Article 17, Section 50",
+        "Article 17, Section 45"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -470,8 +470,8 @@
       "expected_citation": "Article 17, Section 49",
       "retrieved_citations": [
         "Article 17, Section 49",
-        "Article 35, Section 101",
-        "Article 56, Section 168"
+        "Article 17, Section 50",
+        "Article 17, Section 51"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -483,18 +483,18 @@
       "test_id": 23,
       "category": "vacation",
       "question": "How far in advance must I request vacation?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 17",
       "retrieved_citations": [
-        "Article 32, Section 93",
-        "Article 17, Section 45",
-        "Article 35, Section 101"
+        "Article 10, Section 21, Part part4",
+        "Article 58, Section 175, Part 3-3",
+        "Article 27, Section 71, Part part3"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 17' not found"
     },
     {
       "test_id": 24,
@@ -504,8 +504,8 @@
       "expected_citation": "Article 35, Section 100",
       "retrieved_citations": [
         "Article 35, Section 101",
-        "Article 56, Section 168",
-        "Article 16, Section 41"
+        "Article 35, Section 100, Part 2-2",
+        "Article 35, Section 100, Part 1-1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -521,8 +521,8 @@
       "expected_citation": "Article 35, Section 100",
       "retrieved_citations": [
         "Article 35, Section 101",
-        "Article 35, Section 102",
-        "Article 56, Section 168"
+        "Article 35, Section 100, Part 1-1",
+        "Article 35, Section 8"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -537,9 +537,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 35",
       "retrieved_citations": [
-        "Article 35, Section 101",
-        "Article 56, Section 168",
-        "Article 16, Section 41"
+        "Article 35, Section 100, Part 2-2",
+        "Article 35, Section 8",
+        "Article 35, Section 100, Part 3-4"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -556,7 +556,7 @@
       "retrieved_citations": [
         "Article 43, Section 124",
         "Article 45, Section 132",
-        "Article 44, Section 128"
+        "Article 58, Section 173"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -572,8 +572,8 @@
       "expected_citation": "Article 43",
       "retrieved_citations": [
         "Article 43, Section 121",
-        "Article 26, Section 62",
-        "Article 43, Section 126"
+        "Article 43, Section 126",
+        "Article 43, Section 123"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -588,9 +588,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 26, Section 62",
       "retrieved_citations": [
-        "Article 25, Section 61",
         "Article 27, Section 72",
-        "Article 26, Section 62"
+        "Article 26, Section 62",
+        "Article 27, Section 66"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -607,7 +607,7 @@
       "retrieved_citations": [
         "Article 46, Section 135",
         "Article 46, Section 136",
-        "Article 26, Section 62"
+        "Article 46, Section 140, Part part3"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -622,9 +622,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 46",
       "retrieved_citations": [
-        "Article 46, Section 133",
         "Article 46, Section 136",
-        "Article 46, Section 135"
+        "Article 46, Section 140, Part part3",
+        "Article 46, Section 140, Part part1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -640,8 +640,8 @@
       "expected_citation": "Article 46",
       "retrieved_citations": [
         "Article 46, Section 135",
-        "Article 17, Section 49",
-        "Article 4, Section 9"
+        "Article 58, Section 175, Part 2-4",
+        "Article 58, Section 175, Part 2-9"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -656,8 +656,8 @@
       "retrieval_correct": true,
       "expected_citation": "Article 24",
       "retrieved_citations": [
-        "Article 21, Section 57",
         "Article 25, Section 61",
+        "Article 21, Section 57",
         "Article 24, Section 60"
       ],
       "wage_correct": null,
@@ -670,69 +670,69 @@
       "test_id": 34,
       "category": "breaks",
       "question": "How long is my lunch break?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 24",
       "retrieved_citations": [
-        "Article 24, Section 60",
-        "Article 25, Section 61",
-        "Article 16, Section 40"
+        "Article 10, Section 21, Part part1",
+        "Article 10, Section 21, Part part3",
+        "Article 10, Section 21, Part part2"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 24' not found"
     },
     {
       "test_id": 35,
       "category": "classification",
       "question": "What are the duties of a Courtesy Clerk?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 7, Section 14(g)",
       "retrieved_citations": [
-        "Letter of Understanding 1",
+        "Article 2, Section 4",
         "Article 42, Section 119",
         "Article 55, Section 162"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 7, Section 14(g)' not found"
     },
     {
       "test_id": 36,
       "category": "classification",
       "question": "What is a Head Clerk?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 7, Section 14(c)",
       "retrieved_citations": [
-        "Article 7, Section 15",
-        "Article 29, Section 83",
-        "Article 2, Section 4"
+        "Article 29, Section 84, Part 5-6",
+        "Article 29, Section 78, Part 2-1",
+        "Article 29, Section 84, Part 1-1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 7, Section 14(c)' not found"
     },
     {
       "test_id": 37,
       "category": "classification",
       "question": "Can I work in a different classification?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 7, Section 15",
       "retrieved_citations": [
-        "Article 7, Section 15",
+        "Article 27, Section 69",
         "Article 10, Section 24",
-        "Article 8, Section 17"
+        "Article 58, Section 175, Part 1-1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 7, Section 15' not found"
     },
     {
       "test_id": 38,
@@ -741,9 +741,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 3, Section 5",
       "retrieved_citations": [
-        "Article 45, Section 132",
-        "Article 5, Section 11",
-        "Article 44, Section 128"
+        "Article 58, Section 175, Part 12-12",
+        "Article 27, Section 67",
+        "Article 36, Section 109, Part part6"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -755,18 +755,18 @@
       "test_id": 39,
       "category": "union",
       "question": "Can a union representative visit the store?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 44, Section 128",
       "retrieved_citations": [
         "Article 45, Section 130",
-        "Article 44, Section 128",
-        "Article 45, Section 129"
+        "Article 45, Section 132",
+        "Article 36, Section 106"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "high_stakes",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 44, Section 128' not found"
     },
     {
       "test_id": 40,
@@ -775,9 +775,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 16, Section 38",
       "retrieved_citations": [
-        "Article 35, Section 101",
-        "Article 32, Section 88",
-        "Article 16, Section 38"
+        "Article 16, Section 38",
+        "Article 16, Section 35",
+        "Article 16, Section 40"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -792,9 +792,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 16",
       "retrieved_citations": [
-        "Article 35, Section 101",
-        "Article 32, Section 93",
-        "Article 16, Section 38"
+        "Article 16, Section 38",
+        "Article 16, Section 41",
+        "Article 16, Section 35"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -809,9 +809,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 16",
       "retrieved_citations": [
-        "Article 16, Section 35",
+        "Article 16, Section 43",
         "Article 16, Section 37",
-        "Article 17, Section 48"
+        "Article 16, Section 38"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -823,18 +823,18 @@
       "test_id": 43,
       "category": "benefits",
       "question": "Is there a 401k plan?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 39",
       "retrieved_citations": [
-        "Article 39, Section 115",
-        "Letter of Understanding 5",
-        "Article 56, Section 168"
+        "Article 40, Section 116",
+        "Article 40, Section 116, Part 5-0",
+        "Article 40, Section 116, Part 3-4"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 39' not found"
     },
     {
       "test_id": 44,
@@ -843,9 +843,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 40",
       "retrieved_citations": [
-        "Letter of Understanding 5",
-        "Article 41, Section 117",
-        "Article 37, Section 113"
+        "Article 40, Section 116, Part 1-4",
+        "Article 40, Section 116, Part 5-0",
+        "Article 40, Section 116"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -857,18 +857,18 @@
       "test_id": 45,
       "category": "benefits",
       "question": "Is there a pension plan?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 42",
       "retrieved_citations": [
-        "Article 42, Section 120",
-        "Article 42",
-        "Article 43, Section 123"
+        "Article 40, Section 116, Part 1-4",
+        "Article 58, Section 175, Part 5-7",
+        "Article 40, Section 116, Part 6"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 42' not found"
     },
     {
       "test_id": 46,
@@ -878,8 +878,8 @@
       "expected_citation": "Article 36",
       "retrieved_citations": [
         "Article 36, Section 103",
-        "Letter of Understanding 13",
-        "Article 36, Section 104"
+        "Article 36, Section 109, Part part1",
+        "Article 36, Section 109, Part part6"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -891,52 +891,52 @@
       "test_id": 47,
       "category": "safety",
       "question": "What happens if I get injured at work?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 37",
       "retrieved_citations": [
-        "Article 37, Section 113",
-        "Article 46, Section 143",
-        "Article 13, Section 30"
+        "Article 27, Section 68, Part part2",
+        "Article 10, Section 21, Part part3",
+        "Article 58, Section 175, Part 4-0"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "high_stakes",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 37' not found"
     },
     {
       "test_id": 48,
       "category": "time_cards",
       "question": "When do I punch the time clock?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 20, Section 56",
       "retrieved_citations": [
-        "Article 20, Section 56",
-        "Article 24, Section 60",
-        "Article 25, Section 61"
+        "Article 10, Section 21, Part part3",
+        "Article 10, Section 21, Part part1",
+        "Article 10, Section 21, Part part8"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 20, Section 56' not found"
     },
     {
       "test_id": 49,
       "category": "time_cards",
       "question": "Can I be disciplined for time clock errors?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 20",
       "retrieved_citations": [
-        "Article 20, Section 56",
-        "Article 19, Section 55",
-        "Article 46, Section 143"
+        "Article 46, Section 143",
+        "Article 27, Section 73",
+        "Article 10, Section 21, Part part3"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "high_stakes",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 20' not found"
     },
     {
       "test_id": 50,
@@ -945,9 +945,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 45, Section 132",
       "retrieved_citations": [
-        "Article 45, Section 130",
-        "Article 22, Section 58",
-        "Article 36, Section 108"
+        "Article 43, Section 124",
+        "Article 46, Section 134",
+        "Article 45, Section 132"
       ],
       "wage_correct": null,
       "escalation_correct": true,
@@ -962,9 +962,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 43",
       "retrieved_citations": [
+        "Article 43, Section 125",
         "Article 43, Section 124",
-        "Article 6, Section 13",
-        "Article 44, Section 128"
+        "Article 43, Section 126"
       ],
       "wage_correct": null,
       "escalation_correct": true,
@@ -980,8 +980,8 @@
       "expected_citation": "Article 43",
       "retrieved_citations": [
         "Article 43, Section 121",
-        "Article 26, Section 62",
-        "Article 27, Section 66"
+        "Article 46, Section 133",
+        "Article 46, Section 135"
       ],
       "wage_correct": null,
       "escalation_correct": true,
@@ -993,18 +993,18 @@
       "test_id": 53,
       "category": "dress_code",
       "question": "What color shoes can I wear?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Letter of Understanding",
       "retrieved_citations": [
-        "Letter of Understanding 6",
-        "Article 43, Section 122",
-        "Letter of Understanding 1"
+        "Article 36, Section 104",
+        "Article 10, Section 21, Part part4",
+        "Article 58, Section 175, Part 6-8"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Letter of Understanding' not found"
     },
     {
       "test_id": 54,
@@ -1013,9 +1013,9 @@
       "retrieval_correct": true,
       "expected_citation": null,
       "retrieved_citations": [
-        "Letter of Understanding 2",
         "Article 36, Section 106",
-        "Letter of Understanding 3"
+        "Article 10, Section 21, Part part4",
+        "Article 58, Section 175, Part 13"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -1030,9 +1030,9 @@
       "retrieval_correct": true,
       "expected_citation": null,
       "retrieved_citations": [
-        "Article 46, Section 133",
         "Article 46, Section 136",
-        "Article 46, Section 135"
+        "Article 46, Section 140, Part part3",
+        "Article 46, Section 140, Part part1"
       ],
       "wage_correct": null,
       "escalation_correct": null,

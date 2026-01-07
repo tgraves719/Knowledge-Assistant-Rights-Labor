@@ -126,6 +126,15 @@ class ContractVectorStore:
                 if isinstance(applies_to, str):
                     applies_to = applies_to.split(',') if applies_to else ['all']
                 
+                # Phase 4: Handle concept-indexed fields
+                worker_questions = chunk.get('worker_questions', [])
+                if isinstance(worker_questions, str):
+                    worker_questions = [worker_questions] if worker_questions else []
+
+                alternative_names = chunk.get('alternative_names', [])
+                if isinstance(alternative_names, str):
+                    alternative_names = [alternative_names] if alternative_names else []
+
                 metadata = {
                     'contract_id': chunk.get('contract_id', ''),
                     'article_num': chunk.get('article_num') or 0,
@@ -135,7 +144,7 @@ class ContractVectorStore:
                     'citation': chunk.get('citation', ''),
                     'parent_context': chunk.get('parent_context', ''),
                     'doc_type': chunk.get('doc_type', 'cba'),
-                    # New enriched metadata
+                    # Enriched metadata
                     'applies_to': ','.join(applies_to),
                     'topics': ','.join(topics),
                     'summary': chunk.get('summary') or '',
@@ -143,6 +152,9 @@ class ContractVectorStore:
                     'is_exception': chunk.get('is_exception', False),
                     'hire_date_sensitive': chunk.get('hire_date_sensitive', False),
                     'is_high_stakes': chunk.get('is_high_stakes', False),
+                    # Phase 4: Concept-indexed fields for vocabulary bridging
+                    'worker_questions': '|'.join(worker_questions),
+                    'alternative_names': '|'.join(alternative_names),
                 }
                 
                 ids.append(chunk_id)

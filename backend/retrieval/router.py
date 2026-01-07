@@ -15,8 +15,19 @@ from dataclasses import dataclass
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from backend.config import WAGES_DIR, HIGH_STAKES_TOPICS
+from backend.config import (
+    WAGES_DIR, HIGH_STAKES_TOPICS,
+    HYBRID_VECTOR_WEIGHT, HYBRID_KEYWORD_WEIGHT,
+    CAG_ENABLE_HYPOTHESIS_LAYER, CAG_ENABLE_FULL_ARTICLE_EXPANSION,
+    CAG_ENABLE_TITLE_BOOSTING, FULL_ARTICLE_MAX_CHUNKS,
+    FULL_ARTICLE_MIN_TOP_K_MATCH, CHUNKS_DIR
+)
 from backend.retrieval.vector_store import ContractVectorStore
+from backend.retrieval.hypothesis import (
+    get_hypothesis_generator,
+    apply_title_boosting,
+    HypothesisResult
+)
 
 
 # ============================================================================
@@ -146,11 +157,21 @@ class QueryIntent:
             self.relevant_articles = []
 
 
-# Wage-related keywords
+# Wage-related keywords (specific phrases to avoid false positives)
 WAGE_KEYWORDS = [
-    "pay", "wage", "rate", "salary", "hourly", "dollar", "how much", 
-    "what do i make", "what's my pay", "compensation", "starting pay",
-    "after hours", "experience pay", "step", "progression"
+    "my pay", "my wage", "my rate", "my salary", "my hourly",
+    "wage rate", "pay rate", "hourly rate",
+    "what do i make", "what's my pay", "what am i making",
+    "how much do i make", "how much should i make", "how much will i make",
+    "how much should i be making", "what should i be making", "what should i make",
+    "compensation", "starting pay", "experience pay", "step", "progression",
+    "appendix a"
+]
+
+# Exclude these from wage detection (contain "pay" but aren't wage queries)
+WAGE_EXCLUDE_PATTERNS = [
+    "vacation", "holiday", "sick", "time off", "pto", "personal day",
+    "pay stub", "pay period", "pay check"
 ]
 
 # Classification extraction patterns
@@ -279,57 +300,83 @@ def extract_topic(query: str) -> Optional[str]:
 def is_wage_query(query: str) -> tuple[bool, list]:
     """Check if query is asking about wages/pay."""
     query_lower = query.lower()
+
+    # First check if this is actually about time off/benefits (not wages)
+    for exclude in WAGE_EXCLUDE_PATTERNS:
+        if exclude in query_lower:
+            return False, []
+
     matched = []
     for keyword in WAGE_KEYWORDS:
         if keyword in query_lower:
             matched.append(keyword)
-    
+
     # Also check for specific patterns
     wage_patterns = [
-        r"how much (do|does|will|would) .* (make|earn|get paid)",
-        r"what (is|are) (my|the) (pay|wage|rate)",
-        r"\$\d+",  # Dollar amounts
-        r"per hour",
+        r"how much (do|does|will|would|should) (i|we) (make|earn|get paid|be making|be earning)",
+        r"what (is|are|should) (my|the) (pay|wage|rate)",
+        r"what should i (make|be making|earn|be earning)",
+        r"\$\d+.*hour",  # Dollar amounts with hour
     ]
-    
+
     for pattern in wage_patterns:
         if re.search(pattern, query_lower):
             matched.append(f"pattern:{pattern}")
-    
+
     return len(matched) > 0, matched
 
 
-def is_high_stakes(query: str) -> tuple[bool, list]:
-    """Check if query involves high-stakes topics requiring escalation."""
+def is_high_stakes(query: str) -> tuple[bool, list, bool]:
+    """
+    Check if query involves high-stakes topics.
+
+    Returns:
+        tuple: (is_high_stakes, matched_patterns, is_active_situation)
+        - is_high_stakes: True if topic relates to discipline/termination/etc
+        - matched_patterns: List of what matched
+        - is_active_situation: True only if user is CURRENTLY facing this (needs escalation UI)
+    """
     query_lower = query.lower()
     matched = []
-    
+    is_active = False
+
+    # Patterns that indicate ACTIVE/URGENT situation (currently happening)
+    active_patterns = [
+        r"(i'?m|i am|was|been|being|getting) (just\s+)?(fired|terminated|discharged)",
+        r"(i'?m|i am|was|been|being|getting) (disciplined|written up|suspended)",
+        r"(i'?m|i am) being (harass|discriminat)",
+        r"(called|summoned) (into|to) (a\s+)?(meeting|office)",
+        r"just (got|been|was) (terminated|fired|discharged|written up|suspended)",
+        r"(manager|boss|supervisor).*(wants|asked|told|called).*(meeting|office|talk)",
+        r"(right now|today|yesterday|just happened)",
+    ]
+
+    # Check for active situation first
+    for pattern in active_patterns:
+        if re.search(pattern, query_lower):
+            matched.append(f"active:{pattern}")
+            is_active = True
+
+    # General high-stakes topic patterns (informational, not active)
+    general_patterns = [
+        r"(harass|harassment|harassing)",
+        r"(discriminat|discrimination)",
+        r"unsafe|dangerous|injury|injured",
+        r"investigation",
+        r"weingarten",
+        r"(my rights|what rights).*(if|when|during).*(disciplin|fired|terminat)",
+    ]
+
+    for pattern in general_patterns:
+        if re.search(pattern, query_lower):
+            matched.append(f"general:{pattern}")
+
     # Check for exact keyword matches
     for topic in HIGH_STAKES_TOPICS:
         if topic in query_lower:
             matched.append(topic)
-    
-    # High-stakes patterns with regex for flexible matching
-    high_stakes_patterns = [
-        r"(i'?m|am|was|been|being|getting) (just\s+)?(fired|terminated|discharged)",
-        r"(i'?m|am|was|been|being|getting) (disciplined|written up|suspended)",
-        r"(harass|harassment|harassing|harassed)",
-        r"(discriminat|discrimination|discriminating|discriminated)",
-        r"unsafe|dangerous|injury|injured|hurt|accident",
-        r"meeting.*(about|regarding|concerning).*(performance|discipline|conduct)",
-        r"(called|summoned).*(meeting|office)",
-        r"investigation",
-        r"what (are|do|should).*(my rights|i do)",  # Rights-seeking questions
-        r"just (terminated|fired|discharged)",
-        r"weingarten",
-        r"representation|steward|union rep",
-    ]
-    
-    for pattern in high_stakes_patterns:
-        if re.search(pattern, query_lower):
-            matched.append(f"pattern:{pattern}")
-    
-    return len(matched) > 0, matched
+
+    return len(matched) > 0, matched, is_active
 
 
 def classify_intent(query: str, user_classification: str = None) -> QueryIntent:
@@ -356,8 +403,8 @@ def classify_intent(query: str, user_classification: str = None) -> QueryIntent:
         relevant_articles = list(set(relevant_articles + classification_articles))
     
     is_wage, wage_matches = is_wage_query(query)
-    is_hs, hs_matches = is_high_stakes(query)
-    
+    is_hs, hs_matches, is_active_situation = is_high_stakes(query)
+
     # Determine primary intent
     if is_hs:
         # Add discipline/grievance articles for high-stakes
@@ -367,7 +414,8 @@ def classify_intent(query: str, user_classification: str = None) -> QueryIntent:
             confidence=0.9 if len(hs_matches) > 1 else 0.7,
             classification=classification,
             topic=topic,
-            requires_escalation=True,
+            # Only escalate (show steward contact UI) for ACTIVE situations
+            requires_escalation=is_active_situation,
             keywords_matched=hs_matches,
             relevant_articles=relevant_articles
         )
@@ -502,7 +550,100 @@ class HybridRetriever:
         
         # Combine: original chunks first, then related
         return chunks + related_chunks
-    
+
+    def _expand_to_full_article(
+        self,
+        chunks: list,
+        n_results: int = 5
+    ) -> list:
+        """
+        Expand retrieval to include ALL chunks from the "winning" article.
+
+        The "winning" article is defined as the article that appears most
+        frequently in the top results. This ensures the LLM gets complete
+        context for synthesizing an accurate answer.
+
+        This is the "Breadcrumb Retrieval" technique: follow the trail
+        to the full source.
+
+        Args:
+            chunks: Initial retrieved chunks
+            n_results: Number of top results to analyze for winning article
+
+        Returns:
+            Original chunks + all chunks from winning article (up to max limit)
+        """
+        if not CAG_ENABLE_FULL_ARTICLE_EXPANSION or not chunks:
+            return chunks
+
+        # Load all chunks if not cached
+        if not hasattr(self, '_all_chunks') or not self._all_chunks:
+            chunks_file = CHUNKS_DIR / "contract_chunks_enriched.json"
+            if not chunks_file.exists():
+                chunks_file = CHUNKS_DIR / "contract_chunks_smart.json"
+            if not chunks_file.exists():
+                chunks_file = CHUNKS_DIR / "contract_chunks.json"
+
+            if chunks_file.exists():
+                with open(chunks_file, 'r', encoding='utf-8') as f:
+                    self._all_chunks = json.load(f)
+            else:
+                self._all_chunks = []
+
+        if not self._all_chunks:
+            return chunks
+
+        # Count article occurrences in top-N results
+        from collections import Counter
+        top_chunks = chunks[:n_results]
+        article_counts = Counter()
+
+        for chunk in top_chunks:
+            article_num = chunk.get('article_num')
+            if article_num:
+                article_counts[article_num] += 1
+
+        if not article_counts:
+            return chunks
+
+        # Find the "winning" article (most frequent in top results)
+        winning_article, count = article_counts.most_common(1)[0]
+
+        # Only expand if the winning article appears enough times
+        if count < FULL_ARTICLE_MIN_TOP_K_MATCH:
+            return chunks
+
+        # Get chunk IDs already in results
+        existing_ids = {c.get('chunk_id', c.get('citation', '')) for c in chunks}
+
+        # Fetch ALL chunks from the winning article
+        article_chunks = [
+            c for c in self._all_chunks
+            if c.get('article_num') == winning_article
+            and c.get('chunk_id', c.get('citation', '')) not in existing_ids
+        ]
+
+        # Sort by section number for logical ordering
+        article_chunks.sort(key=lambda x: (
+            x.get('section_num') or 999,
+            x.get('subsection') or ''
+        ))
+
+        # Limit total chunks to avoid context overflow
+        available_slots = FULL_ARTICLE_MAX_CHUNKS - len(chunks)
+        if available_slots <= 0:
+            return chunks
+
+        # Mark as full-article context and add
+        for chunk in article_chunks[:available_slots]:
+            chunk_copy = dict(chunk)
+            chunk_copy['similarity'] = 0.4  # Lower score to indicate supplemental
+            chunk_copy['is_full_article_context'] = True
+            chunk_copy['winning_article'] = winning_article
+            chunks.append(chunk_copy)
+
+        return chunks
+
     def retrieve(
         self,
         query: str,
@@ -514,10 +655,13 @@ class HybridRetriever:
     ) -> dict:
         """
         Retrieve relevant context for a query.
-        
-        Uses hybrid search (vector + BM25 with RRF fusion) for better
-        retrieval across union contract terminology variations.
-        
+
+        Uses the "Rosetta Stone" CAG pipeline:
+        1. Hypothesis Layer - LLM predicts section titles (bridges vocabulary gap)
+        2. Hybrid Search - Vector + BM25 with RRF fusion
+        3. Title Boosting - Boost chunks matching hypothesized titles
+        4. Full Article Expansion - Fetch complete article for context
+
         Returns:
             dict with:
             - chunks: List of relevant contract chunks
@@ -525,33 +669,47 @@ class HybridRetriever:
             - intent: Query intent classification
             - escalation_required: Whether to add escalation language
             - query_expansions: List of slang->contract term expansions applied
+            - hypothesis_result: HypothesisResult from pre-retrieval reasoning (NEW)
         """
-        # Expand query with contract terminology
+        # Expand query with contract terminology (static mappings)
         expanded_query, expansions = expand_query(query)
-        
+
         if intent is None:
             # Use expanded query for intent classification
             intent = classify_intent(expanded_query)
-        
+
+        # ===== PHASE 2: HYPOTHESIS LAYER (Rosetta Stone Brain) =====
+        # Use LLM to predict likely section titles before searching
+        hypothesis_result = None
+        if CAG_ENABLE_HYPOTHESIS_LAYER:
+            hypothesis_generator = get_hypothesis_generator()
+            hypothesis_result = hypothesis_generator.generate_sync(query)
+
+            if hypothesis_result.success and hypothesis_result.hypothesized_titles:
+                # Append hypothesized titles to the query for better matching
+                # e.g., "When do I get a break?" -> "When do I get a break? (Relief Periods Rest Intervals Meal Periods)"
+                expanded_query = hypothesis_result.query_expansion
+        # ===== END HYPOTHESIS LAYER =====
+
         result = {
             "chunks": [],
             "wage_info": None,
             "intent": intent,
             "escalation_required": intent.requires_escalation,
-            "query_expansions": expansions  # Track what slang was expanded
+            "query_expansions": expansions,  # Track what slang was expanded
+            "hypothesis_result": hypothesis_result  # Track hypothesis for metrics
         }
-        
+
         # Use hybrid search (vector + BM25 with RRF)
-        # Vector search is weighted higher (1.2) to preserve semantic matching
-        # while BM25 (0.8) helps with exact terminology
+        # Weights configured in config.py (default: equal 1.0/1.0 for balanced fusion)
         if use_hybrid:
             self._ensure_hybrid_searcher()
             chunks = self.hybrid_searcher.search_to_chunks(
-                query=expanded_query,  # Use expanded query for search
+                query=expanded_query,  # Use expanded query with hypotheses
                 n_results=n_results,
                 use_expansion=True,
-                vector_weight=1.2,
-                keyword_weight=0.8,
+                vector_weight=HYBRID_VECTOR_WEIGHT,
+                keyword_weight=HYBRID_KEYWORD_WEIGHT,
                 boost_articles=intent.relevant_articles
             )
         else:
@@ -559,18 +717,32 @@ class HybridRetriever:
             if self.vector_store is None:
                 self._ensure_hybrid_searcher()
             chunks = self.vector_store.search(
-                query=expanded_query,  # Use expanded query for search
+                query=expanded_query,  # Use expanded query with hypotheses
                 n_results=n_results,
                 classification=intent.classification,
                 topic=intent.topic,  # Pass detected topic for boosting
                 boost_articles=intent.relevant_articles
             )
-        
+
+        # ===== PHASE 2: TITLE BOOSTING =====
+        # Boost chunks whose article_title matches hypothesized titles
+        if hypothesis_result and hypothesis_result.success:
+            chunks = apply_title_boosting(
+                chunks,
+                hypothesis_result.hypothesized_titles
+            )
+        # ===== END TITLE BOOSTING =====
+
+        # ===== PHASE 3: FULL ARTICLE EXPANSION =====
+        # Fetch all chunks from the "winning" article for complete context
+        chunks = self._expand_to_full_article(chunks, n_results)
+        # ===== END FULL ARTICLE EXPANSION =====
+
         # Expand context: fetch related sections from the same articles
         chunks = self._expand_with_related_sections(chunks, n_results)
-        
+
         result["chunks"] = chunks
-        
+
         # If wage query and we have classification, also do wage lookup
         if intent.intent_type == "wage" and intent.classification:
             wage_info = self.lookup_wage(
@@ -579,7 +751,7 @@ class HybridRetriever:
                 months_employed=months_employed
             )
             result["wage_info"] = wage_info
-        
+
         return result
 
 
