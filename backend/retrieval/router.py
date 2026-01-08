@@ -20,13 +20,19 @@ from backend.config import (
     HYBRID_VECTOR_WEIGHT, HYBRID_KEYWORD_WEIGHT,
     CAG_ENABLE_HYPOTHESIS_LAYER, CAG_ENABLE_FULL_ARTICLE_EXPANSION,
     CAG_ENABLE_TITLE_BOOSTING, FULL_ARTICLE_MAX_CHUNKS,
-    FULL_ARTICLE_MIN_TOP_K_MATCH, CHUNKS_DIR
+    FULL_ARTICLE_MIN_TOP_K_MATCH, CHUNKS_DIR,
+    CAG_ENABLE_QUERY_INTERPRETER, MULTI_QUERY_MAX_SEARCHES,
+    MULTI_QUERY_RESULTS_PER_SEARCH, MULTI_QUERY_TOTAL_RESULTS
 )
 from backend.retrieval.vector_store import ContractVectorStore
 from backend.retrieval.hypothesis import (
     get_hypothesis_generator,
     apply_title_boosting,
     HypothesisResult
+)
+from backend.retrieval.query_interpreter import (
+    get_interpreter,
+    QueryInterpretation
 )
 
 
@@ -471,11 +477,11 @@ class HybridRetriever:
     def _ensure_hybrid_searcher(self):
         """Lazy-initialize the hybrid searcher."""
         if self.hybrid_searcher is None:
+            # Create vector store if not provided
+            if self.vector_store is None:
+                self.vector_store = ContractVectorStore()
             from backend.retrieval.hybrid_search import HybridSearcher
             self.hybrid_searcher = HybridSearcher(vector_store=self.vector_store)
-            # Keep reference to vector store from hybrid searcher
-            if self.vector_store is None:
-                self.vector_store = self.hybrid_searcher.vector_store
     
     def lookup_wage(
         self, 
@@ -753,6 +759,183 @@ class HybridRetriever:
             result["wage_info"] = wage_info
 
         return result
+
+    def multi_angle_retrieve(
+        self,
+        query: str,
+        intent: QueryIntent = None,
+        n_results: int = 5,
+        hours_worked: int = 0,
+        months_employed: int = 0,
+    ) -> dict:
+        """
+        Retrieve using multiple search angles from query interpretation.
+
+        This is the Phase 4 enhancement that:
+        1. Uses LLM to deeply interpret the query
+        2. Generates multiple search queries (original, hypothetical answers, alternatives)
+        3. Runs retrieval for each angle
+        4. Merges and deduplicates results using score fusion
+        5. Optionally fetches explicit article references directly
+
+        Args:
+            query: User's question
+            intent: Pre-classified intent (optional)
+            n_results: Number of results to return
+            hours_worked: For wage lookups
+            months_employed: For wage lookups
+
+        Returns:
+            dict with chunks, interpretation, and metadata
+        """
+        if not CAG_ENABLE_QUERY_INTERPRETER:
+            # Fall back to standard retrieval
+            return self.retrieve(
+                query=query,
+                intent=intent,
+                n_results=n_results,
+                hours_worked=hours_worked,
+                months_employed=months_employed
+            )
+
+        # ===== PHASE 4: QUERY INTERPRETATION =====
+        interpreter = get_interpreter()
+        interpretation = interpreter.interpret(query)
+
+        # Get all search queries to try
+        search_queries = interpreter.get_all_search_queries(interpretation)
+
+        # Limit to configured max
+        search_queries = search_queries[:MULTI_QUERY_MAX_SEARCHES]
+
+        # Ensure vector store is initialized for direct HyDE searches
+        self._ensure_hybrid_searcher()
+
+        # ===== MULTI-ANGLE RETRIEVAL =====
+        all_chunks = []
+        chunk_scores = {}  # chunk_id -> best score
+
+        # Add explicit article lookups first (highest priority)
+        if interpretation.explicit_articles:
+            self._load_all_chunks()
+            for article_num in interpretation.explicit_articles:
+                article_chunks = [
+                    c for c in self._all_chunks
+                    if c.get('article_num') == article_num
+                ]
+                # Sort by section number
+                article_chunks.sort(key=lambda x: (
+                    x.get('section_num') or 0,
+                    x.get('subsection') or ''
+                ))
+                # Add with high score
+                for chunk in article_chunks[:MULTI_QUERY_RESULTS_PER_SEARCH]:
+                    chunk_id = chunk.get('chunk_id', chunk.get('citation', ''))
+                    chunk_copy = dict(chunk)
+                    chunk_copy['similarity'] = 0.95  # High score for explicit reference
+                    chunk_copy['search_angle'] = f"explicit_article_{article_num}"
+
+                    if chunk_id not in chunk_scores:
+                        chunk_scores[chunk_id] = chunk_copy
+                        all_chunks.append(chunk_copy)
+                    elif chunk_copy['similarity'] > chunk_scores[chunk_id].get('similarity', 0):
+                        # Update with better score
+                        idx = next(i for i, c in enumerate(all_chunks)
+                                   if c.get('chunk_id', c.get('citation', '')) == chunk_id)
+                        all_chunks[idx] = chunk_copy
+                        chunk_scores[chunk_id] = chunk_copy
+
+        # Run retrieval for each search angle
+        for i, search_query in enumerate(search_queries):
+            # For hypothetical answers (HyDE), use direct vector search
+            # This avoids score distortion from hybrid fusion
+            is_hypothetical = i > 0 and i <= len(interpretation.hypothetical_answers)
+
+            if is_hypothetical and self.vector_store:
+                # Direct vector search for hypothetical answers
+                angle_chunks = self.vector_store.search(
+                    query=search_query,
+                    n_results=MULTI_QUERY_RESULTS_PER_SEARCH
+                )
+                angle_result = {"chunks": angle_chunks}
+            else:
+                # Use standard retrieval for original query and search queries
+                angle_result = self.retrieve(
+                    query=search_query,
+                    intent=intent,
+                    n_results=MULTI_QUERY_RESULTS_PER_SEARCH,
+                    hours_worked=hours_worked,
+                    months_employed=months_employed,
+                    use_hybrid=True
+                )
+
+            # Merge chunks with score tracking
+            for chunk in angle_result.get('chunks', []):
+                chunk_id = chunk.get('chunk_id', chunk.get('citation', ''))
+                chunk_copy = dict(chunk)
+                chunk_copy['search_angle'] = f"angle_{i}_{search_query[:30]}"
+
+                if chunk_id not in chunk_scores:
+                    chunk_scores[chunk_id] = chunk_copy
+                    all_chunks.append(chunk_copy)
+                elif chunk_copy.get('similarity', 0) > chunk_scores[chunk_id].get('similarity', 0):
+                    # Update with better score
+                    idx = next((i for i, c in enumerate(all_chunks)
+                                if c.get('chunk_id', c.get('citation', '')) == chunk_id), None)
+                    if idx is not None:
+                        all_chunks[idx] = chunk_copy
+                        chunk_scores[chunk_id] = chunk_copy
+
+        # Sort by similarity and limit results
+        all_chunks.sort(key=lambda x: x.get('similarity', 0), reverse=True)
+        final_chunks = all_chunks[:MULTI_QUERY_TOTAL_RESULTS]
+
+        # Apply full article expansion on merged results
+        final_chunks = self._expand_to_full_article(final_chunks, n_results)
+        final_chunks = self._expand_with_related_sections(final_chunks)
+
+        # Get intent if not provided (use expanded query from interpretation)
+        if intent is None:
+            expanded_query = " ".join([query] + interpretation.key_concepts)
+            intent = classify_intent(expanded_query)
+
+        # Build result
+        result = {
+            "chunks": final_chunks,
+            "wage_info": None,
+            "intent": intent,
+            "escalation_required": intent.requires_escalation,
+            "query_expansions": [],
+            "interpretation": interpretation,  # Include interpretation for debugging
+            "search_angles_used": len(search_queries),
+            "explicit_articles_fetched": interpretation.explicit_articles,
+        }
+
+        # If wage query and we have classification, also do wage lookup
+        if intent.intent_type == "wage" and intent.classification:
+            wage_info = self.lookup_wage(
+                classification=intent.classification,
+                hours_worked=hours_worked,
+                months_employed=months_employed
+            )
+            result["wage_info"] = wage_info
+
+        return result
+
+    def _load_all_chunks(self):
+        """Load all chunks for direct article lookup."""
+        if not hasattr(self, '_all_chunks') or not self._all_chunks:
+            chunks_file = CHUNKS_DIR / "contract_chunks_enriched.json"
+            if not chunks_file.exists():
+                chunks_file = CHUNKS_DIR / "contract_chunks_smart.json"
+            if not chunks_file.exists():
+                chunks_file = CHUNKS_DIR / "contract_chunks.json"
+
+            if chunks_file.exists():
+                with open(chunks_file, 'r', encoding='utf-8') as f:
+                    self._all_chunks = json.load(f)
+            else:
+                self._all_chunks = []
 
 
 def main():

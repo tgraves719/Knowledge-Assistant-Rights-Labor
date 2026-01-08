@@ -424,8 +424,9 @@ async def query_contract(request: QueryRequest):
     # Classify intent with user's classification for role-based boosting
     intent = classify_intent(request.question, user_classification=effective_classification)
 
-    # Retrieve relevant chunks and wage info
-    retrieval_result = retriever.retrieve(
+    # Retrieve relevant chunks and wage info using multi-angle retrieval
+    # This uses deep query interpretation for better semantic matching
+    retrieval_result = retriever.multi_angle_retrieve(
         query=request.question,
         intent=intent,
         n_results=5,
@@ -445,6 +446,14 @@ async def query_contract(request: QueryRequest):
     if hypothesis_result and hypothesis_result.success:
         hypothesis_titles = hypothesis_result.hypothesized_titles
         hypothesis_latency_ms = hypothesis_result.latency_ms
+
+    # Extract Phase 4: Query Interpretation metrics
+    interpretation = retrieval_result.get("interpretation")
+    interpretation_latency_ms = None
+    search_angles_used = retrieval_result.get("search_angles_used", 1)
+    explicit_articles = retrieval_result.get("explicit_articles_fetched", [])
+    if interpretation and interpretation.success:
+        interpretation_latency_ms = interpretation.latency_ms
 
     # Check if full article expansion was triggered
     full_article_expanded = any(c.get('is_full_article_context') for c in chunks)
@@ -677,11 +686,16 @@ async def get_article(article_num: int):
 
 
 @app.get("/api/section/{article_num}/{section_num}", response_model=SectionResponse)
-async def get_section(article_num: int, section_num: int):
+async def get_section(article_num: int, section_num: int, subsection: str = None):
     """
     Get a specific section from an article.
 
     Used for citation popover previews.
+
+    Args:
+        article_num: The article number
+        section_num: The section number
+        subsection: Optional subsection (e.g., 'a', 'b', 'c') for filtering
     """
     chunks_file = DATA_DIR / "chunks" / "contract_chunks.json"
 
@@ -702,6 +716,16 @@ async def get_section(article_num: int, section_num: int):
             status_code=404,
             detail=f"Article {article_num}, Section {section_num} not found"
         )
+
+    # If subsection specified, filter to just that subsection
+    if subsection:
+        subsection_chunks = [
+            c for c in matching_chunks
+            if (c.get('subsection') or '').lower() == subsection.lower()
+        ]
+        if subsection_chunks:
+            matching_chunks = subsection_chunks
+        # If subsection not found, fall back to showing all subsections
 
     # Use the first matching chunk (there may be subsections)
     chunk = matching_chunks[0]

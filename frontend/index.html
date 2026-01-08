@@ -121,6 +121,7 @@
         .dark #article-content, .dark #article-content-mobile { background-color: #1a202c; }
         .dark #article-detail h1, .dark #article-detail-mobile h1 { color: #E8B84A !important; }
         .dark #article-detail h2, .dark #article-detail-mobile h2 { color: #D4A029 !important; }
+        .dark #article-detail h3, .dark #article-detail-mobile h3 { color: #D4A029 !important; }
         .dark #article-detail .text-slate-700, .dark #article-detail-mobile .text-slate-700 { color: #c7d2e8 !important; }
         .dark #article-detail .text-ufcw-blue, .dark #article-detail-mobile .text-ufcw-blue { color: #E8B84A !important; }
         .dark #article-detail .border-slate-200, .dark #article-detail-mobile .border-slate-200 { border-color: #374151 !important; }
@@ -1149,11 +1150,59 @@
             }
         }
 
+        function renderMarkdown(text) {
+            // Simple markdown renderer for contract content
+            // Process markdown BEFORE escaping, then escape remaining content
+
+            // First, identify and protect markdown patterns
+            const placeholders = [];
+            let processed = text;
+
+            // Convert **bold** to placeholder
+            processed = processed.replace(/\*\*(.+?)\*\*/g, (match, content) => {
+                const idx = placeholders.length;
+                placeholders.push(`<strong>${escapeHtml(content)}</strong>`);
+                return `%%PH${idx}%%`;
+            });
+
+            // Convert ## Headings to placeholder
+            processed = processed.replace(/^## (.+)$/gm, (match, content) => {
+                const idx = placeholders.length;
+                placeholders.push(`<h3 class="text-base font-semibold text-slate-800 mt-4 mb-2">${escapeHtml(content)}</h3>`);
+                return `%%PH${idx}%%`;
+            });
+
+            // Escape the remaining text
+            processed = escapeHtml(processed);
+
+            // Restore placeholders
+            placeholders.forEach((html, idx) => {
+                processed = processed.replace(`%%PH${idx}%%`, html);
+            });
+
+            // Convert numbered lists (1. 2. etc at start of line) - after escaping
+            processed = processed.replace(/^(\d+)\. (.+)$/gm, '<div class="ml-4 mb-1"><span class="font-medium">$1.</span> $2</div>');
+
+            // Convert bullet points
+            processed = processed.replace(/^[-•] (.+)$/gm, '<div class="ml-4 mb-1">• $1</div>');
+
+            return processed;
+        }
+
         function renderArticleContent(data) {
             const detail = document.getElementById('article-detail');
             const detailMobile = document.getElementById('article-detail-mobile');
             const textSize = preferences.textSize || 'medium';
             const textClass = textSize === 'small' ? 'text-sm' : textSize === 'large' ? 'text-base' : 'text-sm';
+
+            // Generate section ID that includes subsection/part info
+            const getSectionId = (section) => {
+                let id = `section-${section.section_num}`;
+                if (section.subsection) {
+                    id += `-${section.subsection}`;
+                }
+                return id;
+            };
 
             const articleHTML = `
                 <article class="max-w-none">
@@ -1163,12 +1212,12 @@
                     </header>
 
                     ${data.sections.map(section => `
-                        <section id="section-${section.section_num}" class="mb-6 pb-6 border-b border-slate-100 last:border-0 scroll-mt-4">
+                        <section id="${getSectionId(section)}" class="mb-6 pb-6 border-b border-slate-100 last:border-0 scroll-mt-4">
                             <h2 class="text-base font-semibold text-slate-800 mb-2">
                                 Section ${section.section_num}${section.subsection ? ` (${section.subsection})` : ''}
                             </h2>
                             ${section.summary ? `<p class="text-xs text-slate-500 italic mb-3">${escapeHtml(section.summary)}</p>` : ''}
-                            <div class="${textClass} text-slate-700 leading-relaxed whitespace-pre-wrap">${escapeHtml(section.content)}</div>
+                            <div class="${textClass} text-slate-700 leading-relaxed whitespace-pre-wrap">${renderMarkdown(section.content)}</div>
                         </section>
                     `).join('')}
                 </article>
@@ -1178,7 +1227,7 @@
             if (detailMobile) detailMobile.innerHTML = articleHTML;
         }
 
-        async function navigateToArticle(articleNum, sectionNum = null) {
+        async function navigateToArticle(articleNum, sectionNum = null, partNum = null) {
             setActiveTab('contract');
             await loadArticle(articleNum);
 
@@ -1189,12 +1238,24 @@
                     const container = isMobile
                         ? document.getElementById('article-detail-mobile')
                         : document.getElementById('article-detail');
-                    const sectionEl = container?.querySelector(`#section-${sectionNum}`);
 
-                    if (sectionEl) {
-                        sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        sectionEl.classList.add('section-highlight');
-                        setTimeout(() => sectionEl.classList.remove('section-highlight'), 2000);
+                    // Try to find specific part first, then section
+                    let targetEl = null;
+                    if (partNum) {
+                        // Try different ID formats for parts
+                        targetEl = container?.querySelector(`#section-${sectionNum}-${partNum}`);
+                        if (!targetEl) {
+                            targetEl = container?.querySelector(`#part-${sectionNum}-${partNum}`);
+                        }
+                    }
+                    if (!targetEl) {
+                        targetEl = container?.querySelector(`#section-${sectionNum}`);
+                    }
+
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        targetEl.classList.add('section-highlight');
+                        setTimeout(() => targetEl.classList.remove('section-highlight'), 2000);
                     }
                 }, 100);
             }
@@ -1205,31 +1266,41 @@
         // =============================================================================
 
         function parseCitations(text) {
-            // Pattern matches: Article N, Section M (with optional bold markers)
-            const pattern = /(\*{0,2})(Article\s+(\d+))(?:,?\s*Section\s+(\d+))?(\*{0,2})/gi;
+            // Pattern matches citation formats:
+            // - Article N, Section M, Part X
+            // - Article N, Section M(a)  (parenthetical subsection)
+            // With optional bold markers
+            const pattern = /(\*{0,2})(Article\s+(\d+))(?:,?\s*Section\s+(\d+)(?:\(([a-z])\))?)?(?:,?\s*Part\s+([\w\-]+))?(\*{0,2})/gi;
 
-            return text.replace(pattern, (match, boldStart, fullArticle, articleNum, sectionNum, boldEnd) => {
-                const display = sectionNum
-                    ? `Article ${articleNum}, Section ${sectionNum}`
-                    : `Article ${articleNum}`;
+            return text.replace(pattern, (match, boldStart, fullArticle, articleNum, sectionNum, parenSub, partNum, boldEnd) => {
+                // Subsection can come from either parenthetical format or "Part X" format
+                const subsection = parenSub || partNum;
 
-                return `<a href="#" class="citation-link" onclick="handleCitationClick(event, ${articleNum}, ${sectionNum || 'null'})">${boldStart}${display}${boldEnd}</a>`;
+                let display = `Article ${articleNum}`;
+                if (sectionNum) {
+                    display += `, Section ${sectionNum}`;
+                    if (parenSub) display += `(${parenSub})`;
+                }
+                if (partNum && !parenSub) display += `, Part ${partNum}`;
+
+                const subArg = subsection ? `'${subsection}'` : 'null';
+                return `<a href="#" class="citation-link" onclick="handleCitationClick(event, ${articleNum}, ${sectionNum || 'null'}, ${subArg})">${boldStart}${display}${boldEnd}</a>`;
             });
         }
 
-        function handleCitationClick(event, articleNum, sectionNum) {
+        function handleCitationClick(event, articleNum, sectionNum, partNum = null) {
             event.preventDefault();
             event.stopPropagation();
 
             const style = preferences.citationStyle || 'popover';
             if (style === 'navigate') {
-                navigateToArticle(articleNum, sectionNum);
+                navigateToArticle(articleNum, sectionNum, partNum);
             } else {
-                showPopover(articleNum, sectionNum, event.target);
+                showPopover(articleNum, sectionNum, partNum, event.target);
             }
         }
 
-        async function showPopover(articleNum, sectionNum, anchorEl) {
+        async function showPopover(articleNum, sectionNum, partNum, anchorEl) {
             const popover = document.getElementById('citation-popover');
             const titleEl = document.getElementById('popover-title');
             const subtitleEl = document.getElementById('popover-subtitle');
@@ -1237,12 +1308,13 @@
             const textEl = document.getElementById('popover-text');
             const summaryEl = document.getElementById('popover-summary');
 
-            currentPopover = { articleNum, sectionNum };
+            currentPopover = { articleNum, sectionNum, partNum };
 
             // Set title
-            titleEl.textContent = sectionNum
-                ? `Article ${articleNum}, Section ${sectionNum}`
-                : `Article ${articleNum}`;
+            let title = `Article ${articleNum}`;
+            if (sectionNum) title += `, Section ${sectionNum}`;
+            if (partNum) title += `, Part ${partNum}`;
+            titleEl.textContent = title;
             subtitleEl.textContent = '';
 
             // Show loading
@@ -1265,24 +1337,59 @@
 
             // Fetch content
             try {
-                const endpoint = sectionNum
-                    ? `${API_BASE}/api/section/${articleNum}/${sectionNum}`
-                    : `${API_BASE}/api/article/${articleNum}`;
+                let data;
+                let usedFallback = false;
 
-                const res = await fetch(endpoint);
-                const data = await res.json();
+                // Try to fetch specific section first
+                if (sectionNum) {
+                    // Build URL with optional subsection query param
+                    let sectionUrl = `${API_BASE}/api/section/${articleNum}/${sectionNum}`;
+                    if (partNum) {
+                        sectionUrl += `?subsection=${encodeURIComponent(partNum)}`;
+                    }
+                    const res = await fetch(sectionUrl);
+                    if (res.ok) {
+                        data = await res.json();
+                    } else {
+                        // Section not found - fall back to article
+                        console.log(`Section ${sectionNum} not found, falling back to article ${articleNum}`);
+                        const articleRes = await fetch(`${API_BASE}/api/article/${articleNum}`);
+                        if (articleRes.ok) {
+                            data = await articleRes.json();
+                            usedFallback = true;
+                        }
+                    }
+                } else {
+                    // Just fetch the article
+                    const res = await fetch(`${API_BASE}/api/article/${articleNum}`);
+                    if (res.ok) {
+                        data = await res.json();
+                    }
+                }
+
+                if (!data) {
+                    textEl.textContent = 'Article not found in contract.';
+                    loadingEl.classList.add('hidden');
+                    textEl.classList.remove('hidden');
+                    return;
+                }
 
                 subtitleEl.textContent = data.article_title || '';
 
-                if (sectionNum) {
+                if (sectionNum && !usedFallback) {
                     textEl.textContent = data.content || 'Content not found.';
                     summaryEl.textContent = data.summary || '';
                 } else {
+                    // Show article preview (either requested or as fallback)
                     const firstSection = data.sections?.[0];
                     if (firstSection) {
                         const preview = firstSection.content.substring(0, 400);
                         textEl.textContent = preview + (firstSection.content.length > 400 ? '...' : '');
-                        summaryEl.textContent = `${data.sections.length} sections total`;
+                        if (usedFallback) {
+                            summaryEl.textContent = `Section ${sectionNum} not found. Showing Article ${articleNum} (${data.sections.length} sections).`;
+                        } else {
+                            summaryEl.textContent = `${data.sections.length} sections total`;
+                        }
                     }
                 }
 
@@ -1303,7 +1410,7 @@
 
         function expandToContract() {
             hidePopover();
-            navigateToArticle(currentPopover.articleNum, currentPopover.sectionNum);
+            navigateToArticle(currentPopover.articleNum, currentPopover.sectionNum, currentPopover.partNum);
         }
 
         // Close popover when clicking outside
@@ -1651,12 +1758,17 @@
                     citationsHtml = `
                         <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-slate-200">
                             ${metadata.citations.map(c => {
-                                const match = c.match(/Article\s+(\d+)(?:,?\s*Section\s+(\d+))?/i);
+                                // Match Article, Section (with optional parenthetical), and optional Part
+                                const match = c.match(/Article\s+(\d+)(?:,?\s*Section\s+(\d+)(?:\(([a-z])\))?)?(?:,?\s*Part\s+([\w\-]+))?/i);
                                 const artNum = match ? match[1] : null;
                                 const secNum = match ? match[2] : null;
+                                const parenSub = match ? match[3] : null;
+                                const partNum = match ? match[4] : null;
+                                const subsection = parenSub || partNum;
+                                const subArg = subsection ? `'${subsection}'` : 'null';
                                 return `
                                 <button class="citation-badge inline-flex items-center gap-1 bg-ufcw-blue/10 text-ufcw-blue text-[11px] font-medium px-2 py-1 rounded-md hover:bg-ufcw-blue/20 transition-colors cursor-pointer"
-                                        onclick="handleCitationClick(event, ${artNum}, ${secNum || 'null'})">
+                                        onclick="handleCitationClick(event, ${artNum}, ${secNum || 'null'}, ${subArg})">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                     </svg>
