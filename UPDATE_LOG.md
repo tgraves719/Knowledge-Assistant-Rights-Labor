@@ -1,5 +1,71 @@
 # Karl Update Log
 
+## v0.7.5 - Benchmark & Observability Update (January 2025)
+
+### Overview
+Updated benchmark to test full retrieval pipeline and added observability metrics to API responses. Results show **+20 point accuracy improvement** when using the complete CAG pipeline.
+
+---
+
+### Changes
+
+#### Benchmark Updated to Full Pipeline
+The `evaluate.py` script now uses `multi_angle_retrieve()` instead of basic `retrieve()`, testing the complete CAG pipeline including the reranker.
+
+**File**: `backend/evaluate.py` (line 99)
+
+#### New Benchmark Results
+
+| Metric | Before (v0.7) | After (v0.7.5) | Change |
+|--------|---------------|----------------|--------|
+| Overall | 39/55 (70.9%) | 50/55 (90.9%) | **+20 pts** |
+| Retrieval Accuracy | 72.7% | 92.7% | **+20 pts** |
+| Wage Lookup | 100% | 100% | - |
+| Escalation Detection | 66.7% | 66.7% | - |
+
+#### Category Improvements
+
+Categories that jumped to 100%:
+- `classification`: 0% → 100%
+- `time_cards`: 0% → 100%
+- `union`: 0% → 100%
+- `seniority`: 33% → 100%
+- `safety`: 50% → 100%
+- `breaks`: 50% → 100%
+- `vacation`: 67% → 100%
+
+#### Remaining Failures (5 tests)
+
+| Test | Issue |
+|------|-------|
+| Wage: Courtesy Clerk 36mo | Expects "Appendix A" citation |
+| Wage: Head Clerk rate | Expects "Appendix A" citation |
+| Benefits: 401k plan | Article 39 not retrieved |
+| High Stakes: Harassment | Escalation not triggered |
+| Dress Code: Shoe color | LOU not in chunks |
+
+---
+
+### API Observability Metrics
+
+Added new metrics to `QueryResponse` for debugging and monitoring:
+
+```python
+# Reranker metrics (Phase 5)
+reranker_latency_ms: Optional[float]      # Time spent in LLM reranking
+reranker_position_changes: Optional[int]  # Chunks that moved position
+
+# Interpreter metrics (Phase 4)
+interpretation_latency_ms: Optional[float] # Time spent interpreting query
+search_angles_used: Optional[int]          # Number of search queries tried
+```
+
+**Files Modified**:
+- `backend/api.py` - Added metrics to QueryResponse model and wired up extraction
+
+---
+---
+
 ## v0.7 - LLM Reranker (January 2025)
 
 ### Overview
@@ -107,8 +173,8 @@ Queries that failed in benchmark but succeed via API:
 
 ### Next Steps (Planned)
 
-- [ ] Update `evaluate.py` to use `multi_angle_retrieve()` for accurate benchmarking
-- [ ] Add reranker metrics to API response
+- [x] Update `evaluate.py` to use `multi_angle_retrieve()` for accurate benchmarking *(Done in v0.7.5)*
+- [x] Add reranker metrics to API response *(Done in v0.7.5)*
 - [ ] Consider caching reranker scores for repeated queries
 - [ ] Tune score combination weights based on evaluation data
 

@@ -96,7 +96,7 @@ def evaluate_test_case(
     if classification:
         intent.classification = classification
     
-    result = retriever.retrieve(
+    result = retriever.multi_angle_retrieve(
         query=question,
         intent=intent,
         n_results=5

@@ -146,6 +146,12 @@ class QueryResponse(BaseModel):
     hypothesis_latency_ms: Optional[float] = Field(None, description="Latency of hypothesis generation in ms")
     full_article_expanded: Optional[bool] = Field(None, description="Whether full article expansion was triggered")
     winning_article: Optional[int] = Field(None, description="Article number that triggered full expansion")
+    # Reranker metrics (Phase 5)
+    reranker_latency_ms: Optional[float] = Field(None, description="Latency of LLM reranking in ms")
+    reranker_position_changes: Optional[int] = Field(None, description="Number of chunks that changed position after reranking")
+    # Interpreter metrics (Phase 4)
+    interpretation_latency_ms: Optional[float] = Field(None, description="Latency of query interpretation in ms")
+    search_angles_used: Optional[int] = Field(None, description="Number of search angles tried")
 
 
 class WageResponse(BaseModel):
@@ -455,6 +461,14 @@ async def query_contract(request: QueryRequest):
     if interpretation and interpretation.success:
         interpretation_latency_ms = interpretation.latency_ms
 
+    # Extract Phase 5: Reranker metrics
+    reranker_result = retrieval_result.get("reranker_result")
+    reranker_latency_ms = None
+    reranker_position_changes = None
+    if reranker_result and reranker_result.success:
+        reranker_latency_ms = reranker_result.latency_ms
+        reranker_position_changes = reranker_result.position_changes
+
     # Check if full article expansion was triggered
     full_article_expanded = any(c.get('is_full_article_context') for c in chunks)
     winning_article = next(
@@ -540,7 +554,13 @@ async def query_contract(request: QueryRequest):
         hypothesis_titles=hypothesis_titles,
         hypothesis_latency_ms=hypothesis_latency_ms,
         full_article_expanded=full_article_expanded,
-        winning_article=winning_article
+        winning_article=winning_article,
+        # Reranker metrics (Phase 5)
+        reranker_latency_ms=reranker_latency_ms,
+        reranker_position_changes=reranker_position_changes,
+        # Interpreter metrics (Phase 4)
+        interpretation_latency_ms=interpretation_latency_ms,
+        search_angles_used=search_angles_used
     )
 
 
