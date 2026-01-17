@@ -78,3 +78,15 @@ MULTI_QUERY_TOTAL_RESULTS = 10         # Total unique results after merging
 # Manifests directory for article titles
 MANIFESTS_DIR = DATA_DIR / "manifests"
 
+# =============================================================================
+# LLM Reranker Configuration (Phase 5)
+# =============================================================================
+
+CAG_ENABLE_RERANKER = True             # Enable LLM-based reranking
+RERANKER_MODEL = "gemini-2.0-flash"    # Same model as interpreter
+RERANKER_TIMEOUT_MS = 10000            # 10 second timeout
+RERANKER_ORIGINAL_WEIGHT = 0.3         # Weight for original similarity score
+RERANKER_LLM_WEIGHT = 0.7              # Weight for LLM relevance score
+RERANKER_MAX_CHUNKS = 15               # Max chunks to rerank per call
+RERANKER_CONTENT_TRUNCATE = 500        # Max chars per chunk in prompt
+

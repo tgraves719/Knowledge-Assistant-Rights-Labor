@@ -37,6 +37,8 @@ ENV/
 *.swp
 *.swo
 *~
+.vs/
+.claude/
 
 # OS
 .DS_Store

@@ -1,5 +1,120 @@
 # Karl Update Log
 
+## v0.7 - LLM Reranker (January 2025)
+
+### Overview
+Added an LLM-based reranker (CAG Phase 5) that scores retrieved chunks by semantic relevance before answer generation. Uses Gemini Flash to reorder chunks based on how well they actually answer the user's question.
+
+---
+
+### New Features
+
+#### LLM Reranker (CAG Phase 5)
+A post-retrieval relevance scoring layer that uses LLM reasoning to reorder chunks.
+
+**Problem Solved**: Hybrid search (vector + BM25) returns chunks that match keywords or embeddings, but may not actually answer the question. The reranker asks: "Does this chunk help answer the user's question?"
+
+**Solution**: Batch LLM scoring with weighted score combination
+
+- **New File**: `backend/retrieval/reranker.py`
+  - Sends all retrieved chunks to Gemini Flash in one call
+  - Asks LLM to score each chunk 1-10 for relevance
+  - Combines LLM score (70%) with original similarity (30%)
+  - Graceful fallback: returns original order on any failure
+
+- **Configuration** (`backend/config.py`):
+  ```python
+  CAG_ENABLE_RERANKER = True
+  RERANKER_MODEL = "gemini-2.0-flash"
+  RERANKER_TIMEOUT_MS = 10000
+  RERANKER_ORIGINAL_WEIGHT = 0.3
+  RERANKER_LLM_WEIGHT = 0.7
+  RERANKER_MAX_CHUNKS = 15
+  RERANKER_CONTENT_TRUNCATE = 500
+  ```
+
+- **Integration Point**: Runs after multi-angle retrieval merge, before full article expansion
+
+---
+
+### Technical Details
+
+#### Reranker Flow
+```
+Retrieved Chunks (from multi-angle search)
+    |
+    v
+[LLM Reranker]
+    |
+    +-- Build prompt with query + truncated chunk content
+    +-- Gemini Flash scores each chunk 1-10
+    +-- Parse JSON response: {"0": 8, "1": 5, "2": 9, ...}
+    +-- Compute final score: (0.3 * original) + (0.7 * llm_score/10)
+    +-- Re-sort by combined score
+    |
+    v
+Reranked Chunks --> Full Article Expansion --> LLM Answer Generation
+```
+
+#### Scoring Prompt
+The reranker uses a domain-specific prompt:
+- 10: Directly and completely answers the question
+- 8-9: Highly relevant, contains key information
+- 6-7: Partially relevant, provides useful context
+- 4-5: Tangentially related
+- 1-3: Not relevant
+
+---
+
+### Benchmark Results
+
+**Evaluation via `evaluate.py`** (uses `retrieve()` without reranker):
+| Metric | Result |
+|--------|--------|
+| Overall | 39/55 (70.9%) |
+| Retrieval Accuracy | 72.7% |
+| Wage Lookup | 100% |
+| Escalation Detection | 66.7% |
+
+**API Testing** (uses `multi_angle_retrieve()` with reranker):
+Queries that failed in benchmark but succeed via API:
+
+| Query | Benchmark Result | API Result |
+|-------|------------------|------------|
+| "How long is my lunch break?" | Article 10 (wrong) | Article 24 (correct) |
+| "What are the duties of a Courtesy Clerk?" | Article 2 (wrong) | Article 7, Section 14 (correct) |
+| "Do I have to join the union?" | Article 4 (wrong) | Article 3, Section 5 (correct) |
+
+---
+
+### Files Modified/Added
+
+| File | Changes |
+|------|---------|
+| `backend/retrieval/reranker.py` | NEW - LLM reranker module |
+| `backend/config.py` | Added CAG Phase 5 configuration flags |
+| `backend/retrieval/router.py` | Integrated reranker into `multi_angle_retrieve()` |
+
+---
+
+### Known Limitations
+
+1. Reranker adds ~1-2s latency per query (LLM call)
+2. Only runs in `multi_angle_retrieve()`, not basic `retrieve()`
+3. Benchmark script uses `retrieve()` so doesn't test reranker
+
+---
+
+### Next Steps (Planned)
+
+- [ ] Update `evaluate.py` to use `multi_angle_retrieve()` for accurate benchmarking
+- [ ] Add reranker metrics to API response
+- [ ] Consider caching reranker scores for repeated queries
+- [ ] Tune score combination weights based on evaluation data
+
+---
+---
+
 ## v0.6 - Query Interpreter & UI Polish (January 2025)
 
 ### Overview

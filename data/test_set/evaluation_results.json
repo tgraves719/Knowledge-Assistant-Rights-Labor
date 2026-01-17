@@ -1,16 +1,16 @@
 {
   "metrics": {
     "total_tests": 55,
-    "passed": 43,
-    "pass_rate": 0.7818181818181819,
-    "retrieval_accuracy": 0.7818181818181819,
+    "passed": 39,
+    "pass_rate": 0.7090909090909091,
+    "retrieval_accuracy": 0.7272727272727273,
     "wage_accuracy": 1.0,
-    "escalation_accuracy": 1.0,
+    "escalation_accuracy": 0.6666666666666666,
     "category_breakdown": {
       "wages": {
-        "passed": 6,
+        "passed": 4,
         "total": 6,
-        "rate": 1.0
+        "rate": 0.6666666666666666
       },
       "overtime": {
         "passed": 4,
@@ -63,9 +63,9 @@
         "rate": 0.0
       },
       "union": {
-        "passed": 1,
+        "passed": 0,
         "total": 2,
-        "rate": 0.5
+        "rate": 0.0
       },
       "holiday": {
         "passed": 3,
@@ -88,9 +88,9 @@
         "rate": 0.0
       },
       "high_stakes": {
-        "passed": 3,
+        "passed": 2,
         "total": 3,
-        "rate": 1.0
+        "rate": 0.6666666666666666
       },
       "dress_code": {
         "passed": 0,
@@ -126,35 +126,35 @@
       "test_id": 2,
       "category": "wages",
       "question": "How much does a Courtesy Clerk make after 36 months?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Appendix A",
       "retrieved_citations": [
         "Article 15, Section 34",
-        "Article 8, Section 17",
-        "Article 42, Section 118, Part part3"
+        "Article 42, Section 118, Part part3",
+        "Article 58, Section 175, Part 10-10"
       ],
-      "wage_correct": true,
+      "wage_correct": null,
       "escalation_correct": null,
-      "intent_detected": "wage",
-      "passed": true,
-      "notes": ""
+      "intent_detected": "contract",
+      "passed": false,
+      "notes": "Expected 'Appendix A' not found"
     },
     {
       "test_id": 3,
       "category": "wages",
       "question": "What is the Head Clerk rate of pay?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Appendix A",
       "retrieved_citations": [
         "Article 8, Section 17",
         "Article 29, Section 78, Part 2",
         "Article 29, Section 79, Part 9"
       ],
-      "wage_correct": true,
+      "wage_correct": null,
       "escalation_correct": null,
-      "intent_detected": "wage",
-      "passed": true,
-      "notes": ""
+      "intent_detected": "contract",
+      "passed": false,
+      "notes": "Expected 'Appendix A' not found"
     },
     {
       "test_id": 4,
@@ -216,11 +216,11 @@
       "retrieved_citations": [
         "Article 12, Section 28",
         "Article 10, Section 21, Part part2",
-        "Article 8, Section 19"
+        "Article 10, Section 23"
       ],
       "wage_correct": null,
       "escalation_correct": null,
-      "intent_detected": "wage",
+      "intent_detected": "contract",
       "passed": true,
       "notes": ""
     },
@@ -237,7 +237,7 @@
       ],
       "wage_correct": null,
       "escalation_correct": null,
-      "intent_detected": "wage",
+      "intent_detected": "contract",
       "passed": true,
       "notes": ""
     },
@@ -318,7 +318,7 @@
       "retrieved_citations": [
         "Article 10, Section 21, Part part1",
         "Article 10, Section 21, Part part4",
-        "Article 10, Section 23"
+        "Article 10, Section 21, Part part5"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -458,7 +458,7 @@
       ],
       "wage_correct": null,
       "escalation_correct": null,
-      "intent_detected": "wage",
+      "intent_detected": "contract",
       "passed": true,
       "notes": ""
     },
@@ -639,13 +639,13 @@
       "retrieval_correct": true,
       "expected_citation": "Article 46",
       "retrieved_citations": [
-        "Article 46, Section 135",
         "Article 58, Section 175, Part 2-4",
-        "Article 58, Section 175, Part 2-9"
+        "Article 58, Section 175, Part 2-9",
+        "Article 58, Section 175, Part 10-1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
-      "intent_detected": "wage",
+      "intent_detected": "contract",
       "passed": true,
       "notes": ""
     },
@@ -708,8 +708,8 @@
       "expected_citation": "Article 7, Section 14(c)",
       "retrieved_citations": [
         "Article 29, Section 84, Part 5-6",
-        "Article 29, Section 78, Part 2-1",
-        "Article 29, Section 84, Part 1-1"
+        "Article 29, Section 84, Part 1-1",
+        "Article 29, Section 78, Part 2-1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -738,18 +738,18 @@
       "test_id": 38,
       "category": "union",
       "question": "Do I have to join the union?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 3, Section 5",
       "retrieved_citations": [
-        "Article 58, Section 175, Part 12-12",
-        "Article 27, Section 67",
-        "Article 36, Section 109, Part part6"
+        "Article 4, Section 8",
+        "Article 27, Section 68, Part part3",
+        "Article 58, Section 175, Part 12-12"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 3, Section 5' not found"
     },
     {
       "test_id": 39,
@@ -764,7 +764,7 @@
       ],
       "wage_correct": null,
       "escalation_correct": null,
-      "intent_detected": "high_stakes",
+      "intent_detected": "contract",
       "passed": false,
       "notes": "Expected 'Article 44, Section 128' not found"
     },
@@ -809,9 +809,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 16",
       "retrieved_citations": [
-        "Article 16, Section 43",
-        "Article 16, Section 37",
-        "Article 16, Section 38"
+        "Article 16, Section 41",
+        "Article 16, Section 40",
+        "Article 16, Section 37"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -878,8 +878,8 @@
       "expected_citation": "Article 36",
       "retrieved_citations": [
         "Article 36, Section 103",
-        "Article 36, Section 109, Part part1",
-        "Article 36, Section 109, Part part6"
+        "Article 36, Section 106",
+        "Article 36, Section 109, Part part1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -912,7 +912,7 @@
       "expected_citation": "Article 20, Section 56",
       "retrieved_citations": [
         "Article 10, Section 21, Part part3",
-        "Article 10, Section 21, Part part1",
+        "Article 27, Section 68, Part part3",
         "Article 10, Section 21, Part part8"
       ],
       "wage_correct": null,
@@ -967,10 +967,10 @@
         "Article 43, Section 126"
       ],
       "wage_correct": null,
-      "escalation_correct": true,
+      "escalation_correct": false,
       "intent_detected": "high_stakes",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Escalation mismatch (expected=True, got=False)"
     },
     {
       "test_id": 52,

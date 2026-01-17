@@ -22,7 +22,8 @@ from backend.config import (
     CAG_ENABLE_TITLE_BOOSTING, FULL_ARTICLE_MAX_CHUNKS,
     FULL_ARTICLE_MIN_TOP_K_MATCH, CHUNKS_DIR,
     CAG_ENABLE_QUERY_INTERPRETER, MULTI_QUERY_MAX_SEARCHES,
-    MULTI_QUERY_RESULTS_PER_SEARCH, MULTI_QUERY_TOTAL_RESULTS
+    MULTI_QUERY_RESULTS_PER_SEARCH, MULTI_QUERY_TOTAL_RESULTS,
+    CAG_ENABLE_RERANKER
 )
 from backend.retrieval.vector_store import ContractVectorStore
 from backend.retrieval.hypothesis import (
@@ -890,6 +891,20 @@ class HybridRetriever:
         all_chunks.sort(key=lambda x: x.get('similarity', 0), reverse=True)
         final_chunks = all_chunks[:MULTI_QUERY_TOTAL_RESULTS]
 
+        # ===== PHASE 5: LLM RERANKING =====
+        # Reorder chunks by semantic relevance before expansion
+        reranker_result = None
+        if CAG_ENABLE_RERANKER:
+            from backend.retrieval.reranker import get_reranker
+            reranker_result = get_reranker().rerank(
+                query=query,
+                chunks=final_chunks,
+                interpretation=interpretation
+            )
+            if reranker_result.success:
+                final_chunks = reranker_result.chunks
+        # ===== END RERANKING =====
+
         # Apply full article expansion on merged results
         final_chunks = self._expand_to_full_article(final_chunks, n_results)
         final_chunks = self._expand_with_related_sections(final_chunks)
@@ -909,6 +924,7 @@ class HybridRetriever:
             "interpretation": interpretation,  # Include interpretation for debugging
             "search_angles_used": len(search_queries),
             "explicit_articles_fetched": interpretation.explicit_articles,
+            "reranker_result": reranker_result,  # Include reranker metrics
         }
 
         # If wage query and we have classification, also do wage lookup
