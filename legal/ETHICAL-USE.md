@@ -4,7 +4,7 @@ KARL exists to serve workers, not management.
 
 ## Allowed Uses
 
-- Contract interpretation
+- Contract information retrieval
 - Rights education
 - Grievance preparation
 - Scheduling and pay clarification
