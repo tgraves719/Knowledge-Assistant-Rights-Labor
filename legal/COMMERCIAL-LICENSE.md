@@ -27,4 +27,4 @@ AND any of the following apply:
 ## Contact
 
 For commercial licensing inquiries:
-📧 tgraves719@gmail.com (placeholder)
+📧 stewardkarlteam@gmail.com
