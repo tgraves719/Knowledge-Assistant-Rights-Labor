@@ -46,22 +46,24 @@ def check_api_key():
 def init_llm(api_key):
     """Initialize the Gemini LLM."""
     try:
-        import google.generativeai as genai
-        genai.configure(api_key=api_key)
-        return genai
+        from google import genai
+        return genai.Client(api_key=api_key)
     except ImportError:
-        print("ERROR: google-generativeai not installed. Run: pip install google-generativeai")
+        print("ERROR: google-genai not installed. Run: pip install google-genai")
         return None
 
 
-def generate_response(genai, question: str, system_prompt: str) -> str:
+def generate_response(client, question: str, system_prompt: str) -> str:
     """Generate LLM response."""
     try:
-        model = genai.GenerativeModel(
-            model_name=LLM_MODEL,
-            system_instruction=system_prompt
+        from google import genai
+        response = client.models.generate_content(
+            model=LLM_MODEL,
+            contents=question,
+            config=genai.types.GenerateContentConfig(
+                system_instruction=system_prompt,
+            )
         )
-        response = model.generate_content(question)
         return response.text
     except Exception as e:
         return f"ERROR: {e}"

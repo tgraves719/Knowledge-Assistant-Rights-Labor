@@ -21,7 +21,8 @@ class RawChunk:
     """Intermediate chunk before LLM enrichment."""
     chunk_id: str
     contract_id: str = "safeway_pueblo_clerks_2022"
-    
+    doc_type: str = "cba"  # "cba" for contract articles, "lou" for letters of understanding
+
     # Hierarchy
     article_num: Optional[int] = None
     article_title: Optional[str] = None
@@ -30,11 +31,11 @@ class RawChunk:
     subsection_title: Optional[str] = None
     citation: str = ""
     parent_context: str = ""
-    
+
     # Content
     content: str = ""
     char_count: int = 0
-    
+
     # Placeholder metadata (to be filled by enricher)
     applies_to: list = field(default_factory=lambda: ["all"])
     topics: list = field(default_factory=list)
@@ -65,12 +66,14 @@ class SmartChunker:
     
     # Patterns
     # Article header patterns - match both # and ## formats
+    # Title class allows uppercase, digits, spaces, &, commas, hyphens, slashes, parens
+    # to handle titles like "401K PLAN", "SECTION 125 PLANS", "HEALTH & WELFARE"
     ARTICLE_HEADER = re.compile(
-        r'^#{1,2}\s*ARTICLE\s+(\d+)\s*\n#{1,2}\s*([A-Z][A-Z\s&,]+)',
+        r'^#{1,2}\s*ARTICLE\s+(\d+)\s*\n#{1,2}\s*([A-Z0-9][A-Z0-9\s&,/()-]+)',
         re.MULTILINE
     )
     ARTICLE_HEADER_SINGLE = re.compile(
-        r'^#{1,2}\s*ARTICLE\s+(\d+)\s+([A-Z][A-Z\s&,]+)',
+        r'^#{1,2}\s*ARTICLE\s+(\d+)\s+([A-Z0-9][A-Z0-9\s&,/()-]+)',
         re.MULTILINE
     )
     SECTION_HEADER = re.compile(
@@ -80,6 +83,16 @@ class SmartChunker:
     LOU_HEADER = re.compile(
         r'^##\s*Letter\s+of\s+Understanding\s+#?(\d+)',
         re.MULTILINE | re.IGNORECASE
+    )
+    # Detect the LOU section boundary (standard CBA language)
+    LOU_SECTION_HEADER = re.compile(
+        r'LETTERS\s+OF\s+UNDERSTANDING',
+        re.IGNORECASE
+    )
+    # Individual LOU items within the full-text LOU section: ## N. Title
+    LOU_ITEM_HEADER = re.compile(
+        r'^##\s*(\d+)\.\s*(.+?)$',
+        re.MULTILINE
     )
     
     # Subsection patterns - match full titles like "DRIVE UP AND GO"
@@ -113,20 +126,45 @@ class SmartChunker:
     def parse_content(self, content: str) -> list[RawChunk]:
         """Parse markdown content into smart chunks."""
         self.chunks = []
-        
+
+        # Detect LOU section boundary and separate it.
+        # Find the first non-HTML occurrence that starts a line (the section header).
+        lou_content = None
+        best_lou_match = None
+        for m in self.LOU_SECTION_HEADER.finditer(content):
+            line_start = content.rfind('\n', 0, m.start()) + 1
+            line = content[line_start:m.end() + 20]
+            if '<' not in line:  # Skip matches inside HTML tags
+                # Check this is a heading line (starts with # or is all caps)
+                line_prefix = content[line_start:m.start()].strip()
+                if not line_prefix or line_prefix.startswith('#') or line_prefix.isupper():
+                    best_lou_match = m
+                    break  # Take the first valid match (section header)
+        if best_lou_match:
+            # Back up to the start of the line
+            lou_start = content.rfind('\n', 0, best_lou_match.start())
+            if lou_start < 0:
+                lou_start = 0
+            lou_content = content[lou_start:]
+            content = content[:lou_start]
+
         # Split by article headers
         articles = self._split_by_articles(content)
-        
+
         for article_num, article_title, article_content in articles:
             self.current_article_num = article_num
             self.current_article_title = article_title
-            
+
             if article_num is None:
                 # Letter of Understanding or other
                 self._process_lou(article_content)
             else:
                 self._process_article(article_num, article_title, article_content)
-        
+
+        # Process LOU section separately
+        if lou_content:
+            self._process_lou_section(lou_content)
+
         return self.chunks
     
     def _split_by_articles(self, content: str) -> list[tuple]:
@@ -408,15 +446,137 @@ class SmartChunker:
         citation = f"Letter of Understanding {lou_num}"
         if part_num > 1:
             citation += f", Part {part_num}"
-        
+
         chunk = RawChunk(
             chunk_id=chunk_id,
             contract_id=self.contract_id,
+            doc_type="lou",
             citation=citation,
             parent_context=f"Letter of Understanding {lou_num}",
             content=content,
         )
         self.chunks.append(chunk)
+
+    def _process_lou_section(self, content: str):
+        """
+        Process the full Letters of Understanding section.
+
+        The LOU section has two parts:
+        1. Summary list (brief descriptions, no ## headers)
+        2. Full text (detailed content with ## N. or plain N. headers)
+
+        We process the full-text section by finding LOU boundaries using both
+        ## N. and plain N. headers, then using increasing-number heuristic to
+        distinguish top-level LOUs from sub-items within LOUs.
+        """
+        # Find the start of the full-text section.
+        # The LOU section has a summary list followed by full-text content.
+        # We use the first ## N. header as the reliable full-text section start,
+        # since only full-text LOUs have ## heading markers.
+        first_heading_item = self.LOU_ITEM_HEADER.search(content)
+        if first_heading_item:
+            full_text_start = first_heading_item.start()
+        else:
+            # No ## N. headers at all
+            return
+
+        full_text = content[full_text_start:]
+
+        # Split by ## N. headers only (reliable boundaries).
+        # Some LOUs between ## boundaries (e.g., 9-13 between ## 8 and ## 14)
+        # will be embedded in the nearest ## LOU's content. This is acceptable
+        # for retrieval since the content is still findable.
+        lou_boundaries = list(self.LOU_ITEM_HEADER.finditer(full_text))
+
+        if not lou_boundaries:
+            return
+
+        for i, match in enumerate(lou_boundaries):
+            lou_num = match.group(1)
+            lou_title = match.group(2).strip().rstrip('.')
+
+            # Extract content from this LOU to the next
+            start_pos = match.start()
+            end_pos = lou_boundaries[i + 1].start() if i + 1 < len(lou_boundaries) else len(full_text)
+            item_content = full_text[start_pos:end_pos].strip()
+
+            # Clean page number artifacts (e.g., "63 PUEBLO CLERKS\n2022-2025\n---")
+            item_content = re.sub(
+                r'\n\d{2,3}\s+PUEBLO CLERKS\s*\n\s*2022-2025\s*\n+---\s*\n*',
+                '\n',
+                item_content
+            )
+            item_content = re.sub(
+                r'\n\d{2,3}\s+PUEBLO CLERKS\s*\n\s*2022-2025\s*$',
+                '',
+                item_content
+            )
+            # Clean standalone page numbers and separators
+            item_content = re.sub(r'\n\d{2,3}\s*\n', '\n', item_content)
+            item_content = re.sub(r'\n---\s*\n+', '\n\n', item_content)
+            item_content = item_content.strip()
+
+            if not item_content:
+                continue
+
+            # Extract a short title for the citation
+            short_title = lou_title.split('.')[0].strip()
+            if len(short_title) > 60:
+                short_title = short_title[:57] + "..."
+
+            # For small items, prepend the LOU title as context for better embedding
+            if len(item_content) < self.MIN_CHUNK_SIZE:
+                item_content = f"Letter of Understanding {lou_num}: {short_title}\n\n{item_content}"
+
+            self._emit_lou_chunk(lou_num, short_title, item_content)
+
+    def _emit_lou_chunk(self, lou_num: str, short_title: str, item_content: str):
+        """Emit one or more chunks for a single LOU item."""
+        # Split long LOUs by paragraphs if needed
+        if len(item_content) > self.MAX_CHUNK_SIZE:
+            paragraphs = item_content.split('\n\n')
+            current_chunk = ""
+            part_num = 1
+
+            for para in paragraphs:
+                para = para.strip()
+                if not para:
+                    continue
+                if len(current_chunk) + len(para) > self.TARGET_CHUNK_SIZE and current_chunk:
+                    chunk = RawChunk(
+                        chunk_id=f"lou_{lou_num}_part{part_num}",
+                        contract_id=self.contract_id,
+                        doc_type="lou",
+                        citation=f"Letter of Understanding {lou_num}: {short_title}, Part {part_num}",
+                        parent_context=f"Letters of Understanding > Item {lou_num}: {short_title}",
+                        content=current_chunk,
+                    )
+                    self.chunks.append(chunk)
+                    current_chunk = para
+                    part_num += 1
+                else:
+                    current_chunk += "\n\n" + para if current_chunk else para
+
+            if current_chunk:
+                chunk = RawChunk(
+                    chunk_id=f"lou_{lou_num}_part{part_num}" if part_num > 1 else f"lou_{lou_num}",
+                    contract_id=self.contract_id,
+                    doc_type="lou",
+                    citation=f"Letter of Understanding {lou_num}: {short_title}" + (f", Part {part_num}" if part_num > 1 else ""),
+                    parent_context=f"Letters of Understanding > Item {lou_num}: {short_title}",
+                    content=current_chunk,
+                )
+                self.chunks.append(chunk)
+        else:
+            chunk = RawChunk(
+                chunk_id=f"lou_{lou_num}",
+                contract_id=self.contract_id,
+                doc_type="lou",
+                citation=f"Letter of Understanding {lou_num}: {short_title}",
+                parent_context=f"Letters of Understanding > Item {lou_num}: {short_title}",
+                content=item_content,
+            )
+            self.chunks.append(chunk)
     
     def _create_chunk(self, article_num: int, article_title: str,
                        section_num: int = None, section_title: str = None,

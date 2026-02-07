@@ -37,8 +37,14 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from backend.config import (
     GEMINI_API_KEY,
+    INTERPRETER_MODEL,
     MANIFESTS_DIR,
 )
+
+try:
+    from google import genai
+except ImportError:
+    genai = None
 
 
 @dataclass
@@ -146,26 +152,17 @@ class QueryInterpreter:
 
     def __init__(self):
         """Initialize the query interpreter."""
-        self._genai = None
-        self._model = None
+        self._client = None
         self._article_titles = None
 
     def _ensure_client(self):
         """Lazy-load the Gemini client."""
-        if self._genai is None:
-            try:
-                import google.generativeai as genai
-                api_key = GEMINI_API_KEY
-                if api_key:
-                    genai.configure(api_key=api_key)
-                    self._genai = genai
-                    # Use flash for speed - interpretation should be fast
-                    self._model = genai.GenerativeModel(
-                        model_name="gemini-2.0-flash",
-                        system_instruction=INTERPRETER_SYSTEM_PROMPT
-                    )
-            except ImportError:
-                pass
+        if self._client is None:
+            if genai is None:
+                return
+            api_key = GEMINI_API_KEY
+            if api_key:
+                self._client = genai.Client(api_key=api_key)
 
     def _load_article_titles(self) -> Dict[int, str]:
         """Load article titles for reference extraction."""
@@ -223,7 +220,7 @@ class QueryInterpreter:
         try:
             self._ensure_client()
 
-            if self._model is None:
+            if self._client is None:
                 # Fallback: return basic interpretation without LLM
                 return QueryInterpretation(
                     original_query=query,
@@ -239,14 +236,15 @@ class QueryInterpreter:
             # Generate interpretation
             prompt = INTERPRETER_USER_PROMPT.format(query=query)
 
-            response = self._model.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": 0.2,  # Low temp for consistent structured output
-                    "max_output_tokens": 500,
-                    "response_mime_type": "application/json"
-                },
-                request_options={"timeout": 15}  # 15 second timeout
+            response = self._client.models.generate_content(
+                model=INTERPRETER_MODEL,
+                contents=prompt,
+                config=genai.types.GenerateContentConfig(
+                    system_instruction=INTERPRETER_SYSTEM_PROMPT,
+                    temperature=0.2,
+                    max_output_tokens=500,
+                    response_mime_type="application/json",
+                )
             )
 
             # Parse JSON response
@@ -289,7 +287,7 @@ class QueryInterpreter:
                 explicit_articles=all_articles,
                 latency_ms=latency_ms,
                 success=True,
-                model_used="gemini-2.0-flash"
+                model_used=INTERPRETER_MODEL
             )
 
         except Exception as e:

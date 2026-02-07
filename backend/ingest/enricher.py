@@ -106,10 +106,10 @@ class GeminiEnricher:
         """Initialize Gemini client."""
         if not self.api_key:
             raise ValueError("No Gemini API key provided")
-        
-        import google.generativeai as genai
-        genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel("gemini-2.0-flash-lite")
+
+        from google import genai
+        self._genai = genai
+        self.client = genai.Client(api_key=self.api_key)
     
     def enrich_chunk(self, chunk: dict, max_retries: int = 3) -> dict:
         """
@@ -128,7 +128,10 @@ class GeminiEnricher:
         # Retry with exponential backoff for rate limits
         for attempt in range(max_retries):
             try:
-                response = self.model.generate_content(prompt)
+                response = self.client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=prompt,
+                )
                 result_text = response.text.strip()
                 break
             except Exception as e:

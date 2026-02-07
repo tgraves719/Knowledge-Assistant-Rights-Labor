@@ -135,7 +135,7 @@ def format_context(chunks: list[dict]) -> str:
         citation = chunk.get('citation', 'Unknown')
         # Increased limit to 4000 chars to capture important clauses
         # that may be deeper in long sections (e.g., scheduling rules)
-        content = chunk.get('content', '')[:4000]
+        content = chunk.get('content_with_tables', chunk.get('content', ''))[:4000]
         context_parts.append(f"**{citation}**:\n{content}\n")
     
     return "\n---\n".join(context_parts)

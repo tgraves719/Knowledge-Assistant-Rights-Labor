@@ -38,6 +38,11 @@ from backend.config import (
 
 logger = logging.getLogger(__name__)
 
+try:
+    from google import genai
+except ImportError:
+    genai = None
+
 
 @dataclass
 class RerankerResult:
@@ -96,24 +101,17 @@ class LLMReranker:
 
     def __init__(self):
         """Initialize the reranker."""
-        self._genai = None
-        self._model = None
+        self._client = None
 
     def _ensure_client(self):
         """Lazy-load the Gemini client."""
-        if self._genai is None:
-            try:
-                import google.generativeai as genai
-                api_key = GEMINI_API_KEY
-                if api_key:
-                    genai.configure(api_key=api_key)
-                    self._genai = genai
-                    self._model = genai.GenerativeModel(
-                        model_name=RERANKER_MODEL,
-                        system_instruction=RERANKER_SYSTEM_PROMPT
-                    )
-            except ImportError:
-                logger.warning("google.generativeai not installed")
+        if self._client is None:
+            if genai is None:
+                logger.warning("google-genai not installed")
+                return
+            api_key = GEMINI_API_KEY
+            if api_key:
+                self._client = genai.Client(api_key=api_key)
 
     def _format_chunks(self, chunks: List[dict]) -> str:
         """Format chunks for the prompt."""
@@ -153,6 +151,12 @@ class LLMReranker:
             if text.startswith("```"):
                 text = re.sub(r'^```(?:json)?\n?', '', text)
                 text = re.sub(r'\n?```$', '', text)
+
+            # Extract JSON object — 2.5 models may prepend thinking text
+            first_brace = text.find('{')
+            last_brace = text.rfind('}')
+            if first_brace != -1 and last_brace != -1 and last_brace > first_brace:
+                text = text[first_brace:last_brace + 1]
 
             scores = json.loads(text)
 
@@ -260,7 +264,7 @@ class LLMReranker:
         try:
             self._ensure_client()
 
-            if self._model is None:
+            if self._client is None:
                 logger.warning("Gemini client not available for reranking")
                 return RerankerResult(
                     chunks=chunks,
@@ -284,14 +288,16 @@ class LLMReranker:
             )
 
             # Call Gemini
-            response = self._model.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": 0.1,  # Very low for consistent scoring
-                    "max_output_tokens": 200,
-                    "response_mime_type": "application/json"
-                },
-                request_options={"timeout": RERANKER_TIMEOUT_MS / 1000}
+            response = self._client.models.generate_content(
+                model=RERANKER_MODEL,
+                contents=prompt,
+                config=genai.types.GenerateContentConfig(
+                    system_instruction=RERANKER_SYSTEM_PROMPT,
+                    temperature=0.1,
+                    max_output_tokens=1024,
+                    response_mime_type="application/json",
+                    thinking_config=genai.types.ThinkingConfig(thinking_budget=0),
+                )
             )
 
             # Parse scores

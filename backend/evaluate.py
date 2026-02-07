@@ -56,8 +56,8 @@ def check_citation_in_results(expected: str, chunks: list[dict]) -> bool:
     expected_lower = expected.lower()
     
     for chunk in chunks:
-        citation = chunk.get('citation', '').lower()
-        article_title = chunk.get('article_title', '').lower()
+        citation = (chunk.get('citation') or '').lower()
+        article_title = (chunk.get('article_title') or '').lower()
         
         # Check for article match
         if 'article' in expected_lower:

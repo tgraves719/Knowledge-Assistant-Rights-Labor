@@ -1,5 +1,225 @@
 # Karl Update Log
 
+## v0.8 - SDK Migration, Chunker Hardening & 100% Benchmark (February 2026)
+
+### Overview
+Major infrastructure update: migrated from the deprecated `google.generativeai` SDK to the new `google.genai` SDK, fixed systemic chunker bugs that silently dropped articles, resolved reranker JSON parsing failures, and fixed concept boost prioritization. Result: **55/55 (100%) benchmark** — up from 50/55 (90.9%).
+
+---
+
+### Benchmark Results
+
+| Metric | v0.7.5 | v0.8 | Change |
+|--------|--------|------|--------|
+| Overall | 50/55 (90.9%) | **55/55 (100%)** | **+9.1 pts** |
+| Retrieval Accuracy | 92.7% | **100%** | **+7.3 pts** |
+| Wage Lookup | 100% | 100% | - |
+| Escalation Detection | 66.7% | **100%** | **+33.3 pts** |
+
+All 19 categories now at 100%.
+
+#### Previously Failing Tests — All Fixed
+
+| Test ID | Category | Question | Root Cause | Fix |
+|---------|----------|----------|------------|-----|
+| 2 | wages | "How much does a Courtesy Clerk make after 36 months?" | Wage query regex restricted to `(i\|we)` subjects | Broadened subject pattern to `.+` |
+| 3 | wages | "What is the Head Clerk rate of pay?" | "rate of pay" not in wage keywords | Added `"rate of pay"` to `WAGE_KEYWORDS` |
+| 43 | benefits | "Is there a 401k plan?" | Chunker regex `[A-Z][A-Z\s&,]+` excluded digits — Article 39 "401K PLAN" not detected | Fixed regex to `[A-Z0-9][A-Z0-9\s&,/()-]+` |
+| 48 | time_cards | "When do I punch the time clock?" | Concept boost prioritized noisy matches over precise question matches | Swapped priority: question matches first |
+| 51 | high_stakes | "My manager is harassing me" | Active-voice harassment not in escalation patterns | Added active-voice harassment patterns |
+| 53 | dress_code | "What color shoes can I wear?" | LOU dress code not chunked separately | Added LOU sub-item splitting to chunker |
+
+---
+
+### Breaking Changes
+
+#### SDK Migration: `google.generativeai` → `google.genai`
+
+The deprecated `google.generativeai` SDK (sunset March 31, 2026) has been replaced with `google.genai` v1.62.0 across all 8 files that use the Gemini API.
+
+**Old Pattern:**
+```python
+import google.generativeai as genai
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel("gemini-2.0-flash", system_instruction="...")
+response = model.generate_content(prompt)
+```
+
+**New Pattern:**
+```python
+from google import genai
+client = genai.Client(api_key=GEMINI_API_KEY)
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=prompt,
+    config=genai.types.GenerateContentConfig(
+        system_instruction="...",
+        temperature=0.1,
+    )
+)
+```
+
+**Key Differences:**
+- `system_instruction` moves from model creation to per-request `GenerateContentConfig`
+- Client-based API (`genai.Client`) replaces global `genai.configure()`
+- Do NOT use `http_options={"timeout": N}` — causes SSL handshake failures
+- SDK auto-detects `GOOGLE_API_KEY` env var
+
+#### Model Upgrades
+
+| Component | Old Model | New Model |
+|-----------|-----------|-----------|
+| Generation | `gemini-2.0-flash` | `gemini-2.5-pro` |
+| Hypothesis | `gemini-2.0-flash` | `gemini-2.5-flash` |
+| Interpreter | `gemini-2.0-flash` | `gemini-2.5-flash` |
+| Reranker | `gemini-2.0-flash` | `gemini-2.5-flash` |
+| Enricher | `gemini-2.0-flash` | `gemini-2.5-flash` |
+
+---
+
+### Bug Fixes
+
+#### 1. Chunker: Article Title Regex Excluded Digits (Test 43)
+
+**Problem**: `ARTICLE_HEADER` and `ARTICLE_HEADER_SINGLE` regex patterns used `[A-Z][A-Z\s&,]+` for the title capture group. Article 39 "401K PLAN" has digits, so it was never detected as a separate article. Section 115 (401K content) was incorrectly assigned to Article 38.
+
+**Impact**: Any contract with digits in article titles (e.g., "401K PLAN", "SECTION 125 PLANS") would silently lose articles. This is a systemic scaling issue.
+
+**Fix**: Changed character class to `[A-Z0-9][A-Z0-9\s&,/()-]+` to also allow digits, slashes, parentheses, and hyphens.
+
+**File**: `backend/ingest/smart_chunker.py` (lines 69-76)
+
+#### 2. Reranker: Thinking Text Corrupted JSON Parsing
+
+**Problem**: Gemini 2.5 Flash defaults to "thinking mode" which prepends reasoning text before the JSON output in `response.text`. The `_parse_scores` method's JSON extraction failed ~30% of the time when thinking text contained `{` characters.
+
+**Fix**: Added `thinking_config=genai.types.ThinkingConfig(thinking_budget=0)` to disable thinking mode for the reranker call. Combined with `response_mime_type="application/json"`, this ensures clean JSON output.
+
+**File**: `backend/retrieval/reranker.py` (line 299)
+
+#### 3. Concept Boost: Wrong Priority Order (Test 48)
+
+**Problem**: `get_concept_boost_articles()` prioritized broad concept matches (substring matching on `alternative_names`) over precise question matches (matching `worker_questions`). For "When do I punch the time clock?", this put Article 10 (scheduling) in the top 5 boosts but excluded Article 20 (time records) which was at position 6.
+
+The +0.2 similarity boost for Article 10 chunks then pushed them above Article 20's natural #1 vector score (0.516 → overtaken by boosted 0.573), and article expansion flooded the results with Article 10 chunks.
+
+**Fix (part 1)**: Swapped priority order — question matches (more precise) now take priority over concept matches (broader).
+
+**Fix (part 2)**: Added `concept_query` parameter to `search()` and `search_to_chunks()`. The concept boost is now always computed from the original user question, not the hypothesis-expanded query which varies per LLM call. This eliminates non-deterministic flapping where hypothesis titles like "SCHEDULING" would pollute concept matching and change the boost set between runs.
+
+**Files**: `backend/retrieval/hybrid_search.py`, `backend/retrieval/router.py`
+
+#### 4. Router: Wage Query Subject Restriction (Tests 2, 3)
+
+**Problem**: `is_wage_query()` pattern required `(i|we)` as subject, so "How much does a Courtesy Clerk make?" didn't match.
+
+**Fix**: Broadened to `.+` (any subject). Also added `"rate of pay"` to `WAGE_KEYWORDS` for symmetry with existing `"pay rate"`.
+
+**File**: `backend/retrieval/router.py`
+
+#### 5. Router: Active-Voice Harassment Detection (Test 51)
+
+**Problem**: Escalation patterns only matched passive voice ("I'm being harassed") but not active voice ("My manager is harassing me").
+
+**Fix**: Added active-voice patterns to `is_high_stakes()`.
+
+**File**: `backend/retrieval/router.py`
+
+---
+
+### New Features
+
+#### LOU Sub-Item Splitting (Test 53)
+
+Letters of Understanding are now split into individual chunks instead of being bundled as Article 58 subsections.
+
+**Problem**: LOUs 6, 7, 8 were grouped into one chunk (`art58_sec175_6-8`), diluting the dress code embedding so it couldn't be found for "What color shoes can I wear?"
+
+**Solution**:
+- Added `LOU_SECTION_HEADER` pattern to detect the LOU boundary
+- Added `LOU_ITEM_HEADER` pattern (`## N. Title`) to split individual LOUs
+- Each LOU gets its own chunk with `doc_type: "lou"` and descriptive citations
+
+**Result**: 37 LOU chunks (previously ~4), including separate dress code chunk. Smart chunker now produces 320 chunks (283 CBA + 37 LOU).
+
+**File**: `backend/ingest/smart_chunker.py`
+
+#### Contract-Specific Routing via Manifest
+
+Moved contract-specific routing knowledge (slang mappings, topic-to-article maps, classification maps) from hardcoded Python dictionaries to `data/manifests/{contract_id}.json`.
+
+**New manifest section**: `query_routing` with:
+- `slang_to_contract`: Contract-specific terminology (e.g., "dug" → "Drive Up & Go")
+- `topic_to_articles`: Topic-to-article number mappings
+- `topic_patterns`: Regex patterns for topic detection
+- `classification_to_articles`: Job classification article mappings
+
+**Scaling benefit**: New contracts only need a manifest file — no Python code changes.
+
+**Files**: `data/manifests/safeway_pueblo_clerks_2022.json`, `backend/retrieval/router.py`
+
+---
+
+### Files Modified/Added
+
+| File | Action | Changes |
+|------|--------|---------|
+| `backend/config.py` | Modified | Added `TABLES_DIR`; updated all model references to 2.5 |
+| `backend/retrieval/router.py` | Modified | Manifest-based routing, universal pattern fixes, `@lru_cache` per contract_id, pass `concept_query` for stable concept matching |
+| `backend/retrieval/reranker.py` | Modified | SDK migration, `thinking_budget=0` fix |
+| `backend/retrieval/hypothesis.py` | Modified | SDK migration |
+| `backend/retrieval/query_interpreter.py` | Modified | SDK migration |
+| `backend/retrieval/hybrid_search.py` | Modified | Concept boost priority swap (question > concept), `concept_query` parameter for stable matching |
+| `backend/retrieval/vector_store.py` | Modified | Dual content fields (`content` / `content_with_tables`) |
+| `backend/ingest/smart_chunker.py` | Modified | Article title regex fix, LOU sub-item splitting |
+| `backend/ingest/enricher.py` | Modified | SDK migration |
+| `backend/api.py` | Modified | SDK migration |
+| `backend/test_generation.py` | Modified | SDK migration |
+| `backend/evaluate_generation.py` | Modified | SDK migration |
+| `backend/generation/tools.py` | Modified | SDK migration |
+| `data/manifests/safeway_pueblo_clerks_2022.json` | Modified | Added `query_routing` section, fixed Article 39 title |
+
+---
+
+### Technical Notes
+
+#### SDK Migration Pitfalls
+- `http_options={"timeout": N}` in `genai.Client()` constructor causes SSL handshake failures on Windows. Use SDK defaults instead.
+- `system_instruction` is NOT a parameter of model creation in the new SDK — it goes in `GenerateContentConfig` per request.
+- The SDK warns if both `GOOGLE_API_KEY` and `GEMINI_API_KEY` environment variables are set.
+
+#### Reranker Thinking Mode
+Gemini 2.5 Flash uses "thinking" by default, which prepends reasoning text to the response. For structured JSON output, disable with `thinking_config=genai.types.ThinkingConfig(thinking_budget=0)`. This is safe because the reranker prompt is simple scoring — no complex reasoning needed.
+
+#### Concept Boost Architecture
+The concept boost in `hybrid_search.py` has two signals:
+1. **Question match** (`find_articles_by_question`): Fuzzy match against enricher-generated `worker_questions`. High precision — the enricher generates questions like "When do I need to punch the time clock?" that match user queries closely.
+2. **Concept match** (`find_articles_by_concept`): Substring match against `alternative_names`. High recall but lower precision — common words match many articles.
+
+Two fixes were applied:
+- **Priority swap**: Question matches now take priority over concept matches in the top-5 boost list, preventing precise signals from being cut off.
+- **Stable concept_query**: The concept boost is now always computed from the original user question via the `concept_query` parameter, not the hypothesis-expanded query. The hypothesis layer appends predicted titles (e.g., "SCHEDULING HOURS OF WORK") which would pollute concept matching and cause non-deterministic result flapping across runs.
+
+---
+
+### Known Limitations
+
+1. Enricher JSON parse errors ~3% of time (graceful degradation — chunks get default metadata)
+2. LOU chunks 2-7 and 9-13 don't get individual chunks (embedded within LOU 1 and 8 content blocks)
+3. Chunk `article_title` can be `None` — always use `(chunk.get('article_title') or '')` pattern
+
+---
+
+### Next Steps (Planned)
+
+- [ ] Table extractor: JSON-first structured table extraction (replace HTML `<table>` in Article 40 chunks)
+- [ ] Tune reranker weights (currently 0.3/0.7) — evaluate 0.5/0.5 split
+- [ ] Cache query interpretations for repeated questions
+- [ ] Multi-contract support: test with a second contract to validate manifest-based routing
+
+---
+---
+
 ## v0.7.5 - Benchmark & Observability Update (January 2025)
 
 ### Overview

@@ -279,34 +279,20 @@ class ToolExecutor:
 def get_gemini_tools():
     """Get tool definitions in Gemini format."""
     try:
-        import google.generativeai as genai
-
+        from google import genai
         return [
-            genai.protos.Tool(
+            genai.types.Tool(
                 function_declarations=[
-                    genai.protos.FunctionDeclaration(
+                    genai.types.FunctionDeclaration(
                         name=tool["name"],
                         description=tool["description"],
-                        parameters=genai.protos.Schema(
-                            type=genai.protos.Type.OBJECT,
-                            properties={
-                                k: genai.protos.Schema(
-                                    type=genai.protos.Type.STRING if v.get("type") == "string"
-                                    else genai.protos.Type.INTEGER if v.get("type") == "integer"
-                                    else genai.protos.Type.BOOLEAN if v.get("type") == "boolean"
-                                    else genai.protos.Type.STRING,
-                                    description=v.get("description", "")
-                                )
-                                for k, v in tool["parameters"].get("properties", {}).items()
-                            },
-                            required=tool["parameters"].get("required", [])
-                        )
+                        parameters=tool["parameters"],
                     )
                     for tool in AVAILABLE_TOOLS
                 ]
             )
         ]
-    except ImportError:
+    except Exception:
         return None
 
 

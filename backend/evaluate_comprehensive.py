@@ -41,8 +41,8 @@ def check_retrieval(expected: list, chunks: list) -> tuple[bool, list]:
     
     retrieved_articles = []
     for chunk in chunks:
-        citation = chunk.get('citation', '').lower()
-        article_title = chunk.get('article_title', '').lower()
+        citation = (chunk.get('citation') or '').lower()
+        article_title = (chunk.get('article_title') or '').lower()
         
         # Extract article references
         import re

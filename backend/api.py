@@ -49,22 +49,22 @@ retriever = None
 vector_store = None
 
 # LLM client (lazy loaded)
-genai = None
+try:
+    from google import genai as _genai_sdk
+except ImportError:
+    _genai_sdk = None
+
+_genai_client = None
 
 
-def get_genai():
+def get_genai_client():
     """Lazy load Google GenAI client."""
-    global genai
-    if genai is None:
-        try:
-            import google.generativeai as _genai
-            api_key = GEMINI_API_KEY or os.getenv("GEMINI_API_KEY", "")
-            if api_key:
-                _genai.configure(api_key=api_key)
-            genai = _genai
-        except ImportError:
-            pass
-    return genai
+    global _genai_client
+    if _genai_client is None and _genai_sdk is not None:
+        api_key = GEMINI_API_KEY or os.getenv("GEMINI_API_KEY", "")
+        if api_key:
+            _genai_client = _genai_sdk.Client(api_key=api_key)
+    return _genai_client
 
 
 @asynccontextmanager
@@ -228,7 +228,7 @@ class WageEstimateResponse(BaseModel):
 async def health_check():
     """Check system health."""
     chunks_loaded = vector_store.count() if vector_store else 0
-    llm_available = get_genai() is not None and bool(GEMINI_API_KEY or os.getenv("GEMINI_API_KEY"))
+    llm_available = get_genai_client() is not None
 
     return HealthResponse(
         status="healthy" if chunks_loaded > 0 else "degraded",
@@ -784,9 +784,9 @@ async def generate_response(question: str, system_prompt: str, chunks: list = No
     """
     global _rate_limit_until
     
-    genai_client = get_genai()
-    
-    if not genai_client:
+    client = get_genai_client()
+
+    if not client:
         return generate_fallback_response(chunks)
     
     # Check if we're in a rate limit cooldown
@@ -801,15 +801,12 @@ async def generate_response(question: str, system_prompt: str, chunks: list = No
     
     for attempt in range(max_retries):
         try:
-            model = genai_client.GenerativeModel(
-                model_name=LLM_MODEL,
-                system_instruction=system_prompt
-            )
-
-            # Add timeout to prevent hanging (60 seconds max - Gemini can be slow)
-            response = model.generate_content(
-                question,
-                request_options={"timeout": 60}
+            response = client.models.generate_content(
+                model=LLM_MODEL,
+                contents=question,
+                config=_genai_sdk.types.GenerateContentConfig(
+                    system_instruction=system_prompt,
+                )
             )
             return response.text
         

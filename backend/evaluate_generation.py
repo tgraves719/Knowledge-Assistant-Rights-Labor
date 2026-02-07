@@ -59,24 +59,26 @@ def init_llm():
         print("\nERROR: No GEMINI_API_KEY found!")
         print("Set it in .env or as environment variable.")
         return None
-    
+
     try:
-        import google.generativeai as genai
-        genai.configure(api_key=api_key)
-        return genai
+        from google import genai
+        return genai.Client(api_key=api_key)
     except ImportError:
-        print("ERROR: google-generativeai not installed")
+        print("ERROR: google-genai not installed")
         return None
 
 
-def generate_response(genai, question: str, system_prompt: str) -> str:
+def generate_response(client, question: str, system_prompt: str) -> str:
     """Generate LLM response with retry."""
     try:
-        model = genai.GenerativeModel(
-            model_name=LLM_MODEL,
-            system_instruction=system_prompt
+        from google import genai
+        response = client.models.generate_content(
+            model=LLM_MODEL,
+            contents=question,
+            config=genai.types.GenerateContentConfig(
+                system_instruction=system_prompt,
+            )
         )
-        response = model.generate_content(question)
         return response.text
     except Exception as e:
         return f"ERROR: {e}"

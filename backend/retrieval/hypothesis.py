@@ -32,6 +32,11 @@ from backend.config import (
     GEMINI_API_KEY,
 )
 
+try:
+    from google import genai
+except ImportError:
+    genai = None
+
 
 @dataclass
 class HypothesisResult:
@@ -82,26 +87,16 @@ class HypothesisGenerator:
 
     def __init__(self):
         """Initialize the hypothesis generator."""
-        self._genai = None
-        self._model = None
+        self._client = None
 
     def _ensure_client(self):
         """Lazy-load the Gemini client."""
-        if self._genai is None:
-            try:
-                import google.generativeai as genai
-                api_key = GEMINI_API_KEY
-                if api_key:
-                    genai.configure(api_key=api_key)
-                    self._genai = genai
-                    self._model = genai.GenerativeModel(
-                        model_name=HYPOTHESIS_MODEL,
-                        system_instruction=HYPOTHESIS_SYSTEM_PROMPT.format(
-                            max_titles=HYPOTHESIS_MAX_TITLES
-                        )
-                    )
-            except ImportError:
-                pass
+        if self._client is None:
+            if genai is None:
+                return
+            api_key = GEMINI_API_KEY
+            if api_key:
+                self._client = genai.Client(api_key=api_key)
 
     def generate_sync(self, query: str) -> HypothesisResult:
         """
@@ -128,7 +123,7 @@ class HypothesisGenerator:
         try:
             self._ensure_client()
 
-            if self._model is None:
+            if self._client is None:
                 return HypothesisResult(
                     hypothesized_titles=[],
                     query_expansion=query,
@@ -144,13 +139,16 @@ class HypothesisGenerator:
                 max_titles=HYPOTHESIS_MAX_TITLES
             )
 
-            response = self._model.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": 0.3,  # Lower temp for more focused output
-                    "max_output_tokens": 100,
-                },
-                request_options={"timeout": 30}  # 30 second timeout for hypothesis
+            response = self._client.models.generate_content(
+                model=HYPOTHESIS_MODEL,
+                contents=prompt,
+                config=genai.types.GenerateContentConfig(
+                    system_instruction=HYPOTHESIS_SYSTEM_PROMPT.format(
+                        max_titles=HYPOTHESIS_MAX_TITLES
+                    ),
+                    temperature=0.3,
+                    max_output_tokens=100,
+                )
             )
 
             # Parse response: split by newlines, clean up
@@ -223,7 +221,7 @@ def apply_title_boosting(
         chunk_copy = dict(chunk)
 
         # Get article title from chunk metadata
-        article_title = chunk.get('article_title', '').lower()
+        article_title = (chunk.get('article_title') or '').lower()
 
         # Check for fuzzy match with any hypothesis
         matched = False

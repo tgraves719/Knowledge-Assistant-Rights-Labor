@@ -329,14 +329,15 @@ class HybridSearcher:
         # Get articles matching by question similarity
         question_articles = self.concept_index.find_articles_by_question(query)
 
-        # Combine with concept matches taking priority
+        # Combine with question matches taking priority (more precise)
+        # then concept matches (broader substring matching)
         seen = set()
         combined = []
-        for art in concept_articles[:5]:
+        for art in question_articles[:5]:
             if art not in seen:
                 combined.append(art)
                 seen.add(art)
-        for art in question_articles[:5]:
+        for art in concept_articles[:5]:
             if art not in seen:
                 combined.append(art)
                 seen.add(art)
@@ -351,20 +352,22 @@ class HybridSearcher:
         vector_weight: float = 1.0,
         keyword_weight: float = 1.0,
         boost_articles: List[int] = None,
+        concept_query: str = None,
         **vector_kwargs
     ) -> List[SearchResult]:
         """
         Perform hybrid search combining semantic and keyword search.
-        
+
         Args:
-            query: User query
+            query: User query (may include hypothesis expansions)
             n_results: Number of results to return
             use_expansion: Whether to use query expansion
             vector_weight: Weight for semantic search in RRF (default 1.0)
             keyword_weight: Weight for keyword search in RRF (default 1.0)
             boost_articles: List of article numbers to boost in results
+            concept_query: Original user query for concept matching (defaults to query)
             **vector_kwargs: Additional args for vector search (classification, urgency_tier, etc.)
-        
+
         Returns:
             List of SearchResult with combined ranking
         """
@@ -374,7 +377,9 @@ class HybridSearcher:
         self._ensure_vector_store()
 
         # Phase 4: Get concept-based article boosts (vocabulary bridging)
-        concept_boost_articles = self.get_concept_boost_articles(query)
+        # Use concept_query (original user question) for stable matching,
+        # not the hypothesis-expanded query which varies per run
+        concept_boost_articles = self.get_concept_boost_articles(concept_query or query)
         if concept_boost_articles:
             if boost_articles:
                 # Combine with explicit boosts, concept-based first
@@ -470,12 +475,14 @@ class HybridSearcher:
         query: str,
         n_results: int = None,
         boost_articles: List[int] = None,
+        concept_query: str = None,
         **kwargs
     ) -> List[dict]:
         """
         Search and return results as chunk dictionaries (for compatibility).
         """
-        results = self.search(query, n_results, boost_articles=boost_articles, **kwargs)
+        results = self.search(query, n_results, boost_articles=boost_articles,
+                              concept_query=concept_query, **kwargs)
         
         return [
             {

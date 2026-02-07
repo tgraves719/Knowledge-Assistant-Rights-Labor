@@ -16,6 +16,7 @@ RAW_DIR = DATA_DIR / "raw"
 CHUNKS_DIR = DATA_DIR / "chunks"
 WAGES_DIR = DATA_DIR / "wages"
 TEST_SET_DIR = DATA_DIR / "test_set"
+TABLES_DIR = DATA_DIR / "tables"
 
 # Contract settings
 CONTRACT_ID = "safeway_pueblo_clerks_2022"
@@ -29,7 +30,7 @@ COLLECTION_NAME = "union_contracts"
 
 # LLM settings
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-LLM_MODEL = "gemini-2.0-flash-lite"
+LLM_MODEL = "gemini-2.5-pro"
 
 # Retrieval settings
 TOP_K_RESULTS = 5
@@ -58,7 +59,7 @@ BM25_K1 = 1.8                # Was 1.5 - higher saturation for legal docs with r
 BM25_B = 0.75                # Document length normalization (keep default)
 
 # Hypothesis Layer Configuration (Phase 2)
-HYPOTHESIS_MODEL = "gemini-2.0-flash"  # Better reasoning than flash-lite
+HYPOTHESIS_MODEL = "gemini-2.5-flash"  # Fast reasoning for pre-retrieval hypotheses
 HYPOTHESIS_MAX_TITLES = 3              # Number of section titles to generate
 HYPOTHESIS_TIMEOUT_MS = 2000           # Timeout for hypothesis LLM call
 TITLE_BOOST_SCORE = 0.5                # Score boost when hypothesis matches article_title
@@ -69,7 +70,7 @@ FULL_ARTICLE_MIN_TOP_K_MATCH = 2       # Minimum occurrences in top-5 to trigger
 
 # Query Interpreter Configuration (Phase 4 - Multi-angle retrieval)
 CAG_ENABLE_QUERY_INTERPRETER = True    # Deep semantic analysis before retrieval
-INTERPRETER_MODEL = "gemini-2.0-flash" # Model for query interpretation
+INTERPRETER_MODEL = "gemini-2.5-flash" # Model for query interpretation
 INTERPRETER_TIMEOUT_MS = 15000         # Timeout for interpretation (15s)
 MULTI_QUERY_MAX_SEARCHES = 3           # Max number of search angles to try
 MULTI_QUERY_RESULTS_PER_SEARCH = 5     # Results per search angle
@@ -83,8 +84,8 @@ MANIFESTS_DIR = DATA_DIR / "manifests"
 # =============================================================================
 
 CAG_ENABLE_RERANKER = True             # Enable LLM-based reranking
-RERANKER_MODEL = "gemini-2.0-flash"    # Same model as interpreter
-RERANKER_TIMEOUT_MS = 10000            # 10 second timeout
+RERANKER_MODEL = "gemini-2.5-flash"    # Same model as interpreter
+RERANKER_TIMEOUT_MS = 20000            # 20 second timeout (2.5 Flash uses thinking)
 RERANKER_ORIGINAL_WEIGHT = 0.3         # Weight for original similarity score
 RERANKER_LLM_WEIGHT = 0.7              # Weight for LLM relevance score
 RERANKER_MAX_CHUNKS = 15               # Max chunks to rerank per call

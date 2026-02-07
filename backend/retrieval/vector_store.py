@@ -111,11 +111,12 @@ class ContractVectorStore:
             
             for chunk in batch:
                 chunk_id = chunk['chunk_id']
-                content = chunk['content']
-                
-                # Create embedding
-                embedding = self.embedder.encode(content).tolist()
-                
+                embed_text = chunk['content']  # Clean text for embedding (no HTML, no pipe-tables)
+                display_text = chunk.get('content_with_tables', chunk['content'])  # Rich text for LLM
+
+                # Create embedding from clean text
+                embedding = self.embedder.encode(embed_text).tolist()
+
                 # Prepare metadata (ChromaDB only supports str, int, float, bool)
                 # Handle both old format (topic_tags) and new format (topics)
                 topics = chunk.get('topics', chunk.get('topic_tags', []))
@@ -158,7 +159,7 @@ class ContractVectorStore:
                 }
                 
                 ids.append(chunk_id)
-                documents.append(content)
+                documents.append(display_text)  # Store rich text (with pipe-tables) for LLM
                 metadatas.append(metadata)
                 embeddings.append(embedding)
             
@@ -251,9 +252,11 @@ class ContractVectorStore:
                 if similarity < SIMILARITY_THRESHOLD:
                     continue
                 
+                document_text = results['documents'][0][i] if results['documents'] else ''
                 chunk = {
                     'chunk_id': chunk_id,
-                    'content': results['documents'][0][i] if results['documents'] else '',
+                    'content': document_text,
+                    'content_with_tables': document_text,  # Consistent with JSON-loaded chunks
                     'similarity': similarity,
                     **results['metadatas'][0][i]
                 }

@@ -9,6 +9,7 @@ Routes:
 
 import re
 import json
+from functools import lru_cache
 from pathlib import Path
 from typing import Optional, Tuple
 from dataclasses import dataclass
@@ -23,7 +24,7 @@ from backend.config import (
     FULL_ARTICLE_MIN_TOP_K_MATCH, CHUNKS_DIR,
     CAG_ENABLE_QUERY_INTERPRETER, MULTI_QUERY_MAX_SEARCHES,
     MULTI_QUERY_RESULTS_PER_SEARCH, MULTI_QUERY_TOTAL_RESULTS,
-    CAG_ENABLE_RERANKER
+    CAG_ENABLE_RERANKER, MANIFESTS_DIR, CONTRACT_ID
 )
 from backend.retrieval.vector_store import ContractVectorStore
 from backend.retrieval.hypothesis import (
@@ -41,22 +42,22 @@ from backend.retrieval.query_interpreter import (
 # QUERY EXPANSION - Maps worker slang to contract language
 # ============================================================================
 
-SLANG_TO_CONTRACT = {
+# Universal labor language mappings (work for any CBA)
+UNIVERSAL_SLANG = {
     # Abbreviations
-    "dug": "Drive Up & Go",
     "ot": "overtime",
     "pto": "vacation personal holiday time off",
     "fmla": "family medical leave",
     "loa": "leave of absence",
-    
-    # Float days / floating holidays -> Personal Holidays (Article 19)
+
+    # Float days / floating holidays -> Personal Holidays
     "float": "personal holiday",
     "float day": "personal holiday",
     "float days": "personal holidays",
     "floater": "personal holiday",
     "floaters": "personal holidays",
     "floating holiday": "personal holiday",
-    
+
     # Common worker terms
     "fired": "discharge termination",
     "canned": "discharge termination",
@@ -65,7 +66,7 @@ SLANG_TO_CONTRACT = {
     "written up": "discipline warning",
     "write up": "discipline warning",
     "writeup": "discipline warning",
-    
+
     # Scheduling
     "my schedule": "work schedule hours",
     "when do i work": "schedule hours",
@@ -73,15 +74,14 @@ SLANG_TO_CONTRACT = {
     "called in": "call in reporting pay",
     "call out": "call in sick absence",
     "no call no show": "absence discipline",
-    
+
     # Benefits
     "health insurance": "health benefits health trust",
     "medical": "health benefits",
     "dental": "health benefits",
     "vision": "health benefits",
-    "401k": "pension retirement",
     "retirement": "pension",
-    
+
     # Pay-related
     "raise": "wage increase progression",
     "bump": "wage increase step",
@@ -90,7 +90,7 @@ SLANG_TO_CONTRACT = {
     "sunday pay": "sunday premium",
     "night pay": "night premium",
     "holiday pay": "holiday premium",
-    
+
     # Leave types
     "bereavement": "funeral leave",
     "maternity": "family care leave",
@@ -98,19 +98,16 @@ SLANG_TO_CONTRACT = {
     "jury duty": "jury service",
     "sick time": "sick leave",
     "sick days": "sick leave",
-    
-    # Roles
-    "bagger": "courtesy clerk",
+
+    # Roles (universal)
     "cashier": "all purpose clerk",
-    "personal shopper": "Drive Up & Go courtesy clerk",
-    "clicklist": "Drive Up & Go",
-    
+
     # Union stuff
     "steward": "union steward union representative",
     "rep": "union representative steward",
     "dues": "union dues",
     "union meeting": "union business leave",
-    
+
     # Misc
     "dress code": "uniform appearance dress",
     "uniform": "dress code appearance",
@@ -121,20 +118,62 @@ SLANG_TO_CONTRACT = {
     "late policy": "attendance discipline",
 }
 
-def expand_query(query: str) -> Tuple[str, list]:
+
+# ============================================================================
+# MANIFEST-BASED ROUTING - Per-contract config loaded from JSON
+# ============================================================================
+
+@lru_cache(maxsize=16)
+def load_manifest_routing(contract_id: str = CONTRACT_ID) -> dict:
+    """Load contract-specific routing config from manifest. Cached per contract_id."""
+    manifest_path = MANIFESTS_DIR / f"{contract_id}.json"
+    if manifest_path.exists():
+        with open(manifest_path, 'r', encoding='utf-8') as f:
+            manifest = json.load(f)
+        return manifest.get("query_routing", {})
+    return {}
+
+
+def get_slang_map(contract_id: str = CONTRACT_ID) -> dict:
+    """Get merged slang map: universal defaults + contract-specific overrides."""
+    routing = load_manifest_routing(contract_id)
+    return {**UNIVERSAL_SLANG, **routing.get("slang_to_contract", {})}
+
+
+def get_topic_article_map(contract_id: str = CONTRACT_ID) -> dict:
+    """Get topic-to-articles mapping from manifest (always contract-specific)."""
+    return load_manifest_routing(contract_id).get("topic_to_articles", {})
+
+
+def get_topic_patterns(contract_id: str = CONTRACT_ID) -> dict:
+    """Get merged topic patterns: universal defaults + manifest additions."""
+    routing = load_manifest_routing(contract_id)
+    return {**_UNIVERSAL_TOPIC_PATTERNS, **routing.get("topic_patterns", {})}
+
+
+def get_classification_article_map(contract_id: str = CONTRACT_ID) -> dict:
+    """Get classification-to-articles mapping from manifest."""
+    return load_manifest_routing(contract_id).get("classification_to_articles", {})
+
+def expand_query(query: str, contract_id: str = CONTRACT_ID) -> Tuple[str, list]:
     """
     Expand query by replacing worker slang with contract terminology.
-    
+
+    Args:
+        query: The user's question
+        contract_id: Contract ID for loading contract-specific slang
+
     Returns:
         Tuple of (expanded_query, list of expansions applied)
     """
+    slang_map = get_slang_map(contract_id)
     query_lower = query.lower()
     expanded = query
     expansions_applied = []
-    
+
     # Sort by length (longest first) to avoid partial replacements
-    sorted_slang = sorted(SLANG_TO_CONTRACT.items(), key=lambda x: len(x[0]), reverse=True)
-    
+    sorted_slang = sorted(slang_map.items(), key=lambda x: len(x[0]), reverse=True)
+
     for slang, contract_term in sorted_slang:
         # Use word boundaries to avoid partial matches
         pattern = r'\b' + re.escape(slang) + r'\b'
@@ -144,7 +183,7 @@ def expand_query(query: str) -> Tuple[str, list]:
             if contract_term not in expanded.lower():
                 expanded = f"{expanded} ({contract_term})"
                 expansions_applied.append(f"{slang} -> {contract_term}")
-    
+
     return expanded, expansions_applied
 
 
@@ -167,7 +206,7 @@ class QueryIntent:
 # Wage-related keywords (specific phrases to avoid false positives)
 WAGE_KEYWORDS = [
     "my pay", "my wage", "my rate", "my salary", "my hourly",
-    "wage rate", "pay rate", "hourly rate",
+    "wage rate", "pay rate", "hourly rate", "rate of pay",
     "what do i make", "what's my pay", "what am i making",
     "how much do i make", "how much should i make", "how much will i make",
     "how much should i be making", "what should i be making", "what should i make",
@@ -193,8 +232,8 @@ CLASSIFICATION_PATTERNS = {
     "non_foods_clerk": r"non.?food|gm\s*clerk|general\s*merchandise",
 }
 
-# Topic patterns for routing
-TOPIC_PATTERNS = {
+# Universal topic patterns for routing (language patterns, not article numbers)
+_UNIVERSAL_TOPIC_PATTERNS = {
     "overtime": r"overtime|over\s*time|ot|time\s*and\s*a\s*half",
     "scheduling": r"schedul|shift|hours|when do i work",
     "seniority": r"seniority|senior|how long|years of service",
@@ -216,40 +255,10 @@ TOPIC_PATTERNS = {
     "joint_committee": r"joint.*committee|labor.*management\s*committee",
 }
 
-# Topic to relevant article mapping (for boosting)
-TOPIC_ARTICLE_MAP = {
-    "health_benefits": [40, 18],  # Article 40 = Health Trust, Article 18 = Eligibility
-    "vacation": [17],
-    "personal_holiday": [16],  # Article 16 = Holidays (includes personal holidays)
-    "sick_leave": [35],
-    "overtime": [12],
-    "scheduling": [10],
-    "seniority": [27],
-    "layoff": [29],
-    "discipline": [43, 46],
-    "grievance": [46],
-    "breaks": [24, 25],  # Article 24 = Lunch, Article 25 = Rest Periods
-    "premiums": [13, 14, 15],
-    "weingarten": [43, 45],
-    "promotion": [8, 9],
-    "drive_up_go": [7, 55],  # Article 7 Section 14h = DUG definition, Article 55 = work jurisdiction
-    "probation": [26],  # Article 26 = Probationary Employees
-    "term": [58],  # Article 58 = Term of Agreement
-    "minimum_wage": [],  # LOUs - no article number, but needed for routing
-    "joint_committee": [],  # LOU 13 - no article number
-}
 
-# Classification to relevant article mapping (for role-based boosting)
-# These articles contain provisions specific to each classification
-CLASSIFICATION_ARTICLE_MAP = {
-    "courtesy_clerk": [2, 15, 42, 55],  # Art 2 = Courtesy Clerk provisions, Art 15 = Night premium (different rate), Art 42 = Pension, Art 55 = DUG
-    "head_clerk": [9, 27],  # Art 9 = Head Clerk duties, Art 27 = Seniority
-    "cake_decorator": [29],  # Art 29 = Layoff provisions for specially trained
-    "pharmacy_tech": [8],  # Wage provisions
-    "produce_manager": [9],  # Department manager provisions
-    "bakery_manager": [9],  # Department manager provisions
-    "all_purpose_clerk": [],  # Most general - no specific boost
-}
+# NOTE: TOPIC_ARTICLE_MAP and CLASSIFICATION_ARTICLE_MAP are now loaded from
+# the contract manifest via get_topic_article_map() and get_classification_article_map().
+# Article numbers are always contract-specific and should not be hardcoded.
 
 
 def extract_classification(query: str) -> Optional[str]:
@@ -261,16 +270,19 @@ def extract_classification(query: str) -> Optional[str]:
     return None
 
 
-def extract_topic(query: str) -> Optional[str]:
+def extract_topic(query: str, contract_id: str = CONTRACT_ID) -> Optional[str]:
     """
     Extract main topic from query.
-    
+
     Uses priority ordering to prefer more specific topics over generic ones.
+    Merges universal patterns with contract-specific patterns from manifest.
     """
+    topic_patterns = get_topic_patterns(contract_id)
     query_lower = query.lower()
-    
+
     # Priority order: specific topics first, generic topics last
     TOPIC_PRIORITY = [
+        "retirement_savings",
         "weingarten",
         "health_benefits",
         "drive_up_go",
@@ -287,20 +299,20 @@ def extract_topic(query: str) -> Optional[str]:
         "breaks",
         "scheduling",  # Generic - matches "hours" so put last
     ]
-    
+
     # First pass: check topics in priority order
     for topic in TOPIC_PRIORITY:
-        if topic in TOPIC_PATTERNS:
-            pattern = TOPIC_PATTERNS[topic]
+        if topic in topic_patterns:
+            pattern = topic_patterns[topic]
             if re.search(pattern, query_lower):
                 return topic
-    
+
     # Second pass: check any remaining topics
-    for topic, pattern in TOPIC_PATTERNS.items():
+    for topic, pattern in topic_patterns.items():
         if topic not in TOPIC_PRIORITY:
             if re.search(pattern, query_lower):
                 return topic
-    
+
     return None
 
 
@@ -320,8 +332,9 @@ def is_wage_query(query: str) -> tuple[bool, list]:
 
     # Also check for specific patterns
     wage_patterns = [
-        r"how much (do|does|will|would|should) (i|we) (make|earn|get paid|be making|be earning)",
+        r"how much (do|does|will|would|should) .+ (make|earn|get paid|be making|be earning)",
         r"what (is|are|should) (my|the) (pay|wage|rate)",
+        r"what (is|are|'s) the .+ rate of pay",
         r"what should i (make|be making|earn|be earning)",
         r"\$\d+.*hour",  # Dollar amounts with hour
     ]
@@ -352,6 +365,8 @@ def is_high_stakes(query: str) -> tuple[bool, list, bool]:
         r"(i'?m|i am|was|been|being|getting) (just\s+)?(fired|terminated|discharged)",
         r"(i'?m|i am|was|been|being|getting) (disciplined|written up|suspended)",
         r"(i'?m|i am) being (harass|discriminat)",
+        r"(harassing|discriminating\s+against|retaliating\s+against)\s+me",
+        r"(my\s+)?(manager|boss|supervisor|coworker).*(harass|discriminat|retaliat)",
         r"(called|summoned) (into|to) (a\s+)?(meeting|office)",
         r"just (got|been|was) (terminated|fired|discharged|written up|suspended)",
         r"(manager|boss|supervisor).*(wants|asked|told|called).*(meeting|office|talk)",
@@ -386,27 +401,30 @@ def is_high_stakes(query: str) -> tuple[bool, list, bool]:
     return len(matched) > 0, matched, is_active
 
 
-def classify_intent(query: str, user_classification: str = None) -> QueryIntent:
+def classify_intent(query: str, user_classification: str = None, contract_id: str = CONTRACT_ID) -> QueryIntent:
     """
     Classify the intent of a user query.
-    
+
     Args:
         query: The user's question
         user_classification: Optional classification from user profile (e.g., from dropdown)
-    
+        contract_id: Contract ID for loading contract-specific routing config
+
     Returns:
         QueryIntent with type, confidence, and metadata
     """
     # Use provided classification or try to extract from query
     classification = user_classification or extract_classification(query)
-    topic = extract_topic(query)
-    
-    # Get relevant articles for the detected topic
-    relevant_articles = TOPIC_ARTICLE_MAP.get(topic, []) if topic else []
-    
+    topic = extract_topic(query, contract_id)
+
+    # Get relevant articles from manifest (contract-specific)
+    topic_article_map = get_topic_article_map(contract_id)
+    relevant_articles = topic_article_map.get(topic, []) if topic else []
+
     # Add classification-specific articles for role-based boosting
     if classification:
-        classification_articles = CLASSIFICATION_ARTICLE_MAP.get(classification, [])
+        classification_article_map = get_classification_article_map(contract_id)
+        classification_articles = classification_article_map.get(classification, [])
         relevant_articles = list(set(relevant_articles + classification_articles))
     
     is_wage, wage_matches = is_wage_query(query)
@@ -717,7 +735,8 @@ class HybridRetriever:
                 use_expansion=True,
                 vector_weight=HYBRID_VECTOR_WEIGHT,
                 keyword_weight=HYBRID_KEYWORD_WEIGHT,
-                boost_articles=intent.relevant_articles
+                boost_articles=intent.relevant_articles,
+                concept_query=query,  # Use original query for stable concept matching
             )
         else:
             # Fallback to vector-only search
