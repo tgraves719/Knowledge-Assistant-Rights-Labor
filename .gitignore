@@ -48,3 +48,7 @@ Thumbs.db
 benchmark_results.json
 *.log
 
+# Chroma / vector DB
+data/chroma_db/
+*.bin
+chroma.sqlite3

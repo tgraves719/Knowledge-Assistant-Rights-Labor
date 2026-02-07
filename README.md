@@ -1,7 +1,9 @@
-# KARL — The Union Steward Assistant
+# KARL — Knowledge Assistant for Rights & Labor
 
-KARL is an AI assistant designed to help workers and unions
+KARL is an AI-powered RAG system designed to help workers and unions
 understand, navigate, and enforce their collective bargaining agreements.
+
+Currently serving: **UFCW Local 7 — Safeway Pueblo Clerks (2022-2025)**
 
 The goal of KARL is to:
 - Reduce information asymmetry between workers and employers
@@ -19,10 +21,24 @@ The goal of KARL is to:
 ## Features
 
 - **Citation-Focused Responses**: Every answer includes specific Article/Section citations
-- **Deterministic Wage Lookups**: 100% accurate wage queries via structured JSON
-- **Intent Classification**: Routes queries to appropriate retrieval strategy
+- **Deterministic Wage Lookups**: 100% accurate wage queries via structured JSON tables
+- **Context-Aware Generation (CAG)**: 5-phase retrieval pipeline translates worker language into contract terminology
 - **High-Stakes Detection**: Flags discipline/termination/harassment issues with escalation language
-- **Hybrid Retrieval**: Combines vector search with structured lookups
+- **Hybrid Retrieval**: Vector search (ChromaDB + MiniLM-L6-v2) fused with BM25 keyword search
+- **LLM Reranker**: Post-retrieval relevance scoring reorders chunks by semantic fit
+- **Contract-Specific Routing**: Manifest-driven configuration — new contracts need only a JSON file, no code changes
+- **Interactive Citation Navigation**: Clickable citations with popover previews and deep linking
+
+## Current Performance
+
+**55/55 (100%)** on the golden benchmark test set across all 19 categories.
+
+| Metric | Result |
+|--------|--------|
+| Overall Retrieval Accuracy | **100%** (55/55) |
+| Wage Lookup | 100% |
+| Escalation Detection | 100% |
+| All 19 categories | 100% |
 
 ## Project Structure
 
@@ -30,27 +46,96 @@ The goal of KARL is to:
 karl/
 ├── backend/
 │   ├── ingest/
-│   │   ├── parse_contract.py      # Article/Section chunker
-│   │   └── extract_wages.py       # Wage table extractor
+│   │   ├── smart_chunker.py       # Article/Section/LOU chunker
+│   │   ├── enricher.py            # LLM metadata enrichment (Gemini)
+│   │   ├── extract_wages.py       # Wage table extractor
+│   │   ├── table_extractor.py     # JSON-based table extraction
+│   │   ├── rebuild_index.py       # Vector index rebuild utility
+│   │   ├── manifest.py            # Contract manifest generator
+│   │   └── schema.py              # Chunk schema definitions
 │   ├── retrieval/
-│   │   ├── vector_store.py        # ChromaDB wrapper
-│   │   └── router.py              # Intent classification + hybrid retrieval
+│   │   ├── router.py              # Intent classification + multi-angle retrieval
+│   │   ├── hybrid_search.py       # Vector + BM25 fusion with concept boost
+│   │   ├── hypothesis.py          # LLM article title prediction (CAG Phase 2)
+│   │   ├── query_interpreter.py   # Deep semantic query analysis (CAG Phase 4)
+│   │   ├── reranker.py            # LLM relevance reranker (CAG Phase 5)
+│   │   ├── vector_store.py        # ChromaDB wrapper (dual content fields)
+│   │   └── query_expansion.py     # Slang-to-contract term expansion
 │   ├── generation/
 │   │   ├── prompts.py             # System prompts
+│   │   ├── tools.py               # LLM tool definitions
+│   │   ├── context.py             # Context assembly
 │   │   └── verifier.py            # Citation verification
+│   ├── user/
+│   │   └── profile.py             # User profile management
 │   ├── api.py                     # FastAPI backend
-│   ├── evaluate.py                # Test evaluation
-│   └── config.py                  # Configuration
+│   ├── evaluate.py                # Benchmark evaluation
+│   └── config.py                  # Configuration & feature flags
 ├── data/
-│   ├── chunks/                    # Parsed contract chunks
-│   ├── wages/                     # Structured wage tables
-│   ├── chroma_db/                 # Vector database
-│   └── test_set/                  # Golden Q&A test set
+│   ├── chunks/                    # Parsed contract chunks (320 chunks)
+│   ├── wages/                     # Structured wage tables (JSON)
+│   ├── tables/                    # Extracted table data
+│   ├── manifests/                 # Contract-specific routing config
+│   ├── chroma_db/                 # Vector database (ChromaDB)
+│   └── test_set/                  # Golden Q&A test set (55 cases)
 ├── frontend/
-│   └── index.html                 # Web interface
-├── SW+Pueblo+Clerks+2022.2025.md  # Source contract (markdown)
-├── SW+Pueblo+Clerks+2022.2025.json # Source contract (JSON)
-└── requirements.txt
+│   └── index.html                 # Web interface (dark mode, citation nav)
+├── legal/
+│   ├── ETHICAL-USE.md             # Ethical use policy
+│   ├── COMMERCIAL-LICENSE.md      # Commercial licensing terms
+│   └── LICENSE-EXCEPTION.md       # License exceptions for unions
+├── requirements.txt
+└── UPDATE_LOG.md                  # Detailed version history
+```
+
+## Architecture
+
+KARL uses a 5-phase Context-Aware Generation (CAG) pipeline:
+
+```
+User Query
+    │
+    ▼
+┌─────────────────────────────────────────────────┐
+│  Phase 1: Intent Router                         │
+│  Wage query? High-stakes? Contract question?    │
+│  Slang expansion ("break" → "rest period")      │
+└──────────────────┬──────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────┐
+│  Phase 2: Hypothesis Layer                      │
+│  LLM predicts relevant article titles           │
+│  Matching chunks get a similarity boost         │
+└──────────────────┬──────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────┐
+│  Phase 3: Hybrid Search + Article Expansion     │
+│  Vector (MiniLM-L6-v2) + BM25 via RRF fusion   │
+│  If 2+ top results from same article → expand   │
+└──────────────────┬──────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────┐
+│  Phase 4: Query Interpreter (Multi-Angle)       │
+│  LLM generates hypothetical answers + alt       │
+│  search queries for vocabulary bridging          │
+└──────────────────┬──────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────┐
+│  Phase 5: LLM Reranker                          │
+│  Gemini scores each chunk for relevance (1-10)  │
+│  Combined score: 30% original + 70% LLM         │
+└──────────────────┬──────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────┐
+│  Answer Generation (Gemini 2.5 Pro)             │
+│  Grounded response with Article/Section cites   │
+│  Citation verification before delivery          │
+└─────────────────────────────────────────────────┘
 ```
 
 ## Quick Start
@@ -61,38 +146,34 @@ karl/
 pip install -r requirements.txt
 ```
 
-### 2. Set Up API Key (Optional but Recommended)
+### 2. Set Up API Key
 
-The system works without an API key, but for full functionality (synthesized answers), you'll want a Gemini API key:
+Get a free API key from [Google AI Studio](https://aistudio.google.com/app/apikey), then create a `.env` file:
 
-1. Get a free API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Create a `.env` file in the project root:
-   ```bash
-   # Copy the example file
-   cp env.example .env
-   
-   # Then edit .env and add your key:
-   GEMINI_API_KEY=your_actual_api_key_here
-   ```
+```bash
+cp env.example .env
+# Edit .env and add your key:
+# GEMINI_API_KEY=your_actual_api_key_here
+```
 
-**Note:** Without an API key, Karl will still work but will show raw contract chunks instead of synthesized answers. Wage lookups and retrieval work perfectly without a key.
+Without an API key, KARL still provides wage lookups and chunk retrieval, but cannot generate synthesized answers.
 
 ### 3. Process the Contract
 
 ```bash
 # Parse contract into chunks
-python backend/ingest/parse_contract.py
+python -m backend.ingest.smart_chunker
 
-# Extract wage tables
-python backend/ingest/extract_wages.py
+# Enrich chunks with LLM-generated metadata
+python -u -m backend.ingest.enricher --batch-size 15 --delay 1.0
 
 # Build vector index
-python backend/retrieval/vector_store.py
+python -m backend.ingest.rebuild_index
 ```
 
-**Note:** If you're cloning from GitHub, the processed data files may already be included. You can skip this step if `data/chunks/contract_chunks.json` and `data/wages/wage_tables.json` already exist.
+If cloning from GitHub, processed data files may already be included.
 
-### 4. Start the API Server
+### 4. Start the Server
 
 ```bash
 python -m uvicorn backend.api:app --host 127.0.0.1 --port 8000
@@ -100,7 +181,7 @@ python -m uvicorn backend.api:app --host 127.0.0.1 --port 8000
 
 ### 5. Open the Frontend
 
-Open `frontend/index.html` in a browser, or navigate to `http://127.0.0.1:8000` in your browser.
+Navigate to `http://127.0.0.1:8000` in your browser.
 
 ## API Endpoints
 
@@ -131,112 +212,48 @@ POST /api/wage
 
 ## Evaluation
 
-Run the evaluation suite against the golden test set:
+Run the benchmark against the golden test set:
 
 ```bash
-python backend/evaluate.py
+python -m backend.evaluate
 ```
 
-### Current Performance
+## Models
 
-Based on evaluation against 55 golden test cases:
-
-| Category | Accuracy | Notes |
-|----------|----------|-------|
-| **Wage Lookups** | 100% | Perfect accuracy on all wage queries |
-| **Escalation Detection** | 100% | High-stakes topics correctly flagged |
-| Classification | 100% | Job classification queries |
-| Breaks | 100% | Rest period queries |
-| Grievance | 100% | Grievance procedure queries |
-| Holiday | 100% | Holiday pay and scheduling |
-| Layoff | 100% | Layoff and bumping procedures |
-| Refusal | 100% | Correctly refuses when context insufficient |
-| Safety | 100% | Safety-related queries |
-| Sick Leave | 100% | Sick leave provisions |
-| Time Cards | 100% | Time card requirements |
-| Vacation | 100% | Vacation accrual and scheduling |
-| Benefits | 67% | Some benefit queries need improvement |
-| Discipline | 75% | Most discipline queries work |
-| Overtime | 50% | Some overtime scheduling queries fail |
-| Union | 50% | Union-related queries need work |
-| Seniority | 33% | Seniority calculation queries need improvement |
-| Scheduling | 0% | Article 10 scheduling provisions not well parsed |
-| Dress Code | 0% | LOU provisions not in test set |
-| **Overall Retrieval** | **76.4%** | 42/55 test cases pass |
-
-**Known Issues:**
-- Article 10 (Scheduling) sections are not being parsed correctly
-- Article 27 (Seniority) sections 63 and 66 need better parsing
-- Some Letter of Understanding (LOU) provisions are missing from chunks
-
-**Improvement Areas:**
-- Parser regex needs updates for Article 10 and Article 27
-- LOU provisions should be added to the chunking process
-
-Note: Some articles are not yet being parsed. Improving the parser regex will increase retrieval accuracy.
-
-## Architecture
-
-```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   User Query    │────▶│  Intent Router   │────▶│  Vector Search  │
-└─────────────────┘     │                  │     │  (ChromaDB)     │
-                        │  - Wage Query    │     └────────┬────────┘
-                        │  - Contract Q    │              │
-                        │  - High-Stakes   │     ┌────────▼────────┐
-                        └────────┬─────────┘     │  Wage Lookup    │
-                                 │               │  (JSON)         │
-                                 │               └────────┬────────┘
-                        ┌────────▼─────────┐              │
-                        │    LLM + Prompt  │◀─────────────┘
-                        │  (Gemini/Claude) │
-                        └────────┬─────────┘
-                                 │
-                        ┌────────▼─────────┐
-                        │ Citation Verifier│
-                        └────────┬─────────┘
-                                 │
-                        ┌────────▼─────────┐
-                        │  Grounded Answer │
-                        │  with Citations  │
-                        └──────────────────┘
-```
+| Component | Model | Purpose |
+|-----------|-------|---------|
+| Answer Generation | Gemini 2.5 Pro | Final response synthesis |
+| Hypothesis Layer | Gemini 2.5 Flash | Article title prediction |
+| Query Interpreter | Gemini 2.5 Flash | Semantic query analysis |
+| Reranker | Gemini 2.5 Flash | Chunk relevance scoring |
+| Enricher | Gemini 2.5 Flash | Chunk metadata enrichment |
+| Embeddings | all-MiniLM-L6-v2 | Local vector embeddings (no API) |
 
 ## Configuration
 
+All features can be toggled via flags in `backend/config.py`:
+
+```python
+CAG_ENABLE_HYPOTHESIS_LAYER = True       # Phase 2
+CAG_ENABLE_FULL_ARTICLE_EXPANSION = True # Phase 3
+CAG_ENABLE_QUERY_INTERPRETER = True      # Phase 4
+CAG_ENABLE_RERANKER = True               # Phase 5
+```
+
 ### Environment Variables
 
-The easiest way to configure Karl is using a `.env` file (see Quick Start step 2).
+Set via `.env` file or shell:
 
-Alternatively, you can set environment variables:
-
-**Windows (PowerShell):**
-```powershell
-$env:GEMINI_API_KEY="your-api-key"
-```
-
-**Linux/Mac:**
 ```bash
-export GEMINI_API_KEY="your-api-key"
+GEMINI_API_KEY=your-api-key
 ```
-
-### What Works Without an API Key?
-
-The system gracefully handles missing API keys and still provides:
-- ✅ Accurate wage lookups (100% deterministic from JSON)
-- ✅ Relevant contract chunk retrieval (vector search)
-- ✅ Intent classification
-- ✅ Citation extraction
-- ⚠️ **Limited:** Shows raw contract chunks instead of synthesized answers
-
-For the best experience, add your Gemini API key to enable full LLM-powered responses.
 
 ## Design Principles
 
 1. **Citation Required**: Every claim must cite Article/Section
 2. **No Hallucination**: Only answer from retrieved context
 3. **Safe Refusal**: "I cannot find that in your contract" when uncertain
-4. **Escalation**: High-stakes topics always recommend contacting steward
+4. **Escalation**: High-stakes topics always recommend contacting your steward
 
 ## License
 
@@ -245,7 +262,7 @@ KARL is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
 If you deploy KARL as a service, you must provide the source code to your users.
 
 Unions and workers: use it freely.
-Employers: see COMMERCIAL-LICENSE.md.
+Employers: see `legal/COMMERCIAL-LICENSE.md`.
 
 ## What KARL Will Not Do
 
@@ -254,7 +271,9 @@ Employers: see COMMERCIAL-LICENSE.md.
 - Assist with union busting
 - Serve as a productivity surveillance tool
 
+See `legal/ETHICAL-USE.md` for the full ethical use policy.
+
 ## Status
 
-This project is under active development. Contributions are welcome—but must
+This project is under active development (v0.8). Contributions are welcome — but must
 align with the principles above.
