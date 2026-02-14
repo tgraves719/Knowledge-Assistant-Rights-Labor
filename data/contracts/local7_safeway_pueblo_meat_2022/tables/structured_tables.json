@@ -1,0 +1,1453 @@
+[
+  {
+    "table_id": "tbl_art42_1",
+    "content_hash": "cc92ea37edb582ce",
+    "headers": [
+      "",
+      "Current",
+      "January 2022 hours payable in February 2022",
+      "January 2023 hours payable in February 2023 Up to",
+      "January 2024 hours payable in February 2024 Up to"
+    ],
+    "rows": [
+      [
+        "Plan A Hired Before 3/5/2005",
+        "$ 988.78",
+        "$ 1,030.31",
+        "$ 1,081.82",
+        "$ 1,135.92"
+      ],
+      [
+        "Plan A Hired After 3/5/2005",
+        "$ 850.59",
+        "$ 886.31",
+        "$ 930.63",
+        "$ 977.16"
+      ],
+      [
+        "Plan B Hired Before 3/5/2005",
+        "$ 791.01",
+        "$ 824.23",
+        "$ 865.44",
+        "$ 908.72"
+      ],
+      [
+        "Plan B Hired After 3/5/2005",
+        "$ 680.47",
+        "$ 709.05",
+        "$ 744.50",
+        "$ 781.73"
+      ],
+      [
+        "Plan C Hired After 3/5/2005",
+        "$ 428.68",
+        "$ 446.68",
+        "$ 469.02",
+        "$ 492.47"
+      ]
+    ],
+    "markdown": "|                              | Current  | January 2022 hours payable in February 2022 | January 2023 hours payable in February 2023 Up to | January 2024 hours payable in February 2024 Up to |\n| ---------------------------- | -------- | ------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- |\n| Plan A Hired Before 3/5/2005 | $ 988.78 | $ 1,030.31                                  | $ 1,081.82                                        | $ 1,135.92                                        |\n| Plan A Hired After 3/5/2005  | $ 850.59 | $ 886.31                                    | $ 930.63                                          | $ 977.16                                          |\n| Plan B Hired Before 3/5/2005 | $ 791.01 | $ 824.23                                    | $ 865.44                                          | $ 908.72                                          |\n| Plan B Hired After 3/5/2005  | $ 680.47 | $ 709.05                                    | $ 744.50                                          | $ 781.73                                          |\n| Plan C Hired After 3/5/2005  | $ 428.68 | $ 446.68                                    | $ 469.02                                          | $ 492.47                                          |",
+    "csv": ",\"Current\",\"January 2022 hours payable in February 2022\",\"January 2023 hours payable in February 2023 Up to\",\"January 2024 hours payable in February 2024 Up to\"\n\"Plan A Hired Before 3/5/2005\",\"$ 988.78\",\"$ 1,030.31\",\"$ 1,081.82\",\"$ 1,135.92\"\n\"Plan A Hired After 3/5/2005\",\"$ 850.59\",\"$ 886.31\",\"$ 930.63\",\"$ 977.16\"\n\"Plan B Hired Before 3/5/2005\",\"$ 791.01\",\"$ 824.23\",\"$ 865.44\",\"$ 908.72\"\n\"Plan B Hired After 3/5/2005\",\"$ 680.47\",\"$ 709.05\",\"$ 744.50\",\"$ 781.73\"\n\"Plan C Hired After 3/5/2005\",\"$ 428.68\",\"$ 446.68\",\"$ 469.02\",\"$ 492.47\"",
+    "is_perfect": false,
+    "json_path": "pages[36].items[5]",
+    "heading_path": [
+      "401K PLAN"
+    ],
+    "parent_article": 42,
+    "parent_section": 126,
+    "parent_chunk_id": "art42_sec126_seg_001_000"
+  },
+  {
+    "table_id": "tbl_art42_2",
+    "content_hash": "e67d22c3b01167de",
+    "headers": [
+      "Year",
+      "2022",
+      "2023",
+      "2024"
+    ],
+    "rows": [
+      [
+        "PPO Medical",
+        "6.5%",
+        "6.5%",
+        "6.5%"
+      ],
+      [
+        "Prescription Drug",
+        "8.0%",
+        "8.0%",
+        "8.0%"
+      ],
+      [
+        "Dental",
+        "4.0%",
+        "4.0%",
+        "4.0%"
+      ],
+      [
+        "Vision",
+        "3.0%",
+        "3.0%",
+        "3.0%"
+      ],
+      [
+        "Time Loss",
+        "0.0%",
+        "0.0%",
+        "0.0%"
+      ],
+      [
+        "Kaiser Premium",
+        "6.5%",
+        "6.5%",
+        "6.5%"
+      ],
+      [
+        "Medicare Advantage",
+        "Actual",
+        "Actual",
+        "Actual"
+      ],
+      [
+        "Life Premium",
+        "0.0%",
+        "0.0%",
+        "0.0%"
+      ],
+      [
+        "Provider Access Fees",
+        "Actual",
+        "Actual",
+        "Actual"
+      ],
+      [
+        "Stop Loss Premiums",
+        "Actual",
+        "Actual",
+        "Actual"
+      ],
+      [
+        "Administration",
+        "3.0%",
+        "3.0%",
+        "3.0%"
+      ],
+      [
+        "Investment Income",
+        "1.25%",
+        "1.25%",
+        "1.25%"
+      ]
+    ],
+    "markdown": "| Year                 | 2022   | 2023   | 2024   |\n| -------------------- | ------ | ------ | ------ |\n| PPO Medical          | 6.5%   | 6.5%   | 6.5%   |\n| Prescription Drug    | 8.0%   | 8.0%   | 8.0%   |\n| Dental               | 4.0%   | 4.0%   | 4.0%   |\n| Vision               | 3.0%   | 3.0%   | 3.0%   |\n| Time Loss            | 0.0%   | 0.0%   | 0.0%   |\n| Kaiser Premium       | 6.5%   | 6.5%   | 6.5%   |\n| Medicare Advantage   | Actual | Actual | Actual |\n| Life Premium         | 0.0%   | 0.0%   | 0.0%   |\n| Provider Access Fees | Actual | Actual | Actual |\n| Stop Loss Premiums   | Actual | Actual | Actual |\n| Administration       | 3.0%   | 3.0%   | 3.0%   |\n| Investment Income    | 1.25%  | 1.25%  | 1.25%  |",
+    "csv": "\"Year\",\"2022\",\"2023\",\"2024\"\n\"PPO Medical\",\"6.5%\",\"6.5%\",\"6.5%\"\n\"Prescription Drug\",\"8.0%\",\"8.0%\",\"8.0%\"\n\"Dental\",\"4.0%\",\"4.0%\",\"4.0%\"\n\"Vision\",\"3.0%\",\"3.0%\",\"3.0%\"\n\"Time Loss\",\"0.0%\",\"0.0%\",\"0.0%\"\n\"Kaiser Premium\",\"6.5%\",\"6.5%\",\"6.5%\"\n\"Medicare Advantage\",\"Actual\",\"Actual\",\"Actual\"\n\"Life Premium\",\"0.0%\",\"0.0%\",\"0.0%\"\n\"Provider Access Fees\",\"Actual\",\"Actual\",\"Actual\"\n\"Stop Loss Premiums\",\"Actual\",\"Actual\",\"Actual\"\n\"Administration\",\"3.0%\",\"3.0%\",\"3.0%\"\n\"Investment Income\",\"1.25%\",\"1.25%\",\"1.25%\"",
+    "is_perfect": false,
+    "json_path": "pages[37].items[3]",
+    "heading_path": [
+      "401K PLAN"
+    ],
+    "parent_article": 42,
+    "parent_section": 126,
+    "parent_chunk_id": "art42_sec126_seg_005_000"
+  },
+  {
+    "table_id": "tbl_art42_3",
+    "content_hash": "299980d8bd56f493",
+    "headers": [
+      "Drug Class",
+      "Co-Pay"
+    ],
+    "rows": [],
+    "markdown": "| Drug Class | Co-Pay |\n| ---------- | ------ |",
+    "csv": "\"Drug Class\",\"Co-Pay\"",
+    "is_perfect": false,
+    "json_path": "pages[41].items[2]",
+    "heading_path": [
+      "<u>Health and Care Management</u>"
+    ],
+    "parent_article": 42,
+    "parent_section": 126,
+    "parent_chunk_id": "art42_sec126_seg_005_005"
+  },
+  {
+    "table_id": "tbl_art42_4",
+    "content_hash": "50a72e12228235bb",
+    "headers": [
+      "Generic",
+      "$2.50"
+    ],
+    "rows": [
+      [
+        "Formulary Brand",
+        "$10"
+      ],
+      [
+        "Nonformulary Brand",
+        "$20"
+      ]
+    ],
+    "markdown": "| Generic            | $2.50 |\n| ------------------ | ----- |\n| Formulary Brand    | $10   |\n| Nonformulary Brand | $20   |",
+    "csv": "\"Generic\",\"$2.50\"\n\"Formulary Brand\",\"$10\"\n\"Nonformulary Brand\",\"$20\"",
+    "is_perfect": false,
+    "json_path": "pages[42].items[0]",
+    "heading_path": [
+      "<u>Health and Care Management</u>"
+    ],
+    "parent_article": 42,
+    "parent_section": 126,
+    "parent_chunk_id": "art42_sec126_seg_005_005"
+  },
+  {
+    "table_id": "tbl_art42_5",
+    "content_hash": "27be314ba9beecb7",
+    "headers": [
+      "Service",
+      "PPO coverage(In-network)"
+    ],
+    "rows": [
+      [
+        "Mammography",
+        "Plan pays 100%"
+      ],
+      [
+        "Routine Annual Physical Exam",
+        "Plan pays 100%"
+      ],
+      [
+        "Well-baby care",
+        "Plan pays 100%"
+      ],
+      [
+        "Childhood Immunizations",
+        "Plan pays 100%"
+      ],
+      [
+        "Papanicolaou (Pap) smear and pelvic examination",
+        "Plan pays 100%"
+      ],
+      [
+        "Prostate specific antigen (PSA) testing",
+        "Plan pays 100%"
+      ],
+      [
+        "Colonoscopy",
+        "Plan pays 100%"
+      ]
+    ],
+    "markdown": "| Service                                         | PPO coverage(In-network) |\n| ----------------------------------------------- | ------------------------ |\n| Mammography                                     | Plan pays 100%           |\n| Routine Annual Physical Exam                    | Plan pays 100%           |\n| Well-baby care                                  | Plan pays 100%           |\n| Childhood Immunizations                         | Plan pays 100%           |\n| Papanicolaou (Pap) smear and pelvic examination | Plan pays 100%           |\n| Prostate specific antigen (PSA) testing         | Plan pays 100%           |\n| Colonoscopy                                     | Plan pays 100%           |",
+    "csv": "\"Service\",\"PPO coverage(In-network)\"\n\"Mammography\",\"Plan pays 100%\"\n\"Routine Annual Physical Exam\",\"Plan pays 100%\"\n\"Well-baby care\",\"Plan pays 100%\"\n\"Childhood Immunizations\",\"Plan pays 100%\"\n\"Papanicolaou (Pap) smear and pelvic examination\",\"Plan pays 100%\"\n\"Prostate specific antigen (PSA) testing\",\"Plan pays 100%\"\n\"Colonoscopy\",\"Plan pays 100%\"",
+    "is_perfect": false,
+    "json_path": "pages[42].items[3]",
+    "heading_path": [
+      "<u>Health and Care Management</u>"
+    ],
+    "parent_article": 42,
+    "parent_section": 126,
+    "parent_chunk_id": "art42_sec126_seg_007_000"
+  },
+  {
+    "table_id": "tbl_art57_1",
+    "content_hash": "f195e70a9d336d5c",
+    "headers": [
+      "",
+      "PLAN AENROLLED & PARTICIPATING",
+      "PLAN BENROLLED & PARTICIPATING",
+      "PLAN CENROLLED & PARTICIPATING"
+    ],
+    "rows": [
+      [
+        "DEDUCTIBLE",
+        "$500 PER PERSON,<br/>MAX 3 PER FAMILY",
+        "$600 PER PERSON,<br/>MAX 3 PER FAMILY",
+        "$700 PER PERSON,<br/>MAX 3 PER FAMILY"
+      ],
+      [
+        "OFFICE VISIT<br/>PPO-CO-PAY (PRIMARY CARE)<br/>COVERAGE PAYS",
+        "IN-NETWORK: PLAN PAYS 100% AFTER $25 PER VISIT COPAY; NO DEDUCTIBLE.<br/>FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 80% AFTER DEDUCTIBLE IS MET.",
+        "IN-NETWORK: PLAN PAYS 100% AFTER $30 PER VISIT COPAY; NO DEDUCTIBLE.<br/>FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 75% AFTER DEDUCTIBLE IS MET.",
+        "IN-NETWORK: PLAN PAYS 100% AFTER $40 PER VISIT COPAY; NO DEDUCTIBLE.<br/>FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 65% AFTER DEDUCTIBLE IS MET."
+      ],
+      [
+        "NON PPO CO-PAY (PRIMARY CARE)<br/>COVERAGE PAYS",
+        "NON-NETWORK: PLAN PAYS 65% AFTER DEDUCTIBLE IS MET.",
+        "NON-NETWORK: PLAN PAYS 55% AFTER DEDUCTIBLE IS MET.",
+        "NON-NETWORK: PLAN PAYS 50% AFTER DEDUCTIBLE IS MET."
+      ],
+      [
+        "CO-INSURANCE<br/>PPO - NETWORK<br/>OUT OF POCKET MAX",
+        "80%<br/>$2,500 PER PERSON; UP TO $4000 PER FAMILY",
+        "75%<br/>$3,000 PER PERSON; UP TO $5000 PER FAMILY",
+        "65%<br/>$4,000 PER PERSON; UP TO $7000 PER FAMILY"
+      ],
+      [
+        "NON-PPO<br/>NON-NETWORK<br/>OUT OF POCKET MAX",
+        "65%<br/>$7,500 PER PERSON & NO FAMILY MAXIMUM",
+        "55%<br/>$9,000 PER PERSON & NO FAMILY MAXIMUM",
+        "50%<br/>$12,000 PER PERSON & NO FAMILY MAXIMUM"
+      ],
+      [
+        "MAJOR MEDICAL CALENDAR YEAR MAX",
+        "NO MAXIMUM",
+        "NO MAXIMUM",
+        "NO MAXIMUM"
+      ],
+      [
+        "VISION",
+        "$240SGL/$260BI/$290TRI/<br/>$240 FOR CONTACTS EVERY 2 YRS",
+        "$240SGL/$260BI/$290TRI/<br/>$240 FOR CONTACTS EVERY 2 YRS",
+        "$240SGL/$260BI/$290TRI/<br/>$240 FOR CONTACTS EVERY 2 YRS"
+      ],
+      [
+        "DENTAL",
+        "ANNUAL MAX $1,500",
+        "PREVENTATIVE ONLY",
+        "PREVENTATIVE ONLY"
+      ],
+      [
+        "RX CO-PAYS<br/>RETAIL<br/><br/>NOTE: SEE PLAN DOCUMENT FOR COPAYMENTS ON MAINTENANCE MEDICATIONS (90 DAY SUPPLY)",
+        "$5 GENERIC<br/>20% UP TO $50 PER RX FOR PREFERRED BRAND<br/>30% UP TO $75 PER RX FOR NON-PREFERRED BRAND<br/>20% UP TO $100 PER RX FOR SPECIALTY",
+        "$5 GENERIC<br/>20% UP TO $50 PER RX FOR PREFERRED BRAND<br/>30% UP TO $75 PER RX FOR NON-PREFERRED BRAND<br/>20% UP TO $100 PER RX FOR SPECIALTY",
+        "$5 GENERIC<br/>20% UP TO $50 PER RX FOR PREFERRED BRAND<br/>30% UP TO $75 PER RX FOR NON-PREFERRED BRAND<br/>20% UP TO $100 PER RX FOR SPECIALTY"
+      ],
+      [
+        "LIFE INSURANCE",
+        "$10,000",
+        "$10,000",
+        "$10,000"
+      ],
+      [
+        "COORDINATION OF BENEFITS",
+        "CARVE OUT TO PLAN MAX",
+        "CARVE OUT TO PLAN MAX",
+        "CARVE OUT TO PLAN MAX"
+      ],
+      [
+        "ACCIDENTAL DEATH/PERSONAL ACCIDENT INSUR",
+        "$10,000<br/>EMPLOYEE ONLY",
+        "$10,000<br/>EMPLOYEE ONLY",
+        "$10,000<br/>EMPLOYEE ONLY"
+      ],
+      [
+        "SPOUSAL FEE",
+        "$100 PER MONTH",
+        "$100 PER MONTH",
+        "$100 PER MONTH"
+      ],
+      [
+        "SHORT TERM DISABILITY<br/>(payable for up to 26 weeks)",
+        "70% OF AVE. WKLY WAGE, NOT TO EXCEED $300",
+        "70% OF AVE. WKLY WAGE, NOT TO EXCEED $300",
+        "70% OF AVE. WKLY WAGE, NOT TO EXCEED $300"
+      ]
+    ],
+    "markdown": "|                                                                                                                  | PLAN AENROLLED & PARTICIPATING                                                                                                                                   | PLAN BENROLLED & PARTICIPATING                                                                                                                                   | PLAN CENROLLED & PARTICIPATING                                                                                                                                   |\n| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| DEDUCTIBLE                                                                                                       | $500 PER PERSON,<br/>MAX 3 PER FAMILY                                                                                                                            | $600 PER PERSON,<br/>MAX 3 PER FAMILY                                                                                                                            | $700 PER PERSON,<br/>MAX 3 PER FAMILY                                                                                                                            |\n| OFFICE VISIT<br/>PPO-CO-PAY (PRIMARY CARE)<br/>COVERAGE PAYS                                                     | IN-NETWORK: PLAN PAYS 100% AFTER $25 PER VISIT COPAY; NO DEDUCTIBLE.<br/>FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 80% AFTER DEDUCTIBLE IS MET. | IN-NETWORK: PLAN PAYS 100% AFTER $30 PER VISIT COPAY; NO DEDUCTIBLE.<br/>FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 75% AFTER DEDUCTIBLE IS MET. | IN-NETWORK: PLAN PAYS 100% AFTER $40 PER VISIT COPAY; NO DEDUCTIBLE.<br/>FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 65% AFTER DEDUCTIBLE IS MET. |\n| NON PPO CO-PAY (PRIMARY CARE)<br/>COVERAGE PAYS                                                                  | NON-NETWORK: PLAN PAYS 65% AFTER DEDUCTIBLE IS MET.                                                                                                              | NON-NETWORK: PLAN PAYS 55% AFTER DEDUCTIBLE IS MET.                                                                                                              | NON-NETWORK: PLAN PAYS 50% AFTER DEDUCTIBLE IS MET.                                                                                                              |\n| CO-INSURANCE<br/>PPO - NETWORK<br/>OUT OF POCKET MAX                                                             | 80%<br/>$2,500 PER PERSON; UP TO $4000 PER FAMILY                                                                                                                | 75%<br/>$3,000 PER PERSON; UP TO $5000 PER FAMILY                                                                                                                | 65%<br/>$4,000 PER PERSON; UP TO $7000 PER FAMILY                                                                                                                |\n| NON-PPO<br/>NON-NETWORK<br/>OUT OF POCKET MAX                                                                    | 65%<br/>$7,500 PER PERSON & NO FAMILY MAXIMUM                                                                                                                    | 55%<br/>$9,000 PER PERSON & NO FAMILY MAXIMUM                                                                                                                    | 50%<br/>$12,000 PER PERSON & NO FAMILY MAXIMUM                                                                                                                   |\n| MAJOR MEDICAL CALENDAR YEAR MAX                                                                                  | NO MAXIMUM                                                                                                                                                       | NO MAXIMUM                                                                                                                                                       | NO MAXIMUM                                                                                                                                                       |\n| VISION                                                                                                           | $240SGL/$260BI/$290TRI/<br/>$240 FOR CONTACTS EVERY 2 YRS                                                                                                        | $240SGL/$260BI/$290TRI/<br/>$240 FOR CONTACTS EVERY 2 YRS                                                                                                        | $240SGL/$260BI/$290TRI/<br/>$240 FOR CONTACTS EVERY 2 YRS                                                                                                        |\n| DENTAL                                                                                                           | ANNUAL MAX $1,500                                                                                                                                                | PREVENTATIVE ONLY                                                                                                                                                | PREVENTATIVE ONLY                                                                                                                                                |\n| RX CO-PAYS<br/>RETAIL<br/><br/>NOTE: SEE PLAN DOCUMENT FOR COPAYMENTS ON MAINTENANCE MEDICATIONS (90 DAY SUPPLY) | $5 GENERIC<br/>20% UP TO $50 PER RX FOR PREFERRED BRAND<br/>30% UP TO $75 PER RX FOR NON-PREFERRED BRAND<br/>20% UP TO $100 PER RX FOR SPECIALTY                 | $5 GENERIC<br/>20% UP TO $50 PER RX FOR PREFERRED BRAND<br/>30% UP TO $75 PER RX FOR NON-PREFERRED BRAND<br/>20% UP TO $100 PER RX FOR SPECIALTY                 | $5 GENERIC<br/>20% UP TO $50 PER RX FOR PREFERRED BRAND<br/>30% UP TO $75 PER RX FOR NON-PREFERRED BRAND<br/>20% UP TO $100 PER RX FOR SPECIALTY                 |\n| LIFE INSURANCE                                                                                                   | $10,000                                                                                                                                                          | $10,000                                                                                                                                                          | $10,000                                                                                                                                                          |\n| COORDINATION OF BENEFITS                                                                                         | CARVE OUT TO PLAN MAX                                                                                                                                            | CARVE OUT TO PLAN MAX                                                                                                                                            | CARVE OUT TO PLAN MAX                                                                                                                                            |\n| ACCIDENTAL DEATH/PERSONAL ACCIDENT INSUR                                                                         | $10,000<br/>EMPLOYEE ONLY                                                                                                                                        | $10,000<br/>EMPLOYEE ONLY                                                                                                                                        | $10,000<br/>EMPLOYEE ONLY                                                                                                                                        |\n| SPOUSAL FEE                                                                                                      | $100 PER MONTH                                                                                                                                                   | $100 PER MONTH                                                                                                                                                   | $100 PER MONTH                                                                                                                                                   |\n| SHORT TERM DISABILITY<br/>(payable for up to 26 weeks)                                                           | 70% OF AVE. WKLY WAGE, NOT TO EXCEED $300                                                                                                                        | 70% OF AVE. WKLY WAGE, NOT TO EXCEED $300                                                                                                                        | 70% OF AVE. WKLY WAGE, NOT TO EXCEED $300                                                                                                                        |",
+    "csv": ",\"PLAN AENROLLED & PARTICIPATING\",\"PLAN BENROLLED & PARTICIPATING\",\"PLAN CENROLLED & PARTICIPATING\"\n\"DEDUCTIBLE\",\"$500 PER PERSON,<br/>MAX 3 PER FAMILY\",\"$600 PER PERSON,<br/>MAX 3 PER FAMILY\",\"$700 PER PERSON,<br/>MAX 3 PER FAMILY\"\n\"OFFICE VISIT<br/>PPO-CO-PAY (PRIMARY CARE)<br/>COVERAGE PAYS\",\"IN-NETWORK: PLAN PAYS 100% AFTER $25 PER VISIT COPAY; NO DEDUCTIBLE.<br/>FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 80% AFTER DEDUCTIBLE IS MET.\",\"IN-NETWORK: PLAN PAYS 100% AFTER $30 PER VISIT COPAY; NO DEDUCTIBLE.<br/>FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 75% AFTER DEDUCTIBLE IS MET.\",\"IN-NETWORK: PLAN PAYS 100% AFTER $40 PER VISIT COPAY; NO DEDUCTIBLE.<br/>FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 65% AFTER DEDUCTIBLE IS MET.\"\n\"NON PPO CO-PAY (PRIMARY CARE)<br/>COVERAGE PAYS\",\"NON-NETWORK: PLAN PAYS 65% AFTER DEDUCTIBLE IS MET.\",\"NON-NETWORK: PLAN PAYS 55% AFTER DEDUCTIBLE IS MET.\",\"NON-NETWORK: PLAN PAYS 50% AFTER DEDUCTIBLE IS MET.\"\n\"CO-INSURANCE<br/>PPO - NETWORK<br/>OUT OF POCKET MAX\",\"80%<br/>$2,500 PER PERSON; UP TO $4000 PER FAMILY\",\"75%<br/>$3,000 PER PERSON; UP TO $5000 PER FAMILY\",\"65%<br/>$4,000 PER PERSON; UP TO $7000 PER FAMILY\"\n\"NON-PPO<br/>NON-NETWORK<br/>OUT OF POCKET MAX\",\"65%<br/>$7,500 PER PERSON & NO FAMILY MAXIMUM\",\"55%<br/>$9,000 PER PERSON & NO FAMILY MAXIMUM\",\"50%<br/>$12,000 PER PERSON & NO FAMILY MAXIMUM\"\n\"MAJOR MEDICAL CALENDAR YEAR MAX\",\"NO MAXIMUM\",\"NO MAXIMUM\",\"NO MAXIMUM\"\n\"VISION\",\"$240SGL/$260BI/$290TRI/<br/>$240 FOR CONTACTS EVERY 2 YRS\",\"$240SGL/$260BI/$290TRI/<br/>$240 FOR CONTACTS EVERY 2 YRS\",\"$240SGL/$260BI/$290TRI/<br/>$240 FOR CONTACTS EVERY 2 YRS\"\n\"DENTAL\",\"ANNUAL MAX $1,500\",\"PREVENTATIVE ONLY\",\"PREVENTATIVE ONLY\"\n\"RX CO-PAYS<br/>RETAIL<br/><br/>NOTE: SEE PLAN DOCUMENT FOR COPAYMENTS ON MAINTENANCE MEDICATIONS (90 DAY SUPPLY)\",\"$5 GENERIC<br/>20% UP TO $50 PER RX FOR PREFERRED BRAND<br/>30% UP TO $75 PER RX FOR NON-PREFERRED BRAND<br/>20% UP TO $100 PER RX FOR SPECIALTY\",\"$5 GENERIC<br/>20% UP TO $50 PER RX FOR PREFERRED BRAND<br/>30% UP TO $75 PER RX FOR NON-PREFERRED BRAND<br/>20% UP TO $100 PER RX FOR SPECIALTY\",\"$5 GENERIC<br/>20% UP TO $50 PER RX FOR PREFERRED BRAND<br/>30% UP TO $75 PER RX FOR NON-PREFERRED BRAND<br/>20% UP TO $100 PER RX FOR SPECIALTY\"\n\"LIFE INSURANCE\",\"$10,000\",\"$10,000\",\"$10,000\"\n\"COORDINATION OF BENEFITS\",\"CARVE OUT TO PLAN MAX\",\"CARVE OUT TO PLAN MAX\",\"CARVE OUT TO PLAN MAX\"\n\"ACCIDENTAL DEATH/PERSONAL ACCIDENT INSUR\",\"$10,000<br/>EMPLOYEE ONLY\",\"$10,000<br/>EMPLOYEE ONLY\",\"$10,000<br/>EMPLOYEE ONLY\"\n\"SPOUSAL FEE\",\"$100 PER MONTH\",\"$100 PER MONTH\",\"$100 PER MONTH\"\n\"SHORT TERM DISABILITY<br/>(payable for up to 26 weeks)\",\"70% OF AVE. WKLY WAGE, NOT TO EXCEED $300\",\"70% OF AVE. WKLY WAGE, NOT TO EXCEED $300\",\"70% OF AVE. WKLY WAGE, NOT TO EXCEED $300\"",
+    "is_perfect": false,
+    "json_path": "pages[57].items[1]",
+    "heading_path": [
+      "SCHEDULE OF BENEFITS – EFFECTIVE JANUARY 1, 2016"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_2",
+    "content_hash": "2c8cb085b781ea10",
+    "headers": [
+      "CLASSIFICATION",
+      "Effective<br/>2/27/2022",
+      "Effective<br/>2/26/2023",
+      "Effective<br/>2/25/2024"
+    ],
+    "rows": [
+      [
+        "HEAD MEAT CUTTER",
+        "$25.28",
+        "$26.08",
+        "$26.88"
+      ],
+      [
+        "FIRST CUTTER",
+        "$23.83",
+        "$24.63",
+        "$25.43"
+      ],
+      [
+        "SEAFOOD MANAGER",
+        "$21.70",
+        "$22.50",
+        "$23.30"
+      ],
+      [
+        "DELI MANAGER",
+        "$23.24",
+        "$24.04",
+        "$24.84"
+      ],
+      [
+        "DELI MANAGER AFTER 5/20/77 &<br/>DIRECTING 5 OR LESS DELI EMPLOYEES",
+        "$21.65",
+        "$22.45",
+        "$23.25"
+      ],
+      [
+        "ASSISTANT DELI MANAGER",
+        "$21.51",
+        "$22.31",
+        "$23.11"
+      ],
+      [
+        "STARBUCKS LEAD",
+        "$21.51",
+        "$22.31",
+        "$23.11"
+      ],
+      [
+        "MEAT CUTTERS",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$23.50",
+        "$24.30",
+        "$25.10"
+      ],
+      [
+        "SEAFOOD CLERKS",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ],
+      [
+        "CLASSIFICATION",
+        "Effective",
+        "Effective",
+        "Effective"
+      ],
+      [
+        "",
+        "2/27/2022",
+        "2/26/2023",
+        "2/25/2024"
+      ],
+      [
+        "MEAT WRAPPERS",
+        "",
+        "",
+        ""
+      ]
+    ],
+    "markdown": "| CLASSIFICATION                                                      | Effective<br/>2/27/2022 | Effective<br/>2/26/2023 | Effective<br/>2/25/2024 |\n| ------------------------------------------------------------------- | ----------------------- | ----------------------- | ----------------------- |\n|                                                                     |                         |                         |                         |\n| HEAD MEAT CUTTER                                                    | $25.28                  | $26.08                  | $26.88                  |\n| FIRST CUTTER                                                        | $23.83                  | $24.63                  | $25.43                  |\n| SEAFOOD MANAGER                                                     | $21.70                  | $22.50                  | $23.30                  |\n| DELI MANAGER                                                        | $23.24                  | $24.04                  | $24.84                  |\n| DELI MANAGER AFTER 5/20/77 &<br/>DIRECTING 5 OR LESS DELI EMPLOYEES | $21.65                  | $22.45                  | $23.25                  |\n| ASSISTANT DELI MANAGER                                              | $21.51                  | $22.31                  | $23.11                  |\n| STARBUCKS LEAD                                                      | $21.51                  | $22.31                  | $23.11                  |\n|                                                                     |                         |                         |                         |\n| MEAT CUTTERS                                                        |                         |                         |                         |\n| Start                                                               | $16.00                  | $16.50                  | $17.00                  |\n| After 520 hours                                                     | $16.40                  | $16.95                  | $17.50                  |\n| After 1560 hours                                                    | $16.80                  | $17.40                  | $18.00                  |\n| After 2600 hours                                                    | $17.20                  | $17.85                  | $18.50                  |\n| After 3640 hours                                                    | $17.60                  | $18.30                  | $19.00                  |\n| After 4680 hours                                                    | $18.00                  | $18.75                  | $19.50                  |\n| After 5720 hours                                                    | $18.40                  | $19.20                  | $20.00                  |\n| After 6760 hours                                                    | $18.80                  | $19.65                  | $20.50                  |\n| After 7800 hours                                                    | $23.50                  | $24.30                  | $25.10                  |\n|                                                                     |                         |                         |                         |\n| SEAFOOD CLERKS                                                      |                         |                         |                         |\n| Start                                                               | $16.00                  | $16.50                  | $17.00                  |\n| After 520 hours                                                     | $16.40                  | $16.95                  | $17.50                  |\n| After 1560 hours                                                    | $16.80                  | $17.40                  | $18.00                  |\n| After 2600 hours                                                    | $17.20                  | $17.85                  | $18.50                  |\n| After 3640 hours                                                    | $17.60                  | $18.30                  | $19.00                  |\n| After 4680 hours                                                    | $18.00                  | $18.75                  | $19.50                  |\n| After 5720 hours                                                    | $18.40                  | $19.20                  | $20.00                  |\n| After 6760 hours                                                    | $18.80                  | $19.65                  | $20.50                  |\n| After 7800 hours                                                    | $21.01                  | $21.81                  | $22.61                  |\n|                                                                     |                         |                         |                         |\n| CLASSIFICATION                                                      | Effective               | Effective               | Effective               |\n|                                                                     | 2/27/2022               | 2/26/2023               | 2/25/2024               |\n|                                                                     |                         |                         |                         |\n| MEAT WRAPPERS                                                       |                         |                         |                         |",
+    "csv": "\"CLASSIFICATION\",\"Effective<br/>2/27/2022\",\"Effective<br/>2/26/2023\",\"Effective<br/>2/25/2024\"\n\"HEAD MEAT CUTTER\",\"$25.28\",\"$26.08\",\"$26.88\"\n\"FIRST CUTTER\",\"$23.83\",\"$24.63\",\"$25.43\"\n\"SEAFOOD MANAGER\",\"$21.70\",\"$22.50\",\"$23.30\"\n\"DELI MANAGER\",\"$23.24\",\"$24.04\",\"$24.84\"\n\"DELI MANAGER AFTER 5/20/77 &<br/>DIRECTING 5 OR LESS DELI EMPLOYEES\",\"$21.65\",\"$22.45\",\"$23.25\"\n\"ASSISTANT DELI MANAGER\",\"$21.51\",\"$22.31\",\"$23.11\"\n\"STARBUCKS LEAD\",\"$21.51\",\"$22.31\",\"$23.11\"\n\"MEAT CUTTERS\",,,\n\"Start\",\"$16.00\",\"$16.50\",\"$17.00\"\n\"After 520 hours\",\"$16.40\",\"$16.95\",\"$17.50\"\n\"After 1560 hours\",\"$16.80\",\"$17.40\",\"$18.00\"\n\"After 2600 hours\",\"$17.20\",\"$17.85\",\"$18.50\"\n\"After 3640 hours\",\"$17.60\",\"$18.30\",\"$19.00\"\n\"After 4680 hours\",\"$18.00\",\"$18.75\",\"$19.50\"\n\"After 5720 hours\",\"$18.40\",\"$19.20\",\"$20.00\"\n\"After 6760 hours\",\"$18.80\",\"$19.65\",\"$20.50\"\n\"After 7800 hours\",\"$23.50\",\"$24.30\",\"$25.10\"\n\"SEAFOOD CLERKS\",,,\n\"Start\",\"$16.00\",\"$16.50\",\"$17.00\"\n\"After 520 hours\",\"$16.40\",\"$16.95\",\"$17.50\"\n\"After 1560 hours\",\"$16.80\",\"$17.40\",\"$18.00\"\n\"After 2600 hours\",\"$17.20\",\"$17.85\",\"$18.50\"\n\"After 3640 hours\",\"$17.60\",\"$18.30\",\"$19.00\"\n\"After 4680 hours\",\"$18.00\",\"$18.75\",\"$19.50\"\n\"After 5720 hours\",\"$18.40\",\"$19.20\",\"$20.00\"\n\"After 6760 hours\",\"$18.80\",\"$19.65\",\"$20.50\"\n\"After 7800 hours\",\"$21.01\",\"$21.81\",\"$22.61\"\n\"CLASSIFICATION\",\"Effective\",\"Effective\",\"Effective\"\n,\"2/27/2022\",\"2/26/2023\",\"2/25/2024\"\n\"MEAT WRAPPERS\",,,",
+    "is_perfect": false,
+    "json_path": "pages[59].items[1]",
+    "heading_path": [
+      "Safeway Pueblo Meat"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_3",
+    "content_hash": "6c8d45a4f37af2a4",
+    "headers": [
+      "Start",
+      "$16.00",
+      "$16.50",
+      "$17.00"
+    ],
+    "rows": [
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ],
+      [
+        "DELI CLERKS",
+        "DELI CLERKS",
+        "DELI CLERKS",
+        "DELI CLERKS"
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ],
+      [
+        "STARBUCKS CLERKS",
+        "STARBUCKS CLERKS",
+        "STARBUCKS CLERKS",
+        "STARBUCKS CLERKS"
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ]
+    ],
+    "markdown": "| Start            | $16.00 | $16.50 | $17.00 |\n| ---------------- | ------ | ------ | ------ |\n| After 520 hours  | $16.40 | $16.95 | $17.50 |\n| After 1560 hours | $16.80 | $17.40 | $18.00 |\n| After 2600 hours | $17.20 | $17.85 | $18.50 |\n| After 3640 hours | $17.60 | $18.30 | $19.00 |\n| After 4680 hours | $18.00 | $18.75 | $19.50 |\n| After 5720 hours | $18.40 | $19.20 | $20.00 |\n| After 6760 hours | $18.80 | $19.65 | $20.50 |\n| After 7800 hours | $21.01 | $21.81 | $22.61 |\n\n| DELI CLERKS      | DELI CLERKS | DELI CLERKS | DELI CLERKS |\n| ---------------- | ----------- | ----------- | ----------- |\n| Start            | $16.00      | $16.50      | $17.00      |\n| After 520 hours  | $16.40      | $16.95      | $17.50      |\n| After 1560 hours | $16.80      | $17.40      | $18.00      |\n| After 2600 hours | $17.20      | $17.85      | $18.50      |\n| After 3640 hours | $17.60      | $18.30      | $19.00      |\n| After 4680 hours | $18.00      | $18.75      | $19.50      |\n| After 5720 hours | $18.40      | $19.20      | $20.00      |\n| After 6760 hours | $18.80      | $19.65      | $20.50      |\n| After 7800 hours | $21.01      | $21.81      | $22.61      |\n\n| STARBUCKS CLERKS | STARBUCKS CLERKS | STARBUCKS CLERKS | STARBUCKS CLERKS |\n| ---------------- | ---------------- | ---------------- | ---------------- |\n| Start            | $16.00           | $16.50           | $17.00           |\n| After 520 hours  | $16.40           | $16.95           | $17.50           |\n| After 1560 hours | $16.80           | $17.40           | $18.00           |\n| After 2600 hours | $17.20           | $17.85           | $18.50           |\n| After 3640 hours | $17.60           | $18.30           | $19.00           |\n| After 4680 hours | $18.00           | $18.75           | $19.50           |\n| After 5720 hours | $18.40           | $19.20           | $20.00           |\n| After 6760 hours | $18.80           | $19.65           | $20.50           |\n| After 7800 hours | $21.01           | $21.81           | $22.61           |",
+    "csv": "\"Start\",\"$16.00\",\"$16.50\",\"$17.00\"\n\"After 520 hours\",\"$16.40\",\"$16.95\",\"$17.50\"\n\"After 1560 hours\",\"$16.80\",\"$17.40\",\"$18.00\"\n\"After 2600 hours\",\"$17.20\",\"$17.85\",\"$18.50\"\n\"After 3640 hours\",\"$17.60\",\"$18.30\",\"$19.00\"\n\"After 4680 hours\",\"$18.00\",\"$18.75\",\"$19.50\"\n\"After 5720 hours\",\"$18.40\",\"$19.20\",\"$20.00\"\n\"After 6760 hours\",\"$18.80\",\"$19.65\",\"$20.50\"\n\"After 7800 hours\",\"$21.01\",\"$21.81\",\"$22.61\"\n\"DELI CLERKS\",\"DELI CLERKS\",\"DELI CLERKS\",\"DELI CLERKS\"\n\"Start\",\"$16.00\",\"$16.50\",\"$17.00\"\n\"After 520 hours\",\"$16.40\",\"$16.95\",\"$17.50\"\n\"After 1560 hours\",\"$16.80\",\"$17.40\",\"$18.00\"\n\"After 2600 hours\",\"$17.20\",\"$17.85\",\"$18.50\"\n\"After 3640 hours\",\"$17.60\",\"$18.30\",\"$19.00\"\n\"After 4680 hours\",\"$18.00\",\"$18.75\",\"$19.50\"\n\"After 5720 hours\",\"$18.40\",\"$19.20\",\"$20.00\"\n\"After 6760 hours\",\"$18.80\",\"$19.65\",\"$20.50\"\n\"After 7800 hours\",\"$21.01\",\"$21.81\",\"$22.61\"\n\"STARBUCKS CLERKS\",\"STARBUCKS CLERKS\",\"STARBUCKS CLERKS\",\"STARBUCKS CLERKS\"\n\"Start\",\"$16.00\",\"$16.50\",\"$17.00\"\n\"After 520 hours\",\"$16.40\",\"$16.95\",\"$17.50\"\n\"After 1560 hours\",\"$16.80\",\"$17.40\",\"$18.00\"\n\"After 2600 hours\",\"$17.20\",\"$17.85\",\"$18.50\"\n\"After 3640 hours\",\"$17.60\",\"$18.30\",\"$19.00\"\n\"After 4680 hours\",\"$18.00\",\"$18.75\",\"$19.50\"\n\"After 5720 hours\",\"$18.40\",\"$19.20\",\"$20.00\"\n\"After 6760 hours\",\"$18.80\",\"$19.65\",\"$20.50\"\n\"After 7800 hours\",\"$21.01\",\"$21.81\",\"$22.61\"",
+    "is_perfect": false,
+    "json_path": "pages[60].items[0]",
+    "heading_path": [
+      "Safeway Pueblo Meat"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_4",
+    "content_hash": "72c110796a71a79b",
+    "headers": [
+      "TO: Employee Relations",
+      "FROM:",
+      "Store No.___________________________"
+    ],
+    "rows": [
+      [
+        "",
+        "Manager:_____________________________",
+        ""
+      ],
+      [
+        "",
+        "DATE:_______________________________",
+        ""
+      ]
+    ],
+    "markdown": "| TO: Employee Relations | FROM:                                                               | Store No.\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_ |\n| ---------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------- |\n|                        | Manager:\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_  |                                                                 |\n|                        | DATE:\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_ |                                                                 |",
+    "csv": "\"TO: Employee Relations\",\"FROM:\",\"Store No.___________________________\"\n,\"Manager:_____________________________\",\n,\"DATE:_______________________________\",",
+    "is_perfect": false,
+    "json_path": "pages[64].items[3]",
+    "heading_path": [
+      "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_5",
+    "content_hash": "1c67980548fd5f3c",
+    "headers": [
+      "__________________________",
+      ""
+    ],
+    "rows": [
+      [
+        "",
+        "Employee Signature"
+      ]
+    ],
+    "markdown": "| \\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_ |                    |\n| ---------------------------------------------------- | ------------------ |\n|                                                      | Employee Signature |",
+    "csv": "\"__________________________\",\n,\"Employee Signature\"",
+    "is_perfect": false,
+    "json_path": "pages[64].items[10]",
+    "heading_path": [
+      "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_6",
+    "content_hash": "3c2b59729ddf3e1a",
+    "headers": [
+      "__________________________",
+      ""
+    ],
+    "rows": [
+      [
+        "",
+        "Signed"
+      ]
+    ],
+    "markdown": "| \\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_ |        |\n| ---------------------------------------------------- | ------ |\n|                                                      | Signed |",
+    "csv": "\"__________________________\",\n,\"Signed\"",
+    "is_perfect": false,
+    "json_path": "pages[64].items[12]",
+    "heading_path": [
+      "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_7",
+    "content_hash": "bdda937dc0339cdc",
+    "headers": [
+      "ALBERTSONS/SAFEWAY",
+      "UFCW LOCAL 7"
+    ],
+    "rows": [
+      [
+        "Name: [Signature: BP Bol]",
+        "Name: [Signature: Kim C. Cordova]"
+      ],
+      [
+        "Date: 7/10/2024",
+        "Date: 6/21/2024"
+      ]
+    ],
+    "markdown": "| ALBERTSONS/SAFEWAY         | UFCW LOCAL 7                       |\n| -------------------------- | ---------------------------------- |\n| Name: \\[Signature: BP Bol] | Name: \\[Signature: Kim C. Cordova] |\n| Date: 7/10/2024            | Date: 6/21/2024                    |",
+    "csv": "\"ALBERTSONS/SAFEWAY\",\"UFCW LOCAL 7\"\n\"Name: [Signature: BP Bol]\",\"Name: [Signature: Kim C. Cordova]\"\n\"Date: 7/10/2024\",\"Date: 6/21/2024\"",
+    "is_perfect": false,
+    "json_path": "pages[68].items[4]",
+    "heading_path": [
+      "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_8",
+    "content_hash": "bc6dedc3561168d4",
+    "headers": [
+      "ALBERTSONS/SAFEWAY",
+      "UFCW LOCAL 7"
+    ],
+    "rows": [
+      [
+        "Name: [signature]",
+        "Name: [signature]"
+      ],
+      [
+        "Date: 7/10/2024",
+        "Date: 6/21/2024"
+      ]
+    ],
+    "markdown": "| ALBERTSONS/SAFEWAY | UFCW LOCAL 7       |\n| ------------------ | ------------------ |\n| Name: \\[signature] | Name: \\[signature] |\n| Date: 7/10/2024    | Date: 6/21/2024    |",
+    "csv": "\"ALBERTSONS/SAFEWAY\",\"UFCW LOCAL 7\"\n\"Name: [signature]\",\"Name: [signature]\"\n\"Date: 7/10/2024\",\"Date: 6/21/2024\"",
+    "is_perfect": false,
+    "json_path": "pages[69].items[2]",
+    "heading_path": [
+      "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_9",
+    "content_hash": "bc6dedc3561168d4",
+    "headers": [
+      "ALBERTSONS/SAFEWAY",
+      "UFCW LOCAL 7"
+    ],
+    "rows": [
+      [
+        "Name: [signature]",
+        "Name: [signature]"
+      ],
+      [
+        "Date: 7/10/2024",
+        "Date: 6/21/2024"
+      ]
+    ],
+    "markdown": "| ALBERTSONS/SAFEWAY | UFCW LOCAL 7       |\n| ------------------ | ------------------ |\n| Name: \\[signature] | Name: \\[signature] |\n| Date: 7/10/2024    | Date: 6/21/2024    |",
+    "csv": "\"ALBERTSONS/SAFEWAY\",\"UFCW LOCAL 7\"\n\"Name: [signature]\",\"Name: [signature]\"\n\"Date: 7/10/2024\",\"Date: 6/21/2024\"",
+    "is_perfect": false,
+    "json_path": "pages[69].items[4]",
+    "heading_path": [
+      "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_fallback_art57_fef10c83",
+    "content_hash": "fef10c83fef18506",
+    "headers": [
+      "",
+      "PLAN AENROLLED & PARTICIPATING",
+      "PLAN BENROLLED & PARTICIPATING",
+      "PLAN CENROLLED & PARTICIPATING"
+    ],
+    "rows": [
+      [
+        "DEDUCTIBLE",
+        "$500 PER PERSON,MAX 3 PER FAMILY",
+        "$600 PER PERSON,MAX 3 PER FAMILY",
+        "$700 PER PERSON,MAX 3 PER FAMILY"
+      ],
+      [
+        "OFFICE VISITPPO-CO-PAY (PRIMARY CARE)COVERAGE PAYS",
+        "IN-NETWORK: PLAN PAYS 100% AFTER $25 PER VISIT COPAY; NO DEDUCTIBLE.FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 80% AFTER DEDUCTIBLE IS MET.",
+        "IN-NETWORK: PLAN PAYS 100% AFTER $30 PER VISIT COPAY; NO DEDUCTIBLE.FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 75% AFTER DEDUCTIBLE IS MET.",
+        "IN-NETWORK: PLAN PAYS 100% AFTER $40 PER VISIT COPAY; NO DEDUCTIBLE.FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 65% AFTER DEDUCTIBLE IS MET."
+      ],
+      [
+        "NON PPO CO-PAY (PRIMARY CARE)COVERAGE PAYS",
+        "NON-NETWORK: PLAN PAYS 65% AFTER DEDUCTIBLE IS MET.",
+        "NON-NETWORK: PLAN PAYS 55% AFTER DEDUCTIBLE IS MET.",
+        "NON-NETWORK: PLAN PAYS 50% AFTER DEDUCTIBLE IS MET."
+      ],
+      [
+        "CO-INSURANCEPPO - NETWORKOUT OF POCKET MAX",
+        "80%$2,500 PER PERSON; UP TO $4000 PER FAMILY",
+        "75%$3,000 PER PERSON; UP TO $5000 PER FAMILY",
+        "65%$4,000 PER PERSON; UP TO $7000 PER FAMILY"
+      ],
+      [
+        "NON-PPONON-NETWORKOUT OF POCKET MAX",
+        "65%$7,500 PER PERSON & NO FAMILY MAXIMUM",
+        "55%$9,000 PER PERSON & NO FAMILY MAXIMUM",
+        "50%$12,000 PER PERSON & NO FAMILY MAXIMUM"
+      ],
+      [
+        "MAJOR MEDICAL CALENDAR YEAR MAX",
+        "NO MAXIMUM",
+        "NO MAXIMUM",
+        "NO MAXIMUM"
+      ],
+      [
+        "VISION",
+        "$240SGL/$260BI/$290TRI/$240 FOR CONTACTS EVERY 2 YRS",
+        "$240SGL/$260BI/$290TRI/$240 FOR CONTACTS EVERY 2 YRS",
+        "$240SGL/$260BI/$290TRI/$240 FOR CONTACTS EVERY 2 YRS"
+      ],
+      [
+        "DENTAL",
+        "ANNUAL MAX $1,500",
+        "PREVENTATIVE ONLY",
+        "PREVENTATIVE ONLY"
+      ],
+      [
+        "RX CO-PAYSRETAILNOTE: SEE PLAN DOCUMENT FOR COPAYMENTS ON MAINTENANCE MEDICATIONS (90 DAY SUPPLY)",
+        "$5 GENERIC20% UP TO $50 PER RX FOR PREFERRED BRAND30% UP TO $75 PER RX FOR NON-PREFERRED BRAND20% UP TO $100 PER RX FOR SPECIALTY",
+        "$5 GENERIC20% UP TO $50 PER RX FOR PREFERRED BRAND30% UP TO $75 PER RX FOR NON-PREFERRED BRAND20% UP TO $100 PER RX FOR SPECIALTY",
+        "$5 GENERIC20% UP TO $50 PER RX FOR PREFERRED BRAND30% UP TO $75 PER RX FOR NON-PREFERRED BRAND20% UP TO $100 PER RX FOR SPECIALTY"
+      ],
+      [
+        "LIFE INSURANCE",
+        "$10,000",
+        "$10,000",
+        "$10,000"
+      ],
+      [
+        "COORDINATION OF BENEFITS",
+        "CARVE OUT TO PLAN MAX",
+        "CARVE OUT TO PLAN MAX",
+        "CARVE OUT TO PLAN MAX"
+      ],
+      [
+        "ACCIDENTAL DEATH/PERSONAL ACCIDENT INSUR",
+        "$10,000EMPLOYEE ONLY",
+        "$10,000EMPLOYEE ONLY",
+        "$10,000EMPLOYEE ONLY"
+      ],
+      [
+        "SPOUSAL FEE",
+        "$100 PER MONTH",
+        "$100 PER MONTH",
+        "$100 PER MONTH"
+      ],
+      [
+        "SHORT TERM DISABILITY(payable for up to 26 weeks)",
+        "70% OF AVE. WKLY WAGE, NOT TO EXCEED $300",
+        "70% OF AVE. WKLY WAGE, NOT TO EXCEED $300",
+        "70% OF AVE. WKLY WAGE, NOT TO EXCEED $300"
+      ]
+    ],
+    "markdown": "|  | PLAN AENROLLED & PARTICIPATING | PLAN BENROLLED & PARTICIPATING | PLAN CENROLLED & PARTICIPATING |\n| --- | --- | --- | --- |\n| DEDUCTIBLE | $500 PER PERSON,MAX 3 PER FAMILY | $600 PER PERSON,MAX 3 PER FAMILY | $700 PER PERSON,MAX 3 PER FAMILY |\n| OFFICE VISITPPO-CO-PAY (PRIMARY CARE)COVERAGE PAYS | IN-NETWORK: PLAN PAYS 100% AFTER $25 PER VISIT COPAY; NO DEDUCTIBLE.FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 80% AFTER DEDUCTIBLE IS MET. | IN-NETWORK: PLAN PAYS 100% AFTER $30 PER VISIT COPAY; NO DEDUCTIBLE.FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 75% AFTER DEDUCTIBLE IS MET. | IN-NETWORK: PLAN PAYS 100% AFTER $40 PER VISIT COPAY; NO DEDUCTIBLE.FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 65% AFTER DEDUCTIBLE IS MET. |\n| NON PPO CO-PAY (PRIMARY CARE)COVERAGE PAYS | NON-NETWORK: PLAN PAYS 65% AFTER DEDUCTIBLE IS MET. | NON-NETWORK: PLAN PAYS 55% AFTER DEDUCTIBLE IS MET. | NON-NETWORK: PLAN PAYS 50% AFTER DEDUCTIBLE IS MET. |\n| CO-INSURANCEPPO - NETWORKOUT OF POCKET MAX | 80%$2,500 PER PERSON; UP TO $4000 PER FAMILY | 75%$3,000 PER PERSON; UP TO $5000 PER FAMILY | 65%$4,000 PER PERSON; UP TO $7000 PER FAMILY |\n| NON-PPONON-NETWORKOUT OF POCKET MAX | 65%$7,500 PER PERSON & NO FAMILY MAXIMUM | 55%$9,000 PER PERSON & NO FAMILY MAXIMUM | 50%$12,000 PER PERSON & NO FAMILY MAXIMUM |\n| MAJOR MEDICAL CALENDAR YEAR MAX | NO MAXIMUM | NO MAXIMUM | NO MAXIMUM |\n| VISION | $240SGL/$260BI/$290TRI/$240 FOR CONTACTS EVERY 2 YRS | $240SGL/$260BI/$290TRI/$240 FOR CONTACTS EVERY 2 YRS | $240SGL/$260BI/$290TRI/$240 FOR CONTACTS EVERY 2 YRS |\n| DENTAL | ANNUAL MAX $1,500 | PREVENTATIVE ONLY | PREVENTATIVE ONLY |\n| RX CO-PAYSRETAILNOTE: SEE PLAN DOCUMENT FOR COPAYMENTS ON MAINTENANCE MEDICATIONS (90 DAY SUPPLY) | $5 GENERIC20% UP TO $50 PER RX FOR PREFERRED BRAND30% UP TO $75 PER RX FOR NON-PREFERRED BRAND20% UP TO $100 PER RX FOR SPECIALTY | $5 GENERIC20% UP TO $50 PER RX FOR PREFERRED BRAND30% UP TO $75 PER RX FOR NON-PREFERRED BRAND20% UP TO $100 PER RX FOR SPECIALTY | $5 GENERIC20% UP TO $50 PER RX FOR PREFERRED BRAND30% UP TO $75 PER RX FOR NON-PREFERRED BRAND20% UP TO $100 PER RX FOR SPECIALTY |\n| LIFE INSURANCE | $10,000 | $10,000 | $10,000 |\n| COORDINATION OF BENEFITS | CARVE OUT TO PLAN MAX | CARVE OUT TO PLAN MAX | CARVE OUT TO PLAN MAX |\n| ACCIDENTAL DEATH/PERSONAL ACCIDENT INSUR | $10,000EMPLOYEE ONLY | $10,000EMPLOYEE ONLY | $10,000EMPLOYEE ONLY |\n| SPOUSAL FEE | $100 PER MONTH | $100 PER MONTH | $100 PER MONTH |\n| SHORT TERM DISABILITY(payable for up to 26 weeks) | 70% OF AVE. WKLY WAGE, NOT TO EXCEED $300 | 70% OF AVE. WKLY WAGE, NOT TO EXCEED $300 | 70% OF AVE. WKLY WAGE, NOT TO EXCEED $300 |",
+    "csv": ",PLAN AENROLLED & PARTICIPATING,PLAN BENROLLED & PARTICIPATING,PLAN CENROLLED & PARTICIPATING\nDEDUCTIBLE,\"$500 PER PERSON,MAX 3 PER FAMILY\",\"$600 PER PERSON,MAX 3 PER FAMILY\",\"$700 PER PERSON,MAX 3 PER FAMILY\"\nOFFICE VISITPPO-CO-PAY (PRIMARY CARE)COVERAGE PAYS,\"IN-NETWORK: PLAN PAYS 100% AFTER $25 PER VISIT COPAY; NO DEDUCTIBLE.FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 80% AFTER DEDUCTIBLE IS MET.\",\"IN-NETWORK: PLAN PAYS 100% AFTER $30 PER VISIT COPAY; NO DEDUCTIBLE.FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 75% AFTER DEDUCTIBLE IS MET.\",\"IN-NETWORK: PLAN PAYS 100% AFTER $40 PER VISIT COPAY; NO DEDUCTIBLE.FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 65% AFTER DEDUCTIBLE IS MET.\"\nNON PPO CO-PAY (PRIMARY CARE)COVERAGE PAYS,NON-NETWORK: PLAN PAYS 65% AFTER DEDUCTIBLE IS MET.,NON-NETWORK: PLAN PAYS 55% AFTER DEDUCTIBLE IS MET.,NON-NETWORK: PLAN PAYS 50% AFTER DEDUCTIBLE IS MET.\nCO-INSURANCEPPO - NETWORKOUT OF POCKET MAX,\"80%$2,500 PER PERSON; UP TO $4000 PER FAMILY\",\"75%$3,000 PER PERSON; UP TO $5000 PER FAMILY\",\"65%$4,000 PER PERSON; UP TO $7000 PER FAMILY\"\nNON-PPONON-NETWORKOUT OF POCKET MAX,\"65%$7,500 PER PERSON & NO FAMILY MAXIMUM\",\"55%$9,000 PER PERSON & NO FAMILY MAXIMUM\",\"50%$12,000 PER PERSON & NO FAMILY MAXIMUM\"\nMAJOR MEDICAL CALENDAR YEAR MAX,NO MAXIMUM,NO MAXIMUM,NO MAXIMUM\nVISION,$240SGL/$260BI/$290TRI/$240 FOR CONTACTS EVERY 2 YRS,$240SGL/$260BI/$290TRI/$240 FOR CONTACTS EVERY 2 YRS,$240SGL/$260BI/$290TRI/$240 FOR CONTACTS EVERY 2 YRS\nDENTAL,\"ANNUAL MAX $1,500\",PREVENTATIVE ONLY,PREVENTATIVE ONLY\nRX CO-PAYSRETAILNOTE: SEE PLAN DOCUMENT FOR COPAYMENTS ON MAINTENANCE MEDICATIONS (90 DAY SUPPLY),$5 GENERIC20% UP TO $50 PER RX FOR PREFERRED BRAND30% UP TO $75 PER RX FOR NON-PREFERRED BRAND20% UP TO $100 PER RX FOR SPECIALTY,$5 GENERIC20% UP TO $50 PER RX FOR PREFERRED BRAND30% UP TO $75 PER RX FOR NON-PREFERRED BRAND20% UP TO $100 PER RX FOR SPECIALTY,$5 GENERIC20% UP TO $50 PER RX FOR PREFERRED BRAND30% UP TO $75 PER RX FOR NON-PREFERRED BRAND20% UP TO $100 PER RX FOR SPECIALTY\nLIFE INSURANCE,\"$10,000\",\"$10,000\",\"$10,000\"\nCOORDINATION OF BENEFITS,CARVE OUT TO PLAN MAX,CARVE OUT TO PLAN MAX,CARVE OUT TO PLAN MAX\nACCIDENTAL DEATH/PERSONAL ACCIDENT INSUR,\"$10,000EMPLOYEE ONLY\",\"$10,000EMPLOYEE ONLY\",\"$10,000EMPLOYEE ONLY\"\nSPOUSAL FEE,$100 PER MONTH,$100 PER MONTH,$100 PER MONTH\nSHORT TERM DISABILITY(payable for up to 26 weeks),\"70% OF AVE. WKLY WAGE, NOT TO EXCEED $300\",\"70% OF AVE. WKLY WAGE, NOT TO EXCEED $300\",\"70% OF AVE. WKLY WAGE, NOT TO EXCEED $300\"",
+    "is_perfect": false,
+    "json_path": "chunks[239].fallback_html_tables[0]",
+    "heading_path": [
+      "Article 57 (TERM OF AGREEMENT) > Section 169 (In the event of an Act of God or natural disaster (“Emergency”) having a material and continuing impact upon either the Employer’s facilities or the geographic area defined in A) > Part 3",
+      "TERM OF AGREEMENT",
+      "Article 57, Section 169, Part 3"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": "art57_sec169_seg_003"
+  },
+  {
+    "table_id": "tbl_fallback_art57_7d2ba970",
+    "content_hash": "7d2ba970c5426646",
+    "headers": [
+      "CLASSIFICATION",
+      "Effective2/27/2022",
+      "Effective2/26/2023",
+      "Effective2/25/2024"
+    ],
+    "rows": [
+      [
+        ""
+      ],
+      [
+        "HEAD MEAT CUTTER",
+        "$25.28",
+        "$26.08",
+        "$26.88"
+      ],
+      [
+        "FIRST CUTTER",
+        "$23.83",
+        "$24.63",
+        "$25.43"
+      ],
+      [
+        "SEAFOOD MANAGER",
+        "$21.70",
+        "$22.50",
+        "$23.30"
+      ],
+      [
+        "DELI MANAGER",
+        "$23.24",
+        "$24.04",
+        "$24.84"
+      ],
+      [
+        "DELI MANAGER AFTER 5/20/77 &DIRECTING 5 OR LESS DELI EMPLOYEES",
+        "$21.65",
+        "$22.45",
+        "$23.25"
+      ],
+      [
+        "ASSISTANT DELI MANAGER",
+        "$21.51",
+        "$22.31",
+        "$23.11"
+      ],
+      [
+        "STARBUCKS LEAD",
+        "$21.51",
+        "$22.31",
+        "$23.11"
+      ],
+      [
+        ""
+      ],
+      [
+        "MEAT CUTTERS",
+        ""
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$23.50",
+        "$24.30",
+        "$25.10"
+      ],
+      [
+        ""
+      ],
+      [
+        "SEAFOOD CLERKS",
+        ""
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ],
+      [
+        ""
+      ],
+      [
+        "CLASSIFICATION",
+        "Effective",
+        "Effective",
+        "Effective"
+      ],
+      [
+        "",
+        "2/27/2022",
+        "2/26/2023",
+        "2/25/2024"
+      ],
+      [
+        ""
+      ],
+      [
+        "MEAT WRAPPERS",
+        ""
+      ]
+    ],
+    "markdown": "| CLASSIFICATION | Effective2/27/2022 | Effective2/26/2023 | Effective2/25/2024 |\n| --- | --- | --- | --- |\n|  |  |  |  |\n| HEAD MEAT CUTTER | $25.28 | $26.08 | $26.88 |\n| FIRST CUTTER | $23.83 | $24.63 | $25.43 |\n| SEAFOOD MANAGER | $21.70 | $22.50 | $23.30 |\n| DELI MANAGER | $23.24 | $24.04 | $24.84 |\n| DELI MANAGER AFTER 5/20/77 &DIRECTING 5 OR LESS DELI EMPLOYEES | $21.65 | $22.45 | $23.25 |\n| ASSISTANT DELI MANAGER | $21.51 | $22.31 | $23.11 |\n| STARBUCKS LEAD | $21.51 | $22.31 | $23.11 |\n|  |  |  |  |\n| MEAT CUTTERS |  |  |  |\n| Start | $16.00 | $16.50 | $17.00 |\n| After 520 hours | $16.40 | $16.95 | $17.50 |\n| After 1560 hours | $16.80 | $17.40 | $18.00 |\n| After 2600 hours | $17.20 | $17.85 | $18.50 |\n| After 3640 hours | $17.60 | $18.30 | $19.00 |\n| After 4680 hours | $18.00 | $18.75 | $19.50 |\n| After 5720 hours | $18.40 | $19.20 | $20.00 |\n| After 6760 hours | $18.80 | $19.65 | $20.50 |\n| After 7800 hours | $23.50 | $24.30 | $25.10 |\n|  |  |  |  |\n| SEAFOOD CLERKS |  |  |  |\n| Start | $16.00 | $16.50 | $17.00 |\n| After 520 hours | $16.40 | $16.95 | $17.50 |\n| After 1560 hours | $16.80 | $17.40 | $18.00 |\n| After 2600 hours | $17.20 | $17.85 | $18.50 |\n| After 3640 hours | $17.60 | $18.30 | $19.00 |\n| After 4680 hours | $18.00 | $18.75 | $19.50 |\n| After 5720 hours | $18.40 | $19.20 | $20.00 |\n| After 6760 hours | $18.80 | $19.65 | $20.50 |\n| After 7800 hours | $21.01 | $21.81 | $22.61 |\n|  |  |  |  |\n| CLASSIFICATION | Effective | Effective | Effective |\n|  | 2/27/2022 | 2/26/2023 | 2/25/2024 |\n|  |  |  |  |\n| MEAT WRAPPERS |  |  |  |",
+    "csv": "CLASSIFICATION,Effective2/27/2022,Effective2/26/2023,Effective2/25/2024\n\nHEAD MEAT CUTTER,$25.28,$26.08,$26.88\nFIRST CUTTER,$23.83,$24.63,$25.43\nSEAFOOD MANAGER,$21.70,$22.50,$23.30\nDELI MANAGER,$23.24,$24.04,$24.84\nDELI MANAGER AFTER 5/20/77 &DIRECTING 5 OR LESS DELI EMPLOYEES,$21.65,$22.45,$23.25\nASSISTANT DELI MANAGER,$21.51,$22.31,$23.11\nSTARBUCKS LEAD,$21.51,$22.31,$23.11\n\nMEAT CUTTERS,\nStart,$16.00,$16.50,$17.00\nAfter 520 hours,$16.40,$16.95,$17.50\nAfter 1560 hours,$16.80,$17.40,$18.00\nAfter 2600 hours,$17.20,$17.85,$18.50\nAfter 3640 hours,$17.60,$18.30,$19.00\nAfter 4680 hours,$18.00,$18.75,$19.50\nAfter 5720 hours,$18.40,$19.20,$20.00\nAfter 6760 hours,$18.80,$19.65,$20.50\nAfter 7800 hours,$23.50,$24.30,$25.10\n\nSEAFOOD CLERKS,\nStart,$16.00,$16.50,$17.00\nAfter 520 hours,$16.40,$16.95,$17.50\nAfter 1560 hours,$16.80,$17.40,$18.00\nAfter 2600 hours,$17.20,$17.85,$18.50\nAfter 3640 hours,$17.60,$18.30,$19.00\nAfter 4680 hours,$18.00,$18.75,$19.50\nAfter 5720 hours,$18.40,$19.20,$20.00\nAfter 6760 hours,$18.80,$19.65,$20.50\nAfter 7800 hours,$21.01,$21.81,$22.61\n\nCLASSIFICATION,Effective,Effective,Effective\n,2/27/2022,2/26/2023,2/25/2024\n\nMEAT WRAPPERS,",
+    "is_perfect": false,
+    "json_path": "chunks[246].fallback_html_tables[0]",
+    "heading_path": [
+      "Article 57 (TERM OF AGREEMENT) > Section 169 (In the event of an Act of God or natural disaster (“Emergency”) having a material and continuing impact upon either the Employer’s facilities or the geographic area defined in A) > Part 10",
+      "TERM OF AGREEMENT",
+      "Article 57, Section 169, Part 10"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": "art57_sec169_seg_010"
+  },
+  {
+    "table_id": "tbl_fallback_art57_1e1c3934",
+    "content_hash": "1e1c39342012e1d4",
+    "headers": [
+      "Start",
+      "$16.00",
+      "$16.50",
+      "$17.00"
+    ],
+    "rows": [
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ]
+    ],
+    "markdown": "| Start | $16.00 | $16.50 | $17.00 |\n| --- | --- | --- | --- |\n| After 520 hours | $16.40 | $16.95 | $17.50 |\n| After 1560 hours | $16.80 | $17.40 | $18.00 |\n| After 2600 hours | $17.20 | $17.85 | $18.50 |\n| After 3640 hours | $17.60 | $18.30 | $19.00 |\n| After 4680 hours | $18.00 | $18.75 | $19.50 |\n| After 5720 hours | $18.40 | $19.20 | $20.00 |\n| After 6760 hours | $18.80 | $19.65 | $20.50 |\n| After 7800 hours | $21.01 | $21.81 | $22.61 |",
+    "csv": "Start,$16.00,$16.50,$17.00\nAfter 520 hours,$16.40,$16.95,$17.50\nAfter 1560 hours,$16.80,$17.40,$18.00\nAfter 2600 hours,$17.20,$17.85,$18.50\nAfter 3640 hours,$17.60,$18.30,$19.00\nAfter 4680 hours,$18.00,$18.75,$19.50\nAfter 5720 hours,$18.40,$19.20,$20.00\nAfter 6760 hours,$18.80,$19.65,$20.50\nAfter 7800 hours,$21.01,$21.81,$22.61",
+    "is_perfect": false,
+    "json_path": "chunks[247].fallback_html_tables[0]",
+    "heading_path": [
+      "Article 57 (TERM OF AGREEMENT) > Section 169 (In the event of an Act of God or natural disaster (“Emergency”) having a material and continuing impact upon either the Employer’s facilities or the geographic area defined in A) > Part 11",
+      "TERM OF AGREEMENT",
+      "Article 57, Section 169, Part 11"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": "art57_sec169_seg_011"
+  },
+  {
+    "table_id": "tbl_fallback_art57_39de5983",
+    "content_hash": "39de5983b8fa41c3",
+    "headers": [
+      "DELI CLERKS"
+    ],
+    "rows": [
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ]
+    ],
+    "markdown": "| DELI CLERKS |\n| --- |\n| Start |\n| After 520 hours |\n| After 1560 hours |\n| After 2600 hours |\n| After 3640 hours |\n| After 4680 hours |\n| After 5720 hours |\n| After 6760 hours |\n| After 7800 hours |",
+    "csv": "DELI CLERKS\nStart,$16.00,$16.50,$17.00\nAfter 520 hours,$16.40,$16.95,$17.50\nAfter 1560 hours,$16.80,$17.40,$18.00\nAfter 2600 hours,$17.20,$17.85,$18.50\nAfter 3640 hours,$17.60,$18.30,$19.00\nAfter 4680 hours,$18.00,$18.75,$19.50\nAfter 5720 hours,$18.40,$19.20,$20.00\nAfter 6760 hours,$18.80,$19.65,$20.50\nAfter 7800 hours,$21.01,$21.81,$22.61",
+    "is_perfect": false,
+    "json_path": "chunks[247].fallback_html_tables[1]",
+    "heading_path": [
+      "Article 57 (TERM OF AGREEMENT) > Section 169 (In the event of an Act of God or natural disaster (“Emergency”) having a material and continuing impact upon either the Employer’s facilities or the geographic area defined in A) > Part 11",
+      "TERM OF AGREEMENT",
+      "Article 57, Section 169, Part 11"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": "art57_sec169_seg_011"
+  },
+  {
+    "table_id": "tbl_fallback_art57_44a58bf2",
+    "content_hash": "44a58bf2f4eeb962",
+    "headers": [
+      "STARBUCKS CLERKS"
+    ],
+    "rows": [
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ]
+    ],
+    "markdown": "| STARBUCKS CLERKS |\n| --- |\n| Start |\n| After 520 hours |\n| After 1560 hours |\n| After 2600 hours |\n| After 3640 hours |\n| After 4680 hours |\n| After 5720 hours |\n| After 6760 hours |\n| After 7800 hours |",
+    "csv": "STARBUCKS CLERKS\nStart,$16.00,$16.50,$17.00\nAfter 520 hours,$16.40,$16.95,$17.50\nAfter 1560 hours,$16.80,$17.40,$18.00\nAfter 2600 hours,$17.20,$17.85,$18.50\nAfter 3640 hours,$17.60,$18.30,$19.00\nAfter 4680 hours,$18.00,$18.75,$19.50\nAfter 5720 hours,$18.40,$19.20,$20.00\nAfter 6760 hours,$18.80,$19.65,$20.50\nAfter 7800 hours,$21.01,$21.81,$22.61",
+    "is_perfect": false,
+    "json_path": "chunks[247].fallback_html_tables[2]",
+    "heading_path": [
+      "Article 57 (TERM OF AGREEMENT) > Section 169 (In the event of an Act of God or natural disaster (“Emergency”) having a material and continuing impact upon either the Employer’s facilities or the geographic area defined in A) > Part 11",
+      "TERM OF AGREEMENT",
+      "Article 57, Section 169, Part 11"
+    ],
+    "parent_article": 57,
+    "parent_section": 169,
+    "parent_chunk_id": "art57_sec169_seg_011"
+  }
+]

@@ -1,0 +1,2375 @@
+
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ufcw: {
+                            blue: '#0D3B54',
+                            'blue-mid': '#14506E',
+                            'blue-light': '#1B6B8A',
+                            gold: '#D4A029',
+                            'gold-light': '#E8B84A',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Animated gradient background for thinking state */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Subtle idle gradient drift */
+        @keyframes idleGradientDrift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 30% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Interactive header with mouse-reactive gradient */
+        #main-header {
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+            background:
+                radial-gradient(
+                    ellipse 80% 150% at var(--mouse-x) var(--mouse-y),
+                    rgba(27, 107, 138, 0.4) 0%,
+                    transparent 50%
+                ),
+                linear-gradient(-45deg, #0D3B54, #14506E, #1B6B8A, #14506E, #0D3B54);
+            background-size: 100% 100%, 300% 300%;
+            animation: idleGradientDrift 12s ease-in-out infinite;
+            transition: background 0.3s ease;
+        }
+
+        .thinking-gradient {
+            background:
+                radial-gradient(
+                    ellipse 80% 150% at var(--mouse-x) var(--mouse-y),
+                    rgba(212, 160, 41, 0.25) 0%,
+                    transparent 50%
+                ),
+                linear-gradient(-45deg, #0D3B54, #14506E, #1B6B8A, #14506E, #0D3B54) !important;
+            background-size: 100% 100%, 400% 400% !important;
+            animation: gradientShift 3s ease infinite !important;
+        }
+
+        /* Onboarding modal animated gradient */
+        .onboarding-gradient {
+            background: linear-gradient(-45deg, #0D3B54, #14506E, #1B6B8A, #0D3B54, #14506E);
+            background-size: 300% 300%;
+            animation: gradientShift 8s ease infinite;
+        }
+        .onboarding-gradient::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(212, 160, 41, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(27, 107, 138, 0.2) 0%, transparent 50%);
+            animation: pulseGlow 4s ease-in-out infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.25s ease-out; }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+
+        /* Dark mode styles */
+        .dark body { background-color: #0a0a0a; }
+        .dark #app { background-color: #111827; }
+        .dark .bg-white { background-color: #1f2937 !important; }
+        .dark .bg-slate-50 { background-color: #111827 !important; }
+        .dark .bg-slate-100 { background-color: #1f2937 !important; }
+        .dark .text-slate-800 { color: #f3f4f6 !important; }
+        .dark .text-slate-700 { color: #e5e7eb !important; }
+        .dark .text-slate-600 { color: #d1d5db !important; }
+        .dark .text-slate-500 { color: #9ca3af !important; }
+        .dark .text-slate-400 { color: #6b7280 !important; }
+        .dark .border-slate-200 { border-color: #374151 !important; }
+        .dark .border-slate-300 { border-color: #4b5563 !important; }
+        .dark input, .dark select { background-color: #374151 !important; color: #f3f4f6 !important; border-color: #4b5563 !important; }
+        .dark input::placeholder { color: #9ca3af !important; }
+
+        /* Dark mode - Contract tab styles */
+        .dark #content-contract { background-color: #111827; }
+        .dark #article-content, .dark #article-content-mobile { background-color: #1a202c; }
+        .dark #article-detail h1, .dark #article-detail-mobile h1 { color: #E8B84A !important; }
+        .dark #article-detail h2, .dark #article-detail-mobile h2 { color: #D4A029 !important; }
+        .dark #article-detail h3, .dark #article-detail-mobile h3 { color: #D4A029 !important; }
+        .dark #article-detail .text-slate-700, .dark #article-detail-mobile .text-slate-700 { color: #c7d2e8 !important; }
+        .dark #article-detail .text-ufcw-blue, .dark #article-detail-mobile .text-ufcw-blue { color: #E8B84A !important; }
+        .dark #article-detail .border-slate-200, .dark #article-detail-mobile .border-slate-200 { border-color: #374151 !important; }
+        .dark #article-detail .border-slate-100, .dark #article-detail-mobile .border-slate-100 { border-color: #2d3748 !important; }
+
+        /* Dark mode - TOC styles */
+        .dark #toc-list-container { background-color: #1a202c; }
+        .dark #article-list button { color: #c7d2e8; }
+        .dark #article-list button:hover { background-color: #2d3748; color: #E8B84A; }
+        .dark #article-list button.bg-blue-50 { background-color: #2d3748 !important; color: #E8B84A !important; }
+
+        /* Dark mode - Chat input area */
+        .dark #chat-input-area { background-color: #1e3a5f !important; border-color: #2d4a6f !important; }
+        .dark #chat-input-area input { background-color: #2a4a6a !important; border-color: #3d5a7a !important; color: #e8f0f8 !important; }
+        .dark #chat-input-area input::placeholder { color: #8ba3bf !important; }
+        .dark #chat-input-area button { background-color: #D4A029 !important; }
+
+        /* Dark mode - Employment status buttons (yellow only when selected) */
+        .dark input[type="radio"]:checked + div { border-color: #D4A029 !important; background-color: rgba(212, 160, 41, 0.15) !important; }
+        .dark input[type="radio"]:checked + div p { color: #E8B84A !important; }
+        .dark input[type="radio"]:not(:checked) + div { border-color: #4b5563 !important; background-color: transparent !important; }
+        .dark input[type="radio"]:not(:checked) + div p { color: #9ca3af !important; }
+
+        /* Dark mode - Dark mode toggle (yellow when active) */
+        .dark #dark-mode-toggle.bg-ufcw-blue { background-color: #D4A029 !important; }
+
+        /* Dark mode - Citation badges (yellow) */
+        .dark .citation-badge { background-color: rgba(212, 160, 41, 0.2) !important; color: #E8B84A !important; }
+        .dark .citation-badge:hover { background-color: rgba(212, 160, 41, 0.35) !important; }
+
+        /* Custom date picker */
+        .date-picker-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .date-picker-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            margin-top: 4px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .dark .date-picker-dropdown {
+            background: #1f2937;
+            border-color: #374151;
+        }
+        .month-btn {
+            padding: 8px 4px;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: all 0.15s;
+            color: #334155;
+        }
+        .month-btn:hover { background: rgba(13, 59, 84, 0.1); }
+        .month-btn.selected { background: #D4A029; color: white; }
+        .dark .month-btn { color: #e2e8f0; }
+        .dark .month-btn:hover { background: rgba(212, 160, 41, 0.2); }
+        .dark .month-btn.selected { background: #D4A029; color: white; }
+        .year-nav-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.15s;
+        }
+        .year-nav-btn:hover { background: rgba(13, 59, 84, 0.1); }
+        .dark .year-nav-btn:hover { background: rgba(212, 160, 41, 0.2); }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 2px; }
+
+        /* Better focus states */
+        input:focus, button:focus:not(.tab-btn), select:focus { outline: 2px solid #F59E0B; outline-offset: 2px; }
+
+        /* Modal backdrop */
+        .modal-backdrop {
+            background: rgba(30, 58, 138, 0.8);
+            backdrop-filter: blur(4px);
+        }
+
+        /* Tab transitions */
+        .tab-btn { transition: color 0.15s, border-color 0.15s, box-shadow 0.2s, background-color 0.2s; }
+        .tab-btn svg { transition: filter 0.25s ease, stroke 0.15s ease; }
+        .tab-btn span { transition: color 0.15s ease, text-shadow 0.25s ease; }
+
+        /* Active tab glow effect */
+        .tab-btn {
+            position: relative;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none;
+        }
+        .tab-btn:focus, .tab-btn:focus-visible, .tab-btn:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        .tab-btn.tab-active::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            background: rgba(212, 160, 41, 0.15);
+            border-radius: 8px;
+            z-index: -1;
+        }
+        .dark .tab-btn.tab-active::before {
+            background: rgba(212, 160, 41, 0.22);
+        }
+
+        /* Icon glow on active tab */
+        .tab-btn.tab-active svg {
+            filter: drop-shadow(0 0 6px rgba(212, 160, 41, 0.9)) drop-shadow(0 0 12px rgba(212, 160, 41, 0.6));
+            color: #D4A029;
+            stroke: #D4A029;
+        }
+        .dark .tab-btn.tab-active svg {
+            filter: drop-shadow(0 0 8px rgba(232, 184, 74, 1)) drop-shadow(0 0 16px rgba(232, 184, 74, 0.7));
+            color: #E8B84A;
+            stroke: #E8B84A;
+        }
+
+        /* Text glow on active tab */
+        .tab-btn.tab-active span {
+            color: #D4A029;
+            text-shadow: 0 0 8px rgba(212, 160, 41, 0.8), 0 0 16px rgba(212, 160, 41, 0.5);
+        }
+        .dark .tab-btn.tab-active span {
+            color: #E8B84A;
+            text-shadow: 0 0 10px rgba(232, 184, 74, 0.9), 0 0 20px rgba(232, 184, 74, 0.6);
+        }
+
+        /* Citation link styling */
+        .citation-link {
+            color: #0D3B54;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 3px;
+            cursor: pointer;
+        }
+        .citation-link:hover { color: #D4A029; }
+        .dark .citation-link { color: #E8B84A; }
+        .dark .citation-link:hover { color: #D4A029; }
+
+        /* Popover animation */
+        @keyframes popoverIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #citation-popover:not(.hidden) { animation: popoverIn 0.2s ease-out; }
+
+        /* Section highlight */
+        .section-highlight {
+            background-color: rgba(212, 160, 41, 0.2);
+            transition: background-color 2s ease-out;
+        }
+
+        /* TOC scrollbar - thin and subtle */
+        #toc-list-container::-webkit-scrollbar { width: 3px; }
+        #toc-list-container::-webkit-scrollbar-track { background: transparent; }
+        #toc-list-container::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 2px; }
+
+        /* Article content scrollbar */
+        #article-content::-webkit-scrollbar,
+        #article-content-mobile::-webkit-scrollbar { width: 6px; }
+        #article-content::-webkit-scrollbar-track,
+        #article-content-mobile::-webkit-scrollbar-track { background: #F8FAFC; }
+        #article-content::-webkit-scrollbar-thumb,
+        #article-content-mobile::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+        #article-content::-webkit-scrollbar-thumb:hover,
+        #article-content-mobile::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        /* Smooth scroll for article content */
+        #article-content,
+        #article-content-mobile { scroll-behavior: smooth; }
+
+        /* Chat container scrollbar */
+        #chat-container::-webkit-scrollbar { width: 6px; }
+        #chat-container::-webkit-scrollbar-track { background: transparent; }
+        #chat-container::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+        #chat-container::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        /* Bottom nav safe area for iPhone */
+        .safe-area-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+
+        /* Add bottom padding on mobile to account for fixed nav */
+        @media (max-width: 767px) {
+            #tab-content { padding-bottom: 60px; }
+            #tab-bar { box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        }
+
+        /* Active tab indicator - top border on mobile */
+        @media (max-width: 767px) {
+            .tab-btn.active-mobile {
+                border-top-color: #1E3A8A;
+                color: #1E3A8A;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- Citation Popover (floating) -->
+    <div id="citation-popover" class="hidden fixed z-50 max-w-md w-full mx-4">
+        <div class="bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-ufcw-blue to-blue-700 px-4 py-3 flex items-center justify-between">
+                <div>
+                    <h3 id="popover-title" class="text-white font-semibold text-sm">Article X, Section Y</h3>
+                    <p id="popover-subtitle" class="text-blue-200 text-xs">Article Title</p>
+                </div>
+                <button onclick="hidePopover()" class="text-white/70 hover:text-white p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="popover-content" class="max-h-64 overflow-y-auto p-4 text-sm text-slate-700 leading-relaxed">
+                <div id="popover-loading" class="flex items-center justify-center py-8 text-slate-400">
+                    <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                    </svg>
+                    Loading...
+                </div>
+                <div id="popover-text" class="hidden whitespace-pre-wrap"></div>
+            </div>
+            <div class="border-t border-slate-200 px-4 py-3 bg-slate-50 flex justify-between items-center">
+                <p id="popover-summary" class="text-xs text-slate-500 italic truncate max-w-[60%]"></p>
+                <button onclick="expandToContract()" class="text-sm font-medium text-ufcw-blue hover:text-blue-700 flex items-center gap-1">
+                    View Full Article
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div id="onboarding-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden fade-up">
+            <div class="onboarding-gradient relative px-6 py-5 text-white overflow-hidden">
+                <div class="flex items-center gap-3 relative z-10">
+                    <div class="w-12 h-12 bg-ufcw-gold rounded-xl flex items-center justify-center shadow-lg">
+                        <span class="text-ufcw-blue font-bold text-xl">K</span>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-xl">Welcome to Karl!</h2>
+                        <p class="text-ufcw-gold-light text-sm">Let's personalize your experience</p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="onboarding-form" class="p-6 space-y-5">
+                <p class="text-sm text-slate-600">
+                    Tell me a bit about yourself so I can give you accurate information about your wages and benefits.
+                </p>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Which contract/store are you under?</label>
+                    <select id="onboard-contract" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
+                        <option value="">Select your contract...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">What's your job classification?</label>
+                    <select id="onboard-classification" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
+                        <option value="">Select your role...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Full-time or Part-time?</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="relative">
+                            <input type="radio" name="employment_type" value="full_time" class="peer sr-only">
+                            <div class="border-2 border-slate-200 rounded-xl px-4 py-3 cursor-pointer transition-all peer-checked:border-ufcw-blue peer-checked:bg-blue-50">
+                                <p class="font-medium text-slate-700">Full-Time</p>
+                                <p class="text-xs text-slate-500">32+ hrs/week</p>
+                            </div>
+                        </label>
+                        <label class="relative">
+                            <input type="radio" name="employment_type" value="part_time" class="peer sr-only" checked>
+                            <div class="border-2 border-slate-200 rounded-xl px-4 py-3 cursor-pointer transition-all peer-checked:border-ufcw-blue peer-checked:bg-blue-50">
+                                <p class="font-medium text-slate-700">Part-Time</p>
+                                <p class="text-xs text-slate-500">Under 32 hrs</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">When did you start? (approximate is fine)</label>
+                    <div class="relative">
+                        <input type="hidden" id="onboard-hire-date" value="">
+                        <div id="onboard-date-trigger" onclick="toggleDatePicker('onboard')" class="date-picker-trigger w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
+                            <span id="onboard-date-display" class="text-slate-400">Select month & year</span>
+                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div id="onboard-date-picker" class="date-picker-dropdown hidden">
+                            <div class="p-3 border-b border-slate-200 dark:border-slate-600">
+                                <div class="flex items-center justify-between mb-3">
+                                    <button type="button" onclick="changeYear('onboard', -1)" class="year-nav-btn text-slate-600 dark:text-slate-300 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                                    </button>
+                                    <span id="onboard-year-display" class="text-lg font-semibold text-slate-800 dark:text-slate-200">2026</span>
+                                    <button type="button" onclick="changeYear('onboard', 1)" class="year-nav-btn text-slate-600 dark:text-slate-300 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                    </button>
+                                </div>
+                                <div id="onboard-months" class="grid grid-cols-4 gap-1 text-center"></div>
+                            </div>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800">
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 text-center">Quick select:</p>
+                                <div class="flex flex-wrap gap-1 justify-center">
+                                    <button type="button" onclick="quickSelect('onboard', 0)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">This year</button>
+                                    <button type="button" onclick="quickSelect('onboard', 1)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">1 yr ago</button>
+                                    <button type="button" onclick="quickSelect('onboard', 5)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">5 yrs ago</button>
+                                    <button type="button" onclick="quickSelect('onboard', 10)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">10 yrs ago</button>
+                                    <button type="button" onclick="quickSelect('onboard', 20)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">20 yrs ago</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">This helps me estimate your wage step</p>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-ufcw-blue hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-xl transition-colors">
+                        Get Started
+                    </button>
+                    <button type="button" onclick="skipOnboarding()" class="w-full text-slate-500 hover:text-slate-700 text-sm py-2 mt-2">
+                        Skip for now
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="app" class="max-w-4xl mx-auto min-h-screen flex flex-col bg-white shadow-xl">
+
+        <!-- Header - Fixed at top with animated gradient when thinking -->
+        <header id="main-header" class="fixed top-0 left-0 right-0 z-50 text-white px-5 py-3 md:py-4 shadow-lg transition-all duration-300">
+            <div class="max-w-4xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 md:w-10 md:h-10 bg-ufcw-gold rounded-full flex items-center justify-center border-2 border-ufcw-gold-light">
+                        <span class="text-ufcw-blue font-bold text-base md:text-lg">K</span>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base md:text-lg tracking-tight">Karl</h1>
+                        <p id="header-subtitle" class="text-ufcw-gold-light text-[10px] md:text-xs">Union Contract Assistant</p>
+                    </div>
+                </div>
+                <div id="status" class="flex items-center gap-1.5 md:gap-2 bg-black/20 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-ufcw-gold pulse-dot"></span>
+                    <span class="text-[10px] md:text-xs text-ufcw-gold-light">Connecting...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Spacer for fixed header -->
+        <div class="h-14 md:h-[72px]"></div>
+
+        <!-- Tab Navigation Bar - Fixed at bottom on mobile, top on desktop -->
+        <nav id="tab-bar" class="fixed bottom-0 left-0 right-0 z-40 md:relative md:bottom-auto bg-white border-t md:border-t-0 md:border-b border-slate-200 safe-area-bottom">
+            <div class="flex justify-around md:justify-center max-w-4xl mx-auto">
+                <button id="tab-contract" class="tab-btn flex-1 md:flex-none px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium text-slate-500 hover:text-ufcw-blue border-t-2 md:border-t-0 md:border-b-2 border-transparent flex flex-col items-center gap-0.5 md:gap-1" onclick="setActiveTab('contract')">
+                    <svg class="w-5 h-5 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>Contract</span>
+                </button>
+                <button id="tab-chat" class="tab-btn flex-1 md:flex-none px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium text-slate-500 border-t-2 md:border-t-0 md:border-b-2 border-transparent flex flex-col items-center gap-0.5 md:gap-1" onclick="setActiveTab('chat')">
+                    <svg class="w-5 h-5 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    <span>Chat</span>
+                </button>
+                <button id="tab-settings" class="tab-btn flex-1 md:flex-none px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium text-slate-500 hover:text-ufcw-blue border-t-2 md:border-t-0 md:border-b-2 border-transparent flex flex-col items-center gap-0.5 md:gap-1" onclick="setActiveTab('settings')">
+                    <svg class="w-5 h-5 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Tab Content Container -->
+        <main id="tab-content" class="flex-1 overflow-hidden flex flex-col">
+
+            <!-- Contract Tab -->
+            <div id="content-contract" class="hidden h-full relative">
+                <div class="h-full md:flex md:flex-row">
+                <!-- TOC Header - Fixed below Karl header on mobile, entire bar is tappable -->
+                <div id="toc-header-mobile" class="md:hidden fixed top-14 left-0 right-0 z-30 bg-slate-100 border-b border-slate-200 shadow-sm">
+                    <button onclick="toggleTOC()" class="w-full max-w-4xl mx-auto px-3 py-2.5 flex items-center justify-between cursor-pointer hover:bg-slate-200/50 transition-colors">
+                        <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Articles</h2>
+                        <div class="text-slate-500 p-1 -mr-1">
+                            <svg id="toc-chevron" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </button>
+                    <!-- Expandable article list on mobile -->
+                    <div id="toc-list-mobile" class="hidden overflow-y-auto max-h-48 bg-slate-50 border-t border-slate-200">
+                        <ul id="article-list-mobile" class="p-2 space-y-px">
+                            <li class="text-center text-slate-400 py-4 text-xs">Loading...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Mobile Article Content - Positioned between fixed headers and nav -->
+                <section id="article-content-mobile" class="md:hidden fixed top-[104px] left-0 right-0 bottom-[60px] overflow-y-auto bg-white">
+                    <div id="article-placeholder-mobile" class="text-center text-slate-400 py-12 px-6">
+                        <svg class="w-10 h-10 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <p class="text-sm font-medium mb-1">Your Union Contract</p>
+                        <p class="text-xs text-slate-400">Select an article to view</p>
+                    </div>
+                    <div id="article-detail-mobile" class="hidden p-4"></div>
+                </section>
+
+                <!-- TOC Sidebar - Desktop only -->
+                <aside id="contract-toc" class="hidden md:flex md:w-52 lg:w-56 border-r border-slate-200 bg-slate-50 flex-shrink-0 flex-col h-full">
+                    <div class="p-3 border-b border-slate-200 bg-slate-100">
+                        <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Articles</h2>
+                    </div>
+                    <div id="toc-list-container" class="overflow-y-auto flex-1">
+                        <ul id="article-list" class="p-3 space-y-px">
+                            <li class="text-center text-slate-400 py-4 text-xs">Loading...</li>
+                        </ul>
+                    </div>
+                </aside>
+
+                <!-- Desktop Article Content Area -->
+                <section id="article-content" class="hidden md:block flex-1 overflow-y-auto">
+                    <div id="article-placeholder" class="text-center text-slate-400 py-16 px-6">
+                        <svg class="w-14 h-14 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <p class="text-base font-medium mb-1">Your Union Contract</p>
+                        <p class="text-xs text-slate-400">Select an article to view</p>
+                    </div>
+                    <div id="article-detail" class="hidden p-6"></div>
+                </section>
+                </div>
+            </div>
+
+            <!-- Chat Tab -->
+            <div id="content-chat" class="h-full relative">
+                <div class="h-full flex flex-col">
+                <!-- Profile Bar - Fixed below header on mobile -->
+                <div id="chat-profile-bar" class="md:relative fixed top-14 md:top-auto left-0 right-0 z-20 bg-slate-100 border-b border-slate-200 px-4 md:px-5 py-2 md:py-3">
+                    <div class="max-w-4xl mx-auto flex items-center justify-between">
+                        <div id="profile-display" class="flex items-center gap-3 md:gap-4">
+                            <div>
+                                <p class="text-[9px] md:text-[10px] font-medium text-slate-500 uppercase tracking-wider">Role</p>
+                                <p id="display-classification" class="text-xs md:text-sm font-semibold text-slate-800">Not set</p>
+                            </div>
+                            <div class="w-px h-6 md:h-8 bg-slate-300"></div>
+                            <div>
+                                <p class="text-[9px] md:text-[10px] font-medium text-slate-500 uppercase tracking-wider">Tenure</p>
+                                <p id="display-tenure" class="text-xs md:text-sm font-semibold text-slate-800">--</p>
+                            </div>
+                            <div class="w-px h-6 md:h-8 bg-slate-300"></div>
+                            <div class="min-w-0">
+                                <p class="text-[9px] md:text-[10px] font-medium text-slate-500 uppercase tracking-wider">Contract</p>
+                                <p id="display-contract" class="text-xs md:text-sm font-semibold text-slate-800 truncate max-w-[130px] md:max-w-[220px]">Not set</p>
+                            </div>
+                        </div>
+                        <button onclick="setActiveTab('settings')" class="text-xs md:text-sm text-ufcw-blue hover:text-blue-700 font-medium flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Messages Area - Fixed between profile bar and input on mobile -->
+                <div id="chat-container" class="md:flex-1 fixed md:relative top-[100px] md:top-auto left-0 right-0 bottom-[130px] md:bottom-auto overflow-y-auto p-4 md:p-5 space-y-4 bg-white dark:bg-gray-900">
+                    <!-- Welcome Card -->
+                    <div class="bg-gradient-to-br from-ufcw-blue via-ufcw-blue-mid to-ufcw-blue-light rounded-2xl p-4 md:p-5 text-white fade-up">
+                        <h2 class="font-semibold text-base md:text-lg mb-2">Welcome to Karl</h2>
+                        <p class="text-ufcw-gold-light text-xs md:text-sm leading-relaxed mb-3 md:mb-4">
+                            I answer questions about your union contract with specific citations.
+                            Click any citation to view the full contract text.
+                        </p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="askQuestion('How much should I be making?')" class="bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">My Wages</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Based on your tenure</p>
+                            </button>
+                            <button onclick="askQuestion('How much vacation do I get per year?')" class="bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">Time Off</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Vacation, sick, holidays</p>
+                            </button>
+                            <button onclick="askQuestion('When do I get a break?')" class="bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">Breaks</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Rest & meal periods</p>
+                            </button>
+                            <button onclick="askQuestion('What are my rights if I am being disciplined?')" class="bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">Your Rights</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Representation</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area - Fixed above bottom nav on mobile -->
+                <div id="chat-input-area" class="md:relative fixed left-0 right-0 bottom-[60px] md:bottom-auto z-20 border-t border-slate-200 bg-white p-3 md:p-4 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+                    <form id="chat-form" class="flex gap-2 md:gap-3 max-w-4xl mx-auto">
+                        <input
+                            type="text"
+                            id="user-input"
+                            placeholder="Ask about your contract..."
+                            class="flex-1 bg-slate-100 border-0 rounded-xl px-3 md:px-4 py-2.5 md:py-3 text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-ufcw-gold focus:bg-white transition-all"
+                            autocomplete="off"
+                        >
+                        <button
+                            type="submit"
+                            id="send-btn"
+                            class="bg-ufcw-blue hover:bg-ufcw-blue-mid text-white px-4 md:px-5 py-2.5 md:py-3 rounded-xl font-medium transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <span class="hidden sm:inline">Send</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="content-settings" class="hidden h-full overflow-y-auto p-6 bg-slate-50">
+                <div class="max-w-lg mx-auto space-y-6">
+                    <h2 class="text-xl font-semibold text-slate-800">Settings</h2>
+
+                    <!-- Profile Section -->
+                    <section class="bg-white rounded-xl border border-slate-200 p-5">
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Your Profile</h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5">Contract/Store</label>
+                                <select id="settings-contract" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700">
+                                    <option value="">Select your contract...</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5">Job Classification</label>
+                                <select id="settings-classification" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700">
+                                    <option value="">Select your role...</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5">Employment Type</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="relative">
+                                        <input type="radio" name="settings_employment" value="full_time" class="peer sr-only">
+                                        <div class="border border-slate-200 rounded-lg px-3 py-2 cursor-pointer transition-all peer-checked:border-ufcw-blue peer-checked:bg-blue-50 text-center">
+                                            <p class="font-medium text-slate-700 text-sm">Full-Time</p>
+                                        </div>
+                                    </label>
+                                    <label class="relative">
+                                        <input type="radio" name="settings_employment" value="part_time" class="peer sr-only" checked>
+                                        <div class="border border-slate-200 rounded-lg px-3 py-2 cursor-pointer transition-all peer-checked:border-ufcw-blue peer-checked:bg-blue-50 text-center">
+                                            <p class="font-medium text-slate-700 text-sm">Part-Time</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Hire Date</label>
+                                <div class="relative">
+                                    <input type="hidden" id="settings-hire-date" value="">
+                                    <div id="settings-date-trigger" onclick="toggleDatePicker('settings')" class="date-picker-trigger w-full bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-700 dark:text-slate-200">
+                                        <span id="settings-date-display" class="text-slate-400 dark:text-slate-400">Select month & year</span>
+                                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div id="settings-date-picker" class="date-picker-dropdown hidden">
+                                        <div class="p-3 border-b border-slate-200 dark:border-slate-600">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <button type="button" onclick="changeYear('settings', -1)" class="year-nav-btn text-slate-600 dark:text-slate-300 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                                                </button>
+                                                <span id="settings-year-display" class="text-lg font-semibold text-slate-800 dark:text-slate-200">2026</span>
+                                                <button type="button" onclick="changeYear('settings', 1)" class="year-nav-btn text-slate-600 dark:text-slate-300 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                                </button>
+                                            </div>
+                                            <div id="settings-months" class="grid grid-cols-4 gap-1 text-center"></div>
+                                        </div>
+                                        <div class="p-2 bg-slate-50 dark:bg-slate-800">
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 text-center">Quick select:</p>
+                                            <div class="flex flex-wrap gap-1 justify-center">
+                                                <button type="button" onclick="quickSelect('settings', 0)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">This year</button>
+                                                <button type="button" onclick="quickSelect('settings', 1)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">1 yr ago</button>
+                                                <button type="button" onclick="quickSelect('settings', 5)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">5 yrs ago</button>
+                                                <button type="button" onclick="quickSelect('settings', 10)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">10 yrs ago</button>
+                                                <button type="button" onclick="quickSelect('settings', 20)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">20 yrs ago</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="saveSettingsProfile()" class="w-full bg-ufcw-blue hover:bg-blue-800 text-white font-medium py-2.5 px-4 rounded-lg transition-colors">
+                                Save Profile
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Preferences Section -->
+                    <section class="bg-white rounded-xl border border-slate-200 p-5">
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Preferences</h3>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-700">Dark Mode</p>
+                                    <p class="text-xs text-slate-500">Easier on the eyes</p>
+                                </div>
+                                <button id="dark-mode-toggle" onclick="toggleDarkMode()" class="relative w-12 h-7 rounded-full bg-slate-200 transition-colors">
+                                    <span id="dark-mode-dot" class="absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-transform"></span>
+                                </button>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-700">Text Size</p>
+                                    <p class="text-xs text-slate-500">Adjust contract viewer text</p>
+                                </div>
+                                <select id="pref-text-size" onchange="savePreference('textSize', this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm">
+                                    <option value="small">Small</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-700">Citation Style</p>
+                                    <p class="text-xs text-slate-500">How citations appear</p>
+                                </div>
+                                <select id="pref-citation-style" onchange="savePreference('citationStyle', this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm">
+                                    <option value="popover" selected>Popover</option>
+                                    <option value="navigate">Navigate to tab</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Danger Zone -->
+                    <section class="bg-red-50 rounded-xl border border-red-200 p-5">
+                        <h3 class="text-sm font-semibold text-red-700 uppercase tracking-wider mb-2">Clear Data</h3>
+                        <p class="text-sm text-red-600 mb-3">Reset your profile and start fresh. This cannot be undone.</p>
+                        <button onclick="clearSession()" class="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors">
+                            Clear Session
+                        </button>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+        const ACTIVE_CONTRACT_STORAGE_KEY = 'karl_active_contract_id';
+        const SESSION_ID_STORAGE_KEY = 'karl_session_id';
+        const SESSION_META_STORAGE_KEY = 'karl_session_meta';
+        let isHealthy = false;
+        let userProfile = null;
+        let availableContracts = [];
+        let classificationOptionsByContract = {};
+        let activeContract = null;
+        let articleCache = {};
+        let articleTitles = {};
+        let currentPopover = { articleNum: null, sectionNum: null };
+        let preferences = JSON.parse(localStorage.getItem('karl_preferences') || '{}');
+        let sessionMetaStore = loadSessionMetaStore();
+        let SESSION_ID = getOrCreateSessionId();
+
+        function generateSessionId() {
+            return 'session_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+        }
+
+        function loadSessionMetaStore() {
+            try {
+                return JSON.parse(localStorage.getItem(SESSION_META_STORAGE_KEY) || '{}') || {};
+            } catch (_) {
+                return {};
+            }
+        }
+
+        function saveSessionMetaStore() {
+            localStorage.setItem(SESSION_META_STORAGE_KEY, JSON.stringify(sessionMetaStore));
+        }
+
+        function ensureSessionMeta(sessionId) {
+            if (!sessionMetaStore[sessionId]) {
+                sessionMetaStore[sessionId] = {
+                    submitted_count: 0,
+                    contract_id: null,
+                    classification: null,
+                    created_at: new Date().toISOString()
+                };
+                saveSessionMetaStore();
+            }
+            return sessionMetaStore[sessionId];
+        }
+
+        function getOrCreateSessionId() {
+            let sid = localStorage.getItem(SESSION_ID_STORAGE_KEY);
+            if (!sid) {
+                sid = generateSessionId();
+                localStorage.setItem(SESSION_ID_STORAGE_KEY, sid);
+            }
+            ensureSessionMeta(sid);
+            return sid;
+        }
+
+        function resetChatMessages() {
+            const container = document.getElementById('chat-container');
+            if (!container) return;
+            container.querySelectorAll('.chat-message').forEach(node => node.remove());
+            hideLoading();
+        }
+
+        function startNewChatSession() {
+            SESSION_ID = generateSessionId();
+            localStorage.setItem(SESSION_ID_STORAGE_KEY, SESSION_ID);
+            ensureSessionMeta(SESSION_ID);
+            resetChatMessages();
+        }
+
+        function hasSubmittedChatText() {
+            return (ensureSessionMeta(SESSION_ID).submitted_count || 0) > 0;
+        }
+
+        function markChatSubmitted() {
+            const meta = ensureSessionMeta(SESSION_ID);
+            meta.submitted_count = (meta.submitted_count || 0) + 1;
+            meta.updated_at = new Date().toISOString();
+            saveSessionMetaStore();
+        }
+
+        function getActiveContract() {
+            return activeContract;
+        }
+
+        function getActiveContractId() {
+            return getActiveContract()?.contract_id || null;
+        }
+
+        function getContractQueryString() {
+            const contractId = getActiveContractId();
+            if (!contractId) return '';
+            return `?contract_id=${encodeURIComponent(contractId)}`;
+        }
+
+        function toTitleCase(text) {
+            const cleaned = (text || '').replace(/\s+/g, ' ').trim();
+            if (!cleaned) return '';
+            return cleaned
+                .toLowerCase()
+                .split(' ')
+                .map(part => part ? (part[0].toUpperCase() + part.slice(1)) : part)
+                .join(' ');
+        }
+
+        function inferContractDepartment(contract) {
+            const id = (contract?.contract_id || '').toLowerCase();
+            if (id.includes('_meat_')) return 'Meat';
+            if (id.includes('_clerks_')) return 'Clerks';
+            if (id.includes('_pharmacy_')) return 'Pharmacy';
+            return '';
+        }
+
+        function getContractLabel(contract) {
+            if (!contract) return 'Not set';
+            const contractId = (contract.contract_id || '').toLowerCase();
+            const parts = contractId.split('_').filter(Boolean);
+            const cleanParts = parts[0]?.match(/^local\d+$/i) ? parts.slice(1) : parts.slice();
+
+            let employer = toTitleCase(contract.employer || '');
+            if (/king\s*soopers/i.test(employer) || contractId.includes('kingsoopers')) {
+                employer = 'King Soopers';
+            } else if (/safeway/i.test(employer) || contractId.includes('safeway')) {
+                employer = 'Safeway';
+            } else if (/albertsons?/i.test(employer) || contractId.includes('albertsons')) {
+                employer = 'Albertsons';
+            } else {
+                // Drop long corporate suffixes for readability.
+                employer = employer
+                    .replace(/,?\s+a division of.*$/i, '')
+                    .replace(/,?\s+inc\.?$/i, '')
+                    .trim();
+            }
+
+            const dept = inferContractDepartment(contract);
+            const deptToken = dept ? dept.toLowerCase() : '';
+            let location = '';
+            if (cleanParts.length >= 2) {
+                const maybe = cleanParts[1];
+                if (maybe && maybe !== deptToken && !/^\d{4}$/.test(maybe)) {
+                    location = toTitleCase(maybe);
+                }
+            }
+
+            const base = employer || toTitleCase((contract.contract_id || '').replace(/_/g, ' '));
+            const segments = [base];
+            if (location) segments.push(location);
+            if (dept && !base.toLowerCase().includes(deptToken)) segments.push(dept);
+            return segments.join(' - ');
+        }
+
+        function populateClassificationSelects(contractId, classifications = [], options = {}) {
+            const { preserveSelection = true } = options;
+            const selectIds = ['onboard-classification', 'settings-classification'];
+            selectIds.forEach(id => {
+                const select = document.getElementById(id);
+                if (!select) return;
+
+                const previous = preserveSelection ? select.value : '';
+                select.innerHTML = '<option value="">Select your role...</option>';
+                classifications.forEach(c => {
+                    const option = document.createElement('option');
+                    option.value = c.value;
+                    option.textContent = c.label;
+                    select.appendChild(option);
+                });
+
+                if (previous && classifications.some(c => c.value === previous)) {
+                    select.value = previous;
+                }
+            });
+        }
+
+        async function loadClassificationsForContract(contractId, options = {}) {
+            if (!contractId) return;
+            const { preserveSelection = true } = options;
+
+            if (classificationOptionsByContract[contractId]) {
+                populateClassificationSelects(contractId, classificationOptionsByContract[contractId], { preserveSelection });
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/classifications?contract_id=${encodeURIComponent(contractId)}`);
+                if (!res.ok) throw new Error(`Failed to load classifications: ${res.status}`);
+                const data = await res.json();
+                const classifications = data.classifications || [];
+                classificationOptionsByContract[contractId] = classifications;
+                populateClassificationSelects(contractId, classifications, { preserveSelection });
+            } catch (e) {
+                console.error('Failed to load contract classifications:', e);
+            }
+        }
+
+        function updateContractDisplay() {
+            const contract = getActiveContract();
+            const subtitle = document.getElementById('header-subtitle');
+            if (subtitle) {
+                subtitle.textContent = contract
+                    ? `${getContractLabel(contract)} | ${contract.union_local_id || 'Union Contract'}`
+                    : 'Union Contract Assistant';
+            }
+            const displayContract = document.getElementById('display-contract');
+            if (displayContract) {
+                displayContract.textContent = getContractLabel(contract);
+            }
+        }
+
+        function setActiveContract(contractId, options = {}) {
+            const { persist = true, refreshViewer = true, preserveClassification = true } = options;
+            if (!contractId) return;
+
+            const contract = availableContracts.find(c => c.contract_id === contractId);
+            if (!contract) return;
+
+            const previousId = activeContract?.contract_id;
+            activeContract = contract;
+
+            if (persist) {
+                localStorage.setItem(ACTIVE_CONTRACT_STORAGE_KEY, contract.contract_id);
+            }
+
+            const onboardSelect = document.getElementById('onboard-contract');
+            const settingsSelect = document.getElementById('settings-contract');
+            if (onboardSelect) onboardSelect.value = contract.contract_id;
+            if (settingsSelect) settingsSelect.value = contract.contract_id;
+
+            updateContractDisplay();
+            checkHealth();
+            loadClassificationsForContract(contract.contract_id, { preserveSelection: preserveClassification });
+
+            if (refreshViewer && previousId && previousId !== contract.contract_id) {
+                articleCache = {};
+                articleTitles = {};
+                const detail = document.getElementById('article-detail');
+                const detailMobile = document.getElementById('article-detail-mobile');
+                const placeholder = document.getElementById('article-placeholder');
+                const placeholderMobile = document.getElementById('article-placeholder-mobile');
+                if (detail) {
+                    detail.classList.add('hidden');
+                    detail.innerHTML = '';
+                }
+                if (detailMobile) {
+                    detailMobile.classList.add('hidden');
+                    detailMobile.innerHTML = '';
+                }
+                placeholder?.classList.remove('hidden');
+                placeholderMobile?.classList.remove('hidden');
+                if (currentActiveTab === 'contract') {
+                    initContractViewer();
+                }
+            }
+        }
+
+        function populateContractSelects() {
+            const selects = ['onboard-contract', 'settings-contract'];
+            selects.forEach(id => {
+                const select = document.getElementById(id);
+                if (!select) return;
+
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">Select your contract...</option>';
+                availableContracts.forEach(contract => {
+                    const option = document.createElement('option');
+                    option.value = contract.contract_id;
+                    option.textContent = getContractLabel(contract);
+                    select.appendChild(option);
+                });
+
+                if (activeContract) {
+                    select.value = activeContract.contract_id;
+                } else if (currentValue) {
+                    select.value = currentValue;
+                }
+            });
+        }
+
+        async function loadContracts() {
+            try {
+                const res = await fetch(`${API_BASE}/api/contracts`);
+                if (!res.ok) throw new Error(`Failed to load contracts: ${res.status}`);
+                const data = await res.json();
+                availableContracts = data.contracts || [];
+
+                if (!availableContracts.length) {
+                    throw new Error('No contracts found in backend manifest catalog');
+                }
+
+                populateContractSelects();
+
+                const persisted = localStorage.getItem(ACTIVE_CONTRACT_STORAGE_KEY);
+                const fallbackId = data.default_contract_id || availableContracts[0].contract_id;
+                const initialId = persisted || fallbackId;
+                setActiveContract(initialId, { persist: false, refreshViewer: false });
+                if (!activeContract && availableContracts.length) {
+                    setActiveContract(availableContracts[0].contract_id, { persist: false, refreshViewer: false });
+                }
+                const effectiveInitialContract = getActiveContractId() || initialId;
+                await loadClassificationsForContract(effectiveInitialContract, { preserveSelection: true });
+            } catch (e) {
+                console.error('Failed to load contracts:', e);
+                availableContracts = [];
+                activeContract = null;
+                updateContractDisplay();
+            }
+        }
+
+        // =============================================================================
+        // CUSTOM DATE PICKER
+        // =============================================================================
+
+        const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const MONTH_FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        // Track state for each picker
+        const datePickerState = {
+            onboard: { year: new Date().getFullYear(), month: null, isOpen: false },
+            settings: { year: new Date().getFullYear(), month: null, isOpen: false }
+        };
+
+        function toggleDatePicker(pickerId) {
+            const picker = document.getElementById(`${pickerId}-date-picker`);
+            const state = datePickerState[pickerId];
+
+            if (state.isOpen) {
+                picker.classList.add('hidden');
+                state.isOpen = false;
+            } else {
+                // Close any other open pickers
+                Object.keys(datePickerState).forEach(id => {
+                    if (id !== pickerId && datePickerState[id].isOpen) {
+                        document.getElementById(`${id}-date-picker`).classList.add('hidden');
+                        datePickerState[id].isOpen = false;
+                    }
+                });
+
+                picker.classList.remove('hidden');
+                state.isOpen = true;
+                renderMonths(pickerId);
+            }
+        }
+
+        function changeYear(pickerId, delta) {
+            const state = datePickerState[pickerId];
+            const currentYear = new Date().getFullYear();
+            const newYear = state.year + delta;
+
+            // Don't allow future years or too far back
+            if (newYear > currentYear || newYear < currentYear - 50) return;
+
+            state.year = newYear;
+            document.getElementById(`${pickerId}-year-display`).textContent = newYear;
+            renderMonths(pickerId);
+        }
+
+        function renderMonths(pickerId) {
+            const state = datePickerState[pickerId];
+            const container = document.getElementById(`${pickerId}-months`);
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth();
+
+            container.innerHTML = MONTHS.map((month, index) => {
+                // Disable future months
+                const isFuture = state.year === currentYear && index > currentMonth;
+                const isSelected = state.month === index && document.getElementById(`${pickerId}-hire-date`).value.startsWith(`${state.year}-${String(index + 1).padStart(2, '0')}`);
+
+                return `<button type="button"
+                    onclick="selectMonth('${pickerId}', ${index})"
+                    class="month-btn ${isSelected ? 'selected' : ''} ${isFuture ? 'opacity-30 cursor-not-allowed' : 'hover:bg-ufcw-gold hover:text-white'}"
+                    ${isFuture ? 'disabled' : ''}>
+                    ${month}
+                </button>`;
+            }).join('');
+        }
+
+        function selectMonth(pickerId, monthIndex) {
+            const state = datePickerState[pickerId];
+            state.month = monthIndex;
+
+            // Format as YYYY-MM
+            const value = `${state.year}-${String(monthIndex + 1).padStart(2, '0')}`;
+            document.getElementById(`${pickerId}-hire-date`).value = value;
+
+            // Update display text
+            const displayText = `${MONTH_FULL[monthIndex]} ${state.year}`;
+            const displaySpan = document.getElementById(`${pickerId}-date-display`);
+            displaySpan.textContent = displayText;
+            displaySpan.classList.remove('text-slate-400');
+            displaySpan.classList.add('text-slate-700', 'dark:text-slate-200');
+
+            // Close picker
+            document.getElementById(`${pickerId}-date-picker`).classList.add('hidden');
+            state.isOpen = false;
+        }
+
+        function quickSelect(pickerId, yearsAgo) {
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth();
+
+            const state = datePickerState[pickerId];
+            state.year = currentYear - yearsAgo;
+
+            document.getElementById(`${pickerId}-year-display`).textContent = state.year;
+
+            // For "this year", select current month. For past years, select January
+            const monthToSelect = yearsAgo === 0 ? currentMonth : 0;
+            selectMonth(pickerId, monthToSelect);
+        }
+
+        function initDatePicker(pickerId, existingValue) {
+            if (!existingValue) return;
+
+            // Parse existing value (format: YYYY-MM)
+            const [year, month] = existingValue.split('-').map(Number);
+            if (!year || !month) return;
+
+            const state = datePickerState[pickerId];
+            state.year = year;
+            state.month = month - 1;
+
+            // Update year display
+            document.getElementById(`${pickerId}-year-display`).textContent = year;
+
+            // Update display text
+            const displayText = `${MONTH_FULL[month - 1]} ${year}`;
+            const displaySpan = document.getElementById(`${pickerId}-date-display`);
+            displaySpan.textContent = displayText;
+            displaySpan.classList.remove('text-slate-400');
+            displaySpan.classList.add('text-slate-700', 'dark:text-slate-200');
+        }
+
+        // Close date picker when clicking outside
+        document.addEventListener('click', function(e) {
+            Object.keys(datePickerState).forEach(pickerId => {
+                const picker = document.getElementById(`${pickerId}-date-picker`);
+                const trigger = document.getElementById(`${pickerId}-date-trigger`);
+
+                if (picker && trigger && datePickerState[pickerId].isOpen) {
+                    if (!picker.contains(e.target) && !trigger.contains(e.target)) {
+                        picker.classList.add('hidden');
+                        datePickerState[pickerId].isOpen = false;
+                    }
+                }
+            });
+        });
+
+        // =============================================================================
+        // TAB NAVIGATION
+        // =============================================================================
+
+        // Start collapsed on mobile, but will auto-open on first visit
+        let tocExpanded = false;
+        let contractTabVisited = false;
+
+        function toggleTOC() {
+            const mobileList = document.getElementById('toc-list-mobile');
+            const chevron = document.getElementById('toc-chevron');
+            tocExpanded = !tocExpanded;
+
+            if (tocExpanded) {
+                mobileList?.classList.remove('hidden');
+                chevron?.classList.add('rotate-180');
+            } else {
+                mobileList?.classList.add('hidden');
+                chevron?.classList.remove('rotate-180');
+            }
+        }
+
+        // Initialize TOC collapsed state
+        function initTOCState() {
+            const mobileList = document.getElementById('toc-list-mobile');
+            const chevron = document.getElementById('toc-chevron');
+
+            // Mobile starts collapsed
+            mobileList?.classList.add('hidden');
+            chevron?.classList.remove('rotate-180');
+            tocExpanded = false;
+        }
+
+        // Handle window resize for tab bar active state
+        let currentActiveTab = 'chat';
+        window.addEventListener('resize', () => {
+            // Update active tab border direction on resize
+            setActiveTab(currentActiveTab);
+        });
+
+        function setActiveTab(tab) {
+            currentActiveTab = tab;
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+            });
+
+            const activeBtn = document.getElementById(`tab-${tab}`);
+            if (activeBtn) {
+                activeBtn.classList.add('tab-active');
+            }
+
+            // Show/hide tab content
+            document.querySelectorAll('[id^="content-"]').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            const activeContent = document.getElementById(`content-${tab}`);
+            if (activeContent) {
+                activeContent.classList.remove('hidden');
+            }
+
+            // Initialize contract viewer on first visit
+            if (tab === 'contract') {
+                if (Object.keys(articleTitles).length === 0) {
+                    initContractViewer();
+                }
+
+                // Auto-open TOC on first visit to Contract tab (mobile only)
+                if (!contractTabVisited && window.innerWidth < 768) {
+                    contractTabVisited = true;
+                    // Small delay to let the tab switch complete
+                    setTimeout(() => {
+                        if (!tocExpanded) {
+                            toggleTOC();
+                        }
+                    }, 100);
+                }
+            }
+
+            // Sync settings form when opening settings
+            if (tab === 'settings') {
+                syncSettingsForm();
+            }
+        }
+
+        // =============================================================================
+        // CONTRACT VIEWER
+        // =============================================================================
+
+        async function initContractViewer() {
+            try {
+                const contractId = getActiveContractId();
+                if (!contractId) {
+                    throw new Error('No active contract selected');
+                }
+                const res = await fetch(`${API_BASE}/api/manifest${getContractQueryString()}`);
+                if (!res.ok) {
+                    throw new Error(`Manifest load failed (${res.status})`);
+                }
+                const manifest = await res.json();
+                articleTitles = manifest.article_titles;
+                renderTOC();
+                initTOCState();
+            } catch (e) {
+                console.error('Failed to load manifest:', e);
+                const desktopList = document.getElementById('article-list');
+                const mobileList = document.getElementById('article-list-mobile');
+                const errorHTML = '<li class="text-red-500 text-xs py-2">Failed to load</li>';
+                if (desktopList) desktopList.innerHTML = errorHTML;
+                if (mobileList) mobileList.innerHTML = errorHTML;
+            }
+        }
+
+        function renderTOC() {
+            const desktopList = document.getElementById('article-list');
+            const mobileList = document.getElementById('article-list-mobile');
+            const entries = Object.entries(articleTitles)
+                .map(([num, title]) => ({ num: parseInt(num), title: title.split('\n')[0].trim() }))
+                .sort((a, b) => a.num - b.num);
+
+            // Compact single-line items for easy scanning
+            const tocHTML = entries.map(({ num, title }) => `
+                <li>
+                    <button
+                        class="toc-item w-full text-left px-2 py-1.5 rounded text-xs hover:bg-ufcw-blue/10 transition-colors flex items-baseline gap-1.5"
+                        onclick="loadArticle(${num})"
+                        data-article="${num}"
+                    >
+                        <span class="font-semibold text-ufcw-blue shrink-0 w-6">${num}.</span>
+                        <span class="text-slate-600 truncate">${escapeHtml(title)}</span>
+                    </button>
+                </li>
+            `).join('');
+
+            // Populate both mobile and desktop lists
+            if (desktopList) desktopList.innerHTML = tocHTML;
+            if (mobileList) mobileList.innerHTML = tocHTML;
+        }
+
+        async function loadArticle(articleNum) {
+            const contractId = getActiveContractId();
+            if (!contractId) return;
+            // Update TOC active state (both mobile and desktop lists)
+            document.querySelectorAll('.toc-item').forEach(item => {
+                item.classList.remove('bg-ufcw-blue', 'text-white');
+                item.querySelector('span:first-child')?.classList.remove('text-white');
+                item.querySelector('span:first-child')?.classList.add('text-ufcw-blue');
+                item.querySelector('span:last-child')?.classList.remove('text-white');
+                item.querySelector('span:last-child')?.classList.add('text-slate-600');
+            });
+            document.querySelectorAll(`.toc-item[data-article="${articleNum}"]`).forEach(activeItem => {
+                activeItem.classList.add('bg-ufcw-blue', 'text-white');
+                activeItem.querySelector('span:first-child')?.classList.remove('text-ufcw-blue');
+                activeItem.querySelector('span:first-child')?.classList.add('text-white');
+                activeItem.querySelector('span:last-child')?.classList.remove('text-slate-600');
+                activeItem.querySelector('span:last-child')?.classList.add('text-white');
+            });
+
+            // On mobile, collapse TOC after selection for more reading space
+            if (window.innerWidth < 768 && tocExpanded) {
+                toggleTOC();
+            }
+
+            // Scroll article content to top (both mobile and desktop)
+            document.getElementById('article-content')?.scrollTo(0, 0);
+            document.getElementById('article-content-mobile')?.scrollTo(0, 0);
+
+            // Get elements for both mobile and desktop
+            const placeholder = document.getElementById('article-placeholder');
+            const detail = document.getElementById('article-detail');
+            const placeholderMobile = document.getElementById('article-placeholder-mobile');
+            const detailMobile = document.getElementById('article-detail-mobile');
+
+            const loadingHTML = `
+                <div class="flex items-center justify-center py-16 text-slate-400">
+                    <svg class="animate-spin h-8 w-8 mr-3" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    Loading Article ${articleNum}...
+                </div>
+            `;
+
+            // Show loading on both
+            placeholder?.classList.add('hidden');
+            detail?.classList.remove('hidden');
+            if (detail) detail.innerHTML = loadingHTML;
+
+            placeholderMobile?.classList.add('hidden');
+            detailMobile?.classList.remove('hidden');
+            if (detailMobile) detailMobile.innerHTML = loadingHTML;
+
+            // Check cache
+            const cacheKey = `${contractId}:${articleNum}`;
+            if (articleCache[cacheKey]) {
+                renderArticleContent(articleCache[cacheKey]);
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/article/${articleNum}${getContractQueryString()}`);
+                if (!res.ok) {
+                    throw new Error(`Article load failed (${res.status})`);
+                }
+                const data = await res.json();
+                articleCache[cacheKey] = data;
+                renderArticleContent(data);
+            } catch (e) {
+                console.error('Failed to load article:', e);
+                const errorHTML = `
+                    <div class="text-center py-16 text-red-500">
+                        <p>Failed to load article. Please try again.</p>
+                        <button onclick="loadArticle(${articleNum})" class="mt-4 text-ufcw-blue hover:underline">Retry</button>
+                    </div>
+                `;
+                if (detail) detail.innerHTML = errorHTML;
+                if (detailMobile) detailMobile.innerHTML = errorHTML;
+            }
+        }
+
+        function renderMarkdown(text) {
+            // Simple markdown renderer for contract content
+            // Process markdown BEFORE escaping, then escape remaining content
+
+            // First, identify and protect markdown patterns
+            const placeholders = [];
+            let processed = text;
+
+            // Convert **bold** to placeholder
+            processed = processed.replace(/\*\*(.+?)\*\*/g, (match, content) => {
+                const idx = placeholders.length;
+                placeholders.push(`<strong>${escapeHtml(content)}</strong>`);
+                return `%%PH${idx}%%`;
+            });
+
+            // Convert ## Headings to placeholder
+            processed = processed.replace(/^## (.+)$/gm, (match, content) => {
+                const idx = placeholders.length;
+                placeholders.push(`<h3 class="text-base font-semibold text-slate-800 mt-4 mb-2">${escapeHtml(content)}</h3>`);
+                return `%%PH${idx}%%`;
+            });
+
+            // Escape the remaining text
+            processed = escapeHtml(processed);
+
+            // Restore placeholders
+            placeholders.forEach((html, idx) => {
+                processed = processed.replace(`%%PH${idx}%%`, html);
+            });
+
+            // Convert numbered lists (1. 2. etc at start of line) - after escaping
+            processed = processed.replace(/^(\d+)\. (.+)$/gm, '<div class="ml-4 mb-1"><span class="font-medium">$1.</span> $2</div>');
+
+            // Convert bullet points
+            processed = processed.replace(/^[-*\u2022] (.+)$/gm, '<div class="ml-4 mb-1">&bull; $1</div>');
+
+            return processed;
+        }
+
+        function renderArticleContent(data) {
+            const detail = document.getElementById('article-detail');
+            const detailMobile = document.getElementById('article-detail-mobile');
+            const textSize = preferences.textSize || 'medium';
+            const textClass = textSize === 'small' ? 'text-sm' : textSize === 'large' ? 'text-base' : 'text-sm';
+
+            // Generate section ID that includes subsection/part info
+            const getSectionId = (section) => {
+                let id = `section-${section.section_num}`;
+                if (section.subsection) {
+                    id += `-${section.subsection}`;
+                }
+                return id;
+            };
+
+            const articleHTML = `
+                <article class="max-w-none">
+                    <header class="mb-6 pb-4 border-b border-slate-200">
+                        <p class="text-ufcw-blue font-semibold text-sm uppercase tracking-wider">Article ${data.article_num}</p>
+                        <h1 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">${escapeHtml(data.article_title)}</h1>
+                    </header>
+
+                    ${data.sections.map(section => `
+                        <section id="${getSectionId(section)}" class="mb-6 pb-6 border-b border-slate-100 last:border-0 scroll-mt-4">
+                            <h2 class="text-base font-semibold text-slate-800 mb-2">
+                                Section ${section.section_num}${section.subsection ? ` (${section.subsection})` : ''}
+                            </h2>
+                            ${section.summary ? `<p class="text-xs text-slate-500 italic mb-3">${escapeHtml(section.summary)}</p>` : ''}
+                            <div class="${textClass} text-slate-700 leading-relaxed whitespace-pre-wrap">${renderMarkdown(section.content)}</div>
+                        </section>
+                    `).join('')}
+                </article>
+            `;
+
+            if (detail) detail.innerHTML = articleHTML;
+            if (detailMobile) detailMobile.innerHTML = articleHTML;
+        }
+
+        async function navigateToArticle(articleNum, sectionNum = null, partNum = null) {
+            setActiveTab('contract');
+            await loadArticle(articleNum);
+
+            if (sectionNum) {
+                setTimeout(() => {
+                    // Find section in either mobile or desktop container
+                    const isMobile = window.innerWidth < 768;
+                    const container = isMobile
+                        ? document.getElementById('article-detail-mobile')
+                        : document.getElementById('article-detail');
+
+                    // Try to find specific part first, then section
+                    let targetEl = null;
+                    if (partNum) {
+                        // Try different ID formats for parts
+                        targetEl = container?.querySelector(`#section-${sectionNum}-${partNum}`);
+                        if (!targetEl) {
+                            targetEl = container?.querySelector(`#part-${sectionNum}-${partNum}`);
+                        }
+                    }
+                    if (!targetEl) {
+                        targetEl = container?.querySelector(`#section-${sectionNum}`);
+                    }
+
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        targetEl.classList.add('section-highlight');
+                        setTimeout(() => targetEl.classList.remove('section-highlight'), 2000);
+                    }
+                }, 100);
+            }
+        }
+
+        // =============================================================================
+        // CITATION POPOVER
+        // =============================================================================
+
+        function parseCitations(text) {
+            // Pattern matches citation formats:
+            // - Article N, Section M, Part X
+            // - Article N, Section M(a)  (parenthetical subsection)
+            // With optional bold markers
+            const pattern = /(\*{0,2})(Article\s+(\d+))(?:,?\s*Section\s+(\d+)(?:\(([a-z])\))?)?(?:,?\s*Part\s+([\w\-]+))?(\*{0,2})/gi;
+
+            return text.replace(pattern, (match, boldStart, fullArticle, articleNum, sectionNum, parenSub, partNum, boldEnd) => {
+                // Subsection can come from either parenthetical format or "Part X" format
+                const subsection = parenSub || partNum;
+
+                let display = `Article ${articleNum}`;
+                if (sectionNum) {
+                    display += `, Section ${sectionNum}`;
+                    if (parenSub) display += `(${parenSub})`;
+                }
+                if (partNum && !parenSub) display += `, Part ${partNum}`;
+
+                const subArg = subsection ? `'${subsection}'` : 'null';
+                return `<a href="#" class="citation-link" onclick="handleCitationClick(event, ${articleNum}, ${sectionNum || 'null'}, ${subArg})">${boldStart}${display}${boldEnd}</a>`;
+            });
+        }
+
+        function handleCitationClick(event, articleNum, sectionNum, partNum = null) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const style = preferences.citationStyle || 'popover';
+            if (style === 'navigate') {
+                navigateToArticle(articleNum, sectionNum, partNum);
+            } else {
+                showPopover(articleNum, sectionNum, partNum, event.target);
+            }
+        }
+
+        async function showPopover(articleNum, sectionNum, partNum, anchorEl) {
+            const popover = document.getElementById('citation-popover');
+            const titleEl = document.getElementById('popover-title');
+            const subtitleEl = document.getElementById('popover-subtitle');
+            const loadingEl = document.getElementById('popover-loading');
+            const textEl = document.getElementById('popover-text');
+            const summaryEl = document.getElementById('popover-summary');
+
+            currentPopover = { articleNum, sectionNum, partNum };
+
+            // Set title
+            let title = `Article ${articleNum}`;
+            if (sectionNum) title += `, Section ${sectionNum}`;
+            if (partNum) title += `, Part ${partNum}`;
+            titleEl.textContent = title;
+            subtitleEl.textContent = '';
+
+            // Show loading
+            loadingEl.classList.remove('hidden');
+            textEl.classList.add('hidden');
+
+            // Position popover
+            const rect = anchorEl.getBoundingClientRect();
+            let top = rect.bottom + 8;
+            let left = Math.min(rect.left, window.innerWidth - 420);
+
+            // If would go below viewport, show above
+            if (top + 320 > window.innerHeight) {
+                top = rect.top - 320 - 8;
+            }
+
+            popover.style.top = `${Math.max(8, top)}px`;
+            popover.style.left = `${Math.max(8, left)}px`;
+            popover.classList.remove('hidden');
+
+            // Fetch content
+            try {
+                let data;
+                let usedFallback = false;
+
+                // Try to fetch specific section first
+                if (sectionNum) {
+                    // Build URL with optional subsection query param
+                    const sectionParams = new URLSearchParams();
+                    const contractId = getActiveContractId();
+                    if (contractId) sectionParams.set('contract_id', contractId);
+                    if (partNum) {
+                        sectionParams.set('subsection', partNum);
+                    }
+                    let sectionUrl = `${API_BASE}/api/section/${articleNum}/${sectionNum}`;
+                    const sectionQuery = sectionParams.toString();
+                    if (sectionQuery) sectionUrl += `?${sectionQuery}`;
+                    const res = await fetch(sectionUrl);
+                    if (res.ok) {
+                        data = await res.json();
+                    } else {
+                        // Section not found - fall back to article
+                        console.log(`Section ${sectionNum} not found, falling back to article ${articleNum}`);
+                        const articleRes = await fetch(`${API_BASE}/api/article/${articleNum}${getContractQueryString()}`);
+                        if (articleRes.ok) {
+                            data = await articleRes.json();
+                            usedFallback = true;
+                        }
+                    }
+                } else {
+                    // Just fetch the article
+                    const res = await fetch(`${API_BASE}/api/article/${articleNum}${getContractQueryString()}`);
+                    if (res.ok) {
+                        data = await res.json();
+                    }
+                }
+
+                if (!data) {
+                    textEl.textContent = 'Article not found in contract.';
+                    loadingEl.classList.add('hidden');
+                    textEl.classList.remove('hidden');
+                    return;
+                }
+
+                subtitleEl.textContent = data.article_title || '';
+
+                if (sectionNum && !usedFallback) {
+                    textEl.textContent = data.content || 'Content not found.';
+                    summaryEl.textContent = data.summary || '';
+                } else {
+                    // Show article preview (either requested or as fallback)
+                    const firstSection = data.sections?.[0];
+                    if (firstSection) {
+                        const preview = firstSection.content.substring(0, 400);
+                        textEl.textContent = preview + (firstSection.content.length > 400 ? '...' : '');
+                        if (usedFallback) {
+                            summaryEl.textContent = `Section ${sectionNum} not found. Showing Article ${articleNum} (${data.sections.length} sections).`;
+                        } else {
+                            summaryEl.textContent = `${data.sections.length} sections total`;
+                        }
+                    }
+                }
+
+                loadingEl.classList.add('hidden');
+                textEl.classList.remove('hidden');
+
+            } catch (e) {
+                console.error('Failed to load citation:', e);
+                textEl.textContent = 'Failed to load content. Please try again.';
+                loadingEl.classList.add('hidden');
+                textEl.classList.remove('hidden');
+            }
+        }
+
+        function hidePopover() {
+            document.getElementById('citation-popover').classList.add('hidden');
+        }
+
+        function expandToContract() {
+            hidePopover();
+            navigateToArticle(currentPopover.articleNum, currentPopover.sectionNum, currentPopover.partNum);
+        }
+
+        // Close popover when clicking outside
+        document.addEventListener('click', (e) => {
+            const popover = document.getElementById('citation-popover');
+            const isClickInside = popover.contains(e.target) ||
+                                  e.target.closest('.citation-link') ||
+                                  e.target.closest('.citation-badge');
+
+            if (!isClickInside && !popover.classList.contains('hidden')) {
+                hidePopover();
+            }
+        });
+
+        // =============================================================================
+        // PROFILE & SETTINGS
+        // =============================================================================
+
+        async function loadOnboardingOptions() {
+            try {
+                const res = await fetch(`${API_BASE}/api/onboard/options`);
+                const data = await res.json();
+                const contractId = getActiveContractId() || data.default_contract_id;
+                if (contractId) {
+                    await loadClassificationsForContract(contractId, { preserveSelection: true });
+                }
+            } catch (e) {
+                console.error('Failed to load options:', e);
+            }
+        }
+
+        async function loadProfile() {
+            try {
+                const res = await fetch(`${API_BASE}/api/profile/${SESSION_ID}`);
+                const profile = await res.json();
+                if (profile?.contract_id) {
+                    setActiveContract(profile.contract_id, { persist: true, refreshViewer: true, preserveClassification: false });
+                    await loadClassificationsForContract(profile.contract_id, { preserveSelection: false });
+                }
+
+                if (profile.classification) {
+                    userProfile = profile;
+                    updateProfileDisplay();
+                    ensureSessionMeta(SESSION_ID).contract_id = profile.contract_id || null;
+                    ensureSessionMeta(SESSION_ID).classification = profile.classification || null;
+                    saveSessionMetaStore();
+                    hideOnboarding();
+                } else {
+                    showOnboarding();
+                }
+            } catch (e) {
+                console.error('Failed to load profile:', e);
+                showOnboarding();
+            }
+        }
+
+        async function saveProfile(data) {
+            try {
+                const nextContractId = data.contract_id || userProfile?.contract_id || activeContract?.contract_id || null;
+                const nextClassification = data.classification ?? userProfile?.classification ?? null;
+
+                const currentContractId = (userProfile?.contract_id || '').trim().toLowerCase();
+                const currentClassification = (userProfile?.classification || '').trim().toLowerCase();
+                const contractChanged = !!nextContractId && nextContractId.trim().toLowerCase() !== currentContractId;
+                const classificationChanged =
+                    typeof nextClassification === 'string' &&
+                    nextClassification.trim().toLowerCase() !== currentClassification;
+
+                if ((contractChanged || classificationChanged) && hasSubmittedChatText()) {
+                    const changedParts = [];
+                    if (contractChanged) changedParts.push('contract/store');
+                    if (classificationChanged) changedParts.push('job classification');
+                    const confirmed = confirm(
+                        `Changing ${changedParts.join(' and ')} will start a new chat and clear current chat context. Continue?`
+                    );
+                    if (!confirmed) {
+                        syncSettingsForm();
+                        return;
+                    }
+                    startNewChatSession();
+                }
+
+                const res = await fetch(`${API_BASE}/api/profile/${SESSION_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (!res.ok) {
+                    throw new Error(`Profile update failed (${res.status})`);
+                }
+                userProfile = await res.json();
+                if (userProfile?.contract_id) {
+                    setActiveContract(userProfile.contract_id, { persist: true, refreshViewer: true, preserveClassification: false });
+                    await loadClassificationsForContract(userProfile.contract_id, { preserveSelection: false });
+                }
+                updateProfileDisplay();
+                ensureSessionMeta(SESSION_ID).contract_id = userProfile.contract_id || null;
+                ensureSessionMeta(SESSION_ID).classification = userProfile.classification || null;
+                saveSessionMetaStore();
+                hideOnboarding();
+            } catch (e) {
+                console.error('Failed to save profile:', e);
+                alert('Could not save your profile. Please try again.');
+            }
+        }
+
+        function updateProfileDisplay() {
+            updateContractDisplay();
+            if (!userProfile) return;
+
+            document.getElementById('display-classification').textContent =
+                userProfile.classification_display || userProfile.classification || 'Not set';
+
+            if (userProfile.months_employed) {
+                const years = Math.floor(userProfile.months_employed / 12);
+                const months = userProfile.months_employed % 12;
+                let tenure = '';
+                if (years > 0) tenure += `${years}y `;
+                if (months > 0 || years === 0) tenure += `${months}m`;
+                document.getElementById('display-tenure').textContent = tenure.trim();
+            } else {
+                document.getElementById('display-tenure').textContent = '--';
+            }
+        }
+
+        function syncSettingsForm() {
+            if (activeContract) {
+                const contractSelect = document.getElementById('settings-contract');
+                if (contractSelect) contractSelect.value = activeContract.contract_id;
+            }
+            if (!userProfile) return;
+
+            if (userProfile.classification) {
+                document.getElementById('settings-classification').value = userProfile.classification;
+                document.getElementById('onboard-classification').value = userProfile.classification;
+            }
+            if (userProfile.employment_type) {
+                const radio = document.querySelector(`input[name="settings_employment"][value="${userProfile.employment_type}"]`);
+                if (radio) radio.checked = true;
+            }
+            if (userProfile.hire_date) {
+                const hireValue = userProfile.hire_date.substring(0, 7);
+                document.getElementById('settings-hire-date').value = hireValue;
+                initDatePicker('settings', hireValue);
+            }
+
+            // Sync preferences
+            document.getElementById('pref-text-size').value = preferences.textSize || 'medium';
+            document.getElementById('pref-citation-style').value = preferences.citationStyle || 'popover';
+        }
+
+        async function saveSettingsProfile() {
+            const contractId = document.getElementById('settings-contract')?.value;
+            const classification = document.getElementById('settings-classification').value;
+            const employmentType = document.querySelector('input[name="settings_employment"]:checked')?.value;
+            const hireMonth = document.getElementById('settings-hire-date').value;
+
+            const data = {};
+            if (contractId) data.contract_id = contractId;
+            if (classification) data.classification = classification;
+            if (employmentType) data.employment_type = employmentType;
+            if (hireMonth) data.hire_date = hireMonth + '-01';
+
+            await saveProfile(data);
+            alert('Profile saved!');
+        }
+
+        function savePreference(key, value) {
+            preferences[key] = value;
+            localStorage.setItem('karl_preferences', JSON.stringify(preferences));
+        }
+
+        // Dark mode
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            savePreference('darkMode', isDark);
+            updateDarkModeUI(isDark);
+        }
+
+        function updateDarkModeUI(isDark) {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const dot = document.getElementById('dark-mode-dot');
+            if (isDark) {
+                toggle?.classList.remove('bg-slate-200');
+                toggle?.classList.add('bg-ufcw-blue');
+                dot?.classList.add('translate-x-5');
+            } else {
+                toggle?.classList.add('bg-slate-200');
+                toggle?.classList.remove('bg-ufcw-blue');
+                dot?.classList.remove('translate-x-5');
+            }
+        }
+
+        function initDarkMode() {
+            const isDark = preferences.darkMode || false;
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            }
+            updateDarkModeUI(isDark);
+        }
+
+        // Thinking animation - animated gradient on header
+        function startThinking() {
+            const header = document.getElementById('main-header');
+            header?.classList.add('thinking-gradient');
+        }
+
+        function stopThinking() {
+            const header = document.getElementById('main-header');
+            header?.classList.remove('thinking-gradient');
+        }
+
+        // Mouse/touch reactive gradient
+        function initHeaderInteractivity() {
+            const header = document.getElementById('main-header');
+            if (!header) return;
+
+            let targetX = 50, targetY = 50;
+            let currentX = 50, currentY = 50;
+            let animating = false;
+
+            function updateGradientPosition(clientX, clientY) {
+                const rect = header.getBoundingClientRect();
+                // Calculate position as percentage, with some padding beyond edges
+                targetX = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+                targetY = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
+
+                if (!animating) {
+                    animating = true;
+                    animateGradient();
+                }
+            }
+
+            function animateGradient() {
+                // Smooth interpolation (easing)
+                const ease = 0.08;
+                currentX += (targetX - currentX) * ease;
+                currentY += (targetY - currentY) * ease;
+
+                header.style.setProperty('--mouse-x', `${currentX}%`);
+                header.style.setProperty('--mouse-y', `${currentY}%`);
+
+                // Continue animating if not close enough to target
+                if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
+                    requestAnimationFrame(animateGradient);
+                } else {
+                    animating = false;
+                }
+            }
+
+            // Mouse events
+            document.addEventListener('mousemove', (e) => {
+                updateGradientPosition(e.clientX, e.clientY);
+            });
+
+            // Touch events
+            document.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    updateGradientPosition(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+
+            // Reset to center when mouse leaves window
+            document.addEventListener('mouseleave', () => {
+                targetX = 50;
+                targetY = 50;
+                if (!animating) {
+                    animating = true;
+                    animateGradient();
+                }
+            });
+        }
+
+        function clearSession() {
+            if (confirm('This will clear your profile and conversation history. Continue?')) {
+                localStorage.removeItem(SESSION_ID_STORAGE_KEY);
+                localStorage.removeItem(SESSION_META_STORAGE_KEY);
+                localStorage.removeItem('karl_preferences');
+                localStorage.removeItem(ACTIVE_CONTRACT_STORAGE_KEY);
+                location.reload();
+            }
+        }
+
+        // Onboarding modal
+        function showOnboarding() {
+            document.getElementById('onboarding-modal').classList.remove('hidden');
+            if (activeContract) {
+                const contractSelect = document.getElementById('onboard-contract');
+                if (contractSelect) contractSelect.value = activeContract.contract_id;
+            }
+            if (userProfile) {
+                if (userProfile.contract_id) {
+                    const contractSelect = document.getElementById('onboard-contract');
+                    if (contractSelect) contractSelect.value = userProfile.contract_id;
+                }
+                if (userProfile.classification) {
+                    document.getElementById('onboard-classification').value = userProfile.classification;
+                }
+                if (userProfile.employment_type) {
+                    const radio = document.querySelector(`input[name="employment_type"][value="${userProfile.employment_type}"]`);
+                    if (radio) radio.checked = true;
+                }
+                if (userProfile.hire_date) {
+                    document.getElementById('onboard-hire-date').value = userProfile.hire_date.substring(0, 7);
+                }
+            }
+        }
+
+        function hideOnboarding() {
+            document.getElementById('onboarding-modal').classList.add('hidden');
+        }
+
+        function skipOnboarding() {
+            hideOnboarding();
+        }
+
+        document.getElementById('onboarding-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const contractId = document.getElementById('onboard-contract').value;
+            const classification = document.getElementById('onboard-classification').value;
+            const employmentType = document.querySelector('input[name="employment_type"]:checked')?.value;
+            const hireMonth = document.getElementById('onboard-hire-date').value;
+
+            const data = {};
+            if (contractId) data.contract_id = contractId;
+            if (classification) data.classification = classification;
+            if (employmentType) data.employment_type = employmentType;
+            if (hireMonth) data.hire_date = hireMonth + '-01';
+
+            await saveProfile(data);
+        });
+
+        // =============================================================================
+        // CHAT
+        // =============================================================================
+
+        async function checkHealth() {
+            const statusEl = document.getElementById('status');
+            try {
+                const contractId = getActiveContractId();
+                const suffix = contractId ? `?contract_id=${encodeURIComponent(contractId)}` : '';
+                const res = await fetch(`${API_BASE}/api/health${suffix}`);
+                const data = await res.json();
+                isHealthy = data.status === 'healthy';
+                const sectionCount = data.contract_chunks ?? data.chunks_loaded ?? 0;
+
+                if (isHealthy) {
+                    statusEl.innerHTML = `
+                        <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                        <span class="text-xs text-blue-100">${sectionCount} sections</span>
+                    `;
+                } else {
+                    statusEl.innerHTML = `
+                        <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+                        <span class="text-xs text-blue-100">${sectionCount > 0 ? `${sectionCount} sections` : 'Limited'}</span>
+                    `;
+                }
+            } catch (e) {
+                statusEl.innerHTML = `
+                    <span class="w-2 h-2 rounded-full bg-red-400 pulse-dot"></span>
+                    <span class="text-xs text-blue-100">Offline</span>
+                `;
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatResponse(text) {
+            let processed = escapeHtml(text || '');
+
+            // Headings
+            processed = processed.replace(/^### (.+)$/gm, '<h4 class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-3 mb-1">$1</h4>');
+            processed = processed.replace(/^## (.+)$/gm, '<h3 class="text-base font-semibold text-slate-900 dark:text-slate-100 mt-3 mb-1">$1</h3>');
+            processed = processed.replace(/^# (.+)$/gm, '<h2 class="text-lg font-bold text-slate-900 dark:text-slate-100 mt-3 mb-1">$1</h2>');
+
+            // Inline markdown
+            processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-900 dark:text-slate-100">$1</strong>');
+            processed = processed.replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-xs">$1</code>');
+
+            // Lists and quotes
+            processed = processed.replace(/^\s*[-*\u2022]\s+(.+)$/gm, '<div class="ml-4 mb-1">&bull; $1</div>');
+            processed = processed.replace(/^\s*(\d+)\.\s+(.+)$/gm, '<div class="ml-4 mb-1"><span class="font-medium">$1.</span> $2</div>');
+            processed = processed.replace(/^>\s?(.+)$/gm, '<blockquote class="border-l-2 border-slate-300 pl-3 italic text-slate-600 dark:text-slate-300 my-1">$1</blockquote>');
+
+            // Make citations clickable after markdown transforms.
+            processed = parseCitations(processed);
+
+            processed = processed.replace(/\n/g, '<br>');
+            return processed;
+        }
+
+        function addMessage(content, isUser = false, metadata = null) {
+            const container = document.getElementById('chat-container');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'fade-up chat-message';
+
+            if (isUser) {
+                msgDiv.innerHTML = `
+                    <div class="flex justify-end">
+                        <div class="bg-ufcw-blue text-white rounded-2xl rounded-br-sm px-4 py-3 max-w-[85%]">
+                            <p class="text-sm">${escapeHtml(content)}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                let citationsHtml = '';
+                if (metadata?.citations?.length > 0) {
+                    citationsHtml = `
+                        <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-slate-200">
+                            ${metadata.citations.map(c => {
+                                // Match Article, Section (with optional parenthetical), and optional Part
+                                const match = c.match(/Article\s+(\d+)(?:,?\s*Section\s+(\d+)(?:\(([a-z])\))?)?(?:,?\s*Part\s+([\w\-]+))?/i);
+                                const artNum = match ? match[1] : null;
+                                const secNum = match ? match[2] : null;
+                                const parenSub = match ? match[3] : null;
+                                const partNum = match ? match[4] : null;
+                                const subsection = parenSub || partNum;
+                                const subArg = subsection ? `'${subsection}'` : 'null';
+                                return `
+                                <button class="citation-badge inline-flex items-center gap-1 bg-ufcw-blue/10 text-ufcw-blue text-[11px] font-medium px-2 py-1 rounded-md hover:bg-ufcw-blue/20 transition-colors cursor-pointer"
+                                        onclick="handleCitationClick(event, ${artNum}, ${secNum || 'null'}, ${subArg})">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    ${escapeHtml(c)}
+                                </button>
+                            `}).join('')}
+                        </div>
+                    `;
+                }
+
+                let wageHtml = '';
+                if (metadata?.wage_info) {
+                    wageHtml = `
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mt-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                    <span class="text-green-600 font-bold">$</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-green-600 font-medium">Estimated Rate</p>
+                                    <p class="text-lg font-bold text-green-700">$${metadata.wage_info.rate.toFixed(2)}/hr</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-green-600 mt-2 flex items-start gap-1">
+                                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>This is an estimate based on your tenure. Verify via pay stub or Company HR Portal.</span>
+                            </p>
+                        </div>
+                    `;
+                }
+
+                let escalationHtml = '';
+                if (metadata?.escalation_required) {
+                    escalationHtml = `
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3 flex items-start gap-3">
+                            <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-amber-800">Talk to Your Steward</p>
+                                <p class="text-xs text-amber-700 mt-0.5">This situation may require union representation. Contact your steward before taking any action.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                msgDiv.innerHTML = `
+                    <div class="bg-white border border-slate-200 rounded-2xl rounded-bl-sm px-4 py-3 max-w-[95%] shadow-sm">
+                        <div class="text-sm text-slate-700 leading-relaxed">${formatResponse(content)}</div>
+                        ${wageHtml}
+                        ${escalationHtml}
+                        ${citationsHtml}
+                    </div>
+                `;
+            }
+
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showLoading() {
+            const container = document.getElementById('chat-container');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'loading';
+            loadingDiv.className = 'fade-up';
+            loadingDiv.innerHTML = `
+                <div class="flex items-center gap-2 text-slate-400 py-2">
+                    <div class="flex gap-1">
+                        <span class="w-2 h-2 bg-ufcw-blue rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                        <span class="w-2 h-2 bg-ufcw-blue rounded-full animate-bounce" style="animation-delay: 100ms"></span>
+                        <span class="w-2 h-2 bg-ufcw-blue rounded-full animate-bounce" style="animation-delay: 200ms"></span>
+                    </div>
+                    <span class="text-xs">Searching contract...</span>
+                </div>
+            `;
+            container.appendChild(loadingDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function hideLoading() {
+            document.getElementById('loading')?.remove();
+        }
+
+        async function sendQuery(question) {
+            const sendBtn = document.getElementById('send-btn');
+            const contract = getActiveContract();
+            if (!contract) {
+                addMessage('Please select your contract in Settings before asking a question.', false);
+                return;
+            }
+
+            sendBtn.disabled = true;
+            addMessage(question, true);
+            markChatSubmitted();
+            showLoading();
+            startThinking();  // Animated gradient
+
+            try {
+                const res = await fetch(`${API_BASE}/api/query`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: question,
+                        union_local_id: contract.union_local_id,
+                        contract_id: contract.contract_id,
+                        contract_version: contract.contract_version,
+                        session_id: SESSION_ID
+                    })
+                });
+
+                hideLoading();
+                stopThinking();  // Stop animated gradient
+
+                if (!res.ok) {
+                    let detail = `API error: ${res.status}`;
+                    try {
+                        const err = await res.json();
+                        if (err?.detail) detail = String(err.detail);
+                    } catch (_) {
+                        // Ignore JSON parse failures and use status fallback.
+                    }
+                    throw new Error(detail);
+                }
+
+                const data = await res.json();
+                addMessage(data.answer, false, {
+                    citations: data.citations,
+                    wage_info: data.wage_info,
+                    escalation_required: data.escalation_required
+                });
+
+            } catch (error) {
+                hideLoading();
+                stopThinking();  // Stop animated gradient
+                addMessage(`Unable to process this request: ${error.message}`, false);
+                console.error(error);
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+
+        function askQuestion(q) {
+            document.getElementById('user-input').value = q;
+            document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+        }
+
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('user-input');
+            const q = input.value.trim();
+            if (!q) return;
+            input.value = '';
+            await sendQuery(q);
+        });
+
+        // =============================================================================
+        // INIT
+        // =============================================================================
+
+        async function init() {
+            initDarkMode();  // Apply dark mode if saved
+            initHeaderInteractivity();  // Mouse/touch reactive gradient
+            await loadContracts();
+            await loadOnboardingOptions();
+            await loadProfile();
+            checkHealth();
+            setInterval(checkHealth, 30000);
+
+            const onboardContract = document.getElementById('onboard-contract');
+            if (onboardContract) {
+                onboardContract.addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        const previousId = getActiveContractId();
+                        const changing = previousId && previousId !== e.target.value;
+                        if (changing && hasSubmittedChatText()) {
+                            const ok = confirm('Changing contract/store will start a new chat and clear current chat context. Continue?');
+                            if (!ok) {
+                                e.target.value = previousId;
+                                return;
+                            }
+                            startNewChatSession();
+                        }
+                        setActiveContract(e.target.value, { persist: false, refreshViewer: true, preserveClassification: false });
+                    }
+                });
+            }
+            const settingsContract = document.getElementById('settings-contract');
+            if (settingsContract) {
+                settingsContract.addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        const previousId = getActiveContractId();
+                        const changing = previousId && previousId !== e.target.value;
+                        if (changing && hasSubmittedChatText()) {
+                            const ok = confirm('Changing contract/store will start a new chat and clear current chat context. Continue?');
+                            if (!ok) {
+                                e.target.value = previousId;
+                                return;
+                            }
+                            startNewChatSession();
+                        }
+                        setActiveContract(e.target.value, { persist: false, refreshViewer: true, preserveClassification: false });
+                    }
+                });
+            }
+
+            // Initialize tab bar with correct active state
+            setActiveTab('chat');
+        }
+
+        init();
+    

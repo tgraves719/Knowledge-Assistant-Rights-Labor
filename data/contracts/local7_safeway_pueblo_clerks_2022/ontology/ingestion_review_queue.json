@@ -1,0 +1,35 @@
+{
+  "schema_version": "ingestion_review_queue_v1",
+  "generated_at_utc": "2026-02-14T20:51:47.581142+00:00",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "summary": {
+    "total_items": 1,
+    "severity_counts": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    },
+    "unresolved_manifest_classes": 4,
+    "canonical_conflicts": 0,
+    "canonical_ambiguities": 0,
+    "unresolved_wage_rows": 0
+  },
+  "items": [
+    {
+      "issue_id": "ontology_unresolved_manifest_classes",
+      "category": "classification_ontology",
+      "severity": "high",
+      "summary": "Some manifest classifications do not map to wage keys.",
+      "evidence": {
+        "unresolved_count": 4,
+        "unresolved_source_keys": [
+          "deli_clerk",
+          "meatcutter",
+          "pharmacy_technician",
+          "sanitation_clerk"
+        ]
+      },
+      "recommended_action": "Review candidate_scores and add manual_classification_overrides entries where appropriate."
+    }
+  ]
+}

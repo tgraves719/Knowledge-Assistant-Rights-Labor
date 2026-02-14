@@ -23,12 +23,7 @@ cd Knowledge-Assistant-Rights-Labor
 pip install -r requirements.txt
 ```
 
-This will install:
-- FastAPI (web framework)
-- ChromaDB (vector database)
-- sentence-transformers (local embeddings - no API needed)
-- google-generativeai (for LLM responses - optional)
-- And other required packages
+This installs the backend, retrieval, embedding, and evaluation dependencies used by KARL.
 
 ### 3. Set Up Your API Key (Optional)
 
@@ -43,14 +38,14 @@ This will install:
 2. Create a `.env` file:
    ```bash
    # On Windows (PowerShell)
-   Copy-Item env.example .env
+   Set-Content -Path .env -Value "GEMINI_API_KEY=your_actual_key_here"
    
    # On Linux/Mac
-   cp env.example .env
+   printf "GEMINI_API_KEY=your_actual_key_here\n" > .env
    ```
 
-3. Edit `.env` and add your key:
-   ```
+3. Confirm `.env` contains:
+   ```bash
    GEMINI_API_KEY=your_actual_key_here
    ```
 
@@ -65,14 +60,14 @@ This will install:
 If the data files don't already exist, run:
 
 ```bash
-# Parse the contract into searchable chunks
-python backend/ingest/parse_contract.py
+# Parse contract into chunks
+python -m backend.ingest.smart_chunker
 
-# Extract wage tables
-python backend/ingest/extract_wages.py
+# Optional: enrich chunks with LLM metadata
+python -u -m backend.ingest.enricher --batch-size 15 --delay 1.0
 
-# Build the vector search index
-python backend/retrieval/vector_store.py
+# Build/rebuild vector index
+python -m backend.ingest.rebuild_index
 ```
 
 **Note:** If you see files in `data/chunks/` and `data/wages/`, you can skip this step - the data is already processed!
@@ -80,6 +75,15 @@ python backend/retrieval/vector_store.py
 ### 5. Start the Server
 
 ```bash
+python -m uvicorn backend.api:app --host 127.0.0.1 --port 8000
+```
+
+If your environment blocks HuggingFace/model downloads, start in offline BM25 mode:
+
+```bash
+# Windows (PowerShell)
+$env:KARL_HYBRID_VECTOR_WEIGHT="0"
+$env:KARL_HYBRID_KEYWORD_WEIGHT="1"
 python -m uvicorn backend.api:app --host 127.0.0.1 --port 8000
 ```
 
@@ -99,12 +103,15 @@ Open `frontend/index.html` in your web browser, or go to `http://127.0.0.1:8000`
 
 ### "Module not found" errors
 - Make sure you ran `pip install -r requirements.txt`
-- Check that you're using Python 3.8+
+- Check that you're using a supported Python version for current dependencies
 
 ### Server won't start
 - Check if port 8000 is already in use
 - Try a different port: `--port 8001`
 - Make sure you're in the project directory
+- If startup hangs on `huggingface.co`, run with:
+  - `KARL_HYBRID_VECTOR_WEIGHT=0`
+  - `KARL_HYBRID_KEYWORD_WEIGHT=1`
 
 ### "No chunks found" or empty responses
 - Run the data processing scripts (step 4)

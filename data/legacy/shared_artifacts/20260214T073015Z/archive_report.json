@@ -1,0 +1,23 @@
+{
+  "schema_version": "legacy_shared_archive_v1",
+  "archived_at_utc": "2026-02-14T07:30:15.270643+00:00",
+  "manifest_count": 4,
+  "moved": [
+    {
+      "source": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks.json",
+      "dest": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\legacy\\shared_artifacts\\20260214T073015Z\\chunks\\contract_chunks.json"
+    },
+    {
+      "source": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks_smart.json",
+      "dest": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\legacy\\shared_artifacts\\20260214T073015Z\\chunks\\contract_chunks_smart.json"
+    },
+    {
+      "source": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks_enriched.json",
+      "dest": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\legacy\\shared_artifacts\\20260214T073015Z\\chunks\\contract_chunks_enriched.json"
+    },
+    {
+      "source": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\concept_index.json",
+      "dest": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\legacy\\shared_artifacts\\20260214T073015Z\\chunks\\concept_index.json"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": "classification_manual_overrides_v1",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "classification_alias_overrides": {
+    "dug_shopper": "nonfood_gm_floral",
+    "drive_up_and_go": "nonfood_gm_floral",
+    "nonfood_clerk": "nonfood_gm_floral"
+  },
+  "notes": "Add source_key -> wage_key overrides after reviewing ingestion_review_queue.json"
+}

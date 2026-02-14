@@ -25,6 +25,7 @@ class VerificationResult:
 
 # Pattern to match Article X, Section Y citations
 CITATION_PATTERN = r'\*?\*?Article\s+(\d+)(?:,?\s*Section\s+(\d+))?\*?\*?'
+APPENDIX_A_PATTERN = r'appendix\s*"?a"?'
 
 # Escalation phrases
 ESCALATION_PHRASES = [
@@ -49,19 +50,31 @@ UNCERTAINTY_PHRASES = [
 
 def extract_citations(text: str) -> list[str]:
     """Extract all Article/Section citations from text."""
-    citations = []
+    citations: list[str] = []
     matches = re.finditer(CITATION_PATTERN, text, re.IGNORECASE)
-    
+
     for match in matches:
         article_num = match.group(1)
         section_num = match.group(2)
-        
+
         if section_num:
             citations.append(f"Article {article_num}, Section {section_num}")
         else:
             citations.append(f"Article {article_num}")
-    
-    return list(set(citations))  # Deduplicate
+
+    if re.search(APPENDIX_A_PATTERN, text or "", re.IGNORECASE):
+        citations.append("Appendix A")
+
+    # Stable dedupe preserving first-seen order.
+    deduped: list[str] = []
+    seen = set()
+    for c in citations:
+        key = c.lower().strip()
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(c)
+    return deduped
 
 
 def has_escalation_language(text: str) -> bool:
@@ -130,7 +143,10 @@ def check_answer_grounding(response: str, chunks: list[dict]) -> dict:
     grounding_score = 1.0
     
     # Combine all chunk content for checking
-    context_text = " ".join(c.get('content', '') for c in chunks).lower()
+    context_text = " ".join(
+        c.get('content_with_tables', c.get('content', ''))
+        for c in chunks
+    ).lower()
     response_lower = response.lower()
     
     # Check dollar amounts
@@ -291,6 +307,47 @@ def format_response_with_sources(
         dict with response, sources, and metadata
     """
     citations = extract_citations(response)
+
+    if wage_info:
+        wage_citation = str(wage_info.get("citation") or "Appendix A").strip() or "Appendix A"
+        if not any(c.lower() == wage_citation.lower() for c in citations):
+            citations.append(wage_citation)
+
+    # If a cited article includes matched table content, ensure section-level
+    # table-bearing citations are present in the citation list for UI visibility.
+    cited_article_nums = set()
+    for citation in citations:
+        match = re.search(r'Article\s+(\d+)', citation, re.IGNORECASE)
+        if match:
+            cited_article_nums.add(int(match.group(1)))
+    for chunk in chunks:
+        article_num = chunk.get('article_num')
+        if not article_num or article_num not in cited_article_nums:
+            continue
+        if not chunk.get('table_refs'):
+            continue
+        chunk_citation = str(chunk.get('citation') or '').strip()
+        if not chunk_citation:
+            continue
+        if any(c.lower() == chunk_citation.lower() for c in citations):
+            continue
+        citations.append(chunk_citation)
+
+    # Wage answers should surface table-backed appendix citations whenever available.
+    if wage_info:
+        for chunk in chunks:
+            chunk_citation = str(chunk.get("citation") or "").strip()
+            if not chunk_citation:
+                continue
+            if not chunk.get("table_refs"):
+                continue
+            citation_lower = chunk_citation.lower()
+            doc_type = str(chunk.get("doc_type") or "").lower()
+            if doc_type != "appendix" and "appendix" not in citation_lower and "table" not in citation_lower:
+                continue
+            if any(c.lower() == citation_lower for c in citations):
+                continue
+            citations.append(chunk_citation)
     
     sources = []
     for citation in citations:
@@ -306,14 +363,30 @@ def format_response_with_sources(
                         'doc_type': chunk.get('doc_type', 'cba')
                     })
                     break
+            continue
+
+        # Non-article citations (e.g., Appendix/table chunks): match exact chunk citation.
+        citation_key = citation.lower().strip()
+        for chunk in chunks:
+            chunk_citation = str(chunk.get("citation") or "").strip()
+            if chunk_citation.lower() != citation_key:
+                continue
+            sources.append({
+                'citation': citation,
+                'article_title': chunk.get('article_title', ''),
+                'doc_type': chunk.get('doc_type', 'appendix'),
+            })
+            break
     
     # Add wage source if applicable
     if wage_info:
-        sources.append({
-            'citation': 'Appendix A',
-            'article_title': 'Wage Tables',
-            'doc_type': 'appendix'
-        })
+        wage_citation = wage_info.get('citation') or 'Appendix A'
+        if not any((s.get("citation") or "").strip().lower() == str(wage_citation).strip().lower() for s in sources):
+            sources.append({
+                'citation': wage_citation,
+                'article_title': 'Wage Tables',
+                'doc_type': 'appendix'
+            })
     
     return {
         'response': response,
@@ -369,4 +442,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

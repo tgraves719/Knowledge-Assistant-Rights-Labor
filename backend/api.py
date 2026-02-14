@@ -24,9 +24,20 @@ from pydantic import BaseModel, Field
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from backend.config import GEMINI_API_KEY, LLM_MODEL
-from backend.retrieval.router import HybridRetriever, classify_intent
+from backend.config import (
+    GEMINI_API_KEY,
+    LLM_MODEL,
+    MANIFESTS_DIR,
+    HYBRID_VECTOR_WEIGHT,
+)
+from backend.contracts import (
+    list_contract_catalog,
+    get_contract_catalog_entry,
+    resolve_default_contract_id,
+)
+from backend.retrieval.router import HybridRetriever, classify_intent, ensure_contract_manifest
 from backend.retrieval.vector_store import ContractVectorStore
+from backend.chunk_files import resolve_chunk_file
 from backend.generation.prompts import build_prompt, SYSTEM_PROMPT
 from backend.generation.verifier import (
     verify_response,
@@ -41,7 +52,7 @@ from backend.user.profile import (
     update_user_profile,
     estimate_hours_worked,
     get_classification_options,
-    CLASSIFICATION_DISPLAY_NAMES,
+    resolve_classification_display_name,
 )
 
 # Global instances
@@ -72,14 +83,19 @@ async def lifespan(app: FastAPI):
     """Initialize resources on startup."""
     global retriever, vector_store
     print("Initializing Karl RAG system...")
-    
-    try:
-        vector_store = ContractVectorStore()
-        retriever = HybridRetriever(vector_store)
-        print(f"Loaded {vector_store.count()} contract chunks")
-    except Exception as e:
-        print(f"Warning: Could not initialize vector store: {e}")
-        retriever = HybridRetriever()
+
+    vector_store = None
+    if HYBRID_VECTOR_WEIGHT > 0:
+        try:
+            vector_store = ContractVectorStore()
+            print(f"Loaded {vector_store.count()} contract chunks")
+        except Exception as e:
+            print(f"Warning: Could not initialize vector store: {e}")
+            vector_store = None
+    else:
+        print("Vector retrieval disabled (KARL_HYBRID_VECTOR_WEIGHT=0).")
+
+    retriever = HybridRetriever(vector_store)
     
     yield
     
@@ -89,7 +105,7 @@ async def lifespan(app: FastAPI):
 # Create FastAPI app
 app = FastAPI(
     title="Karl - Union Contract RAG",
-    description="AI-powered contract Q&A for UFCW Local 7",
+    description="AI-powered contract Q&A for union agreements",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -109,6 +125,9 @@ app.add_middleware(
 class QueryRequest(BaseModel):
     """Request model for Q&A queries."""
     question: str = Field(..., description="User's question about the contract")
+    union_local_id: str = Field(..., description="Union local identifier")
+    contract_id: str = Field(..., description="Contract identifier")
+    contract_version: str = Field(..., description="Contract version identifier")
     user_classification: Optional[str] = Field(None, description="User's job classification")
     hours_worked: int = Field(0, description="Total hours worked (for wage calculations)")
     months_employed: int = Field(0, description="Months employed (for courtesy clerk wages)")
@@ -118,6 +137,7 @@ class QueryRequest(BaseModel):
 class WageLookupRequest(BaseModel):
     """Request model for direct wage lookups."""
     classification: str = Field(..., description="Job classification")
+    contract_id: Optional[str] = Field(None, description="Contract identifier")
     hours_worked: int = Field(0, description="Total hours worked")
     months_employed: int = Field(0, description="Months employed")
     effective_date: Optional[str] = Field(None, description="Contract effective date")
@@ -138,6 +158,12 @@ class QueryResponse(BaseModel):
     sources: list[dict]
     intent_type: str
     escalation_required: bool
+    union_local_id: Optional[str] = None
+    contract_id: str
+    contract_version: Optional[str] = None
+    high_stakes_topic: bool = False
+    active_urgent_context: bool = False
+    escalation_policy: Optional[str] = None
     wage_info: Optional[dict] = None
     confidence: float
     verification_passed: bool
@@ -156,6 +182,7 @@ class QueryResponse(BaseModel):
 
 class WageResponse(BaseModel):
     """Response model for wage lookups."""
+    contract_id: Optional[str] = None
     classification: str
     step: str
     rate: float
@@ -167,20 +194,53 @@ class HealthResponse(BaseModel):
     """Response model for health check."""
     status: str
     chunks_loaded: int
+    contract_chunks: int = 0
+    active_contract_id: Optional[str] = None
     llm_available: bool
 
 
 # Onboarding Models
+
+class ContractOption(BaseModel):
+    """Runtime-selectable contract metadata."""
+    contract_id: str
+    union_local_id: str
+    region_id: Optional[str] = None
+    contract_version: str
+    employer: str
+    term_start: Optional[str] = None
+    term_end: Optional[str] = None
+
+
+class ContractsResponse(BaseModel):
+    """Catalog of available contracts for frontend selection."""
+    default_contract_id: Optional[str] = None
+    contracts: list[ContractOption]
 
 class OnboardingOptionsResponse(BaseModel):
     """Available options for onboarding form."""
     classifications: list[dict]
     employment_types: list[dict]
     employers: list[str]
+    default_contract_id: Optional[str] = None
+    contracts: list[ContractOption] = Field(default_factory=list)
+
+
+class ClassificationOption(BaseModel):
+    """Classification option for a specific contract context."""
+    value: str
+    label: str
+
+
+class ClassificationsResponse(BaseModel):
+    """Contract-scoped classification options."""
+    contract_id: str
+    classifications: list[ClassificationOption]
 
 
 class ProfileUpdateRequest(BaseModel):
     """Request to update user profile."""
+    contract_id: Optional[str] = None
     classification: Optional[str] = None
     employment_type: Optional[str] = None  # "full_time" or "part_time"
     hire_date: Optional[str] = None  # ISO format: "2023-03-15"
@@ -190,6 +250,8 @@ class ProfileUpdateRequest(BaseModel):
 class ProfileResponse(BaseModel):
     """User profile with calculated fields."""
     session_id: str
+    contract_id: str
+    union_local_id: Optional[str] = None
     classification: Optional[str] = None
     classification_display: Optional[str] = None
     employment_type: Optional[str] = None
@@ -198,7 +260,7 @@ class ProfileResponse(BaseModel):
     estimated_hours: Optional[int] = None
     is_grandfathered: Optional[bool] = None
     is_complete: bool = False
-    employer: str = "Safeway"
+    employer: str = ""
 
 
 class WageEstimateResponse(BaseModel):
@@ -224,16 +286,54 @@ class WageEstimateResponse(BaseModel):
 
 # Endpoints
 
+def _count_contract_chunks(contract_id: Optional[str]) -> int:
+    """Count chunks available for a contract from chunk artifacts."""
+    if not contract_id:
+        return 0
+    chunks_file = resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+    if not chunks_file or not chunks_file.exists():
+        return 0
+    try:
+        with open(chunks_file, "r", encoding="utf-8") as f:
+            all_chunks = json.load(f)
+    except Exception:
+        return 0
+
+    allow_unscoped = len(list(MANIFESTS_DIR.glob("*.json"))) == 1
+    count = 0
+    for chunk in all_chunks:
+        chunk_contract_id = chunk.get("contract_id")
+        if chunk_contract_id == contract_id:
+            count += 1
+        elif allow_unscoped and chunk_contract_id in (None, ""):
+            count += 1
+    return count
+
+
 @app.get("/api/health", response_model=HealthResponse)
-async def health_check():
+async def health_check(contract_id: Optional[str] = None):
     """Check system health."""
-    chunks_loaded = vector_store.count() if vector_store else 0
+    active_contract_id = contract_id or resolve_default_contract_id()
+    contract_chunks = _count_contract_chunks(active_contract_id)
+    chunks_loaded = vector_store.count() if vector_store else contract_chunks
     llm_available = get_genai_client() is not None
 
     return HealthResponse(
-        status="healthy" if chunks_loaded > 0 else "degraded",
+        status="healthy" if contract_chunks > 0 else "degraded",
         chunks_loaded=chunks_loaded,
+        contract_chunks=contract_chunks,
+        active_contract_id=active_contract_id,
         llm_available=llm_available
+    )
+
+
+@app.get("/api/contracts", response_model=ContractsResponse)
+async def get_contracts():
+    """List available contract manifests for frontend/runtime selection."""
+    contracts = [ContractOption(**c) for c in list_contract_catalog()]
+    return ContractsResponse(
+        default_contract_id=resolve_default_contract_id(),
+        contracts=contracts,
     )
 
 
@@ -244,13 +344,35 @@ async def health_check():
 @app.get("/api/onboard/options", response_model=OnboardingOptionsResponse)
 async def get_onboarding_options():
     """Get available options for the onboarding form."""
+    contract_catalog = list_contract_catalog()
+    employers = sorted({c.get("employer", "") for c in contract_catalog if c.get("employer")})
     return OnboardingOptionsResponse(
-        classifications=get_classification_options(),
+        classifications=[],
         employment_types=[
             {"value": "full_time", "label": "Full-Time (32+ hrs/week)"},
             {"value": "part_time", "label": "Part-Time (under 32 hrs/week)"},
         ],
-        employers=["Safeway"]  # Expand when multi-contract support added
+        employers=employers,
+        default_contract_id=None,
+        contracts=[ContractOption(**c) for c in contract_catalog],
+    )
+
+
+@app.get("/api/classifications", response_model=ClassificationsResponse)
+async def get_classifications(contract_id: Optional[str] = None):
+    """Get contract-scoped job classifications for onboarding/settings UI."""
+    effective_contract_id = contract_id or resolve_default_contract_id()
+    if not effective_contract_id:
+        raise HTTPException(status_code=404, detail="No contract manifests found")
+    try:
+        ensure_contract_manifest(effective_contract_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    options = get_classification_options(contract_id=effective_contract_id)
+    return ClassificationsResponse(
+        contract_id=effective_contract_id,
+        classifications=[ClassificationOption(**o) for o in options],
     )
 
 
@@ -261,8 +383,13 @@ async def get_profile(session_id: str):
 
     return ProfileResponse(
         session_id=session_id,
+        contract_id=profile.contract_id,
+        union_local_id=profile.union_local,
         classification=profile.classification,
-        classification_display=CLASSIFICATION_DISPLAY_NAMES.get(profile.classification) if profile.classification else None,
+        classification_display=resolve_classification_display_name(
+            profile.classification,
+            contract_id=profile.contract_id,
+        ),
         employment_type=profile.employment_type.value if profile.employment_type else None,
         hire_date=profile.hire_date.isoformat() if profile.hire_date else None,
         months_employed=profile.months_employed,
@@ -277,12 +404,23 @@ async def get_profile(session_id: str):
 async def update_profile(session_id: str, request: ProfileUpdateRequest):
     """Update user profile."""
     updates = request.model_dump(exclude_none=True)
+    if "contract_id" in updates:
+        contract_id = updates["contract_id"]
+        try:
+            ensure_contract_manifest(contract_id)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
     profile = update_user_profile(session_id, updates)
 
     return ProfileResponse(
         session_id=session_id,
+        contract_id=profile.contract_id,
+        union_local_id=profile.union_local,
         classification=profile.classification,
-        classification_display=CLASSIFICATION_DISPLAY_NAMES.get(profile.classification) if profile.classification else None,
+        classification_display=resolve_classification_display_name(
+            profile.classification,
+            contract_id=profile.contract_id,
+        ),
         employment_type=profile.employment_type.value if profile.employment_type else None,
         hire_date=profile.hire_date.isoformat() if profile.hire_date else None,
         months_employed=profile.months_employed,
@@ -325,6 +463,7 @@ async def get_wage_estimate(session_id: str):
         classification=profile.classification,
         hours_worked=estimated_hours,
         months_employed=months,
+        contract_id=profile.contract_id,
     )
 
     if not wage_info:
@@ -355,7 +494,10 @@ async def get_wage_estimate(session_id: str):
 
     return WageEstimateResponse(
         classification=profile.classification,
-        classification_display=CLASSIFICATION_DISPLAY_NAMES.get(profile.classification, profile.classification),
+        classification_display=resolve_classification_display_name(
+            profile.classification,
+            contract_id=profile.contract_id,
+        ) or profile.classification,
         current_rate=wage_info["rate"],
         current_step=wage_info["step"],
         effective_date=wage_info["effective_date"],
@@ -384,6 +526,49 @@ async def query_contract(request: QueryRequest):
     if not retriever:
         raise HTTPException(status_code=503, detail="RAG system not initialized")
 
+    # Contract context is required for strict tenant isolation.
+    effective_contract_id = request.contract_id
+    catalog_entry = get_contract_catalog_entry(effective_contract_id)
+    if not catalog_entry:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown contract_id '{request.contract_id}'.",
+        )
+    effective_contract_id = catalog_entry["contract_id"]
+    try:
+        ensure_contract_manifest(effective_contract_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    # Validate local/version context against manifest for auditability.
+    manifest_path = MANIFESTS_DIR / f"{effective_contract_id}.json"
+    with open(manifest_path, "r", encoding="utf-8") as f:
+        manifest = json.load(f)
+
+    expected_union_local = manifest.get("union_local")
+    if expected_union_local and request.union_local_id != expected_union_local:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"union_local_id mismatch. Expected '{expected_union_local}', "
+                f"got '{request.union_local_id}'."
+            ),
+        )
+
+    expected_contract_version = manifest.get("contract_version")
+    if not expected_contract_version:
+        term_start = manifest.get("term_start", "")
+        term_end = manifest.get("term_end", "")
+        expected_contract_version = f"{term_start}__{term_end}"
+
+    if request.contract_version != expected_contract_version:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"contract_version mismatch. Expected '{expected_contract_version}', "
+                f"got '{request.contract_version}'."
+            ),
+        )
+
     # Get user profile and conversation context for this session
     conversation_context = ""
     detected_entities = {}
@@ -396,8 +581,9 @@ async def query_contract(request: QueryRequest):
         if profile.has_basic_info:
             user_profile = profile.to_dict()
             # Add display name
-            user_profile["classification_display"] = CLASSIFICATION_DISPLAY_NAMES.get(
-                profile.classification
+            user_profile["classification_display"] = resolve_classification_display_name(
+                profile.classification,
+                contract_id=profile.contract_id,
             ) if profile.classification else None
 
         # Get conversation context
@@ -428,7 +614,58 @@ async def query_contract(request: QueryRequest):
         months_employed = user_profile.get("months_employed") or 0
 
     # Classify intent with user's classification for role-based boosting
-    intent = classify_intent(request.question, user_classification=effective_classification)
+    intent = classify_intent(
+        request.question,
+        user_classification=effective_classification,
+        contract_id=effective_contract_id,
+    )
+
+    # Deterministic guardrail: wage estimates require a classification context.
+    if intent.intent_type == "wage" and not effective_classification:
+        retrieval_result = retriever.multi_angle_retrieve(
+            query=request.question,
+            intent=intent,
+            n_results=5,
+            hours_worked=hours_worked,
+            months_employed=months_employed,
+            contract_id=effective_contract_id,
+        )
+        chunks = retrieval_result.get("chunks", [])
+        answer = (
+            "I can estimate your pay rate once your job classification is set. "
+            "Please select your role in onboarding/settings, then ask again. "
+            "I will use Appendix A for your selected contract."
+        )
+        verification = verify_response(
+            response=answer,
+            chunks=chunks,
+            requires_escalation=False,
+        )
+        formatted = format_response_with_sources(answer, chunks, None)
+        return QueryResponse(
+            answer=formatted["response"],
+            citations=formatted["citations"],
+            sources=formatted["sources"],
+            intent_type=intent.intent_type,
+            escalation_required=False,
+            union_local_id=request.union_local_id,
+            contract_id=effective_contract_id,
+            contract_version=request.contract_version,
+            high_stakes_topic=intent.high_stakes_topic,
+            active_urgent_context=intent.active_urgent_context,
+            escalation_policy=intent.escalation_policy,
+            wage_info=None,
+            confidence=verification.confidence,
+            verification_passed=verification.is_valid,
+            hypothesis_titles=None,
+            hypothesis_latency_ms=None,
+            full_article_expanded=False,
+            winning_article=None,
+            reranker_latency_ms=None,
+            reranker_position_changes=None,
+            interpretation_latency_ms=None,
+            search_angles_used=None,
+        )
 
     # Retrieve relevant chunks and wage info using multi-angle retrieval
     # This uses deep query interpretation for better semantic matching
@@ -437,7 +674,8 @@ async def query_contract(request: QueryRequest):
         intent=intent,
         n_results=5,
         hours_worked=hours_worked,
-        months_employed=months_employed
+        months_employed=months_employed,
+        contract_id=effective_contract_id,
     )
     
     chunks = retrieval_result["chunks"]
@@ -504,6 +742,12 @@ async def query_contract(request: QueryRequest):
         query=request.question,
         chunks=chunks,
         wage_info=wage_info if is_wage_query else None,
+        contract_context={
+            "contract_id": effective_contract_id,
+            "union_local_id": request.union_local_id,
+            "contract_version": request.contract_version,
+            "employer": manifest.get("employer", ""),
+        },
         requires_escalation=escalation_required,
         query_expansions=query_expansions,
         user_classification=effective_classification,
@@ -547,6 +791,12 @@ async def query_contract(request: QueryRequest):
         sources=formatted["sources"],
         intent_type=intent.intent_type,
         escalation_required=escalation_required,
+        union_local_id=request.union_local_id,
+        contract_id=effective_contract_id,
+        contract_version=request.contract_version,
+        high_stakes_topic=intent.high_stakes_topic,
+        active_urgent_context=intent.active_urgent_context,
+        escalation_policy=intent.escalation_policy,
         wage_info=wage_info if is_wage_query else None,
         confidence=verification.confidence,
         verification_passed=verification.is_valid,
@@ -574,11 +824,13 @@ async def lookup_wage(request: WageLookupRequest):
     if not retriever:
         raise HTTPException(status_code=503, detail="RAG system not initialized")
     
+    effective_contract_id = _resolve_contract_id_for_viewer(request.contract_id)
     wage_info = retriever.lookup_wage(
         classification=request.classification,
         hours_worked=request.hours_worked,
         months_employed=request.months_employed,
-        effective_date=request.effective_date
+        effective_date=request.effective_date,
+        contract_id=effective_contract_id,
     )
     
     if not wage_info:
@@ -588,6 +840,7 @@ async def lookup_wage(request: WageLookupRequest):
         )
     
     return WageResponse(
+        contract_id=effective_contract_id,
         classification=wage_info["classification"],
         step=wage_info["step"],
         rate=wage_info["rate"],
@@ -638,14 +891,45 @@ class SectionResponse(BaseModel):
     summary: Optional[str] = None
 
 
+def _resolve_contract_id_for_viewer(contract_id: Optional[str]) -> str:
+    """Resolve contract_id for viewer endpoints with single-manifest fallback."""
+    if contract_id:
+        entry = get_contract_catalog_entry(contract_id)
+        if not entry:
+            try:
+                ensure_contract_manifest(contract_id)
+            except ValueError as e:
+                raise HTTPException(status_code=400, detail=str(e))
+            raise HTTPException(
+                status_code=400,
+                detail=f"Contract '{contract_id}' is not active in the runtime catalog.",
+            )
+        return entry["contract_id"]
+
+    manifests = sorted(MANIFESTS_DIR.glob("*.json"))
+    if len(manifests) == 1:
+        return manifests[0].stem
+
+    raise HTTPException(
+        status_code=400,
+        detail="contract_id is required when multiple manifests are present",
+    )
+
+
+def _viewer_allow_legacy_unscoped_chunks() -> bool:
+    """Allow unscoped chunk fallback only in single-manifest mode."""
+    return len(list(MANIFESTS_DIR.glob("*.json"))) == 1
+
+
 @app.get("/api/manifest", response_model=ManifestResponse)
-async def get_manifest():
+async def get_manifest(contract_id: Optional[str] = None):
     """
     Get contract table of contents.
 
     Returns article numbers mapped to their titles for navigation.
     """
-    manifest_file = DATA_DIR / "manifests" / "safeway_pueblo_clerks_2022.json"
+    effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
+    manifest_file = MANIFESTS_DIR / f"{effective_contract_id}.json"
 
     if not manifest_file.exists():
         raise HTTPException(status_code=404, detail="Contract manifest not found")
@@ -661,22 +945,31 @@ async def get_manifest():
 
 
 @app.get("/api/article/{article_num}", response_model=ArticleResponse)
-async def get_article(article_num: int):
+async def get_article(article_num: int, contract_id: Optional[str] = None):
     """
     Get all sections for a specific article.
 
     Returns the article title and all sections with their content.
     """
-    chunks_file = DATA_DIR / "chunks" / "contract_chunks.json"
+    effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
+    chunks_file = resolve_chunk_file(contract_id=effective_contract_id, allow_shared_fallback=True)
 
-    if not chunks_file.exists():
+    if not chunks_file or not chunks_file.exists():
         raise HTTPException(status_code=404, detail="Contract chunks not found")
 
     with open(chunks_file, 'r', encoding='utf-8') as f:
         all_chunks = json.load(f)
 
     # Filter to this article
-    article_chunks = [c for c in all_chunks if c.get('article_num') == article_num]
+    allow_unscoped = _viewer_allow_legacy_unscoped_chunks()
+    article_chunks = [
+        c for c in all_chunks
+        if c.get('article_num') == article_num
+        and (
+            c.get("contract_id") == effective_contract_id
+            or (allow_unscoped and c.get("contract_id") in (None, ""))
+        )
+    ]
 
     if not article_chunks:
         raise HTTPException(status_code=404, detail=f"Article {article_num} not found")
@@ -706,7 +999,12 @@ async def get_article(article_num: int):
 
 
 @app.get("/api/section/{article_num}/{section_num}", response_model=SectionResponse)
-async def get_section(article_num: int, section_num: int, subsection: str = None):
+async def get_section(
+    article_num: int,
+    section_num: int,
+    subsection: str = None,
+    contract_id: Optional[str] = None,
+):
     """
     Get a specific section from an article.
 
@@ -717,18 +1015,24 @@ async def get_section(article_num: int, section_num: int, subsection: str = None
         section_num: The section number
         subsection: Optional subsection (e.g., 'a', 'b', 'c') for filtering
     """
-    chunks_file = DATA_DIR / "chunks" / "contract_chunks.json"
+    effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
+    chunks_file = resolve_chunk_file(contract_id=effective_contract_id, allow_shared_fallback=True)
 
-    if not chunks_file.exists():
+    if not chunks_file or not chunks_file.exists():
         raise HTTPException(status_code=404, detail="Contract chunks not found")
 
     with open(chunks_file, 'r', encoding='utf-8') as f:
         all_chunks = json.load(f)
 
     # Find the specific section
+    allow_unscoped = _viewer_allow_legacy_unscoped_chunks()
     matching_chunks = [
         c for c in all_chunks
         if c.get('article_num') == article_num and c.get('section_num') == section_num
+        and (
+            c.get("contract_id") == effective_contract_id
+            or (allow_unscoped and c.get("contract_id") in (None, ""))
+        )
     ]
 
     if not matching_chunks:

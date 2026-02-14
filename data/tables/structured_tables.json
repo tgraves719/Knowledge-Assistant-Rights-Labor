@@ -1,0 +1,1067 @@
+[
+  {
+    "table_id": "tbl_art0_1",
+    "content_hash": "00b105f11a0223f8",
+    "headers": [
+      "ARTICLE 1 RECOGNITION AND EXCLUSIONS",
+      "1"
+    ],
+    "rows": [
+      [
+        "ARTICLE 2 BARGAINING UNIT WORK JURISDICTION",
+        "1"
+      ],
+      [
+        "ARTICLE 3 UNION SECURITY AND CONDITIONS",
+        "2"
+      ],
+      [
+        "ARTICLE 4 CHECK-OFF",
+        "3"
+      ],
+      [
+        "ARTICLE 5 NEW EMPLOYEES, TRANSFERRED EMPLOYEES, PROMOTED OR DEMOTED",
+        "3"
+      ],
+      [
+        "ARTICLE 6 RIGHTS OF MANAGEMENT",
+        "4"
+      ],
+      [
+        "ARTICLE 7 DEFINITIONS OF CLASSIFICATIONS",
+        "4"
+      ],
+      [
+        "ARTICLE 8 RATES OF PAY",
+        "6"
+      ],
+      [
+        "ARTICLE 9 PRIOR EXPERIENCE",
+        "7"
+      ],
+      [
+        "ARTICLE 10 SCHEDULING AND ASSIGNMENT OF HOURS",
+        "7"
+      ],
+      [
+        "ARTICLE 11 NO REDUCTION IN PAY",
+        "10"
+      ],
+      [
+        "ARTICLE 12 OVERTIME",
+        "10"
+      ],
+      [
+        "ARTICLE 13 SUNDAY PREMIUM",
+        "11"
+      ],
+      [
+        "ARTICLE 14 TRAVEL PAY",
+        "11"
+      ],
+      [
+        "ARTICLE 15 NIGHT PREMIUMS",
+        "12"
+      ],
+      [
+        "ARTICLE 16 HOLIDAYS AND HOLIDAY PAY",
+        "12"
+      ],
+      [
+        "ARTICLE 17 VACATIONS",
+        "13"
+      ],
+      [
+        "ARTICLE 18 MINIMUM WEEKLY SCHEDULE",
+        "15"
+      ],
+      [
+        "ARTICLE 19 NO FREE WORK",
+        "16"
+      ],
+      [
+        "ARTICLE 20 TIME CARDS",
+        "16"
+      ],
+      [
+        "ARTICLE 21 SPLIT SHIFTS",
+        "17"
+      ],
+      [
+        "ARTICLE 22 STORE MEETINGS",
+        "17"
+      ],
+      [
+        "ARTICLE 23 REPORTING PAY",
+        "17"
+      ],
+      [
+        "ARTICLE 24 LUNCH BREAKS",
+        "17"
+      ],
+      [
+        "ARTICLE 25 RELIEF PERIODS",
+        "17"
+      ],
+      [
+        "ARTICLE 26 PROBATIONARY PERIOD",
+        "18"
+      ],
+      [
+        "ARTICLE 27 SENIORITY",
+        "18"
+      ],
+      [
+        "ARTICLE 28 UNSCHEDULED OVERTIME",
+        "20"
+      ],
+      [
+        "ARTICLE 29 LAYOFFS",
+        "21"
+      ],
+      [
+        "ARTICLE 30 TRANSFER FROM STORE TO STORE",
+        "27"
+      ],
+      [
+        "ARTICLE 31 NEW STORE LANGUAGE",
+        "27"
+      ],
+      [
+        "ARTICLE 32 LEAVES OF ABSENCE",
+        "27"
+      ],
+      [
+        "ARTICLE 33 BEREAVEMENT LEAVE",
+        "29"
+      ],
+      [
+        "ARTICLE 34 JURY DUTY",
+        "29"
+      ],
+      [
+        "ARTICLE 35 SICK LEAVE",
+        "30"
+      ],
+      [
+        "ARTICLE 36 SAFETY",
+        "32"
+      ],
+      [
+        "ARTICLE 37 INJURY ON JOB",
+        "35"
+      ],
+      [
+        "ARTICLE 38 CHILD CARE DISCOUNT PROGRAMS",
+        "35"
+      ],
+      [
+        "ARTICLE 39 401K PLAN",
+        "35"
+      ],
+      [
+        "ARTICLE 40 HEALTH AND WELFARE COVERAGE",
+        "35"
+      ],
+      [
+        "ARTICLE 41 NON-DUPLICATION OF BENEFITS",
+        "43"
+      ],
+      [
+        "ARTICLE 42 PENSION",
+        "43"
+      ],
+      [
+        "ARTICLE 43 DISCHARGE AND NO DISCRIMINATION",
+        "45"
+      ],
+      [
+        "ARTICLE 44 UNION REPRESENTATION VISITATION",
+        "46"
+      ],
+      [
+        "ARTICLE 45 UNION STEWARD",
+        "46"
+      ]
+    ],
+    "markdown": "| ARTICLE 1 RECOGNITION AND EXCLUSIONS                                | 1  |\n| ------------------------------------------------------------------- | -- |\n| ARTICLE 2 BARGAINING UNIT WORK JURISDICTION                         | 1  |\n| ARTICLE 3 UNION SECURITY AND CONDITIONS                             | 2  |\n| ARTICLE 4 CHECK-OFF                                                 | 3  |\n| ARTICLE 5 NEW EMPLOYEES, TRANSFERRED EMPLOYEES, PROMOTED OR DEMOTED | 3  |\n| ARTICLE 6 RIGHTS OF MANAGEMENT                                      | 4  |\n| ARTICLE 7 DEFINITIONS OF CLASSIFICATIONS                            | 4  |\n| ARTICLE 8 RATES OF PAY                                              | 6  |\n| ARTICLE 9 PRIOR EXPERIENCE                                          | 7  |\n| ARTICLE 10 SCHEDULING AND ASSIGNMENT OF HOURS                       | 7  |\n| ARTICLE 11 NO REDUCTION IN PAY                                      | 10 |\n| ARTICLE 12 OVERTIME                                                 | 10 |\n| ARTICLE 13 SUNDAY PREMIUM                                           | 11 |\n| ARTICLE 14 TRAVEL PAY                                               | 11 |\n| ARTICLE 15 NIGHT PREMIUMS                                           | 12 |\n| ARTICLE 16 HOLIDAYS AND HOLIDAY PAY                                 | 12 |\n| ARTICLE 17 VACATIONS                                                | 13 |\n| ARTICLE 18 MINIMUM WEEKLY SCHEDULE                                  | 15 |\n| ARTICLE 19 NO FREE WORK                                             | 16 |\n| ARTICLE 20 TIME CARDS                                               | 16 |\n| ARTICLE 21 SPLIT SHIFTS                                             | 17 |\n| ARTICLE 22 STORE MEETINGS                                           | 17 |\n| ARTICLE 23 REPORTING PAY                                            | 17 |\n| ARTICLE 24 LUNCH BREAKS                                             | 17 |\n| ARTICLE 25 RELIEF PERIODS                                           | 17 |\n| ARTICLE 26 PROBATIONARY PERIOD                                      | 18 |\n| ARTICLE 27 SENIORITY                                                | 18 |\n| ARTICLE 28 UNSCHEDULED OVERTIME                                     | 20 |\n| ARTICLE 29 LAYOFFS                                                  | 21 |\n| ARTICLE 30 TRANSFER FROM STORE TO STORE                             | 27 |\n| ARTICLE 31 NEW STORE LANGUAGE                                       | 27 |\n| ARTICLE 32 LEAVES OF ABSENCE                                        | 27 |\n| ARTICLE 33 BEREAVEMENT LEAVE                                        | 29 |\n| ARTICLE 34 JURY DUTY                                                | 29 |\n| ARTICLE 35 SICK LEAVE                                               | 30 |\n| ARTICLE 36 SAFETY                                                   | 32 |\n| ARTICLE 37 INJURY ON JOB                                            | 35 |\n| ARTICLE 38 CHILD CARE DISCOUNT PROGRAMS                             | 35 |\n| ARTICLE 39 401K PLAN                                                | 35 |\n| ARTICLE 40 HEALTH AND WELFARE COVERAGE                              | 35 |\n| ARTICLE 41 NON-DUPLICATION OF BENEFITS                              | 43 |\n| ARTICLE 42 PENSION                                                  | 43 |\n| ARTICLE 43 DISCHARGE AND NO DISCRIMINATION                          | 45 |\n| ARTICLE 44 UNION REPRESENTATION VISITATION                          | 46 |\n| ARTICLE 45 UNION STEWARD                                            | 46 |",
+    "csv": "\"ARTICLE 1 RECOGNITION AND EXCLUSIONS\",\"1\"\n\"ARTICLE 2 BARGAINING UNIT WORK JURISDICTION\",\"1\"\n\"ARTICLE 3 UNION SECURITY AND CONDITIONS\",\"2\"\n\"ARTICLE 4 CHECK-OFF\",\"3\"\n\"ARTICLE 5 NEW EMPLOYEES, TRANSFERRED EMPLOYEES, PROMOTED OR DEMOTED\",\"3\"\n\"ARTICLE 6 RIGHTS OF MANAGEMENT\",\"4\"\n\"ARTICLE 7 DEFINITIONS OF CLASSIFICATIONS\",\"4\"\n\"ARTICLE 8 RATES OF PAY\",\"6\"\n\"ARTICLE 9 PRIOR EXPERIENCE\",\"7\"\n\"ARTICLE 10 SCHEDULING AND ASSIGNMENT OF HOURS\",\"7\"\n\"ARTICLE 11 NO REDUCTION IN PAY\",\"10\"\n\"ARTICLE 12 OVERTIME\",\"10\"\n\"ARTICLE 13 SUNDAY PREMIUM\",\"11\"\n\"ARTICLE 14 TRAVEL PAY\",\"11\"\n\"ARTICLE 15 NIGHT PREMIUMS\",\"12\"\n\"ARTICLE 16 HOLIDAYS AND HOLIDAY PAY\",\"12\"\n\"ARTICLE 17 VACATIONS\",\"13\"\n\"ARTICLE 18 MINIMUM WEEKLY SCHEDULE\",\"15\"\n\"ARTICLE 19 NO FREE WORK\",\"16\"\n\"ARTICLE 20 TIME CARDS\",\"16\"\n\"ARTICLE 21 SPLIT SHIFTS\",\"17\"\n\"ARTICLE 22 STORE MEETINGS\",\"17\"\n\"ARTICLE 23 REPORTING PAY\",\"17\"\n\"ARTICLE 24 LUNCH BREAKS\",\"17\"\n\"ARTICLE 25 RELIEF PERIODS\",\"17\"\n\"ARTICLE 26 PROBATIONARY PERIOD\",\"18\"\n\"ARTICLE 27 SENIORITY\",\"18\"\n\"ARTICLE 28 UNSCHEDULED OVERTIME\",\"20\"\n\"ARTICLE 29 LAYOFFS\",\"21\"\n\"ARTICLE 30 TRANSFER FROM STORE TO STORE\",\"27\"\n\"ARTICLE 31 NEW STORE LANGUAGE\",\"27\"\n\"ARTICLE 32 LEAVES OF ABSENCE\",\"27\"\n\"ARTICLE 33 BEREAVEMENT LEAVE\",\"29\"\n\"ARTICLE 34 JURY DUTY\",\"29\"\n\"ARTICLE 35 SICK LEAVE\",\"30\"\n\"ARTICLE 36 SAFETY\",\"32\"\n\"ARTICLE 37 INJURY ON JOB\",\"35\"\n\"ARTICLE 38 CHILD CARE DISCOUNT PROGRAMS\",\"35\"\n\"ARTICLE 39 401K PLAN\",\"35\"\n\"ARTICLE 40 HEALTH AND WELFARE COVERAGE\",\"35\"\n\"ARTICLE 41 NON-DUPLICATION OF BENEFITS\",\"43\"\n\"ARTICLE 42 PENSION\",\"43\"\n\"ARTICLE 43 DISCHARGE AND NO DISCRIMINATION\",\"45\"\n\"ARTICLE 44 UNION REPRESENTATION VISITATION\",\"46\"\n\"ARTICLE 45 UNION STEWARD\",\"46\"",
+    "is_perfect": false,
+    "json_path": "pages[0].items[1]",
+    "heading_path": [
+      "TABLE OF CONTENTS PUEBLO CLERKS"
+    ],
+    "parent_article": null,
+    "parent_section": null,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art0_2",
+    "content_hash": "bcac3469edfc1492",
+    "headers": [
+      "ARTICLE 46 DISPUTE PROCEDURE",
+      "46"
+    ],
+    "rows": [
+      [
+        "ARTICLE 47 NO STRIKE OR LOCKOUT",
+        "51"
+      ],
+      [
+        "ARTICLE 48 STORE CLOSING",
+        "51"
+      ],
+      [
+        "ARTICLE 49 BULLETIN BOARD",
+        "53"
+      ],
+      [
+        "ARTICLE 50 UNION STORE CARDS",
+        "53"
+      ],
+      [
+        "ARTICLE 51 LIE DETECTOR TESTS",
+        "53"
+      ],
+      [
+        "ARTICLE 52 UNIFORMS/EQUIPMENT",
+        "53"
+      ],
+      [
+        "ARTICLE 53 SAVING CLAUSE",
+        "53"
+      ],
+      [
+        "ARTICLE 54 TECHNOLOGICAL CHANGES",
+        "54"
+      ],
+      [
+        "ARTICLE 55 PRODIGY-TYPE SHOPPING",
+        "55"
+      ],
+      [
+        "ARTICLE 56 PHARMACY TECHNICIANS",
+        "55"
+      ],
+      [
+        "ARTICLE 57 ENTIRE AGREEMENT",
+        "56"
+      ],
+      [
+        "ARTICLE 58 TERM OF AGREEMENT",
+        "56"
+      ],
+      [
+        "Appendix A",
+        "59"
+      ],
+      [
+        "SAFEWAY INC. CLERKS LETTERS OF UNDERSTANDING:",
+        "62"
+      ]
+    ],
+    "markdown": "| ARTICLE 46 DISPUTE PROCEDURE                  | 46 |\n| --------------------------------------------- | -- |\n| ARTICLE 47 NO STRIKE OR LOCKOUT               | 51 |\n| ARTICLE 48 STORE CLOSING                      | 51 |\n| ARTICLE 49 BULLETIN BOARD                     | 53 |\n| ARTICLE 50 UNION STORE CARDS                  | 53 |\n| ARTICLE 51 LIE DETECTOR TESTS                 | 53 |\n| ARTICLE 52 UNIFORMS/EQUIPMENT                 | 53 |\n| ARTICLE 53 SAVING CLAUSE                      | 53 |\n| ARTICLE 54 TECHNOLOGICAL CHANGES              | 54 |\n| ARTICLE 55 PRODIGY-TYPE SHOPPING              | 55 |\n| ARTICLE 56 PHARMACY TECHNICIANS               | 55 |\n| ARTICLE 57 ENTIRE AGREEMENT                   | 56 |\n| ARTICLE 58 TERM OF AGREEMENT                  | 56 |\n| Appendix A                                    | 59 |\n| SAFEWAY INC. CLERKS LETTERS OF UNDERSTANDING: | 62 |",
+    "csv": "\"ARTICLE 46 DISPUTE PROCEDURE\",\"46\"\n\"ARTICLE 47 NO STRIKE OR LOCKOUT\",\"51\"\n\"ARTICLE 48 STORE CLOSING\",\"51\"\n\"ARTICLE 49 BULLETIN BOARD\",\"53\"\n\"ARTICLE 50 UNION STORE CARDS\",\"53\"\n\"ARTICLE 51 LIE DETECTOR TESTS\",\"53\"\n\"ARTICLE 52 UNIFORMS/EQUIPMENT\",\"53\"\n\"ARTICLE 53 SAVING CLAUSE\",\"53\"\n\"ARTICLE 54 TECHNOLOGICAL CHANGES\",\"54\"\n\"ARTICLE 55 PRODIGY-TYPE SHOPPING\",\"55\"\n\"ARTICLE 56 PHARMACY TECHNICIANS\",\"55\"\n\"ARTICLE 57 ENTIRE AGREEMENT\",\"56\"\n\"ARTICLE 58 TERM OF AGREEMENT\",\"56\"\n\"Appendix A\",\"59\"\n\"SAFEWAY INC. CLERKS LETTERS OF UNDERSTANDING:\",\"62\"",
+    "is_perfect": false,
+    "json_path": "pages[1].items[1]",
+    "heading_path": [
+      "TABLE OF CONTENTS PUEBLO CLERKS"
+    ],
+    "parent_article": null,
+    "parent_section": null,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art40_1",
+    "content_hash": "efe51ddaf5f93e85",
+    "headers": [
+      "Current",
+      "January 2022 hours payable",
+      "January 2023 hours payable",
+      "January 2024 hours payable"
+    ],
+    "rows": [],
+    "markdown": "| Current | January 2022 hours payable | January 2023 hours payable | January 2024 hours payable |\n| ------- | -------------------------- | -------------------------- | -------------------------- |",
+    "csv": "\"Current\",\"January 2022 hours payable\",\"January 2023 hours payable\",\"January 2024 hours payable\"",
+    "is_perfect": false,
+    "json_path": "pages[36].items[18]",
+    "heading_path": [
+      "SENIORITY",
+      "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)"
+    ],
+    "parent_article": 40,
+    "parent_section": 116,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art40_2",
+    "content_hash": "be324da3b66fb723",
+    "headers": [
+      "",
+      "",
+      "",
+      "in February 2022",
+      "in February 2023 “Up to”",
+      "in February 2024 “Up to”"
+    ],
+    "rows": [
+      [
+        "",
+        "Plan A Hired Before 3/5/2005",
+        "$988.78",
+        "$ 1,030.31",
+        "$ 1,081.82",
+        "$ 1,135.92"
+      ],
+      [
+        "",
+        "Plan A Hired After 3/5/2005",
+        "$ 850.59",
+        "$ 886.31",
+        "$930.63",
+        "$977.16"
+      ],
+      [
+        "",
+        "Plan B Hired Before 3/5/2005",
+        "$791.01",
+        "$ 824.23",
+        "$ 865.44",
+        "$ 908.72"
+      ],
+      [
+        "",
+        "Plan B Hired After 3/5/2005",
+        "$ 680.47",
+        "$ 709.05",
+        "$ 744.50",
+        "$ 781.73"
+      ],
+      [
+        "",
+        "Plan C Hired After 3/5/2005",
+        "$ 428.68",
+        "$ 446.68",
+        "$ 469.02",
+        "$ 492.47"
+      ]
+    ],
+    "markdown": "|   |                              |          | in February 2022 | in February 2023 “Up to” | in February 2024 “Up to” |\n| - | ---------------------------- | -------- | ---------------- | ------------------------ | ------------------------ |\n|   | Plan A Hired Before 3/5/2005 | $988.78  | $ 1,030.31       | $ 1,081.82               | $ 1,135.92               |\n|   | Plan A Hired After 3/5/2005  | $ 850.59 | $ 886.31         | $930.63                  | $977.16                  |\n|   | Plan B Hired Before 3/5/2005 | $791.01  | $ 824.23         | $ 865.44                 | $ 908.72                 |\n|   | Plan B Hired After 3/5/2005  | $ 680.47 | $ 709.05         | $ 744.50                 | $ 781.73                 |\n|   | Plan C Hired After 3/5/2005  | $ 428.68 | $ 446.68         | $ 469.02                 | $ 492.47                 |",
+    "csv": "\"\",\"\",\"\",\"in February 2022\",\"in February 2023 “Up to”\",\"in February 2024 “Up to”\"\n\"\",\"Plan A Hired Before 3/5/2005\",\"$988.78\",\"$ 1,030.31\",\"$ 1,081.82\",\"$ 1,135.92\"\n\"\",\"Plan A Hired After 3/5/2005\",\"$ 850.59\",\"$ 886.31\",\"$930.63\",\"$977.16\"\n\"\",\"Plan B Hired Before 3/5/2005\",\"$791.01\",\"$ 824.23\",\"$ 865.44\",\"$ 908.72\"\n\"\",\"Plan B Hired After 3/5/2005\",\"$ 680.47\",\"$ 709.05\",\"$ 744.50\",\"$ 781.73\"\n\"\",\"Plan C Hired After 3/5/2005\",\"$ 428.68\",\"$ 446.68\",\"$ 469.02\",\"$ 492.47\"",
+    "is_perfect": false,
+    "json_path": "pages[37].items[1]",
+    "heading_path": [
+      "SENIORITY",
+      "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)"
+    ],
+    "parent_article": 40,
+    "parent_section": 116,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art40_3",
+    "content_hash": "57791a5b72cc88c7",
+    "headers": [
+      "Year",
+      "2022",
+      "2023",
+      "2024"
+    ],
+    "rows": [
+      [
+        "PPO Medical",
+        "6.5%",
+        "6.5%",
+        "6.5%"
+      ],
+      [
+        "Prescription Drug",
+        "8.0%",
+        "8.0%",
+        "8.0%"
+      ],
+      [
+        "Dental",
+        "4.0%",
+        "4.0%",
+        "4.0%"
+      ],
+      [
+        "Vision",
+        "3.0%",
+        "3.0%",
+        "3.0%"
+      ],
+      [
+        "Time Loss",
+        "0.0%",
+        "0.0%",
+        "0.0%"
+      ],
+      [
+        "Kaiser Premium",
+        "6.5%",
+        "6.5%",
+        "6.5%"
+      ],
+      [
+        "Medicare Advantage",
+        "Actual",
+        "Actual",
+        "Actual"
+      ],
+      [
+        "Life Premium",
+        "0.0%",
+        "0.0%",
+        "0.0%"
+      ],
+      [
+        "Provider Access Fees",
+        "Actual",
+        "Actual",
+        "Actual"
+      ],
+      [
+        "Stop Loss Premiums",
+        "Actual",
+        "Actual",
+        "Actual"
+      ]
+    ],
+    "markdown": "| Year                 | 2022   | 2023   | 2024   |\n| -------------------- | ------ | ------ | ------ |\n| PPO Medical          | 6.5%   | 6.5%   | 6.5%   |\n| Prescription Drug    | 8.0%   | 8.0%   | 8.0%   |\n| Dental               | 4.0%   | 4.0%   | 4.0%   |\n| Vision               | 3.0%   | 3.0%   | 3.0%   |\n| Time Loss            | 0.0%   | 0.0%   | 0.0%   |\n| Kaiser Premium       | 6.5%   | 6.5%   | 6.5%   |\n| Medicare Advantage   | Actual | Actual | Actual |\n| Life Premium         | 0.0%   | 0.0%   | 0.0%   |\n| Provider Access Fees | Actual | Actual | Actual |\n| Stop Loss Premiums   | Actual | Actual | Actual |",
+    "csv": "\"Year\",\"2022\",\"2023\",\"2024\"\n\"PPO Medical\",\"6.5%\",\"6.5%\",\"6.5%\"\n\"Prescription Drug\",\"8.0%\",\"8.0%\",\"8.0%\"\n\"Dental\",\"4.0%\",\"4.0%\",\"4.0%\"\n\"Vision\",\"3.0%\",\"3.0%\",\"3.0%\"\n\"Time Loss\",\"0.0%\",\"0.0%\",\"0.0%\"\n\"Kaiser Premium\",\"6.5%\",\"6.5%\",\"6.5%\"\n\"Medicare Advantage\",\"Actual\",\"Actual\",\"Actual\"\n\"Life Premium\",\"0.0%\",\"0.0%\",\"0.0%\"\n\"Provider Access Fees\",\"Actual\",\"Actual\",\"Actual\"\n\"Stop Loss Premiums\",\"Actual\",\"Actual\",\"Actual\"",
+    "is_perfect": true,
+    "json_path": "pages[37].items[8]",
+    "heading_path": [
+      "SENIORITY",
+      "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)"
+    ],
+    "parent_article": 40,
+    "parent_section": 116,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art40_4",
+    "content_hash": "b40181aa6a7828b6",
+    "headers": [
+      "Administration",
+      "3.0%",
+      "3.0%",
+      "3.0%"
+    ],
+    "rows": [
+      [
+        "Investment Income",
+        "1.25%",
+        "1.25%",
+        "1.25%"
+      ]
+    ],
+    "markdown": "| Administration    | 3.0%  | 3.0%  | 3.0%  |\n| ----------------- | ----- | ----- | ----- |\n| Investment Income | 1.25% | 1.25% | 1.25% |",
+    "csv": "\"Administration\",\"3.0%\",\"3.0%\",\"3.0%\"\n\"Investment Income\",\"1.25%\",\"1.25%\",\"1.25%\"",
+    "is_perfect": false,
+    "json_path": "pages[38].items[1]",
+    "heading_path": [
+      "SENIORITY",
+      "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)"
+    ],
+    "parent_article": 40,
+    "parent_section": 116,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art40_5",
+    "content_hash": "e827be0f38e36228",
+    "headers": [
+      "Drug Class",
+      "Co‑Pay"
+    ],
+    "rows": [
+      [
+        "Generic",
+        "$2.50"
+      ],
+      [
+        "Formulary Brand",
+        "$10"
+      ],
+      [
+        "Nonformulary Brand",
+        "$20"
+      ]
+    ],
+    "markdown": "| Drug Class         | Co‑Pay |\n| ------------------ | ------ |\n| Generic            | $2.50  |\n| Formulary Brand    | $10    |\n| Nonformulary Brand | $20    |",
+    "csv": "\"Drug Class\",\"Co‑Pay\"\n\"Generic\",\"$2.50\"\n\"Formulary Brand\",\"$10\"\n\"Nonformulary Brand\",\"$20\"",
+    "is_perfect": false,
+    "json_path": "pages[42].items[6]",
+    "heading_path": [
+      "SENIORITY",
+      "Health and Care Management"
+    ],
+    "parent_article": 40,
+    "parent_section": 116,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art40_6",
+    "content_hash": "bb336841b5cece4b",
+    "headers": [
+      "Service",
+      "PPO coverage (In-network)"
+    ],
+    "rows": [
+      [
+        "Mammography",
+        "Plan pays 100%"
+      ],
+      [
+        "Routine Annual Physical Exam",
+        "Plan pays 100%"
+      ],
+      [
+        "Well-baby care",
+        "Plan pays 100%"
+      ]
+    ],
+    "markdown": "| Service                      | PPO coverage (In-network) |\n| ---------------------------- | ------------------------- |\n| Mammography                  | Plan pays 100%            |\n| Routine Annual Physical Exam | Plan pays 100%            |\n| Well-baby care               | Plan pays 100%            |",
+    "csv": "\"Service\",\"PPO coverage (In-network)\"\n\"Mammography\",\"Plan pays 100%\"\n\"Routine Annual Physical Exam\",\"Plan pays 100%\"\n\"Well-baby care\",\"Plan pays 100%\"",
+    "is_perfect": false,
+    "json_path": "pages[42].items[10]",
+    "heading_path": [
+      "SENIORITY",
+      "Health and Care Management"
+    ],
+    "parent_article": 40,
+    "parent_section": 116,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art40_7",
+    "content_hash": "a4b46c156012b0a8",
+    "headers": [
+      "Childhood Immunizations",
+      "Plan pays 100%"
+    ],
+    "rows": [
+      [
+        "Papanicolaou (Pap) smear and pelvic examination",
+        "Plan pays 100%"
+      ],
+      [
+        "Prostate specific antigen (PSA) testing",
+        "Plan pays 100%"
+      ],
+      [
+        "Colonoscopy",
+        "Plan pays 100%"
+      ]
+    ],
+    "markdown": "| Childhood Immunizations                         | Plan pays 100% |\n| ----------------------------------------------- | -------------- |\n| Papanicolaou (Pap) smear and pelvic examination | Plan pays 100% |\n| Prostate specific antigen (PSA) testing         | Plan pays 100% |\n| Colonoscopy                                     | Plan pays 100% |",
+    "csv": "\"Childhood Immunizations\",\"Plan pays 100%\"\n\"Papanicolaou (Pap) smear and pelvic examination\",\"Plan pays 100%\"\n\"Prostate specific antigen (PSA) testing\",\"Plan pays 100%\"\n\"Colonoscopy\",\"Plan pays 100%\"",
+    "is_perfect": false,
+    "json_path": "pages[43].items[0]",
+    "heading_path": [
+      "SENIORITY",
+      "Health and Care Management"
+    ],
+    "parent_article": 40,
+    "parent_section": 116,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art58_1",
+    "content_hash": "ecf0bd20be91c379",
+    "headers": [
+      "",
+      "PLAN A ENROLLED & PARTICIPATING",
+      "PLAN B ENROLLED & PARTICIPATING",
+      "PLAN C ENROLLED & PARTICIPATING"
+    ],
+    "rows": [
+      [
+        "DEDUCTIBLE",
+        "$500 PER PERSON, MAX 3 PER FAMILY",
+        "$600 PER PERSON, MAX 3 PER FAMILY",
+        "$700 PER PERSON, MAX 3 PER FAMILY"
+      ],
+      [
+        "OFFICE VISIT PPO‑CO‑PAY (PRIMARY CARE) COVERAGE PAYS<br/>NON PPO CO‑PAY (PRIMARY CARE) COVERAGE PAYS",
+        "IN‑NETWORK: PLAN PAYS 100%AFTER $25 PER VISIT COPAY; NO DEDUCTIBLE. FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 80%AFTER DEDUCTIBLE IS MET.<br/>NON‑NETWORK: PLAN PAYS 65% AFTER DEDUCTIBLE IS MET.",
+        "IN‑NETWORK: PLAN PAYS 100%AFTER $30 PER VISIT COPAY; NO DEDUCTIBLE. FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 75%AFTER DEDUCTIBLE IS MET.<br/>NON‑NETWORK: PLAN PAYS 55% AFTER DEDUCTIBLE IS MET.",
+        "IN‑NETWORK: PLAN PAYS 100%AFTER $40 PER VISIT COPAY; NO DEDUCTIBLE. FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 65%AFTER DEDUCTIBLE IS MET.<br/>NON‑NETWORK: PLAN PAYS 50% AFTER DEDUCTIBLE IS MET."
+      ],
+      [
+        "CO‑INSURANCE PPO ‑ NETWORK OUT OF POCKET MAX<br/>NON‑PPO NON‑NETWORK OUT OF POCKET MAX",
+        "80% $2,500 PER PERSON; UP TO $4000 PER FAMILY<br/>65% $7,500 PER PERSON & NO FAMILY MAXIMUM",
+        "75% $3,000 PER PERSON; UP TO $5000 PER FAMILY<br/>55% $9,000 PER PERSON & NO FAMILY MAXIMUM",
+        "65% $4,000 PER PERSON; UP TO $7000 PER FAMILY<br/>50% $12,000 PER PERSON & NO FAMILY MAXIMUM"
+      ],
+      [
+        "MAJOR MEDICAL CALENDAR YEAR MAX",
+        "NO MAXIMUM",
+        "NO MAXIMUM",
+        "NO MAXIMUM"
+      ],
+      [
+        "VISION",
+        "$240SGL/$260BI/$290TRI/ $240 FOR CONTACTS EVERY 2YRS",
+        "$240SGL/$260BI/$290TRI/ $240 FOR CONTACTS EVERY 2YRS",
+        "$240SGL/$260BI/$290TRI/ $240 FOR CONTACTS EVERY 2 YRS"
+      ],
+      [
+        "DENTAL",
+        "ANNUAL MAX $1,500",
+        "PREVENTATIVE ONLY",
+        "PREVENTATIVE ONLY"
+      ],
+      [
+        "RX CO‑PAYS RETAIL<br/>NOTE: SEE PLAN DOCUMENT FOR COPAYMENTS ON MAINTENANCE MEDICATIONS (90 DAY SUPPLY)",
+        "$5 GENERIC 20% UP TO $50 PER RX FOR PREFERRED BRAND 30% UP TO $75 PER RX FOR NON‑PREFERRED BRAND 20% UP TO $100 PER RX FOR SPECIALTY",
+        "$5 GENERIC 20% UP TO $50 PER RX FOR PREFERRED BRAND 30% UP TO $75 PER RX FOR NON‑PREFERRED BRAND 20% UP TO $100 PER RX FOR SPECIALTY",
+        "$5 GENERIC 20% UP TO $50 PER RX FOR PREFERRED BRAND 30% UP TO $75 PER RX FOR NON‑PREFERRED BRAND 20% UP TO $100 PER RX FOR SPECIALTY"
+      ],
+      [
+        "LIFE INSURANCE",
+        "$10,000",
+        "$10,000",
+        "$10,000"
+      ],
+      [
+        "COORDINATION OF BENEFITS",
+        "CARVE OUT TO PLAN MAX",
+        "CARVE OUT TO PLAN MAX",
+        "CARVE OUT TO PLAN MAX"
+      ],
+      [
+        "ACCIDENTAL DEATH/PERSONAL ACCIDENT INSUR",
+        "$10,000 EMPLOYEE ONLY",
+        "$10,000 EMPLOYEE ONLY",
+        "$10,000 EMPLOYEE ONLY"
+      ],
+      [
+        "SPOUSAL FEE",
+        "$100 PER MONTH",
+        "$100 PER MONTH",
+        "$100 PER MONTH"
+      ],
+      [
+        "SHORT TERM DISABILITY (payable for up to 26 weeks)",
+        "70% OF AVE. WKLY WAGE, NOT TO EXCEED $300",
+        "70% OF AVE. WKLY WAGE, NOT TO EXCEED $300",
+        "70% OF AVE. WKLY WAGE, NOT TO EXCEED $300"
+      ]
+    ],
+    "markdown": "|                                                                                                         | PLAN A ENROLLED & PARTICIPATING                                                                                                                                                                                    | PLAN B ENROLLED & PARTICIPATING                                                                                                                                                                                    | PLAN C ENROLLED & PARTICIPATING                                                                                                                                                                                    |\n| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| DEDUCTIBLE                                                                                              | $500 PER PERSON, MAX 3 PER FAMILY                                                                                                                                                                                  | $600 PER PERSON, MAX 3 PER FAMILY                                                                                                                                                                                  | $700 PER PERSON, MAX 3 PER FAMILY                                                                                                                                                                                  |\n| OFFICE VISIT PPO‑CO‑PAY (PRIMARY CARE) COVERAGE PAYS<br/>NON PPO CO‑PAY (PRIMARY CARE) COVERAGE PAYS    | IN‑NETWORK: PLAN PAYS 100%AFTER $25 PER VISIT COPAY; NO DEDUCTIBLE. FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 80%AFTER DEDUCTIBLE IS MET.<br/>NON‑NETWORK: PLAN PAYS 65% AFTER DEDUCTIBLE IS MET. | IN‑NETWORK: PLAN PAYS 100%AFTER $30 PER VISIT COPAY; NO DEDUCTIBLE. FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 75%AFTER DEDUCTIBLE IS MET.<br/>NON‑NETWORK: PLAN PAYS 55% AFTER DEDUCTIBLE IS MET. | IN‑NETWORK: PLAN PAYS 100%AFTER $40 PER VISIT COPAY; NO DEDUCTIBLE. FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 65%AFTER DEDUCTIBLE IS MET.<br/>NON‑NETWORK: PLAN PAYS 50% AFTER DEDUCTIBLE IS MET. |\n| CO‑INSURANCE PPO ‑ NETWORK OUT OF POCKET MAX<br/>NON‑PPO NON‑NETWORK OUT OF POCKET MAX                  | 80% $2,500 PER PERSON; UP TO $4000 PER FAMILY<br/>65% $7,500 PER PERSON & NO FAMILY MAXIMUM                                                                                                                        | 75% $3,000 PER PERSON; UP TO $5000 PER FAMILY<br/>55% $9,000 PER PERSON & NO FAMILY MAXIMUM                                                                                                                        | 65% $4,000 PER PERSON; UP TO $7000 PER FAMILY<br/>50% $12,000 PER PERSON & NO FAMILY MAXIMUM                                                                                                                       |\n| MAJOR MEDICAL CALENDAR YEAR MAX                                                                         | NO MAXIMUM                                                                                                                                                                                                         | NO MAXIMUM                                                                                                                                                                                                         | NO MAXIMUM                                                                                                                                                                                                         |\n| VISION                                                                                                  | $240SGL/$260BI/$290TRI/ $240 FOR CONTACTS EVERY 2YRS                                                                                                                                                               | $240SGL/$260BI/$290TRI/ $240 FOR CONTACTS EVERY 2YRS                                                                                                                                                               | $240SGL/$260BI/$290TRI/ $240 FOR CONTACTS EVERY 2 YRS                                                                                                                                                              |\n| DENTAL                                                                                                  | ANNUAL MAX $1,500                                                                                                                                                                                                  | PREVENTATIVE ONLY                                                                                                                                                                                                  | PREVENTATIVE ONLY                                                                                                                                                                                                  |\n| RX CO‑PAYS RETAIL<br/>NOTE: SEE PLAN DOCUMENT FOR COPAYMENTS ON MAINTENANCE MEDICATIONS (90 DAY SUPPLY) | $5 GENERIC 20% UP TO $50 PER RX FOR PREFERRED BRAND 30% UP TO $75 PER RX FOR NON‑PREFERRED BRAND 20% UP TO $100 PER RX FOR SPECIALTY                                                                               | $5 GENERIC 20% UP TO $50 PER RX FOR PREFERRED BRAND 30% UP TO $75 PER RX FOR NON‑PREFERRED BRAND 20% UP TO $100 PER RX FOR SPECIALTY                                                                               | $5 GENERIC 20% UP TO $50 PER RX FOR PREFERRED BRAND 30% UP TO $75 PER RX FOR NON‑PREFERRED BRAND 20% UP TO $100 PER RX FOR SPECIALTY                                                                               |\n| LIFE INSURANCE                                                                                          | $10,000                                                                                                                                                                                                            | $10,000                                                                                                                                                                                                            | $10,000                                                                                                                                                                                                            |\n| COORDINATION OF BENEFITS                                                                                | CARVE OUT TO PLAN MAX                                                                                                                                                                                              | CARVE OUT TO PLAN MAX                                                                                                                                                                                              | CARVE OUT TO PLAN MAX                                                                                                                                                                                              |\n| ACCIDENTAL DEATH/PERSONAL ACCIDENT INSUR                                                                | $10,000 EMPLOYEE ONLY                                                                                                                                                                                              | $10,000 EMPLOYEE ONLY                                                                                                                                                                                              | $10,000 EMPLOYEE ONLY                                                                                                                                                                                              |\n| SPOUSAL FEE                                                                                             | $100 PER MONTH                                                                                                                                                                                                     | $100 PER MONTH                                                                                                                                                                                                     | $100 PER MONTH                                                                                                                                                                                                     |\n| SHORT TERM DISABILITY (payable for up to 26 weeks)                                                      | 70% OF AVE. WKLY WAGE, NOT TO EXCEED $300                                                                                                                                                                          | 70% OF AVE. WKLY WAGE, NOT TO EXCEED $300                                                                                                                                                                          | 70% OF AVE. WKLY WAGE, NOT TO EXCEED $300                                                                                                                                                                          |",
+    "csv": "\"\",\"PLAN A ENROLLED & PARTICIPATING\",\"PLAN B ENROLLED & PARTICIPATING\",\"PLAN C ENROLLED & PARTICIPATING\"\n\"DEDUCTIBLE\",\"$500 PER PERSON, MAX 3 PER FAMILY\",\"$600 PER PERSON, MAX 3 PER FAMILY\",\"$700 PER PERSON, MAX 3 PER FAMILY\"\n\"OFFICE VISIT PPO‑CO‑PAY (PRIMARY CARE) COVERAGE PAYS<br/>NON PPO CO‑PAY (PRIMARY CARE) COVERAGE PAYS\",\"IN‑NETWORK: PLAN PAYS 100%AFTER $25 PER VISIT COPAY; NO DEDUCTIBLE. FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 80%AFTER DEDUCTIBLE IS MET.<br/>NON‑NETWORK: PLAN PAYS 65% AFTER DEDUCTIBLE IS MET.\",\"IN‑NETWORK: PLAN PAYS 100%AFTER $30 PER VISIT COPAY; NO DEDUCTIBLE. FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 75%AFTER DEDUCTIBLE IS MET.<br/>NON‑NETWORK: PLAN PAYS 55% AFTER DEDUCTIBLE IS MET.\",\"IN‑NETWORK: PLAN PAYS 100%AFTER $40 PER VISIT COPAY; NO DEDUCTIBLE. FOR PROCEDURES RECEIVED DURING THE OFFICE VISIT, PLAN PAYS 65%AFTER DEDUCTIBLE IS MET.<br/>NON‑NETWORK: PLAN PAYS 50% AFTER DEDUCTIBLE IS MET.\"\n\"CO‑INSURANCE PPO ‑ NETWORK OUT OF POCKET MAX<br/>NON‑PPO NON‑NETWORK OUT OF POCKET MAX\",\"80% $2,500 PER PERSON; UP TO $4000 PER FAMILY<br/>65% $7,500 PER PERSON & NO FAMILY MAXIMUM\",\"75% $3,000 PER PERSON; UP TO $5000 PER FAMILY<br/>55% $9,000 PER PERSON & NO FAMILY MAXIMUM\",\"65% $4,000 PER PERSON; UP TO $7000 PER FAMILY<br/>50% $12,000 PER PERSON & NO FAMILY MAXIMUM\"\n\"MAJOR MEDICAL CALENDAR YEAR MAX\",\"NO MAXIMUM\",\"NO MAXIMUM\",\"NO MAXIMUM\"\n\"VISION\",\"$240SGL/$260BI/$290TRI/ $240 FOR CONTACTS EVERY 2YRS\",\"$240SGL/$260BI/$290TRI/ $240 FOR CONTACTS EVERY 2YRS\",\"$240SGL/$260BI/$290TRI/ $240 FOR CONTACTS EVERY 2 YRS\"\n\"DENTAL\",\"ANNUAL MAX $1,500\",\"PREVENTATIVE ONLY\",\"PREVENTATIVE ONLY\"\n\"RX CO‑PAYS RETAIL<br/>NOTE: SEE PLAN DOCUMENT FOR COPAYMENTS ON MAINTENANCE MEDICATIONS (90 DAY SUPPLY)\",\"$5 GENERIC 20% UP TO $50 PER RX FOR PREFERRED BRAND 30% UP TO $75 PER RX FOR NON‑PREFERRED BRAND 20% UP TO $100 PER RX FOR SPECIALTY\",\"$5 GENERIC 20% UP TO $50 PER RX FOR PREFERRED BRAND 30% UP TO $75 PER RX FOR NON‑PREFERRED BRAND 20% UP TO $100 PER RX FOR SPECIALTY\",\"$5 GENERIC 20% UP TO $50 PER RX FOR PREFERRED BRAND 30% UP TO $75 PER RX FOR NON‑PREFERRED BRAND 20% UP TO $100 PER RX FOR SPECIALTY\"\n\"LIFE INSURANCE\",\"$10,000\",\"$10,000\",\"$10,000\"\n\"COORDINATION OF BENEFITS\",\"CARVE OUT TO PLAN MAX\",\"CARVE OUT TO PLAN MAX\",\"CARVE OUT TO PLAN MAX\"\n\"ACCIDENTAL DEATH/PERSONAL ACCIDENT INSUR\",\"$10,000 EMPLOYEE ONLY\",\"$10,000 EMPLOYEE ONLY\",\"$10,000 EMPLOYEE ONLY\"\n\"SPOUSAL FEE\",\"$100 PER MONTH\",\"$100 PER MONTH\",\"$100 PER MONTH\"\n\"SHORT TERM DISABILITY (payable for up to 26 weeks)\",\"70% OF AVE. WKLY WAGE, NOT TO EXCEED $300\",\"70% OF AVE. WKLY WAGE, NOT TO EXCEED $300\",\"70% OF AVE. WKLY WAGE, NOT TO EXCEED $300\"",
+    "is_perfect": false,
+    "json_path": "pages[59].items[4]",
+    "heading_path": [
+      "ADDITIONAL PROVISIONS",
+      "SCHEDULE OF BENEFITS - EFFECTIVE JANUARY 1, 2016"
+    ],
+    "parent_article": 58,
+    "parent_section": 175,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art58_2",
+    "content_hash": "f8de4773a885f85a",
+    "headers": [
+      "",
+      "Effective",
+      "Effective",
+      "Effective"
+    ],
+    "rows": [
+      [
+        "CLASSIFICATION",
+        "1/23/2022",
+        "1/22/2023",
+        "1/21/2024"
+      ],
+      [
+        "OTHER ASSISTANT MANAGERS",
+        "$24.51",
+        "$25.31",
+        "$26.11"
+      ],
+      [
+        "HEAD CLERK",
+        "$22.51",
+        "$23.31",
+        "$24.11"
+      ],
+      [
+        "PRODUCE DEPARTMENT MANAGER",
+        "$24.47",
+        "$25.27",
+        "$26.07"
+      ],
+      [
+        "FLORAL MANAGER",
+        "$21.51",
+        "$22.31",
+        "$23.11"
+      ],
+      [
+        "HEAD BAKER",
+        "$22.51",
+        "$23.31",
+        "$24.11"
+      ],
+      [
+        "BAKERY MANAGER",
+        "$24.51",
+        "$25.31",
+        "$26.11"
+      ],
+      [
+        "VARIETY MANAGER",
+        "$22.47",
+        "$23.27",
+        "$24.07"
+      ],
+      [
+        "MANAGER TRAINEE",
+        "$21.51",
+        "$22.31",
+        "$23.11"
+      ],
+      [
+        "FUEL LEAD",
+        "$21.51",
+        "$22.31",
+        "$23.11"
+      ],
+      [
+        "FRESH CUT SUPERVISOR",
+        "$21.51",
+        "$22.31",
+        "$23.11"
+      ],
+      [
+        "ALL PURPOSE CLERK",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ],
+      [
+        "Grandfathered",
+        "$21.51",
+        "$22.31",
+        "$23.11"
+      ],
+      [
+        "BAKERY/FRESH CUT/LIQUOR CLERK",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ]
+    ],
+    "markdown": "|                               | Effective | Effective | Effective |\n| ----------------------------- | --------- | --------- | --------- |\n| CLASSIFICATION                | 1/23/2022 | 1/22/2023 | 1/21/2024 |\n| OTHER ASSISTANT MANAGERS      | $24.51    | $25.31    | $26.11    |\n| HEAD CLERK                    | $22.51    | $23.31    | $24.11    |\n| PRODUCE DEPARTMENT MANAGER    | $24.47    | $25.27    | $26.07    |\n| FLORAL MANAGER                | $21.51    | $22.31    | $23.11    |\n| HEAD BAKER                    | $22.51    | $23.31    | $24.11    |\n| BAKERY MANAGER                | $24.51    | $25.31    | $26.11    |\n| VARIETY MANAGER               | $22.47    | $23.27    | $24.07    |\n| MANAGER TRAINEE               | $21.51    | $22.31    | $23.11    |\n| FUEL LEAD                     | $21.51    | $22.31    | $23.11    |\n| FRESH CUT SUPERVISOR          | $21.51    | $22.31    | $23.11    |\n| ALL PURPOSE CLERK             |           |           |           |\n| Start                         | $16.00    | $16.50    | $17.00    |\n| After 520 hours               | $16.40    | $16.95    | $17.50    |\n| After 1560 hours              | $16.80    | $17.40    | $18.00    |\n| After 2600 hours              | $17.20    | $17.85    | $18.50    |\n| After 3640 hours              | $17.60    | $18.30    | $19.00    |\n| After 4680 hours              | $18.00    | $18.75    | $19.50    |\n| After 5720 hours              | $18.40    | $19.20    | $20.00    |\n| After 6760 hours              | $18.80    | $19.65    | $20.50    |\n| After 7800 hours              | $21.01    | $21.81    | $22.61    |\n| Grandfathered                 | $21.51    | $22.31    | $23.11    |\n| BAKERY/FRESH CUT/LIQUOR CLERK |           |           |           |\n| Start                         | $16.00    | $16.50    | $17.00    |\n| After 520 hours               | $16.40    | $16.95    | $17.50    |\n| After 1560 hours              | $16.80    | $17.40    | $18.00    |\n| After 2600 hours              | $17.20    | $17.85    | $18.50    |\n| After 3640 hours              | $17.60    | $18.30    | $19.00    |\n| After 4680 hours              | $18.00    | $18.75    | $19.50    |\n| After 5720 hours              | $18.40    | $19.20    | $20.00    |\n| After 6760 hours              | $18.80    | $19.65    | $20.50    |\n| After 7800 hours              | $21.01    | $21.81    | $22.61    |",
+    "csv": "\"\",\"Effective\",\"Effective\",\"Effective\"\n\"CLASSIFICATION\",\"1/23/2022\",\"1/22/2023\",\"1/21/2024\"\n\"OTHER ASSISTANT MANAGERS\",\"$24.51\",\"$25.31\",\"$26.11\"\n\"HEAD CLERK\",\"$22.51\",\"$23.31\",\"$24.11\"\n\"PRODUCE DEPARTMENT MANAGER\",\"$24.47\",\"$25.27\",\"$26.07\"\n\"FLORAL MANAGER\",\"$21.51\",\"$22.31\",\"$23.11\"\n\"HEAD BAKER\",\"$22.51\",\"$23.31\",\"$24.11\"\n\"BAKERY MANAGER\",\"$24.51\",\"$25.31\",\"$26.11\"\n\"VARIETY MANAGER\",\"$22.47\",\"$23.27\",\"$24.07\"\n\"MANAGER TRAINEE\",\"$21.51\",\"$22.31\",\"$23.11\"\n\"FUEL LEAD\",\"$21.51\",\"$22.31\",\"$23.11\"\n\"FRESH CUT SUPERVISOR\",\"$21.51\",\"$22.31\",\"$23.11\"\n\"ALL PURPOSE CLERK\",\"\",\"\",\"\"\n\"Start\",\"$16.00\",\"$16.50\",\"$17.00\"\n\"After 520 hours\",\"$16.40\",\"$16.95\",\"$17.50\"\n\"After 1560 hours\",\"$16.80\",\"$17.40\",\"$18.00\"\n\"After 2600 hours\",\"$17.20\",\"$17.85\",\"$18.50\"\n\"After 3640 hours\",\"$17.60\",\"$18.30\",\"$19.00\"\n\"After 4680 hours\",\"$18.00\",\"$18.75\",\"$19.50\"\n\"After 5720 hours\",\"$18.40\",\"$19.20\",\"$20.00\"\n\"After 6760 hours\",\"$18.80\",\"$19.65\",\"$20.50\"\n\"After 7800 hours\",\"$21.01\",\"$21.81\",\"$22.61\"\n\"Grandfathered\",\"$21.51\",\"$22.31\",\"$23.11\"\n\"BAKERY/FRESH CUT/LIQUOR CLERK\",\"\",\"\",\"\"\n\"Start\",\"$16.00\",\"$16.50\",\"$17.00\"\n\"After 520 hours\",\"$16.40\",\"$16.95\",\"$17.50\"\n\"After 1560 hours\",\"$16.80\",\"$17.40\",\"$18.00\"\n\"After 2600 hours\",\"$17.20\",\"$17.85\",\"$18.50\"\n\"After 3640 hours\",\"$17.60\",\"$18.30\",\"$19.00\"\n\"After 4680 hours\",\"$18.00\",\"$18.75\",\"$19.50\"\n\"After 5720 hours\",\"$18.40\",\"$19.20\",\"$20.00\"\n\"After 6760 hours\",\"$18.80\",\"$19.65\",\"$20.50\"\n\"After 7800 hours\",\"$21.01\",\"$21.81\",\"$22.61\"",
+    "is_perfect": false,
+    "json_path": "pages[61].items[1]",
+    "heading_path": [
+      "ADDITIONAL PROVISIONS",
+      "Basket Hours"
+    ],
+    "parent_article": 58,
+    "parent_section": 175,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art58_3",
+    "content_hash": "3aea62584715b54d",
+    "headers": [
+      "CLASSIFICATION",
+      "Effective",
+      "Effective",
+      "Effective"
+    ],
+    "rows": [
+      [
+        "",
+        "1/23/2022",
+        "1/22/2023",
+        "1/21/2024"
+      ],
+      [
+        "CAKE DECORATOR",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ],
+      [
+        "5-STAR CAKE DECORATOR",
+        "$21.51",
+        "$22.31",
+        "$23.11"
+      ],
+      [
+        "NON-FOOD/GM/FLORAL",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 520 hours",
+        "$16.40",
+        "$16.95",
+        "$17.50"
+      ],
+      [
+        "After 1560 hours",
+        "$16.80",
+        "$17.40",
+        "$18.00"
+      ],
+      [
+        "After 2600 hours",
+        "$17.20",
+        "$17.85",
+        "$18.50"
+      ],
+      [
+        "After 3640 hours",
+        "$17.60",
+        "$18.30",
+        "$19.00"
+      ],
+      [
+        "After 4680 hours",
+        "$18.00",
+        "$18.75",
+        "$19.50"
+      ],
+      [
+        "After 5720 hours",
+        "$18.40",
+        "$19.20",
+        "$20.00"
+      ],
+      [
+        "After 6760 hours",
+        "$18.80",
+        "$19.65",
+        "$20.50"
+      ],
+      [
+        "After 7800 hours",
+        "$21.01",
+        "$21.81",
+        "$22.61"
+      ],
+      [
+        "COURTESY CLERK",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Start",
+        "$16.00",
+        "$16.50",
+        "$17.00"
+      ],
+      [
+        "After 36 months",
+        "$16.55",
+        "$17.05",
+        "$17.55"
+      ],
+      [
+        "After 72 months",
+        "$17.10",
+        "$17.60",
+        "$18.10"
+      ],
+      [
+        "After 108 months",
+        "$17.65",
+        "$18.15",
+        "$18.65"
+      ]
+    ],
+    "markdown": "| CLASSIFICATION        | Effective | Effective | Effective |\n| --------------------- | --------- | --------- | --------- |\n|                       | 1/23/2022 | 1/22/2023 | 1/21/2024 |\n| CAKE DECORATOR        |           |           |           |\n| Start                 | $16.00    | $16.50    | $17.00    |\n| After 520 hours       | $16.40    | $16.95    | $17.50    |\n| After 1560 hours      | $16.80    | $17.40    | $18.00    |\n| After 2600 hours      | $17.20    | $17.85    | $18.50    |\n| After 3640 hours      | $17.60    | $18.30    | $19.00    |\n| After 4680 hours      | $18.00    | $18.75    | $19.50    |\n| After 5720 hours      | $18.40    | $19.20    | $20.00    |\n| After 6760 hours      | $18.80    | $19.65    | $20.50    |\n| After 7800 hours      | $21.01    | $21.81    | $22.61    |\n| 5-STAR CAKE DECORATOR | $21.51    | $22.31    | $23.11    |\n| NON-FOOD/GM/FLORAL    |           |           |           |\n| Start                 | $16.00    | $16.50    | $17.00    |\n| After 520 hours       | $16.40    | $16.95    | $17.50    |\n| After 1560 hours      | $16.80    | $17.40    | $18.00    |\n| After 2600 hours      | $17.20    | $17.85    | $18.50    |\n| After 3640 hours      | $17.60    | $18.30    | $19.00    |\n| After 4680 hours      | $18.00    | $18.75    | $19.50    |\n| After 5720 hours      | $18.40    | $19.20    | $20.00    |\n| After 6760 hours      | $18.80    | $19.65    | $20.50    |\n| After 7800 hours      | $21.01    | $21.81    | $22.61    |\n| COURTESY CLERK        |           |           |           |\n| Start                 | $16.00    | $16.50    | $17.00    |\n| After 36 months       | $16.55    | $17.05    | $17.55    |\n| After 72 months       | $17.10    | $17.60    | $18.10    |\n| After 108 months      | $17.65    | $18.15    | $18.65    |",
+    "csv": "\"CLASSIFICATION\",\"Effective\",\"Effective\",\"Effective\"\n\"\",\"1/23/2022\",\"1/22/2023\",\"1/21/2024\"\n\"CAKE DECORATOR\",\"\",\"\",\"\"\n\"Start\",\"$16.00\",\"$16.50\",\"$17.00\"\n\"After 520 hours\",\"$16.40\",\"$16.95\",\"$17.50\"\n\"After 1560 hours\",\"$16.80\",\"$17.40\",\"$18.00\"\n\"After 2600 hours\",\"$17.20\",\"$17.85\",\"$18.50\"\n\"After 3640 hours\",\"$17.60\",\"$18.30\",\"$19.00\"\n\"After 4680 hours\",\"$18.00\",\"$18.75\",\"$19.50\"\n\"After 5720 hours\",\"$18.40\",\"$19.20\",\"$20.00\"\n\"After 6760 hours\",\"$18.80\",\"$19.65\",\"$20.50\"\n\"After 7800 hours\",\"$21.01\",\"$21.81\",\"$22.61\"\n\"5-STAR CAKE DECORATOR\",\"$21.51\",\"$22.31\",\"$23.11\"\n\"NON-FOOD/GM/FLORAL\",\"\",\"\",\"\"\n\"Start\",\"$16.00\",\"$16.50\",\"$17.00\"\n\"After 520 hours\",\"$16.40\",\"$16.95\",\"$17.50\"\n\"After 1560 hours\",\"$16.80\",\"$17.40\",\"$18.00\"\n\"After 2600 hours\",\"$17.20\",\"$17.85\",\"$18.50\"\n\"After 3640 hours\",\"$17.60\",\"$18.30\",\"$19.00\"\n\"After 4680 hours\",\"$18.00\",\"$18.75\",\"$19.50\"\n\"After 5720 hours\",\"$18.40\",\"$19.20\",\"$20.00\"\n\"After 6760 hours\",\"$18.80\",\"$19.65\",\"$20.50\"\n\"After 7800 hours\",\"$21.01\",\"$21.81\",\"$22.61\"\n\"COURTESY CLERK\",\"\",\"\",\"\"\n\"Start\",\"$16.00\",\"$16.50\",\"$17.00\"\n\"After 36 months\",\"$16.55\",\"$17.05\",\"$17.55\"\n\"After 72 months\",\"$17.10\",\"$17.60\",\"$18.10\"\n\"After 108 months\",\"$17.65\",\"$18.15\",\"$18.65\"",
+    "is_perfect": false,
+    "json_path": "pages[62].items[1]",
+    "heading_path": [
+      "ADDITIONAL PROVISIONS",
+      "Basket Hours"
+    ],
+    "parent_article": 58,
+    "parent_section": 175,
+    "parent_chunk_id": null
+  }
+]

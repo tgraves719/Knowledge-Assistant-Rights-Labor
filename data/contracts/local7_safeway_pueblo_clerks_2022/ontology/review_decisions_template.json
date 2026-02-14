@@ -1,0 +1,96 @@
+{
+  "schema_version": "classification_review_decisions_v1",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "generated_at_utc": "2026-02-14T05:15:19.051722+00:00",
+  "set_aliases": {},
+  "remove_aliases": [],
+  "decision_notes": [
+    {
+      "source_key": "cake_decorator",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": []
+    },
+    {
+      "source_key": "deli_clerk",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": [
+        {
+          "wage_key": "head_clerk",
+          "score": 0.485
+        },
+        {
+          "wage_key": "courtesy_clerk",
+          "score": 0.45
+        },
+        {
+          "wage_key": "all_purpose_clerk",
+          "score": 0.375556
+        },
+        {
+          "wage_key": "bakery_fresh_cut_liquor_clerk",
+          "score": 0.295604
+        }
+      ]
+    },
+    {
+      "source_key": "meatcutter",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": []
+    },
+    {
+      "source_key": "nonfood_clerk",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": [
+        {
+          "wage_key": "head_clerk",
+          "score": 0.457609
+        },
+        {
+          "wage_key": "courtesy_clerk",
+          "score": 0.430556
+        },
+        {
+          "wage_key": "all_purpose_clerk",
+          "score": 0.36
+        },
+        {
+          "wage_key": "bakery_fresh_cut_liquor_clerk",
+          "score": 0.257143
+        }
+      ]
+    },
+    {
+      "source_key": "pharmacy_technician",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": []
+    },
+    {
+      "source_key": "sanitation_clerk",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": [
+        {
+          "wage_key": "head_clerk",
+          "score": 0.436538
+        },
+        {
+          "wage_key": "courtesy_clerk",
+          "score": 0.415
+        },
+        {
+          "wage_key": "all_purpose_clerk",
+          "score": 0.347273
+        },
+        {
+          "wage_key": "bakery_fresh_cut_liquor_clerk",
+          "score": 0.277143
+        }
+      ]
+    }
+  ]
+}

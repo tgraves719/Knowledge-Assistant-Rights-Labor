@@ -15,12 +15,14 @@ from pathlib import Path
 from dataclasses import dataclass, field, asdict
 from typing import Optional
 
+from backend.config import CONTRACT_ID
+
 
 @dataclass
 class RawChunk:
     """Intermediate chunk before LLM enrichment."""
     chunk_id: str
-    contract_id: str = "safeway_pueblo_clerks_2022"
+    contract_id: str = CONTRACT_ID
     doc_type: str = "cba"  # "cba" for contract articles, "lou" for letters of understanding
 
     # Hierarchy
@@ -69,16 +71,16 @@ class SmartChunker:
     # Title class allows uppercase, digits, spaces, &, commas, hyphens, slashes, parens
     # to handle titles like "401K PLAN", "SECTION 125 PLANS", "HEALTH & WELFARE"
     ARTICLE_HEADER = re.compile(
-        r'^#{1,2}\s*ARTICLE\s+(\d+)\s*\n#{1,2}\s*([A-Z0-9][A-Z0-9\s&,/()-]+)',
+        r'^#{1,3}\s*ARTICLE\s+(\d+)\s*\n#{1,3}\s*([A-Z0-9][A-Z0-9 \t&,/()\-\'".:]+)',
         re.MULTILINE
     )
     ARTICLE_HEADER_SINGLE = re.compile(
-        r'^#{1,2}\s*ARTICLE\s+(\d+)\s+([A-Z0-9][A-Z0-9\s&,/()-]+)',
+        r'^#{1,3}\s*ARTICLE\s+(\d+)\s+([A-Z0-9][A-Z0-9 \t&,/()\-\'".:]+)',
         re.MULTILINE
     )
     SECTION_HEADER = re.compile(
-        r'Section\s+\*{0,2}(\d+)\*{0,2}[.\s]+\*{0,2}([^.\n]+)',
-        re.IGNORECASE
+        r'^\s*\*{0,2}Section\s+\*{0,2}(\d+)\*{0,2}\s*(?:[.)]\s*)?(?:\*{0,2}([^.\n]{1,180}))?',
+        re.IGNORECASE | re.MULTILINE
     )
     LOU_HEADER = re.compile(
         r'^##\s*Letter\s+of\s+Understanding\s+#?(\d+)',
@@ -110,11 +112,98 @@ class SmartChunker:
     TARGET_CHUNK_SIZE = 800
     MAX_CHUNK_SIZE = 2000
     
-    def __init__(self, contract_id: str = "safeway_pueblo_clerks_2022"):
+    def __init__(self, contract_id: str = CONTRACT_ID):
         self.contract_id = contract_id
         self.chunks: list[RawChunk] = []
         self.current_article_num = None
         self.current_article_title = None
+        self._chunk_id_counts: dict[str, int] = {}
+
+    @staticmethod
+    def _mask_inline_tags(text: str) -> str:
+        """
+        Replace inline HTML tags with same-length spaces so regex scanning
+        preserves original character offsets.
+        """
+        return re.sub(r'<[^>\n]+>', lambda m: " " * len(m.group(0)), text)
+
+    @staticmethod
+    def _normalize_heading_text(text: str) -> str:
+        """Normalize heading text by removing lightweight markup noise."""
+        normalized = re.sub(r'</?u>|</?strong>|</?em>|</?b>|</?i>', ' ', text, flags=re.IGNORECASE)
+        normalized = re.sub(r'[*_`]+', ' ', normalized)
+        normalized = re.sub(r'\s+', ' ', normalized).strip(" .-\t")
+        return normalized
+
+    @staticmethod
+    def _normalize_subsection_token(subsection: Optional[str]) -> Optional[str]:
+        """Normalize legal subsection identifiers for stable sorting/filtering."""
+        if subsection is None:
+            return None
+        value = str(subsection).strip()
+        if not value:
+            return None
+        if len(value) == 1 and value.isalpha():
+            return value.lower()
+        value = re.sub(r"\s+", " ", value)
+        return value
+
+    @staticmethod
+    def _slugify_id_fragment(value: str) -> str:
+        """Convert arbitrary token to safe lowercase ID fragment."""
+        slug = re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
+        return slug or "x"
+
+    @classmethod
+    def _normalize_segment_token(cls, segment_token: Optional[str]) -> tuple[Optional[str], Optional[str]]:
+        """
+        Normalize section-split segment token into:
+        - chunk-id fragment (stable, machine-safe)
+        - human citation suffix (readable)
+        """
+        if segment_token is None:
+            return None, None
+        raw = str(segment_token).strip()
+        if not raw:
+            return None, None
+        token = raw.lower()
+
+        part_match = re.fullmatch(r"part[\s_-]*(\d+)", token)
+        if part_match:
+            n = int(part_match.group(1))
+            return f"seg_{n:03d}", f"Part {n}"
+
+        range_match = re.fullmatch(r"(\d+)\s*-\s*(\d+)", token)
+        if range_match:
+            start = int(range_match.group(1))
+            end = int(range_match.group(2))
+            return f"seg_{start:03d}_{end:03d}", f"Part {start}-{end}"
+
+        plus_match = re.fullmatch(r"(\d+)\+", token)
+        if plus_match:
+            start = int(plus_match.group(1))
+            return f"seg_{start:03d}_plus", f"Part {start}+"
+
+        number_match = re.fullmatch(r"(\d+)", token)
+        if number_match:
+            n = int(number_match.group(1))
+            return f"seg_{n:03d}", f"Part {n}"
+
+        slug = cls._slugify_id_fragment(token)
+        return f"seg_{slug}", f"Part {raw}"
+
+    def _allocate_chunk_id(self, base_id: str) -> str:
+        """
+        Allocate a collision-safe chunk ID.
+
+        Ingestion used to emit duplicate IDs for some subsection layouts.
+        We keep the first canonical ID and suffix later collisions.
+        """
+        seen = self._chunk_id_counts.get(base_id, 0)
+        self._chunk_id_counts[base_id] = seen + 1
+        if seen == 0:
+            return base_id
+        return f"{base_id}__dup{seen}"
     
     def parse_markdown(self, markdown_path: Path) -> list[RawChunk]:
         """Parse markdown file into smart chunks."""
@@ -126,17 +215,28 @@ class SmartChunker:
     def parse_content(self, content: str) -> list[RawChunk]:
         """Parse markdown content into smart chunks."""
         self.chunks = []
+        self._chunk_id_counts = {}
+        scan_content = self._mask_inline_tags(content)
+
+        # Find where actual article content starts (skip TOC references).
+        first_article_match = self.ARTICLE_HEADER.search(scan_content)
+        if first_article_match is None:
+            first_article_match = self.ARTICLE_HEADER_SINGLE.search(scan_content)
+        first_article_pos = first_article_match.start() if first_article_match else 0
 
         # Detect LOU section boundary and separate it.
         # Find the first non-HTML occurrence that starts a line (the section header).
         lou_content = None
         best_lou_match = None
-        for m in self.LOU_SECTION_HEADER.finditer(content):
-            line_start = content.rfind('\n', 0, m.start()) + 1
-            line = content[line_start:m.end() + 20]
+        for m in self.LOU_SECTION_HEADER.finditer(scan_content):
+            # Ignore TOC/header references that appear before first actual article heading.
+            if m.start() < first_article_pos:
+                continue
+            line_start = scan_content.rfind('\n', 0, m.start()) + 1
+            line = scan_content[line_start:m.end() + 20]
             if '<' not in line:  # Skip matches inside HTML tags
                 # Check this is a heading line (starts with # or is all caps)
-                line_prefix = content[line_start:m.start()].strip()
+                line_prefix = scan_content[line_start:m.start()].strip()
                 if not line_prefix or line_prefix.startswith('#') or line_prefix.isupper():
                     best_lou_match = m
                     break  # Take the first valid match (section header)
@@ -170,25 +270,35 @@ class SmartChunker:
     def _split_by_articles(self, content: str) -> list[tuple]:
         """Split content into (article_num, title, content) tuples."""
         articles = []
-        
+        scan_content = self._mask_inline_tags(content)
+
         # Find all article positions
-        positions = []
-        
+        positions_by_key = {}
+
+        def add_position(pos: int, num: Optional[int], title: str):
+            clean_title = self._normalize_heading_text(title or "")
+            if num is not None and not clean_title:
+                clean_title = f"ARTICLE {num}"
+            key = (pos, num)
+            existing = positions_by_key.get(key)
+            if existing is None or len(clean_title) > len(existing[2]):
+                positions_by_key[key] = (pos, num, clean_title)
+
         # Two-line headers: ## ARTICLE N\n## TITLE
-        for match in self.ARTICLE_HEADER.finditer(content):
-            positions.append((match.start(), int(match.group(1)), match.group(2).strip()))
-        
+        for match in self.ARTICLE_HEADER.finditer(scan_content):
+            add_position(match.start(), int(match.group(1)), match.group(2))
+
         # Single-line headers: ## ARTICLE N TITLE
-        for match in self.ARTICLE_HEADER_SINGLE.finditer(content):
-            positions.append((match.start(), int(match.group(1)), match.group(2).strip()))
-        
+        for match in self.ARTICLE_HEADER_SINGLE.finditer(scan_content):
+            add_position(match.start(), int(match.group(1)), match.group(2))
+
         # LOUs
-        for match in self.LOU_HEADER.finditer(content):
-            positions.append((match.start(), None, f"Letter of Understanding {match.group(1)}"))
-        
+        for match in self.LOU_HEADER.finditer(scan_content):
+            add_position(match.start(), None, f"Letter of Understanding {match.group(1)}")
+
+        positions = sorted(positions_by_key.values(), key=lambda x: x[0])
+
         # Sort by position
-        positions.sort(key=lambda x: x[0])
-        
         # Extract content between positions
         for i, (pos, num, title) in enumerate(positions):
             end_pos = positions[i + 1][0] if i + 1 < len(positions) else len(content)
@@ -220,13 +330,16 @@ class SmartChunker:
     def _split_by_sections(self, content: str) -> list[tuple]:
         """Split article content by sections."""
         sections = []
-        
-        # Find section headers
-        matches = list(self.SECTION_HEADER.finditer(content))
+        scan_content = self._mask_inline_tags(content)
+
+        # Find section headers from tag-masked text so variants like
+        # "<u>Section 48</u>." are detected with stable offsets.
+        matches = list(self.SECTION_HEADER.finditer(scan_content))
         
         for i, match in enumerate(matches):
             section_num = int(match.group(1))
-            section_title = match.group(2).strip().rstrip('.')
+            raw_title = (match.group(2) or "").strip().rstrip('.')
+            section_title = self._normalize_heading_text(raw_title) or f"Section {section_num}"
             
             start_pos = match.start()
             end_pos = matches[i + 1].start() if i + 1 < len(matches) else len(content)
@@ -287,7 +400,7 @@ class SmartChunker:
         
         for i, match in enumerate(matches):
             letter = match.group(1).lower()
-            subsection_title = match.group(2).strip()
+            subsection_title = self._normalize_heading_text(match.group(2))
             
             start_pos = match.start()
             end_pos = matches[i + 1].start() if i + 1 < len(matches) else len(content)
@@ -342,7 +455,7 @@ class SmartChunker:
                     article_title=article_title,
                     section_num=section_num,
                     section_title=section_title,
-                    subsection=f"{current_start_num}-{int(num)-1}",
+                    segment_token=f"{current_start_num}-{int(num)-1}",
                     content=current_chunk
                 )
                 current_chunk = item_content
@@ -357,7 +470,7 @@ class SmartChunker:
                 article_title=article_title,
                 section_num=section_num,
                 section_title=section_title,
-                subsection=f"{current_start_num}+" if current_start_num != num else current_start_num,
+                segment_token=f"{current_start_num}+" if current_start_num != num else current_start_num,
                 content=current_chunk
             )
     
@@ -381,7 +494,7 @@ class SmartChunker:
                     article_title=article_title,
                     section_num=section_num,
                     section_title=section_title,
-                    subsection=f"part{part_num}",
+                    segment_token=f"part{part_num}",
                     content=current_chunk
                 )
                 current_chunk = para
@@ -406,7 +519,7 @@ class SmartChunker:
                     article_title=article_title,
                     section_num=section_num,
                     section_title=section_title,
-                    subsection=f"part{part_num}",
+                    segment_token=f"part{part_num}",
                     content=current_chunk
                 )
     
@@ -442,7 +555,8 @@ class SmartChunker:
     
     def _create_lou_chunk(self, lou_num: str, part_num: int, content: str):
         """Create a Letter of Understanding chunk."""
-        chunk_id = f"lou{lou_num}_part{part_num}" if part_num > 1 else f"lou{lou_num}"
+        base_chunk_id = f"lou{lou_num}_part{part_num}" if part_num > 1 else f"lou{lou_num}"
+        chunk_id = self._allocate_chunk_id(base_chunk_id)
         citation = f"Letter of Understanding {lou_num}"
         if part_num > 1:
             citation += f", Part {part_num}"
@@ -544,7 +658,7 @@ class SmartChunker:
                     continue
                 if len(current_chunk) + len(para) > self.TARGET_CHUNK_SIZE and current_chunk:
                     chunk = RawChunk(
-                        chunk_id=f"lou_{lou_num}_part{part_num}",
+                        chunk_id=self._allocate_chunk_id(f"lou_{lou_num}_part{part_num}"),
                         contract_id=self.contract_id,
                         doc_type="lou",
                         citation=f"Letter of Understanding {lou_num}: {short_title}, Part {part_num}",
@@ -559,7 +673,9 @@ class SmartChunker:
 
             if current_chunk:
                 chunk = RawChunk(
-                    chunk_id=f"lou_{lou_num}_part{part_num}" if part_num > 1 else f"lou_{lou_num}",
+                    chunk_id=self._allocate_chunk_id(
+                        f"lou_{lou_num}_part{part_num}" if part_num > 1 else f"lou_{lou_num}"
+                    ),
                     contract_id=self.contract_id,
                     doc_type="lou",
                     citation=f"Letter of Understanding {lou_num}: {short_title}" + (f", Part {part_num}" if part_num > 1 else ""),
@@ -569,7 +685,7 @@ class SmartChunker:
                 self.chunks.append(chunk)
         else:
             chunk = RawChunk(
-                chunk_id=f"lou_{lou_num}",
+                chunk_id=self._allocate_chunk_id(f"lou_{lou_num}"),
                 contract_id=self.contract_id,
                 doc_type="lou",
                 citation=f"Letter of Understanding {lou_num}: {short_title}",
@@ -581,24 +697,32 @@ class SmartChunker:
     def _create_chunk(self, article_num: int, article_title: str,
                        section_num: int = None, section_title: str = None,
                        subsection: str = None, subsection_title: str = None,
+                       segment_token: str = None,
                        content: str = ""):
         """Create a chunk with proper ID and context."""
-        
+        subsection_norm = self._normalize_subsection_token(subsection)
+        segment_id_fragment, segment_citation_label = self._normalize_segment_token(segment_token)
+
         # Build chunk ID
         chunk_id = f"art{article_num}"
         if section_num:
             chunk_id += f"_sec{section_num}"
-        if subsection:
-            chunk_id += f"_{subsection}"
+        if subsection_norm:
+            chunk_id += f"_sub_{self._slugify_id_fragment(subsection_norm)}"
+        if segment_id_fragment:
+            chunk_id += f"_{segment_id_fragment}"
+        chunk_id = self._allocate_chunk_id(chunk_id)
         
         # Build citation
         citation = f"Article {article_num}"
         if section_num:
             citation += f", Section {section_num}"
-        if subsection and subsection_title:
-            citation += f", Subsection {subsection} ({subsection_title})"
-        elif subsection:
-            citation += f", Part {subsection}"
+        if subsection_norm and subsection_title:
+            citation += f", Subsection {subsection_norm} ({subsection_title})"
+        elif subsection_norm:
+            citation += f", Subsection {subsection_norm}"
+        if segment_citation_label:
+            citation += f", {segment_citation_label}"
         
         # Build parent context
         context_parts = [f"Article {article_num} ({article_title})"]
@@ -606,8 +730,12 @@ class SmartChunker:
             context_parts.append(f"Section {section_num} ({section_title})")
         elif section_num:
             context_parts.append(f"Section {section_num}")
-        if subsection and subsection_title:
-            context_parts.append(f"Subsection {subsection} ({subsection_title})")
+        if subsection_norm and subsection_title:
+            context_parts.append(f"Subsection {subsection_norm} ({subsection_title})")
+        elif subsection_norm:
+            context_parts.append(f"Subsection {subsection_norm}")
+        if segment_citation_label:
+            context_parts.append(segment_citation_label)
         parent_context = " > ".join(context_parts)
         
         chunk = RawChunk(
@@ -616,7 +744,7 @@ class SmartChunker:
             article_num=article_num,
             article_title=article_title,
             section_num=section_num,
-            subsection=subsection,
+            subsection=subsection_norm,
             subsection_title=subsection_title,
             citation=citation,
             parent_context=parent_context,

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karl - UFCW Local 7 Contract Assistant</title>
+    <title>Karl - Union Contract Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
@@ -151,6 +151,50 @@
         /* Dark mode - Citation badges (yellow) */
         .dark .citation-badge { background-color: rgba(212, 160, 41, 0.2) !important; color: #E8B84A !important; }
         .dark .citation-badge:hover { background-color: rgba(212, 160, 41, 0.35) !important; }
+
+        .quick-action[disabled] {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .contract-table-wrap {
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin: 12px 0;
+            background: #f8fafc;
+        }
+        .contract-table {
+            width: 100%;
+            min-width: 640px;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .contract-table th,
+        .contract-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .contract-table th {
+            background: #e2e8f0;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .dark .contract-table-wrap {
+            background: #1f2937;
+            border-color: #475569;
+        }
+        .dark .contract-table th,
+        .dark .contract-table td {
+            border-color: #475569;
+            color: #e5e7eb;
+        }
+        .dark .contract-table th {
+            background: #334155;
+        }
 
         /* Custom date picker */
         .date-picker-trigger {
@@ -389,6 +433,13 @@
                 </p>
 
                 <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Which contract/store are you under?</label>
+                    <select id="onboard-contract" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
+                        <option value="">Select your contract...</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">What's your job classification?</label>
                     <select id="onboard-classification" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
                         <option value="">Select your role...</option>
@@ -457,9 +508,6 @@
                     <button type="submit" class="w-full bg-ufcw-blue hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-xl transition-colors">
                         Get Started
                     </button>
-                    <button type="button" onclick="skipOnboarding()" class="w-full text-slate-500 hover:text-slate-700 text-sm py-2 mt-2">
-                        Skip for now
-                    </button>
                 </div>
             </form>
         </div>
@@ -476,7 +524,7 @@
                     </div>
                     <div>
                         <h1 class="font-bold text-base md:text-lg tracking-tight">Karl</h1>
-                        <p class="text-ufcw-gold-light text-[10px] md:text-xs">UFCW Local 7 Contract Assistant</p>
+                        <p id="header-subtitle" class="text-ufcw-gold-light text-[10px] md:text-xs">Union Contract Assistant</p>
                     </div>
                 </div>
                 <div id="status" class="flex items-center gap-1.5 md:gap-2 bg-black/20 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full">
@@ -592,6 +640,11 @@
                                 <p class="text-[9px] md:text-[10px] font-medium text-slate-500 uppercase tracking-wider">Tenure</p>
                                 <p id="display-tenure" class="text-xs md:text-sm font-semibold text-slate-800">--</p>
                             </div>
+                            <div class="w-px h-6 md:h-8 bg-slate-300"></div>
+                            <div class="min-w-0">
+                                <p class="text-[9px] md:text-[10px] font-medium text-slate-500 uppercase tracking-wider">Contract</p>
+                                <p id="display-contract" class="text-xs md:text-sm font-semibold text-slate-800 truncate max-w-[130px] md:max-w-[220px]">Not set</p>
+                            </div>
                         </div>
                         <button onclick="setActiveTab('settings')" class="text-xs md:text-sm text-ufcw-blue hover:text-blue-700 font-medium flex items-center gap-1">
                             <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -612,19 +665,19 @@
                             Click any citation to view the full contract text.
                         </p>
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="askQuestion('How much should I be making?')" class="bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                            <button data-requires-profile="true" onclick="askQuestion('How much should I be making?')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
                                 <p class="text-xs md:text-sm font-medium">My Wages</p>
                                 <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Based on your tenure</p>
                             </button>
-                            <button onclick="askQuestion('How much vacation do I get per year?')" class="bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                            <button data-requires-profile="true" onclick="askQuestion('How much vacation do I get per year?')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
                                 <p class="text-xs md:text-sm font-medium">Time Off</p>
                                 <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Vacation, sick, holidays</p>
                             </button>
-                            <button onclick="askQuestion('When do I get a break?')" class="bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                            <button data-requires-profile="true" onclick="askQuestion('When do I get a break?')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
                                 <p class="text-xs md:text-sm font-medium">Breaks</p>
                                 <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Rest & meal periods</p>
                             </button>
-                            <button onclick="askQuestion('What are my rights if I am being disciplined?')" class="bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                            <button data-requires-profile="true" onclick="askQuestion('What are my rights if I am being disciplined?')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
                                 <p class="text-xs md:text-sm font-medium">Your Rights</p>
                                 <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Representation</p>
                             </button>
@@ -667,6 +720,13 @@
                         <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Your Profile</h3>
 
                         <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5">Contract/Store</label>
+                                <select id="settings-contract" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700">
+                                    <option value="">Select your contract...</option>
+                                </select>
+                            </div>
+
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Job Classification</label>
                                 <select id="settings-classification" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700">
@@ -790,17 +850,326 @@
 
     <script>
         const API_BASE = 'http://127.0.0.1:8000';
+        const ACTIVE_CONTRACT_STORAGE_KEY = 'karl_active_contract_id';
+        const SESSION_ID_STORAGE_KEY = 'karl_session_id';
+        const SESSION_META_STORAGE_KEY = 'karl_session_meta';
         let isHealthy = false;
         let userProfile = null;
+        let availableContracts = [];
+        let classificationOptionsByContract = {};
+        let activeContract = null;
         let articleCache = {};
         let articleTitles = {};
         let currentPopover = { articleNum: null, sectionNum: null };
         let preferences = JSON.parse(localStorage.getItem('karl_preferences') || '{}');
+        let sessionMetaStore = loadSessionMetaStore();
+        let SESSION_ID = getOrCreateSessionId();
 
-        // Generate session ID for conversation context
-        const SESSION_ID = localStorage.getItem('karl_session_id') ||
-            'session_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-        localStorage.setItem('karl_session_id', SESSION_ID);
+        function generateSessionId() {
+            return 'session_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+        }
+
+        function loadSessionMetaStore() {
+            try {
+                return JSON.parse(localStorage.getItem(SESSION_META_STORAGE_KEY) || '{}') || {};
+            } catch (_) {
+                return {};
+            }
+        }
+
+        function saveSessionMetaStore() {
+            localStorage.setItem(SESSION_META_STORAGE_KEY, JSON.stringify(sessionMetaStore));
+        }
+
+        function ensureSessionMeta(sessionId) {
+            if (!sessionMetaStore[sessionId]) {
+                sessionMetaStore[sessionId] = {
+                    submitted_count: 0,
+                    contract_id: null,
+                    classification: null,
+                    created_at: new Date().toISOString()
+                };
+                saveSessionMetaStore();
+            }
+            return sessionMetaStore[sessionId];
+        }
+
+        function getOrCreateSessionId() {
+            let sid = localStorage.getItem(SESSION_ID_STORAGE_KEY);
+            if (!sid) {
+                sid = generateSessionId();
+                localStorage.setItem(SESSION_ID_STORAGE_KEY, sid);
+            }
+            ensureSessionMeta(sid);
+            return sid;
+        }
+
+        function resetChatMessages() {
+            const container = document.getElementById('chat-container');
+            if (!container) return;
+            container.querySelectorAll('.chat-message').forEach(node => node.remove());
+            hideLoading();
+        }
+
+        function startNewChatSession() {
+            SESSION_ID = generateSessionId();
+            localStorage.setItem(SESSION_ID_STORAGE_KEY, SESSION_ID);
+            ensureSessionMeta(SESSION_ID);
+            resetChatMessages();
+        }
+
+        function hasSubmittedChatText() {
+            return (ensureSessionMeta(SESSION_ID).submitted_count || 0) > 0;
+        }
+
+        function hasCompleteProfileContext() {
+            return Boolean(
+                userProfile &&
+                (userProfile.contract_id || '').trim() &&
+                (userProfile.classification || '').trim()
+            );
+        }
+
+        function updateInteractionLock() {
+            const locked = !hasCompleteProfileContext();
+            const input = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+            if (input) {
+                input.disabled = locked;
+                input.placeholder = locked
+                    ? 'Complete onboarding (contract + role) to start chat...'
+                    : 'Ask about your contract...';
+            }
+            if (sendBtn) sendBtn.disabled = locked;
+
+            document.querySelectorAll('[data-requires-profile="true"]').forEach(btn => {
+                btn.disabled = locked;
+            });
+        }
+
+        function markChatSubmitted() {
+            const meta = ensureSessionMeta(SESSION_ID);
+            meta.submitted_count = (meta.submitted_count || 0) + 1;
+            meta.updated_at = new Date().toISOString();
+            saveSessionMetaStore();
+        }
+
+        function getActiveContract() {
+            return activeContract;
+        }
+
+        function getActiveContractId() {
+            return getActiveContract()?.contract_id || null;
+        }
+
+        function getContractQueryString() {
+            const contractId = getActiveContractId();
+            if (!contractId) return '';
+            return `?contract_id=${encodeURIComponent(contractId)}`;
+        }
+
+        function toTitleCase(text) {
+            const cleaned = (text || '').replace(/\s+/g, ' ').trim();
+            if (!cleaned) return '';
+            return cleaned
+                .toLowerCase()
+                .split(' ')
+                .map(part => part ? (part[0].toUpperCase() + part.slice(1)) : part)
+                .join(' ');
+        }
+
+        function inferContractDepartment(contract) {
+            const id = (contract?.contract_id || '').toLowerCase();
+            if (id.includes('_meat_')) return 'Meat';
+            if (id.includes('_clerks_')) return 'Clerks';
+            if (id.includes('_pharmacy_')) return 'Pharmacy';
+            return '';
+        }
+
+        function getContractLabel(contract) {
+            if (!contract) return 'Not set';
+            const contractId = (contract.contract_id || '').toLowerCase();
+            const parts = contractId.split('_').filter(Boolean);
+            const cleanParts = parts[0]?.match(/^local\d+$/i) ? parts.slice(1) : parts.slice();
+
+            let employer = toTitleCase(contract.employer || '');
+            if (/king\s*soopers/i.test(employer) || contractId.includes('kingsoopers')) {
+                employer = 'King Soopers';
+            } else if (/safeway/i.test(employer) || contractId.includes('safeway')) {
+                employer = 'Safeway';
+            } else if (/albertsons?/i.test(employer) || contractId.includes('albertsons')) {
+                employer = 'Albertsons';
+            } else {
+                // Drop long corporate suffixes for readability.
+                employer = employer
+                    .replace(/,?\s+a division of.*$/i, '')
+                    .replace(/,?\s+inc\.?$/i, '')
+                    .trim();
+            }
+
+            const dept = inferContractDepartment(contract);
+            const deptToken = dept ? dept.toLowerCase() : '';
+            let location = '';
+            if (cleanParts.length >= 2) {
+                const maybe = cleanParts[1];
+                if (maybe && maybe !== deptToken && !/^\d{4}$/.test(maybe)) {
+                    location = toTitleCase(maybe);
+                }
+            }
+
+            const base = employer || toTitleCase((contract.contract_id || '').replace(/_/g, ' '));
+            const segments = [base];
+            if (location) segments.push(location);
+            if (dept && !base.toLowerCase().includes(deptToken)) segments.push(dept);
+            return segments.join(' - ');
+        }
+
+        function populateClassificationSelects(contractId, classifications = [], options = {}) {
+            const { preserveSelection = true } = options;
+            const selectIds = ['onboard-classification', 'settings-classification'];
+            selectIds.forEach(id => {
+                const select = document.getElementById(id);
+                if (!select) return;
+
+                const previous = preserveSelection ? select.value : '';
+                select.innerHTML = '<option value="">Select your role...</option>';
+                classifications.forEach(c => {
+                    const option = document.createElement('option');
+                    option.value = c.value;
+                    option.textContent = c.label;
+                    select.appendChild(option);
+                });
+
+                if (previous && classifications.some(c => c.value === previous)) {
+                    select.value = previous;
+                }
+            });
+        }
+
+        async function loadClassificationsForContract(contractId, options = {}) {
+            if (!contractId) return;
+            const { preserveSelection = true } = options;
+
+            if (classificationOptionsByContract[contractId]) {
+                populateClassificationSelects(contractId, classificationOptionsByContract[contractId], { preserveSelection });
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/classifications?contract_id=${encodeURIComponent(contractId)}`);
+                if (!res.ok) throw new Error(`Failed to load classifications: ${res.status}`);
+                const data = await res.json();
+                const classifications = data.classifications || [];
+                classificationOptionsByContract[contractId] = classifications;
+                populateClassificationSelects(contractId, classifications, { preserveSelection });
+            } catch (e) {
+                console.error('Failed to load contract classifications:', e);
+            }
+        }
+
+        function updateContractDisplay() {
+            const contract = getActiveContract();
+            const subtitle = document.getElementById('header-subtitle');
+            if (subtitle) {
+                subtitle.textContent = contract
+                    ? `${getContractLabel(contract)} | ${contract.union_local_id || 'Union Contract'}`
+                    : 'Union Contract Assistant';
+            }
+            const displayContract = document.getElementById('display-contract');
+            if (displayContract) {
+                displayContract.textContent = getContractLabel(contract);
+            }
+        }
+
+        function setActiveContract(contractId, options = {}) {
+            const { persist = true, refreshViewer = true, preserveClassification = true } = options;
+            if (!contractId) return;
+
+            const contract = availableContracts.find(c => c.contract_id === contractId);
+            if (!contract) return;
+
+            const previousId = activeContract?.contract_id;
+            activeContract = contract;
+
+            if (persist) {
+                localStorage.setItem(ACTIVE_CONTRACT_STORAGE_KEY, contract.contract_id);
+            }
+
+            const onboardSelect = document.getElementById('onboard-contract');
+            const settingsSelect = document.getElementById('settings-contract');
+            if (onboardSelect) onboardSelect.value = contract.contract_id;
+            if (settingsSelect) settingsSelect.value = contract.contract_id;
+
+            updateContractDisplay();
+            checkHealth();
+            loadClassificationsForContract(contract.contract_id, { preserveSelection: preserveClassification });
+
+            if (refreshViewer && previousId && previousId !== contract.contract_id) {
+                articleCache = {};
+                articleTitles = {};
+                const detail = document.getElementById('article-detail');
+                const detailMobile = document.getElementById('article-detail-mobile');
+                const placeholder = document.getElementById('article-placeholder');
+                const placeholderMobile = document.getElementById('article-placeholder-mobile');
+                if (detail) {
+                    detail.classList.add('hidden');
+                    detail.innerHTML = '';
+                }
+                if (detailMobile) {
+                    detailMobile.classList.add('hidden');
+                    detailMobile.innerHTML = '';
+                }
+                placeholder?.classList.remove('hidden');
+                placeholderMobile?.classList.remove('hidden');
+                if (currentActiveTab === 'contract') {
+                    initContractViewer();
+                }
+            }
+        }
+
+        function populateContractSelects() {
+            const selects = ['onboard-contract', 'settings-contract'];
+            selects.forEach(id => {
+                const select = document.getElementById(id);
+                if (!select) return;
+
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">Select your contract...</option>';
+                availableContracts.forEach(contract => {
+                    const option = document.createElement('option');
+                    option.value = contract.contract_id;
+                    option.textContent = getContractLabel(contract);
+                    select.appendChild(option);
+                });
+
+                if (activeContract) {
+                    select.value = activeContract.contract_id;
+                } else if (currentValue) {
+                    select.value = currentValue;
+                }
+            });
+        }
+
+        async function loadContracts() {
+            try {
+                const res = await fetch(`${API_BASE}/api/contracts`);
+                if (!res.ok) throw new Error(`Failed to load contracts: ${res.status}`);
+                const data = await res.json();
+                availableContracts = data.contracts || [];
+
+                if (!availableContracts.length) {
+                    throw new Error('No contracts found in backend manifest catalog');
+                }
+
+                populateContractSelects();
+                updateContractDisplay();
+            } catch (e) {
+                console.error('Failed to load contracts:', e);
+                availableContracts = [];
+                activeContract = null;
+                updateContractDisplay();
+            }
+        }
 
         // =============================================================================
         // CUSTOM DATE PICKER
@@ -1006,6 +1375,9 @@
 
             // Initialize contract viewer on first visit
             if (tab === 'contract') {
+                if (!hasCompleteProfileContext()) {
+                    showOnboarding();
+                }
                 if (Object.keys(articleTitles).length === 0) {
                     initContractViewer();
                 }
@@ -1034,7 +1406,19 @@
 
         async function initContractViewer() {
             try {
-                const res = await fetch(`${API_BASE}/api/manifest`);
+                const contractId = getActiveContractId();
+                if (!contractId) {
+                    const promptHTML = '<li class="text-slate-500 text-xs py-2">Complete onboarding to load your contract.</li>';
+                    const desktopList = document.getElementById('article-list');
+                    const mobileList = document.getElementById('article-list-mobile');
+                    if (desktopList) desktopList.innerHTML = promptHTML;
+                    if (mobileList) mobileList.innerHTML = promptHTML;
+                    return;
+                }
+                const res = await fetch(`${API_BASE}/api/manifest${getContractQueryString()}`);
+                if (!res.ok) {
+                    throw new Error(`Manifest load failed (${res.status})`);
+                }
                 const manifest = await res.json();
                 articleTitles = manifest.article_titles;
                 renderTOC();
@@ -1076,6 +1460,8 @@
         }
 
         async function loadArticle(articleNum) {
+            const contractId = getActiveContractId();
+            if (!contractId) return;
             // Update TOC active state (both mobile and desktop lists)
             document.querySelectorAll('.toc-item').forEach(item => {
                 item.classList.remove('bg-ufcw-blue', 'text-white');
@@ -1127,15 +1513,19 @@
             if (detailMobile) detailMobile.innerHTML = loadingHTML;
 
             // Check cache
-            if (articleCache[articleNum]) {
-                renderArticleContent(articleCache[articleNum]);
+            const cacheKey = `${contractId}:${articleNum}`;
+            if (articleCache[cacheKey]) {
+                renderArticleContent(articleCache[cacheKey]);
                 return;
             }
 
             try {
-                const res = await fetch(`${API_BASE}/api/article/${articleNum}`);
+                const res = await fetch(`${API_BASE}/api/article/${articleNum}${getContractQueryString()}`);
+                if (!res.ok) {
+                    throw new Error(`Article load failed (${res.status})`);
+                }
                 const data = await res.json();
-                articleCache[articleNum] = data;
+                articleCache[cacheKey] = data;
                 renderArticleContent(data);
             } catch (e) {
                 console.error('Failed to load article:', e);
@@ -1150,13 +1540,65 @@
             }
         }
 
-        function renderMarkdown(text) {
-            // Simple markdown renderer for contract content
-            // Process markdown BEFORE escaping, then escape remaining content
+        function _isMarkdownTableSeparator(line) {
+            return /^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$/.test(line || '');
+        }
 
-            // First, identify and protect markdown patterns
+        function _splitMarkdownTableRow(line) {
+            let row = String(line || '').trim();
+            if (row.startsWith('|')) row = row.slice(1);
+            if (row.endsWith('|')) row = row.slice(0, -1);
+            return row.split('|').map(cell => cell.trim());
+        }
+
+        function _renderMarkdownTable(lines) {
+            if (!lines.length) return '';
+            const rows = lines.map(_splitMarkdownTableRow).filter(r => r.length > 0);
+            if (rows.length < 2) return escapeHtml(lines.join('\n'));
+
+            const header = rows[0];
+            const bodyRows = rows.slice(1).filter(r => !r.every(cell => /^:?-{3,}:?$/.test(cell.replace(/\s+/g, ''))));
+            const headerHtml = header.map(cell => `<th>${escapeHtml(cell)}</th>`).join('');
+            const bodyHtml = bodyRows.map(
+                row => `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`
+            ).join('');
+
+            return `
+                <div class="contract-table-wrap">
+                    <table class="contract-table">
+                        <thead><tr>${headerHtml}</tr></thead>
+                        <tbody>${bodyHtml}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderMarkdown(text) {
+            const lines = String(text || '').replace(/\r\n/g, '\n').split('\n');
             const placeholders = [];
-            let processed = text;
+            const outLines = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const nextLine = lines[i + 1] || '';
+                const looksLikeTableHeader = line.includes('|') && _isMarkdownTableSeparator(nextLine);
+                if (looksLikeTableHeader) {
+                    const tableLines = [line, nextLine];
+                    i += 2;
+                    while (i < lines.length && lines[i].includes('|')) {
+                        tableLines.push(lines[i]);
+                        i += 1;
+                    }
+                    i -= 1;
+                    const idx = placeholders.length;
+                    placeholders.push(_renderMarkdownTable(tableLines));
+                    outLines.push(`%%PH${idx}%%`);
+                    continue;
+                }
+                outLines.push(line);
+            }
+
+            let processed = outLines.join('\n');
 
             // Convert **bold** to placeholder
             processed = processed.replace(/\*\*(.+?)\*\*/g, (match, content) => {
@@ -1184,7 +1626,7 @@
             processed = processed.replace(/^(\d+)\. (.+)$/gm, '<div class="ml-4 mb-1"><span class="font-medium">$1.</span> $2</div>');
 
             // Convert bullet points
-            processed = processed.replace(/^[-•] (.+)$/gm, '<div class="ml-4 mb-1">• $1</div>');
+            processed = processed.replace(/^[-*\u2022] (.+)$/gm, '<div class="ml-4 mb-1">&bull; $1</div>');
 
             return processed;
         }
@@ -1208,7 +1650,7 @@
                 <article class="max-w-none">
                     <header class="mb-6 pb-4 border-b border-slate-200">
                         <p class="text-ufcw-blue font-semibold text-sm uppercase tracking-wider">Article ${data.article_num}</p>
-                        <h1 class="text-xl md:text-2xl font-bold text-slate-900 mt-1">${escapeHtml(data.article_title)}</h1>
+                        <h1 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">${escapeHtml(data.article_title)}</h1>
                     </header>
 
                     ${data.sections.map(section => `
@@ -1291,6 +1733,7 @@
         function handleCitationClick(event, articleNum, sectionNum, partNum = null) {
             event.preventDefault();
             event.stopPropagation();
+            if (!articleNum) return;
 
             const style = preferences.citationStyle || 'popover';
             if (style === 'navigate') {
@@ -1343,17 +1786,22 @@
                 // Try to fetch specific section first
                 if (sectionNum) {
                     // Build URL with optional subsection query param
-                    let sectionUrl = `${API_BASE}/api/section/${articleNum}/${sectionNum}`;
+                    const sectionParams = new URLSearchParams();
+                    const contractId = getActiveContractId();
+                    if (contractId) sectionParams.set('contract_id', contractId);
                     if (partNum) {
-                        sectionUrl += `?subsection=${encodeURIComponent(partNum)}`;
+                        sectionParams.set('subsection', partNum);
                     }
+                    let sectionUrl = `${API_BASE}/api/section/${articleNum}/${sectionNum}`;
+                    const sectionQuery = sectionParams.toString();
+                    if (sectionQuery) sectionUrl += `?${sectionQuery}`;
                     const res = await fetch(sectionUrl);
                     if (res.ok) {
                         data = await res.json();
                     } else {
                         // Section not found - fall back to article
                         console.log(`Section ${sectionNum} not found, falling back to article ${articleNum}`);
-                        const articleRes = await fetch(`${API_BASE}/api/article/${articleNum}`);
+                        const articleRes = await fetch(`${API_BASE}/api/article/${articleNum}${getContractQueryString()}`);
                         if (articleRes.ok) {
                             data = await articleRes.json();
                             usedFallback = true;
@@ -1361,7 +1809,7 @@
                     }
                 } else {
                     // Just fetch the article
-                    const res = await fetch(`${API_BASE}/api/article/${articleNum}`);
+                    const res = await fetch(`${API_BASE}/api/article/${articleNum}${getContractQueryString()}`);
                     if (res.ok) {
                         data = await res.json();
                     }
@@ -1432,21 +1880,7 @@
         async function loadOnboardingOptions() {
             try {
                 const res = await fetch(`${API_BASE}/api/onboard/options`);
-                const data = await res.json();
-
-                // Populate both onboarding and settings dropdowns
-                const selects = ['onboard-classification', 'settings-classification'];
-                selects.forEach(id => {
-                    const select = document.getElementById(id);
-                    if (select && select.options.length <= 1) {
-                        data.classifications.forEach(c => {
-                            const option = document.createElement('option');
-                            option.value = c.value;
-                            option.textContent = c.label;
-                            select.appendChild(option);
-                        });
-                    }
-                });
+                await res.json();
             } catch (e) {
                 console.error('Failed to load options:', e);
             }
@@ -1456,41 +1890,106 @@
             try {
                 const res = await fetch(`${API_BASE}/api/profile/${SESSION_ID}`);
                 const profile = await res.json();
+                if (profile?.contract_id) {
+                    setActiveContract(profile.contract_id, { persist: true, refreshViewer: true, preserveClassification: false });
+                    await loadClassificationsForContract(profile.contract_id, { preserveSelection: false });
+                }
 
-                if (profile.classification) {
-                    userProfile = profile;
+                userProfile = profile;
+                if (profile.contract_id && profile.classification) {
                     updateProfileDisplay();
+                    ensureSessionMeta(SESSION_ID).contract_id = profile.contract_id || null;
+                    ensureSessionMeta(SESSION_ID).classification = profile.classification || null;
+                    saveSessionMetaStore();
                     hideOnboarding();
                 } else {
                     showOnboarding();
                 }
+                updateInteractionLock();
             } catch (e) {
                 console.error('Failed to load profile:', e);
                 showOnboarding();
+                updateInteractionLock();
             }
         }
 
         async function saveProfile(data) {
             try {
+                const nextContractId = data.contract_id || userProfile?.contract_id || activeContract?.contract_id || null;
+                const nextClassification = data.classification ?? userProfile?.classification ?? null;
+                const normalizedNextClassification = typeof nextClassification === 'string'
+                    ? nextClassification.trim()
+                    : '';
+
+                if (!normalizedNextClassification) {
+                    alert('Please select your job classification before saving.');
+                    syncSettingsForm();
+                    return false;
+                }
+                if (!nextContractId || !String(nextContractId).trim()) {
+                    alert('Please select your contract/store before saving.');
+                    syncSettingsForm();
+                    return false;
+                }
+
+                const currentContractId = (userProfile?.contract_id || '').trim().toLowerCase();
+                const currentClassification = (userProfile?.classification || '').trim().toLowerCase();
+                const contractChanged = !!nextContractId && nextContractId.trim().toLowerCase() !== currentContractId;
+                const classificationChanged =
+                    typeof nextClassification === 'string' &&
+                    nextClassification.trim().toLowerCase() !== currentClassification;
+
+                if ((contractChanged || classificationChanged) && hasSubmittedChatText()) {
+                    const changedParts = [];
+                    if (contractChanged) changedParts.push('contract/store');
+                    if (classificationChanged) changedParts.push('job classification');
+                    const confirmed = confirm(
+                        `Changing ${changedParts.join(' and ')} will start a new chat and clear current chat context. Continue?`
+                    );
+                    if (!confirmed) {
+                        syncSettingsForm();
+                        return false;
+                    }
+                    startNewChatSession();
+                }
+
                 const res = await fetch(`${API_BASE}/api/profile/${SESSION_ID}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
+                if (!res.ok) {
+                    throw new Error(`Profile update failed (${res.status})`);
+                }
                 userProfile = await res.json();
+                if (userProfile?.contract_id) {
+                    setActiveContract(userProfile.contract_id, { persist: true, refreshViewer: true, preserveClassification: false });
+                    await loadClassificationsForContract(userProfile.contract_id, { preserveSelection: false });
+                }
                 updateProfileDisplay();
+                ensureSessionMeta(SESSION_ID).contract_id = userProfile.contract_id || null;
+                ensureSessionMeta(SESSION_ID).classification = userProfile.classification || null;
+                saveSessionMetaStore();
                 hideOnboarding();
+                updateInteractionLock();
+                return true;
             } catch (e) {
                 console.error('Failed to save profile:', e);
                 alert('Could not save your profile. Please try again.');
+                updateInteractionLock();
+                return false;
             }
         }
 
         function updateProfileDisplay() {
-            if (!userProfile) return;
+            updateContractDisplay();
+            if (!userProfile) {
+                updateInteractionLock();
+                return;
+            }
 
             document.getElementById('display-classification').textContent =
-                userProfile.classification_display || 'Not set';
+                userProfile.classification_display || userProfile.classification || 'Not set';
 
             if (userProfile.months_employed) {
                 const years = Math.floor(userProfile.months_employed / 12);
@@ -1502,13 +2001,19 @@
             } else {
                 document.getElementById('display-tenure').textContent = '--';
             }
+            updateInteractionLock();
         }
 
         function syncSettingsForm() {
+            if (activeContract) {
+                const contractSelect = document.getElementById('settings-contract');
+                if (contractSelect) contractSelect.value = activeContract.contract_id;
+            }
             if (!userProfile) return;
 
             if (userProfile.classification) {
                 document.getElementById('settings-classification').value = userProfile.classification;
+                document.getElementById('onboard-classification').value = userProfile.classification;
             }
             if (userProfile.employment_type) {
                 const radio = document.querySelector(`input[name="settings_employment"][value="${userProfile.employment_type}"]`);
@@ -1526,17 +2031,21 @@
         }
 
         async function saveSettingsProfile() {
+            const contractId = document.getElementById('settings-contract')?.value;
             const classification = document.getElementById('settings-classification').value;
             const employmentType = document.querySelector('input[name="settings_employment"]:checked')?.value;
             const hireMonth = document.getElementById('settings-hire-date').value;
 
             const data = {};
+            if (contractId) data.contract_id = contractId;
             if (classification) data.classification = classification;
             if (employmentType) data.employment_type = employmentType;
             if (hireMonth) data.hire_date = hireMonth + '-01';
 
-            await saveProfile(data);
-            alert('Profile saved!');
+            const saved = await saveProfile(data);
+            if (saved) {
+                alert('Profile saved!');
+            }
         }
 
         function savePreference(key, value) {
@@ -1647,8 +2156,10 @@
 
         function clearSession() {
             if (confirm('This will clear your profile and conversation history. Continue?')) {
-                localStorage.removeItem('karl_session_id');
+                localStorage.removeItem(SESSION_ID_STORAGE_KEY);
+                localStorage.removeItem(SESSION_META_STORAGE_KEY);
                 localStorage.removeItem('karl_preferences');
+                localStorage.removeItem(ACTIVE_CONTRACT_STORAGE_KEY);
                 location.reload();
             }
         }
@@ -1656,7 +2167,15 @@
         // Onboarding modal
         function showOnboarding() {
             document.getElementById('onboarding-modal').classList.remove('hidden');
+            if (activeContract) {
+                const contractSelect = document.getElementById('onboard-contract');
+                if (contractSelect) contractSelect.value = activeContract.contract_id;
+            }
             if (userProfile) {
+                if (userProfile.contract_id) {
+                    const contractSelect = document.getElementById('onboard-contract');
+                    if (contractSelect) contractSelect.value = userProfile.contract_id;
+                }
                 if (userProfile.classification) {
                     document.getElementById('onboard-classification').value = userProfile.classification;
                 }
@@ -1668,23 +2187,32 @@
                     document.getElementById('onboard-hire-date').value = userProfile.hire_date.substring(0, 7);
                 }
             }
+            updateInteractionLock();
         }
 
         function hideOnboarding() {
             document.getElementById('onboarding-modal').classList.add('hidden');
-        }
-
-        function skipOnboarding() {
-            hideOnboarding();
+            updateInteractionLock();
         }
 
         document.getElementById('onboarding-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const contractId = document.getElementById('onboard-contract').value;
             const classification = document.getElementById('onboard-classification').value;
             const employmentType = document.querySelector('input[name="employment_type"]:checked')?.value;
             const hireMonth = document.getElementById('onboard-hire-date').value;
 
+            if (!contractId) {
+                alert('Please select your contract/store before continuing.');
+                return;
+            }
+            if (!classification) {
+                alert('Please select your job classification before continuing.');
+                return;
+            }
+
             const data = {};
+            if (contractId) data.contract_id = contractId;
             if (classification) data.classification = classification;
             if (employmentType) data.employment_type = employmentType;
             if (hireMonth) data.hire_date = hireMonth + '-01';
@@ -1699,19 +2227,29 @@
         async function checkHealth() {
             const statusEl = document.getElementById('status');
             try {
-                const res = await fetch(`${API_BASE}/api/health`);
+                const contractId = getActiveContractId();
+                if (!contractId) {
+                    statusEl.innerHTML = `
+                        <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+                        <span class="text-xs text-blue-100">Select contract</span>
+                    `;
+                    return;
+                }
+                const suffix = contractId ? `?contract_id=${encodeURIComponent(contractId)}` : '';
+                const res = await fetch(`${API_BASE}/api/health${suffix}`);
                 const data = await res.json();
                 isHealthy = data.status === 'healthy';
+                const sectionCount = data.contract_chunks ?? data.chunks_loaded ?? 0;
 
                 if (isHealthy) {
                     statusEl.innerHTML = `
                         <span class="w-2 h-2 rounded-full bg-green-400"></span>
-                        <span class="text-xs text-blue-100">${data.chunks_loaded} sections</span>
+                        <span class="text-xs text-blue-100">${sectionCount} sections</span>
                     `;
                 } else {
                     statusEl.innerHTML = `
                         <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
-                        <span class="text-xs text-blue-100">Limited</span>
+                        <span class="text-xs text-blue-100">${sectionCount > 0 ? `${sectionCount} sections` : 'Limited'}</span>
                     `;
                 }
             } catch (e) {
@@ -1729,20 +2267,33 @@
         }
 
         function formatResponse(text) {
-            // First apply bold formatting
-            text = text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>');
-            // Then parse citations (make them clickable)
-            text = parseCitations(text);
-            // Then bullets and newlines
-            text = text.replace(/^\* /gm, '&bull; ');
-            text = text.replace(/\n/g, '<br>');
-            return text;
+            let processed = escapeHtml(text || '');
+
+            // Headings
+            processed = processed.replace(/^### (.+)$/gm, '<h4 class="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-3 mb-1">$1</h4>');
+            processed = processed.replace(/^## (.+)$/gm, '<h3 class="text-base font-semibold text-slate-900 dark:text-slate-100 mt-3 mb-1">$1</h3>');
+            processed = processed.replace(/^# (.+)$/gm, '<h2 class="text-lg font-bold text-slate-900 dark:text-slate-100 mt-3 mb-1">$1</h2>');
+
+            // Inline markdown
+            processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-900 dark:text-slate-100">$1</strong>');
+            processed = processed.replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-xs">$1</code>');
+
+            // Lists and quotes
+            processed = processed.replace(/^\s*[-*\u2022]\s+(.+)$/gm, '<div class="ml-4 mb-1">&bull; $1</div>');
+            processed = processed.replace(/^\s*(\d+)\.\s+(.+)$/gm, '<div class="ml-4 mb-1"><span class="font-medium">$1.</span> $2</div>');
+            processed = processed.replace(/^>\s?(.+)$/gm, '<blockquote class="border-l-2 border-slate-300 pl-3 italic text-slate-600 dark:text-slate-300 my-1">$1</blockquote>');
+
+            // Make citations clickable after markdown transforms.
+            processed = parseCitations(processed);
+
+            processed = processed.replace(/\n/g, '<br>');
+            return processed;
         }
 
         function addMessage(content, isUser = false, metadata = null) {
             const container = document.getElementById('chat-container');
             const msgDiv = document.createElement('div');
-            msgDiv.className = 'fade-up';
+            msgDiv.className = 'fade-up chat-message';
 
             if (isUser) {
                 msgDiv.innerHTML = `
@@ -1760,21 +2311,33 @@
                             ${metadata.citations.map(c => {
                                 // Match Article, Section (with optional parenthetical), and optional Part
                                 const match = c.match(/Article\s+(\d+)(?:,?\s*Section\s+(\d+)(?:\(([a-z])\))?)?(?:,?\s*Part\s+([\w\-]+))?/i);
-                                const artNum = match ? match[1] : null;
-                                const secNum = match ? match[2] : null;
-                                const parenSub = match ? match[3] : null;
-                                const partNum = match ? match[4] : null;
-                                const subsection = parenSub || partNum;
-                                const subArg = subsection ? `'${subsection}'` : 'null';
+                                if (match) {
+                                    const artNum = match[1];
+                                    const secNum = match[2] || null;
+                                    const parenSub = match[3] || null;
+                                    const partNum = match[4] || null;
+                                    const subsection = parenSub || partNum;
+                                    const subArg = subsection ? `'${subsection}'` : 'null';
+                                    return `
+                                    <button class="citation-badge inline-flex items-center gap-1 bg-ufcw-blue/10 text-ufcw-blue text-[11px] font-medium px-2 py-1 rounded-md hover:bg-ufcw-blue/20 transition-colors cursor-pointer"
+                                            onclick="handleCitationClick(event, ${artNum}, ${secNum || 'null'}, ${subArg})">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        ${escapeHtml(c)}
+                                    </button>
+                                `;
+                                }
+
                                 return `
-                                <button class="citation-badge inline-flex items-center gap-1 bg-ufcw-blue/10 text-ufcw-blue text-[11px] font-medium px-2 py-1 rounded-md hover:bg-ufcw-blue/20 transition-colors cursor-pointer"
-                                        onclick="handleCitationClick(event, ${artNum}, ${secNum || 'null'}, ${subArg})">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                    </svg>
-                                    ${escapeHtml(c)}
-                                </button>
-                            `}).join('')}
+                                    <span class="citation-badge inline-flex items-center gap-1 bg-slate-100 text-slate-600 text-[11px] font-medium px-2 py-1 rounded-md">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        ${escapeHtml(c)}
+                                    </span>
+                                `;
+                            }).join('')}
                         </div>
                     `;
                 }
@@ -1858,9 +2421,20 @@
 
         async function sendQuery(question) {
             const sendBtn = document.getElementById('send-btn');
+            if (!hasCompleteProfileContext()) {
+                showOnboarding();
+                addMessage('Select your contract and role in onboarding before asking questions.', false);
+                return;
+            }
+            const contract = getActiveContract();
+            if (!contract) {
+                addMessage('Please select your contract in Settings before asking a question.', false);
+                return;
+            }
 
             sendBtn.disabled = true;
             addMessage(question, true);
+            markChatSubmitted();
             showLoading();
             startThinking();  // Animated gradient
 
@@ -1870,6 +2444,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         question: question,
+                        union_local_id: contract.union_local_id,
+                        contract_id: contract.contract_id,
+                        contract_version: contract.contract_version,
                         session_id: SESSION_ID
                     })
                 });
@@ -1877,7 +2454,16 @@
                 hideLoading();
                 stopThinking();  // Stop animated gradient
 
-                if (!res.ok) throw new Error(`API error: ${res.status}`);
+                if (!res.ok) {
+                    let detail = `API error: ${res.status}`;
+                    try {
+                        const err = await res.json();
+                        if (err?.detail) detail = String(err.detail);
+                    } catch (_) {
+                        // Ignore JSON parse failures and use status fallback.
+                    }
+                    throw new Error(detail);
+                }
 
                 const data = await res.json();
                 addMessage(data.answer, false, {
@@ -1889,7 +2475,7 @@
             } catch (error) {
                 hideLoading();
                 stopThinking();  // Stop animated gradient
-                addMessage('Unable to connect to Karl. Please check that the server is running.', false);
+                addMessage(`Unable to process this request: ${error.message}`, false);
                 console.error(error);
             } finally {
                 sendBtn.disabled = false;
@@ -1897,6 +2483,10 @@
         }
 
         function askQuestion(q) {
+            if (!hasCompleteProfileContext()) {
+                showOnboarding();
+                return;
+            }
             document.getElementById('user-input').value = q;
             document.getElementById('chat-form').dispatchEvent(new Event('submit'));
         }
@@ -1917,16 +2507,37 @@
         async function init() {
             initDarkMode();  // Apply dark mode if saved
             initHeaderInteractivity();  // Mouse/touch reactive gradient
+            updateInteractionLock();
+            await loadContracts();
             await loadOnboardingOptions();
             await loadProfile();
             checkHealth();
             setInterval(checkHealth, 30000);
 
+            const onboardContract = document.getElementById('onboard-contract');
+            if (onboardContract) {
+                onboardContract.addEventListener('change', async (e) => {
+                    if (e.target.value) {
+                        await loadClassificationsForContract(e.target.value, { preserveSelection: false });
+                    }
+                });
+            }
+            const settingsContract = document.getElementById('settings-contract');
+            if (settingsContract) {
+                settingsContract.addEventListener('change', async (e) => {
+                    if (e.target.value) {
+                        await loadClassificationsForContract(e.target.value, { preserveSelection: false });
+                    }
+                });
+            }
+
             // Initialize tab bar with correct active state
             setActiveTab('chat');
+            updateInteractionLock();
         }
 
         init();
     </script>
 </body>
 </html>
+

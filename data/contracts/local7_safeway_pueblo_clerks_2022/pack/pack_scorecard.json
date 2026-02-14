@@ -1,0 +1,408 @@
+{
+  "scorecard_version": "contract_pack_scorecard_v1",
+  "generated_at_utc": "2026-02-14T20:51:47.749060+00:00",
+  "strict_mode": false,
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "package_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022",
+  "artifacts": {
+    "source_md": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\source\\safeway_pueblo_clerks_2022.md",
+    "source_json": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\source\\safeway_pueblo_clerks_2022.json",
+    "manifest": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\manifests\\local7_safeway_pueblo_clerks_2022.json",
+    "chunks_enriched": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+    "chunks_smart": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_smart_local7_safeway_pueblo_clerks_2022.json",
+    "chunks_base": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_local7_safeway_pueblo_clerks_2022.json",
+    "concept_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\concept_index_local7_safeway_pueblo_clerks_2022.json",
+    "tables": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\tables\\structured_tables.json",
+    "wages": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\wages\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
+    "classification_ontology": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\classification_ontology.json",
+    "language_lexicon": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\language_lexicon.json",
+    "ingestion_review_queue": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\ingestion_review_queue.json",
+    "manual_classification_overrides": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\manual_classification_overrides.json"
+  },
+  "artifact_hashes": {
+    "source_md": "567e1c9bf36160275e7598fb937b1327cc13ec0fc496af522a7655ae359f4d3a",
+    "source_json": "64ab08556965c0f8daf0e92fc871da0322bafe184b7e90ddc150efd975ecf482",
+    "manifest": "11a5f440857cb8c4b878a38d7900685821d551566fd5d5e8aa9e9bf444e8f72a",
+    "chunks_enriched": "584f8237c18d843f958cc98eab213c671d901253265ab606637aa187c0148aa5",
+    "chunks_smart": "43319fb9d19989cb8c1cb9a9f5cbca2a8818c1dd90ac65e67ad5898eb185f60f",
+    "chunks_base": "584f8237c18d843f958cc98eab213c671d901253265ab606637aa187c0148aa5",
+    "concept_index": "4aa8881189c43a3d6ea9bb182197f72bcaef814d83c9c29cde3fa84ef9eb61a6",
+    "tables": "f7f51a73c460e0186bb0c1bfa0e334516f001010f89ff76658152c147ff54c89",
+    "wages": "7c54921113fd02a49bbf9f4a4e5aa709a94779cd346b042f57d006659db81393",
+    "classification_ontology": "0895537c40f70be52e3a3a8ff7c5dcdac94359c5ec8d2e223341ad9117fffc0a",
+    "language_lexicon": "d89ef616d33922b4eefd150778e2f33a8280113827df75188faaa3342a9b1f01",
+    "ingestion_review_queue": "1f258d927a4b65630fc9fc36123dc4f7f30bcd533e70bc6ff423bd94293bbca9",
+    "manual_classification_overrides": "cd8bce6568087984149742452ad53ff14812456f8461799450f5415bafb77cd5"
+  },
+  "pack_hash": "70abf1203ef6e1e46b7d213af503a7a89aa046ecf13e3170360e036ba89877e2",
+  "checks": [
+    {
+      "id": "manifest_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest artifact is present.",
+      "metrics": {
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\manifests\\local7_safeway_pueblo_clerks_2022.json"
+      }
+    },
+    {
+      "id": "manifest_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest schema passed validation.",
+      "metrics": {
+        "errors": []
+      }
+    },
+    {
+      "id": "chunks_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Chunk artifact is present.",
+      "metrics": {
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json"
+      }
+    },
+    {
+      "id": "chunks_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Chunk count = 315.",
+      "metrics": {
+        "chunk_count": 315
+      }
+    },
+    {
+      "id": "chunks_contract_scope",
+      "severity": "required",
+      "status": "pass",
+      "message": "All chunks contain contract_id.",
+      "metrics": {
+        "missing_contract_id_chunks": 0
+      }
+    },
+    {
+      "id": "chunks_region_scope",
+      "severity": "required",
+      "status": "pass",
+      "message": "All chunks contain region_id.",
+      "metrics": {
+        "missing_region_id_chunks": 0
+      }
+    },
+    {
+      "id": "chunk_id_uniqueness",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "All chunk IDs are unique.",
+      "metrics": {
+        "duplicate_chunk_rows": 0
+      }
+    },
+    {
+      "id": "chunk_citation_normalization",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Chunk citations/subsections follow normalized conventions.",
+      "metrics": {
+        "malformed_citations_sample": [],
+        "legacy_segment_subsections_sample": [],
+        "inconsistent_cba_citations_sample": []
+      }
+    },
+    {
+      "id": "language_feature_coverage",
+      "severity": "required",
+      "status": "pass",
+      "message": "Deterministic language features meet minimum coverage.",
+      "metrics": {
+        "alt_non_empty_chunks": 293,
+        "question_non_empty_chunks": 315,
+        "chunk_total": 315,
+        "alt_coverage": 0.9302,
+        "question_coverage": 1.0,
+        "min_required": 0.25
+      }
+    },
+    {
+      "id": "article_coverage",
+      "severity": "required",
+      "status": "pass",
+      "message": "Article coverage threshold met.",
+      "metrics": {
+        "coverage": 1.0,
+        "expected_articles": 57,
+        "found_articles": 58,
+        "missing_articles": []
+      }
+    },
+    {
+      "id": "tables_registry_exists",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Structured table registry is present.",
+      "metrics": {
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\tables\\structured_tables.json"
+      }
+    },
+    {
+      "id": "table_ref_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "All chunk table_refs resolve to registry table IDs.",
+      "metrics": {
+        "unresolved_table_refs": []
+      }
+    },
+    {
+      "id": "concept_index_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Contract-scoped concept index is present.",
+      "metrics": {
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\concept_index_local7_safeway_pueblo_clerks_2022.json"
+      }
+    },
+    {
+      "id": "concept_index_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Concept index contains concept/question mappings.",
+      "metrics": {
+        "concept_count": 147,
+        "question_count": 54
+      }
+    },
+    {
+      "id": "language_lexicon_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Language lexicon artifact is present.",
+      "metrics": {
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\language_lexicon.json"
+      }
+    },
+    {
+      "id": "language_lexicon_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Language lexicon contains aliases and entries.",
+      "metrics": {
+        "alias_count": 196,
+        "entry_count": 67
+      }
+    },
+    {
+      "id": "language_lexicon_region_id",
+      "severity": "required",
+      "status": "pass",
+      "message": "Language lexicon includes region_id.",
+      "metrics": {
+        "region_id": "region-pueblo"
+      }
+    },
+    {
+      "id": "wages_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Wage artifact is present.",
+      "metrics": {
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\wages\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
+        "requires_wages": true
+      }
+    },
+    {
+      "id": "wage_classifications_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Wage classifications extracted.",
+      "metrics": {
+        "classification_count": 16
+      }
+    },
+    {
+      "id": "wage_primary_lookup_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "All primary wage classification keys resolve.",
+      "metrics": {
+        "unresolved_keys": []
+      }
+    },
+    {
+      "id": "canonical_wage_rows_present",
+      "severity": "required",
+      "status": "pass",
+      "message": "Canonical wage rows are present.",
+      "metrics": {
+        "canonical_row_count": 156,
+        "requires_canonical_rows": true
+      }
+    },
+    {
+      "id": "canonical_wage_row_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Canonical wage rows pass schema validation.",
+      "metrics": {
+        "invalid_row_count": 0,
+        "invalid_rows": []
+      }
+    },
+    {
+      "id": "canonical_wage_row_contradictions",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "No contradictory canonical wage rows detected.",
+      "metrics": {
+        "contradiction_count": 0,
+        "contradictions": []
+      }
+    },
+    {
+      "id": "canonical_wage_conflict_rate",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Canonical wage conflict rate is within advisory threshold.",
+      "metrics": {
+        "conflict_rate": 0.0,
+        "conflict_count": 0,
+        "canonical_row_count": 156
+      }
+    },
+    {
+      "id": "canonical_wage_ambiguity_rate",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Canonical wage ambiguity rate is within advisory threshold.",
+      "metrics": {
+        "ambiguity_rate": 0.0,
+        "ambiguity_count": 0,
+        "canonical_row_count": 156
+      }
+    },
+    {
+      "id": "manifest_classification_wage_coverage",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Manifest classification wage coverage meets advisory threshold.",
+      "metrics": {
+        "coverage": 0.7143,
+        "resolved": 10,
+        "total": 14,
+        "unresolved": [
+          "deli_clerk",
+          "meatcutter",
+          "pharmacy_technician",
+          "sanitation_clerk"
+        ]
+      }
+    },
+    {
+      "id": "critical_alias_resolution",
+      "severity": "required",
+      "status": "pass",
+      "message": "Critical shopper/dug aliases resolve in wage lookup.",
+      "metrics": {
+        "unresolved_critical_aliases": []
+      }
+    },
+    {
+      "id": "classification_ontology_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Classification ontology artifact is present.",
+      "metrics": {
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\classification_ontology.json",
+        "requires_ontology": true
+      }
+    },
+    {
+      "id": "classification_ontology_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Classification ontology schema and contract_id are valid.",
+      "metrics": {
+        "schema_version": "classification_ontology_v1",
+        "ontology_contract_id": "local7_safeway_pueblo_clerks_2022"
+      }
+    },
+    {
+      "id": "classification_ontology_alias_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "All ontology alias targets resolve to wage keys.",
+      "metrics": {
+        "invalid_alias_targets": []
+      }
+    },
+    {
+      "id": "classification_ontology_manifest_decisions",
+      "severity": "required",
+      "status": "pass",
+      "message": "Ontology contains deterministic mapping decisions for all manifest classes.",
+      "metrics": {
+        "missing_decisions": []
+      }
+    },
+    {
+      "id": "classification_ontology_mapping_coverage",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Ontology mapping coverage meets advisory threshold.",
+      "metrics": {
+        "coverage": 0.7143,
+        "resolved_manifest_classes": 10,
+        "total_manifest_classes": 14,
+        "unresolved_manifest_keys": [
+          "deli_clerk",
+          "meatcutter",
+          "pharmacy_technician",
+          "sanitation_clerk"
+        ]
+      }
+    },
+    {
+      "id": "ingestion_review_queue_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Ingestion review queue artifact is present.",
+      "metrics": {
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\ingestion_review_queue.json",
+        "review_required": true,
+        "unresolved_manifest_classes": 4,
+        "canonical_ambiguities": 0,
+        "canonical_conflicts": 0,
+        "unresolved_rows": 0
+      }
+    },
+    {
+      "id": "ingestion_review_queue_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Ingestion review queue schema and contract_id are valid.",
+      "metrics": {
+        "schema_version": "ingestion_review_queue_v1",
+        "queue_contract_id": "local7_safeway_pueblo_clerks_2022",
+        "item_count": 1
+      }
+    },
+    {
+      "id": "appendix_table_coverage_signal",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Appendix/wage table coverage signal detected.",
+      "metrics": {
+        "table_count": 15,
+        "non_toc_table_count": 13,
+        "appendix_like_table_count": 4,
+        "article8_table_chunks": 0
+      }
+    }
+  ],
+  "summary": {
+    "required_failed": [],
+    "advisory_failed": [],
+    "pass": true
+  }
+}

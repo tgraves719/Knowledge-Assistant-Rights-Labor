@@ -213,18 +213,28 @@ class ManifestExtractor:
     def _extract_article_titles(self) -> dict:
         """Extract article numbers and titles."""
         titles = {}
+
+        def _clean_article_title(raw_title: str) -> str:
+            # Remove TOC dot leaders + trailing page numbers, then normalize spaces.
+            title = (raw_title or "").replace("\n", " ")
+            title = re.sub(r"\.{2,}\s*\d+\s*$", "", title)
+            title = re.sub(r"\s+", " ", title).strip(" .-\t")
+            return title
         
         # Pattern: ARTICLE N or ARTICLE N TITLE
         patterns = [
-            r"#{1,2}\s*ARTICLE\s+(\d+)\s*\n#{1,2}\s*([A-Z][A-Z\s&,]+)",
-            r"#{1,2}\s*ARTICLE\s+(\d+)\s+([A-Z][A-Z\s&,]+)",
-            r"ARTICLE\s+(\d+)[:\s]+([A-Z][A-Z\s&,]+)",
+            r"#{1,3}\s*ARTICLE\s+(\d+)\s*\n#{1,3}\s*([A-Z][A-Z0-9 \t&,/\-()\'\".:]+)",
+            r"#{1,3}\s*ARTICLE\s+(\d+)\s+([A-Z][A-Z0-9 \t&,/\-()\'\".:]+)",
+            r"ARTICLE\s+(\d+)[:\s]+([A-Z][A-Z0-9 \t&,/\-()\'\".:]+)",
         ]
         
         for pattern in patterns:
             for match in re.finditer(pattern, self.content):
                 article_num = int(match.group(1))
-                title = match.group(2).strip().title()
+                title = _clean_article_title(match.group(2))
+                if len(title) <= 1:
+                    continue
+                title = title.title()
                 if article_num not in titles:
                     titles[article_num] = title
         

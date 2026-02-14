@@ -588,6 +588,8 @@ def main():
     # Save to file
     output_file = CHUNKS_DIR / "contract_chunks.json"
     save_chunks(chunks, output_file)
+    contract_output_file = CHUNKS_DIR / f"contract_chunks_{CONTRACT_ID}.json"
+    save_chunks(chunks, contract_output_file)
     
     # Save summary
     summary = {

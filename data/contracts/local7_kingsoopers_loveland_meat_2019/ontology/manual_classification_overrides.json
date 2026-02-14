@@ -1,0 +1,6 @@
+{
+  "schema_version": "classification_manual_overrides_v1",
+  "contract_id": "local7_kingsoopers_loveland_meat_2019",
+  "classification_alias_overrides": {},
+  "notes": "Add source_key -> wage_key overrides after reviewing ingestion_review_queue.json"
+}

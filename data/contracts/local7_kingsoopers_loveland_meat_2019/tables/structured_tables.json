@@ -1,0 +1,1304 @@
+[
+  {
+    "table_id": "tbl_art0_1",
+    "content_hash": "e9eba677832456ee",
+    "headers": [
+      "ARTICLE",
+      "TITLE",
+      "PAGE"
+    ],
+    "rows": [
+      [
+        "ARTICLE 1",
+        "RECOGNITION AND EXCLUSIONS",
+        "3"
+      ],
+      [
+        "ARTICLE 2",
+        "SERVICE IN MEAT DEPARTMENTS, PLANTS",
+        "4"
+      ],
+      [
+        "ARTICLE 3",
+        "UNION SECURITY AND CONDITIONS",
+        "7"
+      ],
+      [
+        "ARTICLE 4",
+        "CHECK-OFF",
+        "7"
+      ],
+      [
+        "ARTICLE 5",
+        "NEW EMPLOYEES, TRANSFERRED EMPLOYEES, PROMOTED OR DEMOTED",
+        "8"
+      ],
+      [
+        "ARTICLE 6",
+        "RIGHTS OF MANAGEMENT",
+        "8"
+      ],
+      [
+        "ARTICLE 7",
+        "DEFINITIONS OF CLASSIFICATIONS",
+        "8"
+      ],
+      [
+        "ARTICLE 8",
+        "RATES OF PAY",
+        "10"
+      ],
+      [
+        "ARTICLE 9",
+        "TEMPORARY ASSIGNMENTS",
+        "11"
+      ],
+      [
+        "ARTICLE 10",
+        "NO REDUCTION IN PAY",
+        "11"
+      ],
+      [
+        "ARTICLE 11",
+        "WORKWEEK",
+        "11"
+      ],
+      [
+        "ARTICLE 12",
+        "OVERTIME",
+        "12"
+      ],
+      [
+        "ARTICLE 13",
+        "SUNDAY PREMIUM",
+        "13"
+      ],
+      [
+        "ARTICLE 14",
+        "TRAVEL PAY",
+        "13"
+      ],
+      [
+        "ARTICLE 15",
+        "NIGHT PREMIUM",
+        "13"
+      ],
+      [
+        "ARTICLE 16",
+        "HOLIDAYS",
+        "14"
+      ],
+      [
+        "ARTICLE 17",
+        "VACATIONS",
+        "16"
+      ],
+      [
+        "ARTICLE 18",
+        "SCHEDULING POSTING",
+        "18"
+      ],
+      [
+        "ARTICLE 19",
+        "REPORTING PAY/MINIMUM DAILY SCHEDULE",
+        "18"
+      ],
+      [
+        "ARTICLE 20",
+        "MINIMUM WEEKLY SCHEDULE",
+        "18"
+      ],
+      [
+        "ARTICLE 21",
+        "TIMEKEEPING",
+        "19"
+      ],
+      [
+        "ARTICLE 22",
+        "SPLIT SHIFTS",
+        "19"
+      ],
+      [
+        "ARTICLE 23",
+        "STORE MEETINGS",
+        "19"
+      ],
+      [
+        "ARTICLE 24",
+        "LUNCH BREAKS",
+        "19"
+      ],
+      [
+        "ARTICLE 25",
+        "RELIEF PERIODS",
+        "20"
+      ],
+      [
+        "ARTICLE 26",
+        "PROBATIONARY PERIOD",
+        "20"
+      ],
+      [
+        "ARTICLE 27",
+        "SENIORITY",
+        "20"
+      ],
+      [
+        "ARTICLE 28",
+        "AVAILABLE HOURS",
+        "22"
+      ],
+      [
+        "ARTICLE 29",
+        "SCHEDULING OF SHIFTS",
+        "25"
+      ],
+      [
+        "ARTICLE 30",
+        "UNSCHEDULED OVERTIME",
+        "25"
+      ],
+      [
+        "ARTICLE 31",
+        "REDUCTION OF HOURS",
+        "25"
+      ],
+      [
+        "ARTICLE 32",
+        "LAYOFFS",
+        "26"
+      ],
+      [
+        "ARTICLE 33",
+        "TRANSFER FROM STORE TO STORE",
+        "28"
+      ],
+      [
+        "ARTICLE 34",
+        "NEW STORE OPENING",
+        "28"
+      ]
+    ],
+    "markdown": "| ARTICLE    | TITLE                                                     | PAGE |\n| ---------- | --------------------------------------------------------- | ---- |\n| ARTICLE 1  | RECOGNITION AND EXCLUSIONS                                | 3    |\n| ARTICLE 2  | SERVICE IN MEAT DEPARTMENTS, PLANTS                       | 4    |\n| ARTICLE 3  | UNION SECURITY AND CONDITIONS                             | 7    |\n| ARTICLE 4  | CHECK-OFF                                                 | 7    |\n| ARTICLE 5  | NEW EMPLOYEES, TRANSFERRED EMPLOYEES, PROMOTED OR DEMOTED | 8    |\n| ARTICLE 6  | RIGHTS OF MANAGEMENT                                      | 8    |\n| ARTICLE 7  | DEFINITIONS OF CLASSIFICATIONS                            | 8    |\n| ARTICLE 8  | RATES OF PAY                                              | 10   |\n| ARTICLE 9  | TEMPORARY ASSIGNMENTS                                     | 11   |\n| ARTICLE 10 | NO REDUCTION IN PAY                                       | 11   |\n| ARTICLE 11 | WORKWEEK                                                  | 11   |\n| ARTICLE 12 | OVERTIME                                                  | 12   |\n| ARTICLE 13 | SUNDAY PREMIUM                                            | 13   |\n| ARTICLE 14 | TRAVEL PAY                                                | 13   |\n| ARTICLE 15 | NIGHT PREMIUM                                             | 13   |\n| ARTICLE 16 | HOLIDAYS                                                  | 14   |\n| ARTICLE 17 | VACATIONS                                                 | 16   |\n| ARTICLE 18 | SCHEDULING POSTING                                        | 18   |\n| ARTICLE 19 | REPORTING PAY/MINIMUM DAILY SCHEDULE                      | 18   |\n| ARTICLE 20 | MINIMUM WEEKLY SCHEDULE                                   | 18   |\n| ARTICLE 21 | TIMEKEEPING                                               | 19   |\n| ARTICLE 22 | SPLIT SHIFTS                                              | 19   |\n| ARTICLE 23 | STORE MEETINGS                                            | 19   |\n| ARTICLE 24 | LUNCH BREAKS                                              | 19   |\n| ARTICLE 25 | RELIEF PERIODS                                            | 20   |\n| ARTICLE 26 | PROBATIONARY PERIOD                                       | 20   |\n| ARTICLE 27 | SENIORITY                                                 | 20   |\n| ARTICLE 28 | AVAILABLE HOURS                                           | 22   |\n| ARTICLE 29 | SCHEDULING OF SHIFTS                                      | 25   |\n| ARTICLE 30 | UNSCHEDULED OVERTIME                                      | 25   |\n| ARTICLE 31 | REDUCTION OF HOURS                                        | 25   |\n| ARTICLE 32 | LAYOFFS                                                   | 26   |\n| ARTICLE 33 | TRANSFER FROM STORE TO STORE                              | 28   |\n| ARTICLE 34 | NEW STORE OPENING                                         | 28   |",
+    "csv": "\"ARTICLE\",\"TITLE\",\"PAGE\"\n\"ARTICLE 1\",\"RECOGNITION AND EXCLUSIONS\",\"3\"\n\"ARTICLE 2\",\"SERVICE IN MEAT DEPARTMENTS, PLANTS\",\"4\"\n\"ARTICLE 3\",\"UNION SECURITY AND CONDITIONS\",\"7\"\n\"ARTICLE 4\",\"CHECK-OFF\",\"7\"\n\"ARTICLE 5\",\"NEW EMPLOYEES, TRANSFERRED EMPLOYEES, PROMOTED OR DEMOTED\",\"8\"\n\"ARTICLE 6\",\"RIGHTS OF MANAGEMENT\",\"8\"\n\"ARTICLE 7\",\"DEFINITIONS OF CLASSIFICATIONS\",\"8\"\n\"ARTICLE 8\",\"RATES OF PAY\",\"10\"\n\"ARTICLE 9\",\"TEMPORARY ASSIGNMENTS\",\"11\"\n\"ARTICLE 10\",\"NO REDUCTION IN PAY\",\"11\"\n\"ARTICLE 11\",\"WORKWEEK\",\"11\"\n\"ARTICLE 12\",\"OVERTIME\",\"12\"\n\"ARTICLE 13\",\"SUNDAY PREMIUM\",\"13\"\n\"ARTICLE 14\",\"TRAVEL PAY\",\"13\"\n\"ARTICLE 15\",\"NIGHT PREMIUM\",\"13\"\n\"ARTICLE 16\",\"HOLIDAYS\",\"14\"\n\"ARTICLE 17\",\"VACATIONS\",\"16\"\n\"ARTICLE 18\",\"SCHEDULING POSTING\",\"18\"\n\"ARTICLE 19\",\"REPORTING PAY/MINIMUM DAILY SCHEDULE\",\"18\"\n\"ARTICLE 20\",\"MINIMUM WEEKLY SCHEDULE\",\"18\"\n\"ARTICLE 21\",\"TIMEKEEPING\",\"19\"\n\"ARTICLE 22\",\"SPLIT SHIFTS\",\"19\"\n\"ARTICLE 23\",\"STORE MEETINGS\",\"19\"\n\"ARTICLE 24\",\"LUNCH BREAKS\",\"19\"\n\"ARTICLE 25\",\"RELIEF PERIODS\",\"20\"\n\"ARTICLE 26\",\"PROBATIONARY PERIOD\",\"20\"\n\"ARTICLE 27\",\"SENIORITY\",\"20\"\n\"ARTICLE 28\",\"AVAILABLE HOURS\",\"22\"\n\"ARTICLE 29\",\"SCHEDULING OF SHIFTS\",\"25\"\n\"ARTICLE 30\",\"UNSCHEDULED OVERTIME\",\"25\"\n\"ARTICLE 31\",\"REDUCTION OF HOURS\",\"25\"\n\"ARTICLE 32\",\"LAYOFFS\",\"26\"\n\"ARTICLE 33\",\"TRANSFER FROM STORE TO STORE\",\"28\"\n\"ARTICLE 34\",\"NEW STORE OPENING\",\"28\"",
+    "is_perfect": false,
+    "json_path": "pages[1].items[1]",
+    "heading_path": [
+      "TABLE OF CONTENTS"
+    ],
+    "parent_article": null,
+    "parent_section": null,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art40_1",
+    "content_hash": "437a1a8ce0d50a3a",
+    "headers": [
+      "Changes effective June 1",
+      "Current",
+      "2019 - Hours worked in first month following ratification",
+      "January hours payable in February 1/1/2020",
+      "January hours payable in February 1/1/2021"
+    ],
+    "rows": [
+      [
+        "Plan A Hired Before 3/5/2005",
+        "$ 807.14",
+        "$ 863.64",
+        "$ 924.09",
+        "$988.78"
+      ],
+      [
+        "Plan A Hired After 3/5/2005",
+        "$ 694.33",
+        "$ 742.93",
+        "$ 794.94",
+        "$850.59"
+      ],
+      [
+        "Plan B Hired Before 3/5/2005",
+        "$ 645.70",
+        "$ 690.90",
+        "$ 739.26",
+        "$791.01"
+      ],
+      [
+        "Plan B Hired After 3/5/2005",
+        "$ 555.47",
+        "$ 594.35",
+        "$ 635.95",
+        "$680.47"
+      ],
+      [
+        "Plan C Hired After 3/5/2005",
+        "$ 349.93",
+        "$ 374.43",
+        "$ 400.64",
+        "$428.68"
+      ]
+    ],
+    "markdown": "| Changes effective June 1     | Current  | 2019 - Hours worked in first month following ratification | January hours payable in February 1/1/2020 | January hours payable in February 1/1/2021 |\n| ---------------------------- | -------- | --------------------------------------------------------- | ------------------------------------------ | ------------------------------------------ |\n| Plan A Hired Before 3/5/2005 | $ 807.14 | $ 863.64                                                  | $ 924.09                                   | $988.78                                    |\n| Plan A Hired After 3/5/2005  | $ 694.33 | $ 742.93                                                  | $ 794.94                                   | $850.59                                    |\n| Plan B Hired Before 3/5/2005 | $ 645.70 | $ 690.90                                                  | $ 739.26                                   | $791.01                                    |\n| Plan B Hired After 3/5/2005  | $ 555.47 | $ 594.35                                                  | $ 635.95                                   | $680.47                                    |\n| Plan C Hired After 3/5/2005  | $ 349.93 | $ 374.43                                                  | $ 400.64                                   | $428.68                                    |",
+    "csv": "\"Changes effective June 1\",\"Current\",\"2019 - Hours worked in first month following ratification\",\"January hours payable in February 1/1/2020\",\"January hours payable in February 1/1/2021\"\n\"Plan A Hired Before 3/5/2005\",\"$ 807.14\",\"$ 863.64\",\"$ 924.09\",\"$988.78\"\n\"Plan A Hired After 3/5/2005\",\"$ 694.33\",\"$ 742.93\",\"$ 794.94\",\"$850.59\"\n\"Plan B Hired Before 3/5/2005\",\"$ 645.70\",\"$ 690.90\",\"$ 739.26\",\"$791.01\"\n\"Plan B Hired After 3/5/2005\",\"$ 555.47\",\"$ 594.35\",\"$ 635.95\",\"$680.47\"\n\"Plan C Hired After 3/5/2005\",\"$ 349.93\",\"$ 374.43\",\"$ 400.64\",\"$428.68\"",
+    "is_perfect": false,
+    "json_path": "pages[35].items[4]",
+    "heading_path": [
+      "HEALTH BENEFITS PLAN"
+    ],
+    "parent_article": 40,
+    "parent_section": 95,
+    "parent_chunk_id": "art40_sec95_seg_002_000"
+  },
+  {
+    "table_id": "tbl_art40_2",
+    "content_hash": "5c5dd8f154d3a655",
+    "headers": [
+      "Year",
+      "2019",
+      "2020",
+      "2021",
+      "2022"
+    ],
+    "rows": [
+      [
+        "PPO Medical",
+        "6.5%",
+        "6.5%",
+        "6.5%",
+        "6.5%"
+      ],
+      [
+        "Prescription Drug",
+        "8.0%",
+        "8.0%",
+        "8.0%",
+        "8.0%"
+      ],
+      [
+        "Dental",
+        "4.0%",
+        "4.0%",
+        "4.0%",
+        "4.0%"
+      ],
+      [
+        "Vision",
+        "3.0%",
+        "3.0%",
+        "3.0%",
+        "3.0%"
+      ],
+      [
+        "Time Loss",
+        "0.0%",
+        "0.0%",
+        "0.0%",
+        "0.0%"
+      ],
+      [
+        "Kaiser Premium",
+        "6.5%",
+        "6.5%",
+        "6.5%",
+        "6.5%"
+      ],
+      [
+        "Medicare Advantage",
+        "5.0%",
+        "5.0%",
+        "5.0%",
+        "5.0%"
+      ],
+      [
+        "Life Premium",
+        "0.0%",
+        "0.0%",
+        "0.0%",
+        "0.0%"
+      ],
+      [
+        "Provider Access Fees",
+        "Actual",
+        "Actual",
+        "Actual",
+        "3.0%"
+      ],
+      [
+        "Stop Loss Premiums",
+        "Actual",
+        "3.0%",
+        "3.0%",
+        "3.0%"
+      ],
+      [
+        "Administration",
+        "Actual",
+        "3.0%",
+        "3.0%",
+        "3.0%"
+      ],
+      [
+        "Investment Income",
+        "2.0%",
+        "2.0%",
+        "2.0%",
+        "2.0%"
+      ]
+    ],
+    "markdown": "| Year                 | 2019   | 2020   | 2021   | 2022 |\n| -------------------- | ------ | ------ | ------ | ---- |\n| PPO Medical          | 6.5%   | 6.5%   | 6.5%   | 6.5% |\n| Prescription Drug    | 8.0%   | 8.0%   | 8.0%   | 8.0% |\n| Dental               | 4.0%   | 4.0%   | 4.0%   | 4.0% |\n| Vision               | 3.0%   | 3.0%   | 3.0%   | 3.0% |\n| Time Loss            | 0.0%   | 0.0%   | 0.0%   | 0.0% |\n| Kaiser Premium       | 6.5%   | 6.5%   | 6.5%   | 6.5% |\n| Medicare Advantage   | 5.0%   | 5.0%   | 5.0%   | 5.0% |\n| Life Premium         | 0.0%   | 0.0%   | 0.0%   | 0.0% |\n| Provider Access Fees | Actual | Actual | Actual | 3.0% |\n| Stop Loss Premiums   | Actual | 3.0%   | 3.0%   | 3.0% |\n| Administration       | Actual | 3.0%   | 3.0%   | 3.0% |\n| Investment Income    | 2.0%   | 2.0%   | 2.0%   | 2.0% |",
+    "csv": "\"Year\",\"2019\",\"2020\",\"2021\",\"2022\"\n\"PPO Medical\",\"6.5%\",\"6.5%\",\"6.5%\",\"6.5%\"\n\"Prescription Drug\",\"8.0%\",\"8.0%\",\"8.0%\",\"8.0%\"\n\"Dental\",\"4.0%\",\"4.0%\",\"4.0%\",\"4.0%\"\n\"Vision\",\"3.0%\",\"3.0%\",\"3.0%\",\"3.0%\"\n\"Time Loss\",\"0.0%\",\"0.0%\",\"0.0%\",\"0.0%\"\n\"Kaiser Premium\",\"6.5%\",\"6.5%\",\"6.5%\",\"6.5%\"\n\"Medicare Advantage\",\"5.0%\",\"5.0%\",\"5.0%\",\"5.0%\"\n\"Life Premium\",\"0.0%\",\"0.0%\",\"0.0%\",\"0.0%\"\n\"Provider Access Fees\",\"Actual\",\"Actual\",\"Actual\",\"3.0%\"\n\"Stop Loss Premiums\",\"Actual\",\"3.0%\",\"3.0%\",\"3.0%\"\n\"Administration\",\"Actual\",\"3.0%\",\"3.0%\",\"3.0%\"\n\"Investment Income\",\"2.0%\",\"2.0%\",\"2.0%\",\"2.0%\"",
+    "is_perfect": false,
+    "json_path": "pages[36].items[2]",
+    "heading_path": [
+      "HEALTH BENEFITS PLAN"
+    ],
+    "parent_article": 40,
+    "parent_section": 95,
+    "parent_chunk_id": "art40_sec95_seg_005_000"
+  },
+  {
+    "table_id": "tbl_art40_3",
+    "content_hash": "f152f92e331026a4",
+    "headers": [
+      "Drug Class",
+      "Co-Pay"
+    ],
+    "rows": [
+      [
+        "Generic",
+        "$2.50"
+      ]
+    ],
+    "markdown": "| Drug Class | Co-Pay |\n| ---------- | ------ |\n| Generic    | $2.50  |",
+    "csv": "\"Drug Class\",\"Co-Pay\"\n\"Generic\",\"$2.50\"",
+    "is_perfect": false,
+    "json_path": "pages[41].items[2]",
+    "heading_path": [
+      "Special Rules"
+    ],
+    "parent_article": 40,
+    "parent_section": 95,
+    "parent_chunk_id": "art40_sec95_seg_005_005"
+  },
+  {
+    "table_id": "tbl_art40_4",
+    "content_hash": "fe026bad5f4be3e9",
+    "headers": [
+      "Formulary Brand",
+      "$10"
+    ],
+    "rows": [
+      [
+        "Nonformulary Brand",
+        "$20"
+      ]
+    ],
+    "markdown": "| Formulary Brand    | $10 |\n| ------------------ | --- |\n| Nonformulary Brand | $20 |",
+    "csv": "\"Formulary Brand\",\"$10\"\n\"Nonformulary Brand\",\"$20\"",
+    "is_perfect": false,
+    "json_path": "pages[42].items[0]",
+    "heading_path": [
+      "Special Rules"
+    ],
+    "parent_article": 40,
+    "parent_section": 95,
+    "parent_chunk_id": "art40_sec95_seg_005_005"
+  },
+  {
+    "table_id": "tbl_art40_5",
+    "content_hash": "27be314ba9beecb7",
+    "headers": [
+      "Service",
+      "PPO coverage(In-network)"
+    ],
+    "rows": [
+      [
+        "Mammography",
+        "Plan pays 100%"
+      ],
+      [
+        "Routine Annual Physical Exam",
+        "Plan pays 100%"
+      ],
+      [
+        "Well-baby care",
+        "Plan pays 100%"
+      ],
+      [
+        "Childhood Immunizations",
+        "Plan pays 100%"
+      ],
+      [
+        "Papanicolaou (Pap) smear and pelvic examination",
+        "Plan pays 100%"
+      ],
+      [
+        "Prostate specific antigen (PSA) testing",
+        "Plan pays 100%"
+      ],
+      [
+        "Colonoscopy",
+        "Plan pays 100%"
+      ]
+    ],
+    "markdown": "| Service                                         | PPO coverage(In-network) |\n| ----------------------------------------------- | ------------------------ |\n| Mammography                                     | Plan pays 100%           |\n| Routine Annual Physical Exam                    | Plan pays 100%           |\n| Well-baby care                                  | Plan pays 100%           |\n| Childhood Immunizations                         | Plan pays 100%           |\n| Papanicolaou (Pap) smear and pelvic examination | Plan pays 100%           |\n| Prostate specific antigen (PSA) testing         | Plan pays 100%           |\n| Colonoscopy                                     | Plan pays 100%           |",
+    "csv": "\"Service\",\"PPO coverage(In-network)\"\n\"Mammography\",\"Plan pays 100%\"\n\"Routine Annual Physical Exam\",\"Plan pays 100%\"\n\"Well-baby care\",\"Plan pays 100%\"\n\"Childhood Immunizations\",\"Plan pays 100%\"\n\"Papanicolaou (Pap) smear and pelvic examination\",\"Plan pays 100%\"\n\"Prostate specific antigen (PSA) testing\",\"Plan pays 100%\"\n\"Colonoscopy\",\"Plan pays 100%\"",
+    "is_perfect": false,
+    "json_path": "pages[42].items[3]",
+    "heading_path": [
+      "Special Rules"
+    ],
+    "parent_article": 40,
+    "parent_section": 95,
+    "parent_chunk_id": "art40_sec95_seg_007_000"
+  },
+  {
+    "table_id": "tbl_art48_1",
+    "content_hash": "aca4fad4aeaaa472",
+    "headers": [
+      "Step 3A.",
+      "If the grievance is not satisfactorily adjusted in Step 2, either party may, with reasonable promptness, but in no event later than thirty (30) days from the date of the Step 2 meeting, in writing, request arbitration and the other party shall be obliged to proceed with arbitration in the manner hereinafter provided. The parties shall forthwith attempt to agree upon an impartial arbitrator."
+    ],
+    "rows": [
+      [
+        "Step 3B.",
+        "In the event the parties are unable to reach agreement upon the selection of an arbitrator within fifteen (15) days of the written request for arbitration, the party requesting arbitration may, with reasonable promptness, request a panel of five (5) arbitrators from the Federal Mediation and Conciliation Service. From this panel of five (5) names, each party shall alternately strike two (2) names, the moving party striking first. The remaining arbitrator from the list shall be the impartial arbitrator. A finding or award of the arbitrator shall be final and conclusive upon the parties hereto."
+      ],
+      [
+        "Step 3C.",
+        "The arbitrator shall have all the rights, power and duties herein given, granted and imposed upon him; but his award shall not change, alter or modify any of the terms and conditions set forth in this Agreement. The expenses of the impartial arbitrator shall be shared equally by the parties. The arbitrator will issue his decision within thirty (30) calendar days after the close of the proceedings. This thirty (30) day calendar time limit may be extended by mutual agreement between both parties."
+      ]
+    ],
+    "markdown": "| Step 3A. | If the grievance is not satisfactorily adjusted in Step 2, either party may, with reasonable promptness, but in no event later than thirty (30) days from the date of the Step 2 meeting, in writing, request arbitration and the other party shall be obliged to proceed with arbitration in the manner hereinafter provided. The parties shall forthwith attempt to agree upon an impartial arbitrator.                                                                                                                                                                                                               |\n| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| Step 3B. | In the event the parties are unable to reach agreement upon the selection of an arbitrator within fifteen (15) days of the written request for arbitration, the party requesting arbitration may, with reasonable promptness, request a panel of five (5) arbitrators from the Federal Mediation and Conciliation Service. From this panel of five (5) names, each party shall alternately strike two (2) names, the moving party striking first. The remaining arbitrator from the list shall be the impartial arbitrator. A finding or award of the arbitrator shall be final and conclusive upon the parties hereto. |\n| Step 3C. | The arbitrator shall have all the rights, power and duties herein given, granted and imposed upon him; but his award shall not change, alter or modify any of the terms and conditions set forth in this Agreement. The expenses of the impartial arbitrator shall be shared equally by the parties. The arbitrator will issue his decision within thirty (30) calendar days after the close of the proceedings. This thirty (30) day calendar time limit may be extended by mutual agreement between both parties.                                                                                                     |",
+    "csv": "\"Step 3A.\",\"If the grievance is not satisfactorily adjusted in Step 2, either party may, with reasonable promptness, but in no event later than thirty (30) days from the date of the Step 2 meeting, in writing, request arbitration and the other party shall be obliged to proceed with arbitration in the manner hereinafter provided. The parties shall forthwith attempt to agree upon an impartial arbitrator.\"\n\"Step 3B.\",\"In the event the parties are unable to reach agreement upon the selection of an arbitrator within fifteen (15) days of the written request for arbitration, the party requesting arbitration may, with reasonable promptness, request a panel of five (5) arbitrators from the Federal Mediation and Conciliation Service. From this panel of five (5) names, each party shall alternately strike two (2) names, the moving party striking first. The remaining arbitrator from the list shall be the impartial arbitrator. A finding or award of the arbitrator shall be final and conclusive upon the parties hereto.\"\n\"Step 3C.\",\"The arbitrator shall have all the rights, power and duties herein given, granted and imposed upon him; but his award shall not change, alter or modify any of the terms and conditions set forth in this Agreement. The expenses of the impartial arbitrator shall be shared equally by the parties. The arbitrator will issue his decision within thirty (30) calendar days after the close of the proceedings. This thirty (30) day calendar time limit may be extended by mutual agreement between both parties.\"",
+    "is_perfect": false,
+    "json_path": "pages[49].items[3]",
+    "heading_path": [
+      "<u>GRIEVANCE AND ARBITRATION PROCEDURE</u>"
+    ],
+    "parent_article": 48,
+    "parent_section": 112,
+    "parent_chunk_id": "art48"
+  },
+  {
+    "table_id": "tbl_art57_1",
+    "content_hash": "deec8263be60cc60",
+    "headers": [
+      "UNITED FOOD AND COMMERCIAL WORKERS, LOCAL #7",
+      "KING SOOPERS, INC."
+    ],
+    "rows": [
+      [
+        "BY: [signature]",
+        "BY: [signature]"
+      ],
+      [
+        "Kim C. Cordova<br/>President",
+        "Leroy Westmoreland<br/>Regional VP of Labor Relations"
+      ],
+      [
+        "DATE: 3-12-20",
+        "DATE: 3-12-20"
+      ]
+    ],
+    "markdown": "| UNITED FOOD AND COMMERCIAL WORKERS, LOCAL #7 | KING SOOPERS, INC.                                    |\n| -------------------------------------------- | ----------------------------------------------------- |\n| BY: \\[signature]                             | BY: \\[signature]                                      |\n| Kim C. Cordova<br/>President                 | Leroy Westmoreland<br/>Regional VP of Labor Relations |\n| DATE: 3-12-20                                | DATE: 3-12-20                                         |",
+    "csv": "\"UNITED FOOD AND COMMERCIAL WORKERS, LOCAL #7\",\"KING SOOPERS, INC.\"\n\"BY: [signature]\",\"BY: [signature]\"\n\"Kim C. Cordova<br/>President\",\"Leroy Westmoreland<br/>Regional VP of Labor Relations\"\n\"DATE: 3-12-20\",\"DATE: 3-12-20\"",
+    "is_perfect": false,
+    "json_path": "pages[57].items[6]",
+    "heading_path": [
+      "TERM OF AGREEMENT"
+    ],
+    "parent_article": 57,
+    "parent_section": 127,
+    "parent_chunk_id": "art57_sec127_seg_003"
+  },
+  {
+    "table_id": "tbl_art57_2",
+    "content_hash": "d9116f1e82cda50e",
+    "headers": [
+      "Employer Type",
+      "Detailed Employer Type",
+      "",
+      "Percentage of Credit",
+      "Top pay rate allowed",
+      ""
+    ],
+    "rows": [
+      [
+        "Comparable Traditional Grocery",
+        "Kroger Family of Stores (position specific)<br/>Safeway (position specific)<br/>Albertsons (position specific)<br/>Whole Foods (position specific)<br/>HEB (position specific)<br/>Publix (position specific)<br/>SuperValue (position specific)",
+        "Comparable grocery formats (size; product line) (position specific)<br/>Independent floral shops<br/>Independent liquor stores (124 only)<br/><br/>Once a Journeyman always a Journeyman",
+        "100%",
+        "YES",
+        ""
+      ],
+      [
+        "Non-traditional and other retailers",
+        "",
+        "Wal-Mart (position specific)<br/>Target (position specific)<br/>K-Mart (position specific)<br/>Lowes Mercado (position specific)<br/>MI Pueblo (position specific)<br/>Save A Lot (position specific)<br/>Trader Joe's (position specific)<br/>Sprouts (position specific)<br/>Vitamin Cottage (position specific)<br/>Alfalfas (position specific)<br/>Sam's Club (position specific)<br/>Costco (position specific)<br/>Walgreen's (position specific)<br/>Rite Aid (position specific)<br/>Big box retailers (position specific)<br/>Dollar stores (position specific)<br/>Fast food (position specific)<br/>Restaurants (position specific)<br/>Commissary (position specific)<br/>Coffee Shops (position specific)",
+        "Convenience stores (Fuel/Service Desk)<br/>Tony's Meats (position specific)<br/>Independent grocers (position specific)<br/>Independent butchers (Meat)<br/>Department stores (position specific)<br/>Drug Stores (position specific)<br/>Hardware stores (position specific)<br/>General warehouse work (stocking)<br/>Vendors (Nabisco, Pepsi, Coke, etc.) (position specific)<br/>Banks (Service Desk)<br/>Food delivery driving experience (drivers only)<br/>Commercial driving experience (drivers only)<br/>Michaels/Hobby Lobby (Floral Designer)<br/>Independent cake stores (non-union Cake Decorators)<br/>Independent/Corporate bakery stores (non-union Bakers)",
+        "100%",
+        "NO<br/>Credit not to exceed level 0080"
+      ],
+      [
+        "HomeSide- MarketPlace Stores",
+        "Kroger Family of Stores (position specific)<br/>Wal-Mart (position specific)<br/>Target (position specific)<br/>K-Mart (position specific)<br/>Sam's Club (position specific)<br/>Costco (position specific)<br/>Big box retailers (position specific)<br/>Department Stores (position specific)",
+        "",
+        "Walgreen's (position specific)<br/>Rite Aid (position specific)<br/>Dollar stores (position specific)<br/>Clothing Stores (position specific)<br/>Furniture stores (position specific)<br/>Container stores (position specific)<br/>Hardware stores (position specific)<br/>Baby/toy stores (position specific)",
+        "100%",
+        "NO<br/>Credit not to exceed level 0080"
+      ],
+      [
+        "Deli/Bakery/Baker/ Cake Decorator/Floral Education Credit",
+        "",
+        "Position related certificate or degree for (Cake/baking/floral). Position related certificate/degree (Baking/Pastry; Floral Design; Culinary Arts; Food/Beverage; Hospitality Management; Food Science; related food degree)",
+        "Certificate - 1040 hour credit<br/>Associate/Bachelors - 2080 hour credit",
+        "N/A",
+        "NO<br/>Credit not to exceed level 0080"
+      ],
+      [
+        "Nutrition Specialist",
+        "Please see Nutrition Specialist WEC Matrix when hiring a Nutrition Specialist.",
+        "",
+        "N/A",
+        "N/A",
+        ""
+      ],
+      [
+        "Pharmacy Techs",
+        "Please see Pharmacy Tech WEC Matrix when hiring a Pharmacy Tech.",
+        "",
+        "N/A",
+        "N/A",
+        ""
+      ]
+    ],
+    "markdown": "| Employer Type                                             | Detailed Employer Type                                                                                                                                                                                                                                                                           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Percentage of Credit                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Top pay rate allowed |                                        |\n| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------------------------------------- |\n| Comparable Traditional Grocery                            | Kroger Family of Stores (position specific)<br/>Safeway (position specific)<br/>Albertsons (position specific)<br/>Whole Foods (position specific)<br/>HEB (position specific)<br/>Publix (position specific)<br/>SuperValue (position specific)                                                 | Comparable grocery formats (size; product line) (position specific)<br/>Independent floral shops<br/>Independent liquor stores (124 only)<br/><br/>Once a Journeyman always a Journeyman                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | 100%                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | YES                  |                                        |\n| Non-traditional and other retailers                       |                                                                                                                                                                                                                                                                                                  | Wal-Mart (position specific)<br/>Target (position specific)<br/>K-Mart (position specific)<br/>Lowes Mercado (position specific)<br/>MI Pueblo (position specific)<br/>Save A Lot (position specific)<br/>Trader Joe's (position specific)<br/>Sprouts (position specific)<br/>Vitamin Cottage (position specific)<br/>Alfalfas (position specific)<br/>Sam's Club (position specific)<br/>Costco (position specific)<br/>Walgreen's (position specific)<br/>Rite Aid (position specific)<br/>Big box retailers (position specific)<br/>Dollar stores (position specific)<br/>Fast food (position specific)<br/>Restaurants (position specific)<br/>Commissary (position specific)<br/>Coffee Shops (position specific) | Convenience stores (Fuel/Service Desk)<br/>Tony's Meats (position specific)<br/>Independent grocers (position specific)<br/>Independent butchers (Meat)<br/>Department stores (position specific)<br/>Drug Stores (position specific)<br/>Hardware stores (position specific)<br/>General warehouse work (stocking)<br/>Vendors (Nabisco, Pepsi, Coke, etc.) (position specific)<br/>Banks (Service Desk)<br/>Food delivery driving experience (drivers only)<br/>Commercial driving experience (drivers only)<br/>Michaels/Hobby Lobby (Floral Designer)<br/>Independent cake stores (non-union Cake Decorators)<br/>Independent/Corporate bakery stores (non-union Bakers) | 100%                 | NO<br/>Credit not to exceed level 0080 |\n| HomeSide- MarketPlace Stores                              | Kroger Family of Stores (position specific)<br/>Wal-Mart (position specific)<br/>Target (position specific)<br/>K-Mart (position specific)<br/>Sam's Club (position specific)<br/>Costco (position specific)<br/>Big box retailers (position specific)<br/>Department Stores (position specific) |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Walgreen's (position specific)<br/>Rite Aid (position specific)<br/>Dollar stores (position specific)<br/>Clothing Stores (position specific)<br/>Furniture stores (position specific)<br/>Container stores (position specific)<br/>Hardware stores (position specific)<br/>Baby/toy stores (position specific)                                                                                                                                                                                                                                                                                                                                                              | 100%                 | NO<br/>Credit not to exceed level 0080 |\n| Deli/Bakery/Baker/ Cake Decorator/Floral Education Credit |                                                                                                                                                                                                                                                                                                  | Position related certificate or degree for (Cake/baking/floral). Position related certificate/degree (Baking/Pastry; Floral Design; Culinary Arts; Food/Beverage; Hospitality Management; Food Science; related food degree)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Certificate - 1040 hour credit<br/>Associate/Bachelors - 2080 hour credit                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | N/A                  | NO<br/>Credit not to exceed level 0080 |\n| Nutrition Specialist                                      | Please see Nutrition Specialist WEC Matrix when hiring a Nutrition Specialist.                                                                                                                                                                                                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | N/A                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | N/A                  |                                        |\n| Pharmacy Techs                                            | Please see Pharmacy Tech WEC Matrix when hiring a Pharmacy Tech.                                                                                                                                                                                                                                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | N/A                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | N/A                  |                                        |",
+    "csv": "\"Employer Type\",\"Detailed Employer Type\",,\"Percentage of Credit\",\"Top pay rate allowed\",\n\"Comparable Traditional Grocery\",\"Kroger Family of Stores (position specific)<br/>Safeway (position specific)<br/>Albertsons (position specific)<br/>Whole Foods (position specific)<br/>HEB (position specific)<br/>Publix (position specific)<br/>SuperValue (position specific)\",\"Comparable grocery formats (size; product line) (position specific)<br/>Independent floral shops<br/>Independent liquor stores (124 only)<br/><br/>Once a Journeyman always a Journeyman\",\"100%\",\"YES\",\n\"Non-traditional and other retailers\",,\"Wal-Mart (position specific)<br/>Target (position specific)<br/>K-Mart (position specific)<br/>Lowes Mercado (position specific)<br/>MI Pueblo (position specific)<br/>Save A Lot (position specific)<br/>Trader Joe's (position specific)<br/>Sprouts (position specific)<br/>Vitamin Cottage (position specific)<br/>Alfalfas (position specific)<br/>Sam's Club (position specific)<br/>Costco (position specific)<br/>Walgreen's (position specific)<br/>Rite Aid (position specific)<br/>Big box retailers (position specific)<br/>Dollar stores (position specific)<br/>Fast food (position specific)<br/>Restaurants (position specific)<br/>Commissary (position specific)<br/>Coffee Shops (position specific)\",\"Convenience stores (Fuel/Service Desk)<br/>Tony's Meats (position specific)<br/>Independent grocers (position specific)<br/>Independent butchers (Meat)<br/>Department stores (position specific)<br/>Drug Stores (position specific)<br/>Hardware stores (position specific)<br/>General warehouse work (stocking)<br/>Vendors (Nabisco, Pepsi, Coke, etc.) (position specific)<br/>Banks (Service Desk)<br/>Food delivery driving experience (drivers only)<br/>Commercial driving experience (drivers only)<br/>Michaels/Hobby Lobby (Floral Designer)<br/>Independent cake stores (non-union Cake Decorators)<br/>Independent/Corporate bakery stores (non-union Bakers)\",\"100%\",\"NO<br/>Credit not to exceed level 0080\"\n\"HomeSide- MarketPlace Stores\",\"Kroger Family of Stores (position specific)<br/>Wal-Mart (position specific)<br/>Target (position specific)<br/>K-Mart (position specific)<br/>Sam's Club (position specific)<br/>Costco (position specific)<br/>Big box retailers (position specific)<br/>Department Stores (position specific)\",,\"Walgreen's (position specific)<br/>Rite Aid (position specific)<br/>Dollar stores (position specific)<br/>Clothing Stores (position specific)<br/>Furniture stores (position specific)<br/>Container stores (position specific)<br/>Hardware stores (position specific)<br/>Baby/toy stores (position specific)\",\"100%\",\"NO<br/>Credit not to exceed level 0080\"\n\"Deli/Bakery/Baker/ Cake Decorator/Floral Education Credit\",,\"Position related certificate or degree for (Cake/baking/floral). Position related certificate/degree (Baking/Pastry; Floral Design; Culinary Arts; Food/Beverage; Hospitality Management; Food Science; related food degree)\",\"Certificate - 1040 hour credit<br/>Associate/Bachelors - 2080 hour credit\",\"N/A\",\"NO<br/>Credit not to exceed level 0080\"\n\"Nutrition Specialist\",\"Please see Nutrition Specialist WEC Matrix when hiring a Nutrition Specialist.\",,\"N/A\",\"N/A\",\n\"Pharmacy Techs\",\"Please see Pharmacy Tech WEC Matrix when hiring a Pharmacy Tech.\",,\"N/A\",\"N/A\",",
+    "is_perfect": false,
+    "json_path": "pages[60].items[2]",
+    "heading_path": [
+      "UNION EXPERIENCE CREDIT MATRIX"
+    ],
+    "parent_article": 57,
+    "parent_section": 128,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_3",
+    "content_hash": "463de46ebb0e4f4e",
+    "headers": [
+      "CLASSIFICATION",
+      "Effective 1/12/2019",
+      "Effective 1/1/2020",
+      "Effective 1/10/2021"
+    ],
+    "rows": [
+      [
+        "MEAT MANAGER",
+        "$22.18",
+        "$22.53",
+        "$22.88"
+      ],
+      [
+        "MEAT HEAD CLERK/ASST",
+        "$21.13",
+        "$21.48",
+        "$21.83"
+      ],
+      [
+        "SEAFOOD MANAGER",
+        "$21.13",
+        "$21.48",
+        "$21.83"
+      ],
+      [
+        "DELI DEPARTMENT HEAD (Grandfathered)",
+        "$21.74",
+        "$22.09",
+        "$22.44"
+      ],
+      [
+        "DELI DEPARTMENT HEAD",
+        "$21.13",
+        "$21.48",
+        "$21.83"
+      ],
+      [
+        "DELI HEAD CLERK/ASST",
+        "$19.81",
+        "$20.16",
+        "$20.51"
+      ],
+      [
+        "DELI CHEF",
+        "$19.81",
+        "$20.16",
+        "$20.51"
+      ],
+      [
+        "",
+        "-",
+        "-",
+        "-"
+      ],
+      [
+        "MEAT CUTTERS",
+        "-",
+        "-",
+        "-"
+      ],
+      [
+        "First 1040 hours worked",
+        "$11.75",
+        "$12.25",
+        "$12.35"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.00",
+        "$12.50",
+        "$12.60"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.25",
+        "$12.75",
+        "$12.85"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.50",
+        "$13.00",
+        "$13.10"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$13.23",
+        "$13.50",
+        "$13.60"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$14.12",
+        "$14.12",
+        "$14.12"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$15.01",
+        "$15.01",
+        "$15.01"
+      ],
+      [
+        "Next 520 hours worked",
+        "$15.89",
+        "$15.89",
+        "$15.89"
+      ],
+      [
+        "Thereafter",
+        "$20.80",
+        "$21.15",
+        "$21.50"
+      ],
+      [
+        "",
+        "-",
+        "-",
+        "-"
+      ],
+      [
+        "DELI/COFFEE/CHEESE CLERK",
+        "-",
+        "-",
+        "-"
+      ],
+      [
+        "First 520 hours worked",
+        "$11.75",
+        "$12.25",
+        "$12.35"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.00",
+        "$12.50",
+        "$12.60"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.25",
+        "$12.75",
+        "$12.85"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.50",
+        "$13.00",
+        "$13.10"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$13.00",
+        "$13.50",
+        "$13.60"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$14.00",
+        "$14.00",
+        "$14.10"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$15.50",
+        "$15.50",
+        "$15.50"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$16.00",
+        "$16.00",
+        "$16.00"
+      ],
+      [
+        "Thereafter",
+        "$17.39",
+        "$17.74",
+        "$18.09"
+      ]
+    ],
+    "markdown": "| CLASSIFICATION                       | Effective 1/12/2019 | Effective 1/1/2020 | Effective 1/10/2021 |\n| ------------------------------------ | ------------------- | ------------------ | ------------------- |\n|                                      |                     |                    |                     |\n| MEAT MANAGER                         | $22.18              | $22.53             | $22.88              |\n| MEAT HEAD CLERK/ASST                 | $21.13              | $21.48             | $21.83              |\n| SEAFOOD MANAGER                      | $21.13              | $21.48             | $21.83              |\n| DELI DEPARTMENT HEAD (Grandfathered) | $21.74              | $22.09             | $22.44              |\n| DELI DEPARTMENT HEAD                 | $21.13              | $21.48             | $21.83              |\n| DELI HEAD CLERK/ASST                 | $19.81              | $20.16             | $20.51              |\n| DELI CHEF                            | $19.81              | $20.16             | $20.51              |\n|                                      | -                   | -                  | -                   |\n| MEAT CUTTERS                         | -                   | -                  | -                   |\n| First 1040 hours worked              | $11.75              | $12.25             | $12.35              |\n| Next 1040 hours worked               | $12.00              | $12.50             | $12.60              |\n| Next 1040 hours worked               | $12.25              | $12.75             | $12.85              |\n| Next 1040 hours worked               | $12.50              | $13.00             | $13.10              |\n| Next 1040 hours worked               | $13.23              | $13.50             | $13.60              |\n| Next 1040 hours worked               | $14.12              | $14.12             | $14.12              |\n| Next 1040 hours worked               | $15.01              | $15.01             | $15.01              |\n| Next 520 hours worked                | $15.89              | $15.89             | $15.89              |\n| Thereafter                           | $20.80              | $21.15             | $21.50              |\n|                                      | -                   | -                  | -                   |\n| DELI/COFFEE/CHEESE CLERK             | -                   | -                  | -                   |\n| First 520 hours worked               | $11.75              | $12.25             | $12.35              |\n| Next 1040 hours worked               | $12.00              | $12.50             | $12.60              |\n| Next 1040 hours worked               | $12.25              | $12.75             | $12.85              |\n| Next 1040 hours worked               | $12.50              | $13.00             | $13.10              |\n| Next 1040 hours worked               | $13.00              | $13.50             | $13.60              |\n| Next 1040 hours worked               | $14.00              | $14.00             | $14.10              |\n| Next 1040 hours worked               | $15.50              | $15.50             | $15.50              |\n| Next 1040 hours worked               | $16.00              | $16.00             | $16.00              |\n| Thereafter                           | $17.39              | $17.74             | $18.09              |",
+    "csv": "\"CLASSIFICATION\",\"Effective 1/12/2019\",\"Effective 1/1/2020\",\"Effective 1/10/2021\"\n\"MEAT MANAGER\",\"$22.18\",\"$22.53\",\"$22.88\"\n\"MEAT HEAD CLERK/ASST\",\"$21.13\",\"$21.48\",\"$21.83\"\n\"SEAFOOD MANAGER\",\"$21.13\",\"$21.48\",\"$21.83\"\n\"DELI DEPARTMENT HEAD (Grandfathered)\",\"$21.74\",\"$22.09\",\"$22.44\"\n\"DELI DEPARTMENT HEAD\",\"$21.13\",\"$21.48\",\"$21.83\"\n\"DELI HEAD CLERK/ASST\",\"$19.81\",\"$20.16\",\"$20.51\"\n\"DELI CHEF\",\"$19.81\",\"$20.16\",\"$20.51\"\n,\"-\",\"-\",\"-\"\n\"MEAT CUTTERS\",\"-\",\"-\",\"-\"\n\"First 1040 hours worked\",\"$11.75\",\"$12.25\",\"$12.35\"\n\"Next 1040 hours worked\",\"$12.00\",\"$12.50\",\"$12.60\"\n\"Next 1040 hours worked\",\"$12.25\",\"$12.75\",\"$12.85\"\n\"Next 1040 hours worked\",\"$12.50\",\"$13.00\",\"$13.10\"\n\"Next 1040 hours worked\",\"$13.23\",\"$13.50\",\"$13.60\"\n\"Next 1040 hours worked\",\"$14.12\",\"$14.12\",\"$14.12\"\n\"Next 1040 hours worked\",\"$15.01\",\"$15.01\",\"$15.01\"\n\"Next 520 hours worked\",\"$15.89\",\"$15.89\",\"$15.89\"\n\"Thereafter\",\"$20.80\",\"$21.15\",\"$21.50\"\n,\"-\",\"-\",\"-\"\n\"DELI/COFFEE/CHEESE CLERK\",\"-\",\"-\",\"-\"\n\"First 520 hours worked\",\"$11.75\",\"$12.25\",\"$12.35\"\n\"Next 1040 hours worked\",\"$12.00\",\"$12.50\",\"$12.60\"\n\"Next 1040 hours worked\",\"$12.25\",\"$12.75\",\"$12.85\"\n\"Next 1040 hours worked\",\"$12.50\",\"$13.00\",\"$13.10\"\n\"Next 1040 hours worked\",\"$13.00\",\"$13.50\",\"$13.60\"\n\"Next 1040 hours worked\",\"$14.00\",\"$14.00\",\"$14.10\"\n\"Next 1040 hours worked\",\"$15.50\",\"$15.50\",\"$15.50\"\n\"Next 1040 hours worked\",\"$16.00\",\"$16.00\",\"$16.00\"\n\"Thereafter\",\"$17.39\",\"$17.74\",\"$18.09\"",
+    "is_perfect": false,
+    "json_path": "pages[61].items[1]",
+    "heading_path": [
+      "KING SOOPERS APPENDIX \"A\" MEAT RATES"
+    ],
+    "parent_article": 57,
+    "parent_section": 128,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_4",
+    "content_hash": "5e30ffdbb3bd2319",
+    "headers": [
+      "MEAT WRAPPERS/BUTCHER BLOCK/SEAFOOD CLERKS",
+      "-",
+      "-",
+      "-"
+    ],
+    "rows": [
+      [
+        "First 1040 hours worked",
+        "$11.75",
+        "$12.25",
+        "$12.35"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.00",
+        "$12.50",
+        "$12.60"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.25",
+        "$12.75",
+        "$12.85"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.50",
+        "$13.00",
+        "$13.10"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$13.00",
+        "$13.50",
+        "$13.60"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$14.00",
+        "$14.00",
+        "$14.10"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$15.50",
+        "$15.50",
+        "$15.50"
+      ],
+      [
+        "Next 520 hours worked",
+        "$16.00",
+        "$16.00",
+        "$16.00"
+      ],
+      [
+        "Thereafter",
+        "$17.69",
+        "$18.04",
+        "$18.39"
+      ]
+    ],
+    "markdown": "| MEAT WRAPPERS/BUTCHER BLOCK/SEAFOOD CLERKS | -      | -      | -      |\n| ------------------------------------------ | ------ | ------ | ------ |\n| First 1040 hours worked                    | $11.75 | $12.25 | $12.35 |\n| Next 1040 hours worked                     | $12.00 | $12.50 | $12.60 |\n| Next 1040 hours worked                     | $12.25 | $12.75 | $12.85 |\n| Next 1040 hours worked                     | $12.50 | $13.00 | $13.10 |\n| Next 1040 hours worked                     | $13.00 | $13.50 | $13.60 |\n| Next 1040 hours worked                     | $14.00 | $14.00 | $14.10 |\n| Next 1040 hours worked                     | $15.50 | $15.50 | $15.50 |\n| Next 520 hours worked                      | $16.00 | $16.00 | $16.00 |\n| Thereafter                                 | $17.69 | $18.04 | $18.39 |",
+    "csv": "\"MEAT WRAPPERS/BUTCHER BLOCK/SEAFOOD CLERKS\",\"-\",\"-\",\"-\"\n\"First 1040 hours worked\",\"$11.75\",\"$12.25\",\"$12.35\"\n\"Next 1040 hours worked\",\"$12.00\",\"$12.50\",\"$12.60\"\n\"Next 1040 hours worked\",\"$12.25\",\"$12.75\",\"$12.85\"\n\"Next 1040 hours worked\",\"$12.50\",\"$13.00\",\"$13.10\"\n\"Next 1040 hours worked\",\"$13.00\",\"$13.50\",\"$13.60\"\n\"Next 1040 hours worked\",\"$14.00\",\"$14.00\",\"$14.10\"\n\"Next 1040 hours worked\",\"$15.50\",\"$15.50\",\"$15.50\"\n\"Next 520 hours worked\",\"$16.00\",\"$16.00\",\"$16.00\"\n\"Thereafter\",\"$17.69\",\"$18.04\",\"$18.39\"",
+    "is_perfect": false,
+    "json_path": "pages[62].items[0]",
+    "heading_path": [
+      "KING SOOPERS APPENDIX \"A\" MEAT RATES"
+    ],
+    "parent_article": 57,
+    "parent_section": 128,
+    "parent_chunk_id": "art57_sec128"
+  },
+  {
+    "table_id": "tbl_art57_5",
+    "content_hash": "53017df5d7de5032",
+    "headers": [
+      "UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7",
+      "KING SOOPERS, INC."
+    ],
+    "rows": [
+      [
+        "BY: [signature] Kim C. Cordova",
+        "BY: [signature]"
+      ],
+      [
+        "DATE: 3-12-20",
+        "DATE: 3-12-20"
+      ]
+    ],
+    "markdown": "| UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7 | KING SOOPERS, INC. |\n| ----------------------------------------------- | ------------------ |\n| BY: \\[signature] Kim C. Cordova                 | BY: \\[signature]   |\n| DATE: 3-12-20                                   | DATE: 3-12-20      |",
+    "csv": "\"UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7\",\"KING SOOPERS, INC.\"\n\"BY: [signature] Kim C. Cordova\",\"BY: [signature]\"\n\"DATE: 3-12-20\",\"DATE: 3-12-20\"",
+    "is_perfect": false,
+    "json_path": "pages[63].items[7]",
+    "heading_path": [
+      "MINIMUM WAGE"
+    ],
+    "parent_article": 57,
+    "parent_section": 128,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_6",
+    "content_hash": "5dcd75e6aa650ee6",
+    "headers": [
+      "UNITED FOOD AND COMMERCIAL WORKERS, LOCAL #7",
+      "KING SOOPERS, INC."
+    ],
+    "rows": [
+      [
+        "BY: [Signature of Kim C. Cordova]",
+        "BY: [Signature of Leroy Westmoreland]"
+      ],
+      [
+        "Kim C. Cordova<br/>President",
+        "Leroy Westmoreland<br/>Sr. Director – Labor Relations"
+      ],
+      [
+        "DATE: 3-12-20",
+        "DATE: 3-12-20"
+      ]
+    ],
+    "markdown": "| UNITED FOOD AND COMMERCIAL WORKERS, LOCAL #7 | KING SOOPERS, INC.                                    |\n| -------------------------------------------- | ----------------------------------------------------- |\n| BY: \\[Signature of Kim C. Cordova]           | BY: \\[Signature of Leroy Westmoreland]                |\n| Kim C. Cordova<br/>President                 | Leroy Westmoreland<br/>Sr. Director – Labor Relations |\n| DATE: 3-12-20                                | DATE: 3-12-20                                         |",
+    "csv": "\"UNITED FOOD AND COMMERCIAL WORKERS, LOCAL #7\",\"KING SOOPERS, INC.\"\n\"BY: [Signature of Kim C. Cordova]\",\"BY: [Signature of Leroy Westmoreland]\"\n\"Kim C. Cordova<br/>President\",\"Leroy Westmoreland<br/>Sr. Director – Labor Relations\"\n\"DATE: 3-12-20\",\"DATE: 3-12-20\"",
+    "is_perfect": false,
+    "json_path": "pages[65].items[1]",
+    "heading_path": [
+      "LETTERS OF AGREEMENT"
+    ],
+    "parent_article": 57,
+    "parent_section": 128,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_7",
+    "content_hash": "59f44fcc316d071e",
+    "headers": [
+      "UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7",
+      "KING SOOPERS, INC."
+    ],
+    "rows": [
+      [
+        "By: [signature]",
+        "By: [signature]"
+      ],
+      [
+        "Date: 3-12-20",
+        "Date: 3-12-20"
+      ]
+    ],
+    "markdown": "| UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7 | KING SOOPERS, INC. |\n| ----------------------------------------------- | ------------------ |\n| By: \\[signature]                                | By: \\[signature]   |\n| Date: 3-12-20                                   | Date: 3-12-20      |",
+    "csv": "\"UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7\",\"KING SOOPERS, INC.\"\n\"By: [signature]\",\"By: [signature]\"\n\"Date: 3-12-20\",\"Date: 3-12-20\"",
+    "is_perfect": false,
+    "json_path": "pages[81].items[4]",
+    "heading_path": [
+      "DRESS REQUIREMENTS. DATED 3/25/19"
+    ],
+    "parent_article": 57,
+    "parent_section": 128,
+    "parent_chunk_id": null
+  },
+  {
+    "table_id": "tbl_art57_8",
+    "content_hash": "53017df5d7de5032",
+    "headers": [
+      "UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7",
+      "KING SOOPERS, INC."
+    ],
+    "rows": [
+      [
+        "By: [signature] Kim C. Cordova",
+        "By: [signature]"
+      ],
+      [
+        "Date: 3-12-20",
+        "Date: 3-12-20"
+      ]
+    ],
+    "markdown": "| UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7 | KING SOOPERS, INC. |\n| ----------------------------------------------- | ------------------ |\n| By: \\[signature] Kim C. Cordova                 | By: \\[signature]   |\n| Date: 3-12-20                                   | Date: 3-12-20      |",
+    "csv": "\"UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7\",\"KING SOOPERS, INC.\"\n\"By: [signature] Kim C. Cordova\",\"By: [signature]\"\n\"Date: 3-12-20\",\"Date: 3-12-20\"",
+    "is_perfect": false,
+    "json_path": "pages[94].items[7]",
+    "heading_path": [
+      "#22"
+    ],
+    "parent_article": 57,
+    "parent_section": 48,
+    "parent_chunk_id": "art57_sec128_seg_004"
+  },
+  {
+    "table_id": "tbl_art57_9",
+    "content_hash": "59f44fcc316d071e",
+    "headers": [
+      "UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7",
+      "KING SOOPERS, INC."
+    ],
+    "rows": [
+      [
+        "By: [signature]",
+        "By: [signature]"
+      ],
+      [
+        "Date: 3-12-20",
+        "Date: 3-12-20"
+      ]
+    ],
+    "markdown": "| UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7 | KING SOOPERS, INC. |\n| ----------------------------------------------- | ------------------ |\n| By: \\[signature]                                | By: \\[signature]   |\n| Date: 3-12-20                                   | Date: 3-12-20      |",
+    "csv": "\"UNITED FOOD AND COMMERCIAL WORKERS, LOCAL No. 7\",\"KING SOOPERS, INC.\"\n\"By: [signature]\",\"By: [signature]\"\n\"Date: 3-12-20\",\"Date: 3-12-20\"",
+    "is_perfect": false,
+    "json_path": "pages[95].items[4]",
+    "heading_path": [
+      "JOINT LABOR MANAGEMENT COMMITTEE. DATED 3/25/19."
+    ],
+    "parent_article": 57,
+    "parent_section": 48,
+    "parent_chunk_id": "art57_sec128_seg_004"
+  },
+  {
+    "table_id": "tbl_fallback_art57_e8fbaf62",
+    "content_hash": "e8fbaf62c09baf1b",
+    "headers": [
+      "Employer Type",
+      "Detailed Employer Type",
+      "Percentage of Credit",
+      "Top pay rate allowed"
+    ],
+    "rows": [
+      [
+        "Comparable Traditional Grocery",
+        "Kroger Family of Stores (position specific)Safeway (position specific)Albertsons (position specific)Whole Foods (position specific)HEB (position specific)Publix (position specific)SuperValue (position specific)",
+        "Comparable grocery formats (size; product line) (position specific)Independent floral shopsIndependent liquor stores (124 only)Once a Journeyman always a Journeyman",
+        "100%",
+        "YES"
+      ],
+      [
+        "Non-traditional and other retailers",
+        "Wal-Mart (position specific)Target (position specific)K-Mart (position specific)Lowes Mercado (position specific)MI Pueblo (position specific)Save A Lot (position specific)Trader Joe's (position specific)Sprouts (position specific)Vitamin Cottage (position specific)Alfalfas (position specific)Sam's Club (position specific)Costco (position specific)Walgreen's (position specific)Rite Aid (position specific)Big box retailers (position specific)Dollar stores (position specific)Fast food (position specific)Restaurants (position specific)Commissary (position specific)Coffee Shops (position specific)",
+        "Convenience stores (Fuel/Service Desk)Tony's Meats (position specific)Independent grocers (position specific)Independent butchers (Meat)Department stores (position specific)Drug Stores (position specific)Hardware stores (position specific)General warehouse work (stocking)Vendors (Nabisco, Pepsi, Coke, etc.) (position specific)Banks (Service Desk)Food delivery driving experience (drivers only)Commercial driving experience (drivers only)Michaels/Hobby Lobby (Floral Designer)Independent cake stores (non-union Cake Decorators)Independent/Corporate bakery stores (non-union Bakers)",
+        "100%",
+        "NOCredit not to exceed level 0080"
+      ],
+      [
+        "HomeSide- MarketPlace Stores",
+        "Kroger Family of Stores (position specific)Wal-Mart (position specific)Target (position specific)K-Mart (position specific)Sam's Club (position specific)Costco (position specific)Big box retailers (position specific)Department Stores (position specific)",
+        "Walgreen's (position specific)Rite Aid (position specific)Dollar stores (position specific)Clothing Stores (position specific)Furniture stores (position specific)Container stores (position specific)Hardware stores (position specific)Baby/toy stores (position specific)",
+        "100%",
+        "NOCredit not to exceed level 0080"
+      ],
+      [
+        "Deli/Bakery/Baker/ Cake Decorator/Floral Education Credit",
+        "Position related certificate or degree for (Cake/baking/floral). Position related certificate/degree (Baking/Pastry; Floral Design; Culinary Arts; Food/Beverage; Hospitality Management; Food Science; related food degree)",
+        "Certificate - 1040 hour creditAssociate/Bachelors - 2080 hour credit",
+        "N/A",
+        "NOCredit not to exceed level 0080"
+      ],
+      [
+        "Nutrition Specialist",
+        "Please see Nutrition Specialist WEC Matrix when hiring a Nutrition Specialist.",
+        "N/A",
+        "N/A"
+      ],
+      [
+        "Pharmacy Techs",
+        "Please see Pharmacy Tech WEC Matrix when hiring a Pharmacy Tech.",
+        "N/A",
+        "N/A"
+      ]
+    ],
+    "markdown": "| Employer Type | Detailed Employer Type | Percentage of Credit | Top pay rate allowed |\n| --- | --- | --- | --- |\n| Comparable Traditional Grocery | Kroger Family of Stores (position specific)Safeway (position specific)Albertsons (position specific)Whole Foods (position specific)HEB (position specific)Publix (position specific)SuperValue (position specific) | Comparable grocery formats (size; product line) (position specific)Independent floral shopsIndependent liquor stores (124 only)Once a Journeyman always a Journeyman | 100% |\n| Non-traditional and other retailers | Wal-Mart (position specific)Target (position specific)K-Mart (position specific)Lowes Mercado (position specific)MI Pueblo (position specific)Save A Lot (position specific)Trader Joe's (position specific)Sprouts (position specific)Vitamin Cottage (position specific)Alfalfas (position specific)Sam's Club (position specific)Costco (position specific)Walgreen's (position specific)Rite Aid (position specific)Big box retailers (position specific)Dollar stores (position specific)Fast food (position specific)Restaurants (position specific)Commissary (position specific)Coffee Shops (position specific) | Convenience stores (Fuel/Service Desk)Tony's Meats (position specific)Independent grocers (position specific)Independent butchers (Meat)Department stores (position specific)Drug Stores (position specific)Hardware stores (position specific)General warehouse work (stocking)Vendors (Nabisco, Pepsi, Coke, etc.) (position specific)Banks (Service Desk)Food delivery driving experience (drivers only)Commercial driving experience (drivers only)Michaels/Hobby Lobby (Floral Designer)Independent cake stores (non-union Cake Decorators)Independent/Corporate bakery stores (non-union Bakers) | 100% |\n| HomeSide- MarketPlace Stores | Kroger Family of Stores (position specific)Wal-Mart (position specific)Target (position specific)K-Mart (position specific)Sam's Club (position specific)Costco (position specific)Big box retailers (position specific)Department Stores (position specific) | Walgreen's (position specific)Rite Aid (position specific)Dollar stores (position specific)Clothing Stores (position specific)Furniture stores (position specific)Container stores (position specific)Hardware stores (position specific)Baby/toy stores (position specific) | 100% |\n| Deli/Bakery/Baker/ Cake Decorator/Floral Education Credit | Position related certificate or degree for (Cake/baking/floral). Position related certificate/degree (Baking/Pastry; Floral Design; Culinary Arts; Food/Beverage; Hospitality Management; Food Science; related food degree) | Certificate - 1040 hour creditAssociate/Bachelors - 2080 hour credit | N/A |\n| Nutrition Specialist | Please see Nutrition Specialist WEC Matrix when hiring a Nutrition Specialist. | N/A | N/A |\n| Pharmacy Techs | Please see Pharmacy Tech WEC Matrix when hiring a Pharmacy Tech. | N/A | N/A |",
+    "csv": "Employer Type,Detailed Employer Type,Percentage of Credit,Top pay rate allowed\nComparable Traditional Grocery,Kroger Family of Stores (position specific)Safeway (position specific)Albertsons (position specific)Whole Foods (position specific)HEB (position specific)Publix (position specific)SuperValue (position specific),Comparable grocery formats (size; product line) (position specific)Independent floral shopsIndependent liquor stores (124 only)Once a Journeyman always a Journeyman,100%,YES\nNon-traditional and other retailers,Wal-Mart (position specific)Target (position specific)K-Mart (position specific)Lowes Mercado (position specific)MI Pueblo (position specific)Save A Lot (position specific)Trader Joe's (position specific)Sprouts (position specific)Vitamin Cottage (position specific)Alfalfas (position specific)Sam's Club (position specific)Costco (position specific)Walgreen's (position specific)Rite Aid (position specific)Big box retailers (position specific)Dollar stores (position specific)Fast food (position specific)Restaurants (position specific)Commissary (position specific)Coffee Shops (position specific),\"Convenience stores (Fuel/Service Desk)Tony's Meats (position specific)Independent grocers (position specific)Independent butchers (Meat)Department stores (position specific)Drug Stores (position specific)Hardware stores (position specific)General warehouse work (stocking)Vendors (Nabisco, Pepsi, Coke, etc.) (position specific)Banks (Service Desk)Food delivery driving experience (drivers only)Commercial driving experience (drivers only)Michaels/Hobby Lobby (Floral Designer)Independent cake stores (non-union Cake Decorators)Independent/Corporate bakery stores (non-union Bakers)\",100%,NOCredit not to exceed level 0080\nHomeSide- MarketPlace Stores,Kroger Family of Stores (position specific)Wal-Mart (position specific)Target (position specific)K-Mart (position specific)Sam's Club (position specific)Costco (position specific)Big box retailers (position specific)Department Stores (position specific),Walgreen's (position specific)Rite Aid (position specific)Dollar stores (position specific)Clothing Stores (position specific)Furniture stores (position specific)Container stores (position specific)Hardware stores (position specific)Baby/toy stores (position specific),100%,NOCredit not to exceed level 0080\nDeli/Bakery/Baker/ Cake Decorator/Floral Education Credit,Position related certificate or degree for (Cake/baking/floral). Position related certificate/degree (Baking/Pastry; Floral Design; Culinary Arts; Food/Beverage; Hospitality Management; Food Science; related food degree),Certificate - 1040 hour creditAssociate/Bachelors - 2080 hour credit,N/A,NOCredit not to exceed level 0080\nNutrition Specialist,Please see Nutrition Specialist WEC Matrix when hiring a Nutrition Specialist.,N/A,N/A\nPharmacy Techs,Please see Pharmacy Tech WEC Matrix when hiring a Pharmacy Tech.,N/A,N/A",
+    "is_perfect": false,
+    "json_path": "chunks[161].fallback_html_tables[0]",
+    "heading_path": [
+      "Article 57 (TERM OF AGREEMENT) > Section 128 (Effective May 4, 1986, there shall be a cost of living allowance based on the increase in the revised Consumer Price Index for Urban Wage Earners and Clerical workers, published b)",
+      "TERM OF AGREEMENT",
+      "Article 57, Section 128"
+    ],
+    "parent_article": 57,
+    "parent_section": 128,
+    "parent_chunk_id": "art57_sec128"
+  },
+  {
+    "table_id": "tbl_fallback_art57_8af5ae44",
+    "content_hash": "8af5ae44adb2fa38",
+    "headers": [
+      "CLASSIFICATION",
+      "Effective 1/12/2019",
+      "Effective 1/1/2020",
+      "Effective 1/10/2021"
+    ],
+    "rows": [
+      [
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "MEAT MANAGER",
+        "$22.18",
+        "$22.53",
+        "$22.88"
+      ],
+      [
+        "MEAT HEAD CLERK/ASST",
+        "$21.13",
+        "$21.48",
+        "$21.83"
+      ],
+      [
+        "SEAFOOD MANAGER",
+        "$21.13",
+        "$21.48",
+        "$21.83"
+      ],
+      [
+        "DELI DEPARTMENT HEAD (Grandfathered)",
+        "$21.74",
+        "$22.09",
+        "$22.44"
+      ],
+      [
+        "DELI DEPARTMENT HEAD",
+        "$21.13",
+        "$21.48",
+        "$21.83"
+      ],
+      [
+        "DELI HEAD CLERK/ASST",
+        "$19.81",
+        "$20.16",
+        "$20.51"
+      ],
+      [
+        "DELI CHEF",
+        "$19.81",
+        "$20.16",
+        "$20.51"
+      ],
+      [
+        "",
+        "-",
+        "-",
+        "-"
+      ],
+      [
+        "MEAT CUTTERS",
+        "-",
+        "-",
+        "-"
+      ],
+      [
+        "First 1040 hours worked",
+        "$11.75",
+        "$12.25",
+        "$12.35"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.00",
+        "$12.50",
+        "$12.60"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.25",
+        "$12.75",
+        "$12.85"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.50",
+        "$13.00",
+        "$13.10"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$13.23",
+        "$13.50",
+        "$13.60"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$14.12",
+        "$14.12",
+        "$14.12"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$15.01",
+        "$15.01",
+        "$15.01"
+      ],
+      [
+        "Next 520 hours worked",
+        "$15.89",
+        "$15.89",
+        "$15.89"
+      ],
+      [
+        "Thereafter",
+        "$20.80",
+        "$21.15",
+        "$21.50"
+      ],
+      [
+        "",
+        "-",
+        "-",
+        "-"
+      ],
+      [
+        "DELI/COFFEE/CHEESE CLERK",
+        "-",
+        "-",
+        "-"
+      ],
+      [
+        "First 520 hours worked",
+        "$11.75",
+        "$12.25",
+        "$12.35"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.00",
+        "$12.50",
+        "$12.60"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.25",
+        "$12.75",
+        "$12.85"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$12.50",
+        "$13.00",
+        "$13.10"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$13.00",
+        "$13.50",
+        "$13.60"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$14.00",
+        "$14.00",
+        "$14.10"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$15.50",
+        "$15.50",
+        "$15.50"
+      ],
+      [
+        "Next 1040 hours worked",
+        "$16.00",
+        "$16.00",
+        "$16.00"
+      ],
+      [
+        "Thereafter",
+        "$17.39",
+        "$17.74",
+        "$18.09"
+      ]
+    ],
+    "markdown": "| CLASSIFICATION | Effective 1/12/2019 | Effective 1/1/2020 | Effective 1/10/2021 |\n| --- | --- | --- | --- |\n|  |  |  |  |\n| MEAT MANAGER | $22.18 | $22.53 | $22.88 |\n| MEAT HEAD CLERK/ASST | $21.13 | $21.48 | $21.83 |\n| SEAFOOD MANAGER | $21.13 | $21.48 | $21.83 |\n| DELI DEPARTMENT HEAD (Grandfathered) | $21.74 | $22.09 | $22.44 |\n| DELI DEPARTMENT HEAD | $21.13 | $21.48 | $21.83 |\n| DELI HEAD CLERK/ASST | $19.81 | $20.16 | $20.51 |\n| DELI CHEF | $19.81 | $20.16 | $20.51 |\n|  | - | - | - |\n| MEAT CUTTERS | - | - | - |\n| First 1040 hours worked | $11.75 | $12.25 | $12.35 |\n| Next 1040 hours worked | $12.00 | $12.50 | $12.60 |\n| Next 1040 hours worked | $12.25 | $12.75 | $12.85 |\n| Next 1040 hours worked | $12.50 | $13.00 | $13.10 |\n| Next 1040 hours worked | $13.23 | $13.50 | $13.60 |\n| Next 1040 hours worked | $14.12 | $14.12 | $14.12 |\n| Next 1040 hours worked | $15.01 | $15.01 | $15.01 |\n| Next 520 hours worked | $15.89 | $15.89 | $15.89 |\n| Thereafter | $20.80 | $21.15 | $21.50 |\n|  | - | - | - |\n| DELI/COFFEE/CHEESE CLERK | - | - | - |\n| First 520 hours worked | $11.75 | $12.25 | $12.35 |\n| Next 1040 hours worked | $12.00 | $12.50 | $12.60 |\n| Next 1040 hours worked | $12.25 | $12.75 | $12.85 |\n| Next 1040 hours worked | $12.50 | $13.00 | $13.10 |\n| Next 1040 hours worked | $13.00 | $13.50 | $13.60 |\n| Next 1040 hours worked | $14.00 | $14.00 | $14.10 |\n| Next 1040 hours worked | $15.50 | $15.50 | $15.50 |\n| Next 1040 hours worked | $16.00 | $16.00 | $16.00 |\n| Thereafter | $17.39 | $17.74 | $18.09 |",
+    "csv": "CLASSIFICATION,Effective 1/12/2019,Effective 1/1/2020,Effective 1/10/2021\n,,,\nMEAT MANAGER,$22.18,$22.53,$22.88\nMEAT HEAD CLERK/ASST,$21.13,$21.48,$21.83\nSEAFOOD MANAGER,$21.13,$21.48,$21.83\nDELI DEPARTMENT HEAD (Grandfathered),$21.74,$22.09,$22.44\nDELI DEPARTMENT HEAD,$21.13,$21.48,$21.83\nDELI HEAD CLERK/ASST,$19.81,$20.16,$20.51\nDELI CHEF,$19.81,$20.16,$20.51\n,-,-,-\nMEAT CUTTERS,-,-,-\nFirst 1040 hours worked,$11.75,$12.25,$12.35\nNext 1040 hours worked,$12.00,$12.50,$12.60\nNext 1040 hours worked,$12.25,$12.75,$12.85\nNext 1040 hours worked,$12.50,$13.00,$13.10\nNext 1040 hours worked,$13.23,$13.50,$13.60\nNext 1040 hours worked,$14.12,$14.12,$14.12\nNext 1040 hours worked,$15.01,$15.01,$15.01\nNext 520 hours worked,$15.89,$15.89,$15.89\nThereafter,$20.80,$21.15,$21.50\n,-,-,-\nDELI/COFFEE/CHEESE CLERK,-,-,-\nFirst 520 hours worked,$11.75,$12.25,$12.35\nNext 1040 hours worked,$12.00,$12.50,$12.60\nNext 1040 hours worked,$12.25,$12.75,$12.85\nNext 1040 hours worked,$12.50,$13.00,$13.10\nNext 1040 hours worked,$13.00,$13.50,$13.60\nNext 1040 hours worked,$14.00,$14.00,$14.10\nNext 1040 hours worked,$15.50,$15.50,$15.50\nNext 1040 hours worked,$16.00,$16.00,$16.00\nThereafter,$17.39,$17.74,$18.09",
+    "is_perfect": false,
+    "json_path": "chunks[161].fallback_html_tables[1]",
+    "heading_path": [
+      "Article 57 (TERM OF AGREEMENT) > Section 128 (Effective May 4, 1986, there shall be a cost of living allowance based on the increase in the revised Consumer Price Index for Urban Wage Earners and Clerical workers, published b)",
+      "TERM OF AGREEMENT",
+      "Article 57, Section 128"
+    ],
+    "parent_article": 57,
+    "parent_section": 128,
+    "parent_chunk_id": "art57_sec128"
+  },
+  {
+    "table_id": "tbl_fallback_art57_94425d48",
+    "content_hash": "94425d488b3aa30c",
+    "headers": [
+      "UNITED FOOD AND COMMERCIAL WORKERS, LOCAL #7",
+      "KING SOOPERS, INC."
+    ],
+    "rows": [
+      [
+        "BY: [Signature of Kim C. Cordova]",
+        "BY: [Signature of Leroy Westmoreland]"
+      ],
+      [
+        "Kim C. CordovaPresident",
+        "Leroy WestmorelandSr. Director – Labor Relations"
+      ],
+      [
+        "DATE: 3-12-20",
+        "DATE: 3-12-20"
+      ]
+    ],
+    "markdown": "| UNITED FOOD AND COMMERCIAL WORKERS, LOCAL #7 | KING SOOPERS, INC. |\n| --- | --- |\n| BY: [Signature of Kim C. Cordova] | BY: [Signature of Leroy Westmoreland] |\n| Kim C. CordovaPresident | Leroy WestmorelandSr. Director – Labor Relations |\n| DATE: 3-12-20 | DATE: 3-12-20 |",
+    "csv": "\"UNITED FOOD AND COMMERCIAL WORKERS, LOCAL #7\",\"KING SOOPERS, INC.\"\nBY: [Signature of Kim C. Cordova],BY: [Signature of Leroy Westmoreland]\nKim C. CordovaPresident,Leroy WestmorelandSr. Director – Labor Relations\nDATE: 3-12-20,DATE: 3-12-20",
+    "is_perfect": false,
+    "json_path": "chunks[164].fallback_html_tables[0]",
+    "heading_path": [
+      "Article 57 (TERM OF AGREEMENT) > Section 128 (Effective May 4, 1986, there shall be a cost of living allowance based on the increase in the revised Consumer Price Index for Urban Wage Earners and Clerical workers, published b) > Part 22-0",
+      "TERM OF AGREEMENT",
+      "Article 57, Section 128, Part 22-0"
+    ],
+    "parent_article": 57,
+    "parent_section": 128,
+    "parent_chunk_id": "art57_sec128_seg_022_000"
+  }
+]

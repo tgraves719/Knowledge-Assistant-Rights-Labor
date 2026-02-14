@@ -1,14 +1,8 @@
-# KARL — Knowledge Assistant for Rights & Labor
+# KARL - Knowledge Assistant for Rights and Labor
 
-KARL is an AI-powered RAG system designed to help workers and unions
-understand, navigate, and enforce their collective bargaining agreements.
+KARL is an AI-powered RAG system designed to help workers and unions understand, navigate, and enforce collective bargaining agreements.
 
-Currently serving: **UFCW Local 7 — Safeway Pueblo Clerks (2022-2025)**
-
-The goal of KARL is to:
-- Reduce information asymmetry between workers and employers
-- Make labor contracts legible to the people bound by them
-- Strengthen collective power through shared understanding
+Current deployment focus: **UFCW Local 7 - Safeway Pueblo Clerks (2022-2025)**.
 
 ## Core Principles
 
@@ -18,262 +12,367 @@ The goal of KARL is to:
 - Anti-surveillance
 - Transparent by design
 
+## Current Benchmark Status
+
+KARL currently uses three benchmark labels in project planning:
+
+1. **Benchmark v1 (legacy golden benchmark)**
+- Legacy benchmark used earlier in development
+- Historical result reached **100% (55/55)** on that benchmark
+- Script path: `python -m backend.evaluate`
+- Artifact: `data/test_set/evaluation_results.json`
+
+2. **Benchmark v2 (harder comprehensive benchmark)**
+- Newer and more difficult benchmark track used to stress retrieval quality
+- This is where performance dropped from v1's 100% into the mid/high-80% range
+- Current checked-in comprehensive artifact is in this track
+- Script path: `python -m backend.evaluate_comprehensive --ablation-mode normal`
+- Artifact: `data/test_set/comprehensive_results.json`
+
+3. **Benchmark v3 (scaled multi-contract plan)**
+- Planned expansion of v2 methodology to multi-contract scaling, contamination checks, and automated benchmark generation
+- **Not fully implemented yet**
+- Planning doc: `Evaluation_Plan_v3.md`
+
+## Architecture (Current Runtime)
+
+KARL has a 5-phase CAG design, but currently runs a **lean configuration** by default:
+
+- Phase 1 (intent routing): enabled
+- Phase 2 (hypothesis layer): disabled
+- Phase 3 (full article expansion): disabled
+- Phase 4 (query interpreter): enabled
+- Phase 5 (LLM reranker): enabled
+- BM25 fusion: disabled in lean mode (vector-first retrieval)
+
+Key config file: `backend/config.py`.
+
 ## Features
 
-- **Citation-Focused Responses**: Every answer includes specific Article/Section citations
-- **Deterministic Wage Lookups**: 100% accurate wage queries via structured JSON tables
-- **Context-Aware Generation (CAG)**: 5-phase retrieval pipeline translates worker language into contract terminology
-- **High-Stakes Detection**: Flags discipline/termination/harassment issues with escalation language
-- **Hybrid Retrieval**: Vector search (ChromaDB + MiniLM-L6-v2) fused with BM25 keyword search
-- **LLM Reranker**: Post-retrieval relevance scoring reorders chunks by semantic fit
-- **Contract-Specific Routing**: Manifest-driven configuration — new contracts need only a JSON file, no code changes
-- **Interactive Citation Navigation**: Clickable citations with popover previews and deep linking
+- Citation-focused responses
+- Deterministic wage lookups from structured wage tables
+- Deterministic two-stage high-stakes routing (`high_stakes_topic` vs `active_urgent_context`)
+- Conditional/hypothetical escalation suppressors to reduce false positives
+- Query interpreter for vocabulary bridging
+- LLM reranker for relevance ordering
+- Manifest-driven routing metadata
+- Interactive citation navigation in UI
 
-## Current Performance
+## Repository Structure
 
-**55/55 (100%)** on the golden benchmark test set across all 19 categories.
-
-| Metric | Result |
-|--------|--------|
-| Overall Retrieval Accuracy | **100%** (55/55) |
-| Wage Lookup | 100% |
-| Escalation Detection | 100% |
-| All 19 categories | 100% |
-
-## Project Structure
-
-```
+```text
 karl/
 ├── backend/
+│   ├── api.py
+│   ├── config.py
+│   ├── evaluate.py
+│   ├── evaluate_comprehensive.py
 │   ├── ingest/
-│   │   ├── smart_chunker.py       # Article/Section/LOU chunker
-│   │   ├── enricher.py            # LLM metadata enrichment (Gemini)
-│   │   ├── extract_wages.py       # Wage table extractor
-│   │   ├── table_extractor.py     # JSON-based table extraction
-│   │   ├── rebuild_index.py       # Vector index rebuild utility
-│   │   ├── manifest.py            # Contract manifest generator
-│   │   └── schema.py              # Chunk schema definitions
 │   ├── retrieval/
-│   │   ├── router.py              # Intent classification + multi-angle retrieval
-│   │   ├── hybrid_search.py       # Vector + BM25 fusion with concept boost
-│   │   ├── hypothesis.py          # LLM article title prediction (CAG Phase 2)
-│   │   ├── query_interpreter.py   # Deep semantic query analysis (CAG Phase 4)
-│   │   ├── reranker.py            # LLM relevance reranker (CAG Phase 5)
-│   │   ├── vector_store.py        # ChromaDB wrapper (dual content fields)
-│   │   └── query_expansion.py     # Slang-to-contract term expansion
 │   ├── generation/
-│   │   ├── prompts.py             # System prompts
-│   │   ├── tools.py               # LLM tool definitions
-│   │   ├── context.py             # Context assembly
-│   │   └── verifier.py            # Citation verification
-│   ├── user/
-│   │   └── profile.py             # User profile management
-│   ├── api.py                     # FastAPI backend
-│   ├── evaluate.py                # Benchmark evaluation
-│   └── config.py                  # Configuration & feature flags
+│   └── eval/
 ├── data/
-│   ├── chunks/                    # Parsed contract chunks (320 chunks)
-│   ├── wages/                     # Structured wage tables (JSON)
-│   ├── tables/                    # Extracted table data
-│   ├── manifests/                 # Contract-specific routing config
-│   ├── chroma_db/                 # Vector database (ChromaDB)
-│   └── test_set/                  # Golden Q&A test set (55 cases)
+│   ├── chunks/
+│   ├── wages/
+│   ├── manifests/
+│   ├── chroma_db/
+│   └── test_set/
 ├── frontend/
-│   └── index.html                 # Web interface (dark mode, citation nav)
+│   └── index.html
 ├── legal/
-│   ├── ETHICAL-USE.md             # Ethical use policy
-│   ├── COMMERCIAL-LICENSE.md      # Commercial licensing terms
-│   └── LICENSE-EXCEPTION.md       # License exceptions for unions
-├── requirements.txt
-└── UPDATE_LOG.md                  # Detailed version history
-```
-
-## Architecture
-
-KARL uses a 5-phase Context-Aware Generation (CAG) pipeline:
-
-```
-User Query
-    │
-    ▼
-┌─────────────────────────────────────────────────┐
-│  Phase 1: Intent Router                         │
-│  Wage query? High-stakes? Contract question?    │
-│  Slang expansion ("break" → "rest period")      │
-└──────────────────┬──────────────────────────────┘
-                   │
-                   ▼
-┌─────────────────────────────────────────────────┐
-│  Phase 2: Hypothesis Layer                      │
-│  LLM predicts relevant article titles           │
-│  Matching chunks get a similarity boost         │
-└──────────────────┬──────────────────────────────┘
-                   │
-                   ▼
-┌─────────────────────────────────────────────────┐
-│  Phase 3: Hybrid Search + Article Expansion     │
-│  Vector (MiniLM-L6-v2) + BM25 via RRF fusion   │
-│  If 2+ top results from same article → expand   │
-└──────────────────┬──────────────────────────────┘
-                   │
-                   ▼
-┌─────────────────────────────────────────────────┐
-│  Phase 4: Query Interpreter (Multi-Angle)       │
-│  LLM generates hypothetical answers + alt       │
-│  search queries for vocabulary bridging          │
-└──────────────────┬──────────────────────────────┘
-                   │
-                   ▼
-┌─────────────────────────────────────────────────┐
-│  Phase 5: LLM Reranker                          │
-│  Gemini scores each chunk for relevance (1-10)  │
-│  Combined score: 30% original + 70% LLM         │
-└──────────────────┬──────────────────────────────┘
-                   │
-                   ▼
-┌─────────────────────────────────────────────────┐
-│  Answer Generation (Gemini 2.5 Pro)             │
-│  Grounded response with Article/Section cites   │
-│  Citation verification before delivery          │
-└─────────────────────────────────────────────────┘
+│   ├── GOVERNANCE-CHARTER.md
+│   ├── DEPLOYMENT-POLICY.md
+│   ├── RELEASE-GATES.md
+│   ├── MODEL-UPDATE-POLICY.md
+│   └── ETHICAL-USE.md
+├── Evaluation_Plan_v3.md
+└── UPDATE_LOG.md
 ```
 
 ## Quick Start
 
-### 1. Install Dependencies
+### 1. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Set Up API Key
-
-Get a free API key from [Google AI Studio](https://aistudio.google.com/app/apikey), then create a `.env` file:
+### 2. Configure API key (optional but recommended)
 
 ```bash
-cp env.example .env
-# Edit .env and add your key:
-# GEMINI_API_KEY=your_actual_api_key_here
+# Windows PowerShell
+Set-Content -Path .env -Value "GEMINI_API_KEY=your_actual_api_key_here"
+
+# Linux/Mac
+printf "GEMINI_API_KEY=your_actual_api_key_here\n" > .env
 ```
 
-Without an API key, KARL still provides wage lookups and chunk retrieval, but cannot generate synthesized answers.
+Without an API key, KARL can still retrieve chunks and perform wage lookups, but it cannot produce synthesized LLM answers.
 
-### 3. Process the Contract
+### 3. Build or refresh data (if needed)
 
 ```bash
-# Parse contract into chunks
 python -m backend.ingest.smart_chunker
-
-# Enrich chunks with LLM-generated metadata
 python -u -m backend.ingest.enricher --batch-size 15 --delay 1.0
-
-# Build vector index
 python -m backend.ingest.rebuild_index
 ```
 
-If cloning from GitHub, processed data files may already be included.
-
-### 4. Start the Server
+### 4. Start server
 
 ```bash
 python -m uvicorn backend.api:app --host 127.0.0.1 --port 8000
 ```
 
-### 5. Open the Frontend
+### 5. Open app
 
-Navigate to `http://127.0.0.1:8000` in your browser.
+Go to `http://127.0.0.1:8000`.
 
-## API Endpoints
+## Query Contract Context
 
-### Health Check
+`/api/query` requires explicit contract context:
+- `contract_id` (required)
+- `union_local_id` (required, must match manifest `union_local`)
+- `contract_version` (required, must match manifest version string)
+
+Current manifest version format:
+- `contract_version = "<term_start>__<term_end>"`
+- Example: `January 23, 2022__January 18, 2025`
+
+Chunk artifact resolution now prefers per-contract files before shared fallback:
+- `data/chunks/contract_chunks_enriched_<contract_id>.json`
+- `data/chunks/contract_chunks_smart_<contract_id>.json`
+- `data/chunks/contract_chunks_<contract_id>.json`
+- fallback: shared `contract_chunks_enriched.json`, `contract_chunks_smart.json`, `contract_chunks.json`
+
+Wage artifacts remain separate and deterministic:
+- `data/wages/wage_tables_<contract_id>.json`
+- fallback: shared `data/wages/wage_tables.json`
+
+### Contract Catalog API
+
+Frontend/runtime contract selection should use:
+
+```bash
+GET /api/contracts
 ```
-GET /api/health
+
+Response includes:
+- `default_contract_id`
+- `contracts[]` with:
+  - `contract_id`
+  - `union_local_id`
+  - `contract_version`
+  - `employer`
+  - `term_start`, `term_end`
+
+Contract-scoped classification options are available via:
+
+```bash
+GET /api/classifications?contract_id=<contract_id>
 ```
 
-### Query Contract
-```
-POST /api/query
-{
-  "question": "What is my overtime rate?",
-  "user_classification": "all_purpose_clerk",
-  "hours_worked": 0,
-  "months_employed": 0
-}
+Contract-aware health/status can be queried via:
+
+```bash
+GET /api/health?contract_id=<contract_id>
 ```
 
-### Wage Lookup
-```
-POST /api/wage
-{
-  "classification": "courtesy_clerk",
-  "months_employed": 48
-}
+Default contract resolution order in `backend/config.py`:
+1. `KARL_CONTRACT_ID` or `CONTRACT_ID` env override
+2. legacy benchmark default (`safeway_pueblo_clerks_2022`) when present
+3. first manifest in `data/manifests/`
+
+## Contract Onboarding
+
+Process contract packages from `data/contracts/<package>/source/` into runtime artifacts:
+
+```bash
+python scripts/onboard_contract_packages.py --package local7_safeway_pueblo_meat_2022 --package local7_kingsoopers_loveland_meat_2019
 ```
 
-## Evaluation
+The onboarding script generates and syncs:
+- manifests (`data/manifests/<contract_id>.json`)
+- chunks (`data/chunks/contract_chunks_*_<contract_id>.json`)
+- structured tables (`data/tables/structured_tables_<contract_id>.json`, when JSON source exists)
+- synthesized table chunks for unmatched structured tables (appendix/wage-table retrieval coverage)
+- wage tables (`data/wages/wage_tables_<contract_id>.json`, deterministic table-registry first, markdown fallback)
+- classification ontology (`data/ontologies/classification_ontology_<contract_id>.json`)
 
-Run the benchmark against the golden test set:
+Contract-pack scorecards run by default and are written per package:
+- `data/contracts/<contract_id>/pack/pack_scorecard.json`
+- Scorecard includes canonical wage-row schema checks (`canonical_wage_rows`) and classification ontology checks.
+
+Package-local review loop artifacts:
+- `data/contracts/<contract_id>/ontology/ingestion_review_queue.json` (auto-generated unresolved/ambiguous review queue)
+- `data/contracts/<contract_id>/ontology/manual_classification_overrides.json` (human-edited deterministic alias overrides consumed on next onboarding run)
+
+Review override workflow:
+
+```bash
+# Generate decision template from unresolved ontology mappings
+python scripts/apply_review_overrides.py --contract-id <contract_id> --emit-template
+
+# Preview coverage/diff impact of reviewed decisions
+python scripts/apply_review_overrides.py --contract-id <contract_id> --decision-file data/contracts/<contract_id>/ontology/review_decisions_template.json
+
+# Apply reviewed decisions into manual override file
+python scripts/apply_review_overrides.py --contract-id <contract_id> --decision-file <reviewed_decisions.json> --apply
+```
+
+Useful onboarding flags:
+
+```bash
+# Block runtime sync when required pack gates fail
+python scripts/onboard_contract_packages.py --package <contract_id> --enforce-pack-gates
+
+# Treat advisory failures as blocking
+python scripts/onboard_contract_packages.py --package <contract_id> --enforce-pack-gates --strict-pack-gates
+```
+
+Run pack acceptance independently:
+
+```bash
+python -m backend.ingest.pack_acceptance --package <contract_id>
+python -m backend.ingest.pack_acceptance --package <contract_id> --strict
+```
+
+Deterministic ingestion outputs now include:
+- Contract-scoped `concept_index_<contract_id>.json` with non-empty concept/question mappings
+- Contract-scoped `language_lexicon_<contract_id>.json` (frozen alias graph)
+- `region_id` on manifests/chunks for hard tenancy filtering (`contract_id` + `region_id`)
+
+Runtime query expansion order is deterministic:
+1. universal slang map
+2. frozen contract language lexicon (`alias_to_canonical`)
+3. manifest `query_routing.slang_to_contract` overrides
+
+## Evaluation Commands
+
+### Canonical runner (recommended)
+
+```bash
+# Benchmark v1
+python -m backend.evaluate_runner --track v1
+
+# Benchmark v2
+python -m backend.evaluate_runner --track v2 --ablation-mode normal
+
+# Escalation precision slice
+python -m backend.evaluate_runner --track escalation
+
+# Paraphrase/slang robustness slice
+python -m backend.evaluate_runner --track paraphrase
+
+# Needle retrieval integrity slice
+python -m backend.evaluate_runner --track needle
+```
+
+`backend.evaluate_runner` performs manifest validation preflight before running the selected track.
+
+### Legacy v1 benchmark
 
 ```bash
 python -m backend.evaluate
 ```
 
-## Models
-
-| Component | Model | Purpose |
-|-----------|-------|---------|
-| Answer Generation | Gemini 2.5 Pro | Final response synthesis |
-| Hypothesis Layer | Gemini 2.5 Flash | Article title prediction |
-| Query Interpreter | Gemini 2.5 Flash | Semantic query analysis |
-| Reranker | Gemini 2.5 Flash | Chunk relevance scoring |
-| Enricher | Gemini 2.5 Flash | Chunk metadata enrichment |
-| Embeddings | all-MiniLM-L6-v2 | Local vector embeddings (no API) |
-
-## Configuration
-
-All features can be toggled via flags in `backend/config.py`:
-
-```python
-CAG_ENABLE_HYPOTHESIS_LAYER = True       # Phase 2
-CAG_ENABLE_FULL_ARTICLE_EXPANSION = True # Phase 3
-CAG_ENABLE_QUERY_INTERPRETER = True      # Phase 4
-CAG_ENABLE_RERANKER = True               # Phase 5
-```
-
-### Environment Variables
-
-Set via `.env` file or shell:
+### v2 comprehensive benchmark
 
 ```bash
-GEMINI_API_KEY=your-api-key
+python -m backend.evaluate_comprehensive --ablation-mode normal
 ```
 
-## Design Principles
+### Compare ablations
 
-1. **Citation Required**: Every claim must cite Article/Section
-2. **No Hallucination**: Only answer from retrieved context
-3. **Safe Refusal**: "I cannot find that in your contract" when uncertain
-4. **Escalation**: High-stakes topics always recommend contacting your steward
+```bash
+python -m backend.evaluate_comprehensive --compare baseline.json ablation.json
+```
+
+### Escalation precision slice
+
+```bash
+python -m backend.evaluate_escalation_precision
+```
+
+### Needle retrieval slice
+
+```bash
+# Requires synthetic needles to be injected first:
+# python scripts/inject_needles.py --inject
+python -m backend.evaluate_needle --bm25-only
+```
+
+`backend.evaluate_gate_check` treats needle thresholds as blocking when
+`data/test_set/needle_results.json` is missing or below floor.
+
+### Release-gate check from artifacts
+
+```bash
+python -m backend.evaluate_gate_check \
+  --v2-results data/test_set/comprehensive_results.json \
+  --escalation-results data/test_set/escalation_precision_results.json \
+  --paraphrase-results data/test_set/paraphrase_results.json \
+  --needle-results data/test_set/needle_results.json
+```
+
+### Manifest schema validation
+
+```bash
+python -m backend.validate_manifests
+```
+
+### CI behavior
+
+- Pull requests: manifest validation + core v2 (`normal`) + escalation slice + isolation/cross-contamination checks + gate-check thresholds
+- Push to `main`: manifest validation + full v2 ablation suite + cross-contamination + gate-check job
+
+`backend.evaluate_cross_contamination` skips automatically when only one manifest is present.
+
+### Contract isolation check
+
+```bash
+python -m backend.test_contract_isolation
+```
+
+### Cross-contamination evaluator (multi-contract scaffold)
+
+```bash
+python -m backend.evaluate_cross_contamination
+```
+
+### Archive benchmark snapshots for git
+
+```bash
+python scripts/archive_eval_snapshot.py --label v0_9_step1
+```
+
+This creates timestamped copies under `data/test_set/history/` so you can review and commit/push them manually.
+
+## Model Stack
+
+| Component | Model |
+|---|---|
+| Answer generation | Gemini 2.5 Pro |
+| Query interpreter | Gemini 2.5 Flash |
+| Reranker | Gemini 2.5 Flash |
+| Enricher | Gemini 2.5 Flash |
+| Embeddings | all-MiniLM-L6-v2 |
+
+## Governance and Scaling Docs
+
+- `legal/GOVERNANCE-CHARTER.md`
+- `legal/DEPLOYMENT-POLICY.md`
+- `legal/RELEASE-GATES.md`
+- `legal/MODEL-UPDATE-POLICY.md`
+- `Evaluation_Plan_v3.md`
+- `CONTRACT_PACK_SPEC_v1.md`
 
 ## License
 
-KARL is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
-
-If you deploy KARL as a service, you must provide the source code to your users.
-
-Unions and workers: use it freely.
-Employers: see `legal/COMMERCIAL-LICENSE.md`.
-
-## What KARL Will Not Do
-
-- Track individual worker behavior
-- Generate disciplinary recommendations
-- Assist with union busting
-- Serve as a productivity surveillance tool
-
-See `legal/ETHICAL-USE.md` for the full ethical use policy.
+KARL is AGPL-3.0 licensed with additional project legal docs in `legal/`.
 
 ## Status
 
-This project is under active development (v0.8). Contributions are welcome — but must
-align with the principles above.
+Active development:
+- Lean architecture is current baseline
+- v2 benchmark hardening is active
+- v3 multi-contract suite is planned but incomplete

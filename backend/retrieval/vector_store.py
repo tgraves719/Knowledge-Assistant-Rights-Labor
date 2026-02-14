@@ -13,8 +13,10 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from backend.config import (
     CHROMA_PERSIST_DIR, EMBEDDING_MODEL, COLLECTION_NAME,
-    CHUNKS_DIR, TOP_K_RESULTS, SIMILARITY_THRESHOLD
+    TOP_K_RESULTS, SIMILARITY_THRESHOLD, CONTRACT_ID
 )
+from backend.chunk_files import resolve_chunk_file
+from backend.contracts import resolve_contract_region_id
 
 # Lazy imports for optional dependencies
 chromadb = None
@@ -138,6 +140,7 @@ class ContractVectorStore:
 
                 metadata = {
                     'contract_id': chunk.get('contract_id', ''),
+                    'region_id': chunk.get('region_id', ''),
                     'article_num': chunk.get('article_num') or 0,
                     'article_title': chunk.get('article_title', ''),
                     'section_num': chunk.get('section_num') or 0,
@@ -181,6 +184,7 @@ class ContractVectorStore:
         query: str,
         n_results: int = None,
         contract_id: str = None,
+        region_id: str = None,
         classification: str = None,
         topic: str = None,
         urgency_tier: str = None,
@@ -215,8 +219,11 @@ class ContractVectorStore:
         where = None
         where_clauses = []
         
+        effective_region_id = None
         if contract_id:
+            effective_region_id = str(region_id or resolve_contract_region_id(contract_id))
             where_clauses.append({"contract_id": contract_id})
+            where_clauses.append({"region_id": effective_region_id})
         if urgency_tier:
             where_clauses.append({"urgency_tier": urgency_tier})
         if doc_type:
@@ -260,6 +267,14 @@ class ContractVectorStore:
                     'similarity': similarity,
                     **results['metadatas'][0][i]
                 }
+
+                # Defense-in-depth tenancy guard.
+                if contract_id and str(chunk.get("contract_id")) != str(contract_id):
+                    continue
+                if effective_region_id:
+                    chunk_region = chunk.get("region_id") or resolve_contract_region_id(str(chunk.get("contract_id") or contract_id))
+                    if str(chunk_region) != str(effective_region_id):
+                        continue
                 
                 # Boost score if chunk matches explicit article reference in query
                 if article_refs:
@@ -341,16 +356,17 @@ class ContractVectorStore:
         return self.collection.count()
 
 
-def load_chunks_from_file(chunks_file: Path = None) -> list[dict]:
+def load_chunks_from_file(chunks_file: Path = None, contract_id: str = CONTRACT_ID) -> list[dict]:
     """Load chunks from JSON file."""
     if chunks_file is None:
-        chunks_file = CHUNKS_DIR / "contract_chunks.json"
-    
+        chunks_file = resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+    if chunks_file is None:
+        raise FileNotFoundError("No chunk artifact found for vector index build")
     with open(chunks_file, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 
-def build_index(clear_existing: bool = False) -> ContractVectorStore:
+def build_index(clear_existing: bool = False, contract_id: str = CONTRACT_ID) -> ContractVectorStore:
     """Build or rebuild the vector index from chunks."""
     store = ContractVectorStore()
     
@@ -362,13 +378,13 @@ def build_index(clear_existing: bool = False) -> ContractVectorStore:
         return store
     
     # Load chunks
-    chunks_file = CHUNKS_DIR / "contract_chunks.json"
-    if not chunks_file.exists():
+    chunks_file = resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+    if not chunks_file or not chunks_file.exists():
         print(f"Error: Chunks file not found: {chunks_file}")
         print("Run parse_contract.py first to generate chunks.")
         return store
     
-    chunks = load_chunks_from_file(chunks_file)
+    chunks = load_chunks_from_file(chunks_file, contract_id=contract_id)
     print(f"Loaded {len(chunks)} chunks from {chunks_file}")
     
     # Add to index

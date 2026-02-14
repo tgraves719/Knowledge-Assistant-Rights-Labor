@@ -22,7 +22,7 @@ from collections import defaultdict
 sys.path.insert(0, str(Path(__file__).parent.parent))
 sys.stdout.reconfigure(encoding='utf-8')
 
-from backend.config import DATA_DIR, GEMINI_API_KEY, LLM_MODEL
+from backend.config import DATA_DIR, GEMINI_API_KEY, LLM_MODEL, CONTRACT_ID
 from backend.retrieval.router import HybridRetriever, classify_intent
 from backend.retrieval.vector_store import ContractVectorStore
 from backend.generation.prompts import build_prompt
@@ -153,8 +153,13 @@ def run_generation_eval(limit: int = None, levels: list = None):
         print(f"Q: {question[:60]}...")
         
         # Retrieval
-        intent = classify_intent(question)
-        retrieval = retriever.retrieve(question, intent, n_results=5)
+        intent = classify_intent(question, contract_id=CONTRACT_ID)
+        retrieval = retriever.retrieve(
+            question,
+            intent,
+            n_results=5,
+            contract_id=CONTRACT_ID,
+        )
         chunks = retrieval["chunks"]
         wage_info = retrieval.get("wage_info")
         

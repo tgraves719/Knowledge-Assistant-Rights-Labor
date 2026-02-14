@@ -8,6 +8,8 @@ from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from enum import Enum
 
+from backend.config import CONTRACT_ID
+
 
 # =============================================================================
 # TAXONOMY DEFINITIONS
@@ -90,7 +92,7 @@ class EnrichedChunk(BaseModel):
         description="Unique identifier: art{N}_sec{M}_{subsection} or lou{N}_{part}"
     )
     contract_id: str = Field(
-        default="safeway_pueblo_clerks_2022",
+        default=CONTRACT_ID,
         description="Contract identifier for multi-tenant filtering"
     )
     
@@ -258,7 +260,7 @@ class EnrichedChunk(BaseModel):
         import json
         return cls(
             chunk_id=metadata.get("chunk_id", ""),
-            contract_id=metadata.get("contract_id", "safeway_pueblo_clerks_2022"),
+            contract_id=metadata.get("contract_id", CONTRACT_ID),
             article_num=metadata.get("article_num") or None,
             article_title=metadata.get("article_title") or None,
             section_num=metadata.get("section_num") or None,

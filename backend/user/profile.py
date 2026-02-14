@@ -14,6 +14,12 @@ from datetime import date, datetime
 from typing import Optional, Literal
 from enum import Enum
 import math
+import json
+import re
+
+from backend.contracts import get_contract_catalog_entry
+from backend.wage_files import resolve_wage_file
+from backend.classification_ontology_files import resolve_classification_ontology_file
 
 
 class EmploymentType(str, Enum):
@@ -34,9 +40,9 @@ class UserProfile:
     session_id: str = ""
 
     # Contract context
-    contract_id: str = "safeway_pueblo_clerks_2022"  # Default for now
-    union_local: str = "UFCW Local 7"
-    employer: str = "Safeway"
+    contract_id: str = ""
+    union_local: str = ""
+    employer: str = ""
 
     # Job info
     classification: Optional[str] = None
@@ -49,6 +55,15 @@ class UserProfile:
     _estimated_hours: Optional[int] = field(default=None, repr=False)
 
     # Profile completeness
+    def __post_init__(self):
+        """Fill contract metadata when a contract is explicitly selected."""
+        meta = get_contract_catalog_entry(self.contract_id)
+        if meta:
+            if not self.union_local:
+                self.union_local = meta.get("union_local_id", "")
+            if not self.employer:
+                self.employer = meta.get("employer", "")
+
     @property
     def is_complete(self) -> bool:
         """Check if we have enough info for accurate wage lookups."""
@@ -162,9 +177,9 @@ class UserProfile:
 
         return cls(
             session_id=data.get("session_id", ""),
-            contract_id=data.get("contract_id", "safeway_pueblo_clerks_2022"),
-            union_local=data.get("union_local", "UFCW Local 7"),
-            employer=data.get("employer", "Safeway"),
+            contract_id=data.get("contract_id", ""),
+            union_local=data.get("union_local", ""),
+            employer=data.get("employer", ""),
             classification=data.get("classification"),
             employment_type=employment_type,
             hire_date=hire_date,
@@ -254,12 +269,61 @@ def get_user_profile(session_id: str) -> UserProfile:
     return _session_profiles[session_id]
 
 
+def _normalize_profile_classification_value(
+    value: Optional[str],
+    contract_id: Optional[str] = None,
+) -> Optional[str]:
+    """
+    Normalize classification input from UI/API into canonical option value.
+
+    Accepts canonical values, display labels, or free-form text and returns a
+    stable snake_case key for runtime wage lookup.
+    """
+    if value is None:
+        return None
+
+    raw = str(value).strip()
+    if not raw:
+        return None
+    lowered = raw.lower()
+
+    if contract_id:
+        options = get_classification_options(contract_id=contract_id)
+        for opt in options:
+            candidate = str(opt.get("value") or "").strip().lower()
+            if candidate and candidate == lowered:
+                return candidate
+        for opt in options:
+            label = str(opt.get("label") or "").strip().lower()
+            candidate = str(opt.get("value") or "").strip().lower()
+            if label and label == lowered and candidate:
+                return candidate
+
+    for key, label in CLASSIFICATION_DISPLAY_NAMES.items():
+        if lowered == key.lower() or lowered == str(label).strip().lower():
+            return key
+
+    normalized = re.sub(r"[^a-z0-9]+", "_", lowered).strip("_")
+    return normalized or lowered
+
+
 def update_user_profile(session_id: str, updates: dict) -> UserProfile:
     """Update user profile with new data."""
     profile = get_user_profile(session_id)
 
+    if "contract_id" in updates:
+        profile.contract_id = updates["contract_id"]
+        meta = get_contract_catalog_entry(profile.contract_id)
+        if meta:
+            # Keep profile context aligned with selected contract.
+            profile.union_local = meta.get("union_local_id", profile.union_local)
+            profile.employer = meta.get("employer", profile.employer)
+
     if "classification" in updates:
-        profile.classification = updates["classification"]
+        profile.classification = _normalize_profile_classification_value(
+            updates["classification"],
+            contract_id=profile.contract_id,
+        )
 
     if "employment_type" in updates:
         try:
@@ -275,9 +339,6 @@ def update_user_profile(session_id: str, updates: dict) -> UserProfile:
 
     if "exact_hours" in updates:
         profile.set_estimated_hours(int(updates["exact_hours"]))
-
-    if "contract_id" in updates:
-        profile.contract_id = updates["contract_id"]
 
     if "employer" in updates:
         profile.employer = updates["employer"]
@@ -317,9 +378,187 @@ CLASSIFICATION_DISPLAY_NAMES = {
 }
 
 
-def get_classification_options() -> list[dict]:
-    """Get classification options for onboarding UI."""
-    return [
-        {"value": key, "label": label}
-        for key, label in CLASSIFICATION_DISPLAY_NAMES.items()
-    ]
+_classification_cache_by_contract: dict[str, list[dict]] = {}
+
+
+def _prettify_classification_label(value: str) -> str:
+    """Generate a readable fallback label from a normalized classification value."""
+    cleaned = re.sub(r"[_\s]+", " ", (value or "").strip()).strip()
+    if not cleaned:
+        return "Unknown Classification"
+
+    words = []
+    for token in cleaned.split(" "):
+        upper = token.upper()
+        if upper in {"HR", "GM", "DUG", "PTO", "ASST"}:
+            words.append(upper)
+        else:
+            words.append(token.capitalize())
+    return " ".join(words)
+
+
+def _normalize_classification_label(label: str) -> str:
+    """Normalize extracted classification labels for consistent UI display."""
+    cleaned = re.sub(r"\s+", " ", (label or "").strip()).strip(" .")
+    if not cleaned:
+        return ""
+
+    # Expand two-digit years in slash dates to avoid ambiguity (e.g., 5/20/77 -> 5/20/1977).
+    def _expand_year(m: re.Match) -> str:
+        month, day, year2 = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        year4 = 1900 + year2 if year2 >= 50 else 2000 + year2
+        return f"{month}/{day}/{year4}"
+
+    cleaned = re.sub(r"(?<!\d)(\d{1,2})/(\d{1,2})/(\d{2})(?!\d)", _expand_year, cleaned)
+
+    # Title-case all-caps OCR labels while preserving a few acronyms.
+    letters = [ch for ch in cleaned if ch.isalpha()]
+    is_mostly_upper = bool(letters) and (sum(1 for ch in letters if ch.isupper()) / len(letters) >= 0.6)
+    if is_mostly_upper:
+        cleaned = cleaned.title()
+        for acronym in ("Hr", "Gm", "Dug", "Pto", "Ufcw", "Asst"):
+            cleaned = re.sub(rf"\b{acronym}\b", acronym.upper(), cleaned)
+
+    return cleaned
+
+
+def _load_contract_classification_options_from_wages(contract_id: str) -> list[dict]:
+    """Build classification options from contract-scoped wage artifacts when available."""
+    wages_file = resolve_wage_file(contract_id=contract_id, allow_shared_fallback=False)
+    if not wages_file or not wages_file.exists():
+        return []
+
+    try:
+        with open(wages_file, "r", encoding="utf-8") as f:
+            wages_data = json.load(f)
+    except Exception:
+        return []
+
+    classes = wages_data.get("classifications") or {}
+    options: list[dict] = []
+    for key, cls in classes.items():
+        value = (cls.get("normalized_name") or key or "").strip().lower()
+        if not value:
+            continue
+        label = (cls.get("name") or "").strip()
+        if not label:
+            label = CLASSIFICATION_DISPLAY_NAMES.get(value) or _prettify_classification_label(value)
+        label = _normalize_classification_label(label) or _prettify_classification_label(value)
+        options.append({"value": value, "label": label})
+
+    # Preserve first-seen uniqueness by value.
+    seen = set()
+    deduped: list[dict] = []
+    for opt in options:
+        if opt["value"] in seen:
+            continue
+        seen.add(opt["value"])
+        deduped.append(opt)
+    return deduped
+
+
+def _load_contract_classification_options_from_ontology(contract_id: str) -> list[dict]:
+    """Build classification options from contract ontology decisions when available."""
+    ontology_file = resolve_classification_ontology_file(
+        contract_id=contract_id,
+        allow_shared_fallback=False,
+    )
+    if not ontology_file or not ontology_file.exists():
+        return []
+
+    try:
+        with open(ontology_file, "r", encoding="utf-8") as f:
+            ontology_data = json.load(f)
+    except Exception:
+        return []
+
+    decisions = ontology_data.get("decisions") or []
+    if not isinstance(decisions, list):
+        return []
+
+    options: list[dict] = []
+    for decision in decisions:
+        if not isinstance(decision, dict):
+            continue
+        value = str(decision.get("source_key") or "").strip().lower()
+        if not value:
+            continue
+        labels = decision.get("source_labels") or []
+        label = ""
+        if isinstance(labels, list):
+            for raw in labels:
+                label = _normalize_classification_label(str(raw or ""))
+                if label:
+                    break
+        if not label:
+            label = CLASSIFICATION_DISPLAY_NAMES.get(value) or _prettify_classification_label(value)
+        options.append({"value": value, "label": label})
+
+    # Stable first-seen dedupe.
+    seen = set()
+    deduped: list[dict] = []
+    for opt in options:
+        if opt["value"] in seen:
+            continue
+        seen.add(opt["value"])
+        deduped.append(opt)
+    return deduped
+
+
+def get_classification_options(contract_id: Optional[str] = None) -> list[dict]:
+    """
+    Get classification options for onboarding/profile UI.
+
+    Resolution order:
+    1) contract-specific wage classifications (when contract_id provided)
+    2) static legacy map fallback
+    """
+    if contract_id:
+        if contract_id in _classification_cache_by_contract:
+            return _classification_cache_by_contract[contract_id]
+        options = _load_contract_classification_options_from_wages(contract_id)
+        ontology_options = _load_contract_classification_options_from_ontology(contract_id)
+        if ontology_options:
+            existing_values = {o["value"] for o in options}
+            for opt in ontology_options:
+                if opt["value"] in existing_values:
+                    continue
+                options.append(opt)
+                existing_values.add(opt["value"])
+        contract_id_lower = contract_id.lower()
+
+        # Clerks contracts often have role variants not present in wage tables.
+        # Include legacy clerks role map as supplemental options.
+        if "clerks" in contract_id_lower:
+            existing = {o["value"] for o in options}
+            for key, label in CLASSIFICATION_DISPLAY_NAMES.items():
+                if key in existing:
+                    continue
+                options.append({"value": key, "label": label})
+
+        if options:
+            _classification_cache_by_contract[contract_id] = options
+            return options
+
+    return [{"value": key, "label": label} for key, label in CLASSIFICATION_DISPLAY_NAMES.items()]
+
+
+def resolve_classification_display_name(
+    classification: Optional[str],
+    contract_id: Optional[str] = None,
+) -> Optional[str]:
+    """Resolve a human-readable classification label for API responses."""
+    if not classification:
+        return None
+
+    key = str(classification).strip().lower()
+    if not key:
+        return None
+
+    if contract_id:
+        options = get_classification_options(contract_id=contract_id)
+        for opt in options:
+            if opt.get("value") == key:
+                return opt.get("label")
+
+    return CLASSIFICATION_DISPLAY_NAMES.get(key) or _prettify_classification_label(key)
