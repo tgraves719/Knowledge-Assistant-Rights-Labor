@@ -1,7 +1,7 @@
 {
   "schema_version": "false_unavailable_eval_v2",
   "dataset_schema_version": "false_unavailable_test_v1",
-  "timestamp_utc": "2026-02-15T18:43:54.899846+00:00",
+  "timestamp_utc": "2026-02-15T19:11:33.937433+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_test.json",
   "bm25_only": true,
   "overall": {

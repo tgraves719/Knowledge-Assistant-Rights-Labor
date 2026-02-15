@@ -1,6 +1,6 @@
 {
   "schema_version": "multi_contract_eval_v1",
-  "timestamp_utc": "2026-02-15T18:43:35.238128+00:00",
+  "timestamp_utc": "2026-02-15T19:11:12.690208+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\multi_contract_v2.json",
   "bm25_only": true,
   "n_results": 5,

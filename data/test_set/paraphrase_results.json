@@ -1,6 +1,6 @@
 {
   "schema_version": "paraphrase_eval_v1",
-  "timestamp_utc": "2026-02-15T18:43:39.880915+00:00",
+  "timestamp_utc": "2026-02-15T19:11:17.631238+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\paraphrase_test.json",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "n_results": 5,

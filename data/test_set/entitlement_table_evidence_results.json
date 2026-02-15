@@ -1,7 +1,7 @@
 {
   "schema_version": "entitlement_table_evidence_eval_v1",
   "dataset_schema_version": "entitlement_table_evidence_test_v1",
-  "timestamp_utc": "2026-02-15T18:44:02.062804+00:00",
+  "timestamp_utc": "2026-02-15T19:11:41.948839+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\entitlement_table_evidence_test.json",
   "overall": {
     "passed": 12,

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-02-14T16:02:42.975936",
+    "timestamp": "2026-02-15T12:10:34.094654",
     "ablation_mode": "normal",
     "ablation_description": "Standard retrieval with all features enabled",
     "bucket_filter": null,
@@ -17,8 +17,8 @@
   },
   "summary": {
     "total": 55,
-    "passed": 55,
-    "accuracy": 1.0,
+    "passed": 54,
+    "accuracy": 0.9818181818181818,
     "by_level": {
       "1": {
         "passed": 5,
@@ -45,7 +45,7 @@
         "total": 5
       },
       "7": {
-        "passed": 5,
+        "passed": 4,
         "total": 5
       },
       "8": {
@@ -63,7 +63,7 @@
     },
     "by_bucket": {
       "contract_only": {
-        "passed": 26,
+        "passed": 25,
         "total": 26
       },
       "exact_numeric": {
@@ -109,11 +109,13 @@
         "Appendix A"
       ],
       "retrieved": [
+        "Article 4",
+        "Article 5",
+        "Article 7",
         "Article 8",
         "Article 9",
-        "Article 42",
-        "Article 58",
-        "Appendix A"
+        "Appendix A",
+        "Article 58"
       ],
       "passed": true,
       "notes": ""
@@ -128,9 +130,9 @@
         "Article 26"
       ],
       "retrieved": [
+        "Article 5",
         "Article 26",
-        "Article 10",
-        "Article 27"
+        "Article 10"
       ],
       "passed": true,
       "notes": ""
@@ -165,8 +167,8 @@
         "Article 16"
       ],
       "retrieved": [
-        "Article 16",
         "Article 35",
+        "Article 16",
         "Article 17"
       ],
       "passed": true,
@@ -183,13 +185,15 @@
         "Article 8"
       ],
       "retrieved": [
+        "Article 4",
+        "Article 5",
+        "Article 7",
         "Article 8",
-        "Article 18",
         "Article 9",
-        "Article 28",
-        "Article 35",
+        "Article 10",
+        "Appendix A",
         "Article 58",
-        "Appendix A"
+        "Article 35"
       ],
       "passed": true,
       "notes": ""
@@ -205,9 +209,11 @@
         "Article 18"
       ],
       "retrieved": [
+        "Article 17",
+        "Article 32",
         "Article 40",
-        "Article 10",
-        "Article 17"
+        "Article 35",
+        "Article 10"
       ],
       "passed": true,
       "notes": ""
@@ -223,8 +229,10 @@
         "Article 29"
       ],
       "retrieved": [
-        "Article 27",
-        "Article 29"
+        "Article 2",
+        "Article 29",
+        "Article 10",
+        "Article 31"
       ],
       "passed": true,
       "notes": ""
@@ -239,7 +247,10 @@
         "Article 48"
       ],
       "retrieved": [
+        "Article 3",
         "Article 43",
+        "Article 6",
+        "Article 9",
         "Article 48"
       ],
       "passed": true,
@@ -255,10 +266,10 @@
         "Article 12"
       ],
       "retrieved": [
-        "Article 12",
-        "Article 28",
+        "Article 5",
         "Article 10",
-        "Article 35"
+        "Article 12",
+        "Article 28"
       ],
       "passed": true,
       "notes": ""
@@ -275,12 +286,13 @@
         "Appendix A"
       ],
       "retrieved": [
+        "Article 4",
         "Article 5",
         "Article 7",
         "Article 8",
         "Article 9",
-        "Article 58",
         "Appendix A",
+        "Article 58",
         "Article 10"
       ],
       "passed": true,
@@ -297,6 +309,8 @@
       ],
       "retrieved": [
         "Article 10",
+        "Article 2",
+        "Article 7",
         "Article 27"
       ],
       "passed": true,
@@ -312,10 +326,8 @@
         "Article 33"
       ],
       "retrieved": [
-        "Article 12",
-        "Article 28",
-        "Article 27",
-        "Article 33"
+        "Article 33",
+        "Article 27"
       ],
       "passed": true,
       "notes": ""
@@ -332,11 +344,14 @@
         "Appendix A"
       ],
       "retrieved": [
-        "Article 12",
-        "Article 28",
-        "Article 17",
-        "Article 35",
-        "Article 16"
+        "Article 4",
+        "Article 5",
+        "Article 16",
+        "Article 7",
+        "Article 13",
+        "Article 56",
+        "Article 15",
+        "Article 17"
       ],
       "passed": true,
       "notes": ""
@@ -353,8 +368,13 @@
         "Article 31"
       ],
       "retrieved": [
+        "Article 2",
         "Article 29",
-        "Letter of Understanding"
+        "Article 4",
+        "Article 5",
+        "Article 7",
+        "Article 8",
+        "Article 10"
       ],
       "passed": true,
       "notes": ""
@@ -370,8 +390,10 @@
         "Letter of Understanding"
       ],
       "retrieved": [
+        "Article 17",
+        "Article 32",
         "Article 40",
-        "Article 58"
+        "Article 35"
       ],
       "passed": true,
       "notes": ""
@@ -386,8 +408,14 @@
         "Article 29"
       ],
       "retrieved": [
+        "Article 10",
         "Article 29",
-        "Article 10"
+        "Article 2",
+        "Article 4",
+        "Article 5",
+        "Article 7",
+        "Article 8",
+        "Article 31"
       ],
       "passed": true,
       "notes": ""
@@ -402,11 +430,15 @@
         "Article 32"
       ],
       "retrieved": [
+        "Article 4",
+        "Article 5",
+        "Article 7",
+        "Article 8",
+        "Article 10",
         "Article 18",
-        "Article 28",
-        "Article 32",
         "Article 35",
         "Article 29",
+        "Article 32",
         "Article 45"
       ],
       "passed": true,
@@ -425,8 +457,9 @@
       ],
       "retrieved": [
         "Article 10",
-        "Article 17",
-        "Article 16"
+        "Article 16",
+        "Article 13",
+        "Article 15"
       ],
       "passed": true,
       "notes": ""
@@ -442,8 +475,10 @@
         "Article 48"
       ],
       "retrieved": [
-        "Article 43",
+        "Article 2",
         "Article 29",
+        "Article 10",
+        "Article 31",
         "Article 48"
       ],
       "passed": true,
@@ -459,7 +494,13 @@
         "Article 29"
       ],
       "retrieved": [
-        "Article 29"
+        "Article 29",
+        "Article 2",
+        "Article 4",
+        "Article 5",
+        "Article 7",
+        "Article 8",
+        "Article 10"
       ],
       "passed": true,
       "notes": ""
@@ -476,8 +517,8 @@
       "retrieved": [
         "Article 10",
         "Article 18",
-        "Article 28",
-        "Article 40"
+        "Article 21",
+        "Article 28"
       ],
       "passed": true,
       "notes": ""
@@ -493,9 +534,9 @@
       ],
       "retrieved": [
         "Article 10",
+        "Article 5",
         "Article 12",
-        "Article 28",
-        "Article 17"
+        "Article 28"
       ],
       "passed": true,
       "notes": ""
@@ -514,7 +555,9 @@
         "Article 8",
         "Article 44",
         "Article 17",
-        "Article 42"
+        "Article 10",
+        "Article 16",
+        "Article 19"
       ],
       "passed": true,
       "notes": ""
@@ -531,6 +574,8 @@
       "retrieved": [
         "Article 46",
         "Article 43",
+        "Article 5",
+        "Article 10",
         "Article 12",
         "Article 28",
         "Article 45"
@@ -568,10 +613,12 @@
       ],
       "retrieved": [
         "Article 8",
+        "Article 17",
         "Article 46",
         "Article 9",
-        "Article 58",
-        "Appendix A"
+        "Article 26",
+        "Appendix A",
+        "Article 58"
       ],
       "passed": true,
       "notes": ""
@@ -587,6 +634,7 @@
       ],
       "retrieved": [
         "Article 2",
+        "Article 4",
         "Article 5",
         "Article 7",
         "Article 8",
@@ -606,9 +654,12 @@
         "Article 42"
       ],
       "retrieved": [
+        "Article 5",
+        "Article 10",
         "Article 12",
         "Article 28",
         "Article 17",
+        "Article 58",
         "Article 42"
       ],
       "passed": true,
@@ -625,7 +676,9 @@
       ],
       "retrieved": [
         "Article 40",
-        "Article 58"
+        "Article 17",
+        "Article 32",
+        "Article 35"
       ],
       "passed": true,
       "notes": ""
@@ -641,6 +694,8 @@
       ],
       "retrieved": [
         "Article 46",
+        "Article 10",
+        "Article 5",
         "Article 8",
         "Article 9",
         "Article 12",
@@ -660,8 +715,11 @@
       ],
       "retrieved": [
         "Article 46",
+        "Article 17",
+        "Article 9",
         "Article 43",
-        "Article 45"
+        "Article 45",
+        "Article 26"
       ],
       "passed": true,
       "notes": ""
@@ -676,15 +734,16 @@
         "Article 46"
       ],
       "retrieved": [
+        "Article 5",
+        "Article 10",
         "Article 12",
         "Article 28",
-        "Article 10",
         "Article 16",
         "Article 17",
-        "Article 46"
+        "Article 58"
       ],
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected ['Article 46'], got ['Article 5', 'Article 10', 'Article 12']"
     },
     {
       "test_id": 34,
@@ -713,8 +772,10 @@
       ],
       "retrieved": [
         "Article 17",
-        "Article 35",
-        "Article 10"
+        "Article 10",
+        "Article 16",
+        "Article 19",
+        "Article 35"
       ],
       "passed": true,
       "notes": ""
@@ -729,7 +790,10 @@
         "Article 35"
       ],
       "retrieved": [
-        "Article 35"
+        "Article 35",
+        "Article 32",
+        "Article 17",
+        "Article 40"
       ],
       "passed": true,
       "notes": ""
@@ -747,8 +811,9 @@
       "retrieved": [
         "Article 48",
         "Article 58",
-        "Article 12",
-        "Article 28"
+        "Article 5",
+        "Article 10",
+        "Article 12"
       ],
       "passed": true,
       "notes": ""
@@ -766,8 +831,11 @@
       "retrieved": [
         "Article 51",
         "Article 43",
+        "Article 46",
+        "Article 9",
+        "Article 17",
         "Article 45",
-        "Article 46"
+        "Article 26"
       ],
       "passed": true,
       "notes": ""
@@ -783,9 +851,9 @@
       ],
       "retrieved": [
         "Article 32",
-        "Article 12",
-        "Article 28",
-        "Article 35"
+        "Article 35",
+        "Article 17",
+        "Article 40"
       ],
       "passed": true,
       "notes": ""
@@ -800,8 +868,10 @@
         "Letter of Understanding"
       ],
       "retrieved": [
+        "Article 3",
         "Article 8",
         "Article 43",
+        "Article 6",
         "Article 9",
         "Article 52",
         "Letter of Understanding"
@@ -821,9 +891,10 @@
       ],
       "retrieved": [
         "Article 6",
+        "Article 5",
+        "Article 10",
         "Article 12",
         "Article 28",
-        "Article 43",
         "Article 46",
         "Article 53"
       ],
@@ -842,10 +913,12 @@
       ],
       "retrieved": [
         "Article 3",
+        "Article 5",
+        "Article 10",
         "Article 12",
         "Article 28",
-        "Article 4",
-        "Article 48"
+        "Article 58",
+        "Article 4"
       ],
       "passed": true,
       "notes": ""
@@ -862,11 +935,11 @@
       ],
       "retrieved": [
         "Article 36",
-        "Article 43",
+        "Article 5",
+        "Article 10",
         "Article 12",
         "Article 28",
-        "Article 45",
-        "Article 46"
+        "Article 43"
       ],
       "passed": true,
       "notes": ""
@@ -882,8 +955,10 @@
       ],
       "retrieved": [
         "Article 46",
+        "Article 10",
         "Article 17",
-        "Article 10"
+        "Article 16",
+        "Article 19"
       ],
       "passed": true,
       "notes": ""
@@ -898,7 +973,10 @@
         "Article 46"
       ],
       "retrieved": [
-        "Article 46"
+        "Article 46",
+        "Article 17",
+        "Article 9",
+        "Article 26"
       ],
       "passed": true,
       "notes": ""
@@ -913,11 +991,13 @@
         "Article 16"
       ],
       "retrieved": [
+        "Article 5",
+        "Article 10",
         "Article 12",
         "Article 28",
-        "Article 17",
         "Article 35",
-        "Article 16"
+        "Article 16",
+        "Article 17"
       ],
       "passed": true,
       "notes": ""
@@ -997,9 +1077,14 @@
       ],
       "retrieved": [
         "Article 45",
-        "Article 29",
-        "Article 17",
-        "Article 10"
+        "Article 2",
+        "Article 4",
+        "Article 5",
+        "Article 7",
+        "Article 8",
+        "Article 10",
+        "Article 31",
+        "Article 29"
       ],
       "passed": true,
       "notes": ""
@@ -1037,7 +1122,9 @@
       ],
       "retrieved": [
         "Article 46",
-        "Article 10"
+        "Article 17",
+        "Article 9",
+        "Article 26"
       ],
       "passed": true,
       "notes": ""
