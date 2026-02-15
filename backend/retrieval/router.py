@@ -489,7 +489,19 @@ def _contract_classification_aliases(contract_id: str = CONTRACT_ID) -> dict[str
 
 
 def _normalize_query_text(text: str) -> str:
-    return re.sub(r"\s+", " ", str(text or "").lower()).strip()
+    """
+    Normalize free text for deterministic lexical matching.
+
+    Notes:
+    - Keeps alphanumerics only (punctuation-insensitive matching).
+    - Collapses possessives/plurals like "cc's" -> "ccs" so acronym aliases
+      remain matchable.
+    """
+    raw = str(text or "").lower()
+    raw = raw.replace("’", "'").replace("`", "'")
+    raw = re.sub(r"(?<=\w)'(?=\w)", "", raw)
+    raw = re.sub(r"[^a-z0-9]+", " ", raw)
+    return re.sub(r"\s+", " ", raw).strip()
 
 
 def normalize_classification_for_contract(
@@ -882,10 +894,11 @@ def build_query_plan(
     topic_article_map = get_topic_article_map(contract_id)
     class_article_map = get_classification_article_map(contract_id)
     anchors = list(topic_article_map.get(topic, []) if topic else [])
-    classes_for_routing = list(mentioned_classes)
-    if primary_class and primary_class not in classes_for_routing:
-        classes_for_routing.insert(0, primary_class)
-    for cls in classes_for_routing:
+    query_mentioned_classes = list(mentioned_classes)
+    classes_for_anchors = list(query_mentioned_classes)
+    if primary_class and primary_class not in classes_for_anchors:
+        classes_for_anchors.insert(0, primary_class)
+    for cls in classes_for_anchors:
         anchors.extend(class_article_map.get(cls, []) or [])
 
     explicit_articles: list[int] = []
@@ -897,17 +910,17 @@ def build_query_plan(
     anchors.extend(explicit_articles)
     anchors = _normalize_article_list(anchors)
 
-    comparison_mode = _is_role_comparison_query(query_text) and len(classes_for_routing) >= 2
+    comparison_mode = _is_role_comparison_query(query_text) and len(query_mentioned_classes) >= 2
     required_slots = _required_evidence_slots_for_plan(
         topic=topic,
         comparison_mode=comparison_mode,
-        mentioned_classifications=classes_for_routing,
+        mentioned_classifications=query_mentioned_classes,
     )
     return QueryPlan(
         contract_id=contract_id,
         topic=topic,
         primary_classification=primary_class,
-        mentioned_classifications=classes_for_routing,
+        mentioned_classifications=query_mentioned_classes,
         comparison_mode=comparison_mode,
         article_anchors=anchors,
         required_evidence_slots=required_slots,
@@ -933,6 +946,9 @@ def is_wage_query(query: str) -> tuple[bool, list]:
     wage_patterns = [
         r"how much (do|does|will|would|should) .+ (make|earn|get paid|be making|be earning)",
         r"what (is|are|should) (my|the) (pay|wage|rate)",
+        r"what (is|are) .+ (pay|wage|rate)",
+        r"what (do|does) .+ (make|earn|get paid)",
+        r"what .+ (pay|wage|rate) .+ for",
         r"what (is|are|'s) the .+ rate of pay",
         r"what should i (make|be making|earn|be earning)",
         r"\$\d+.*hour",  # Dollar amounts with hour
@@ -941,6 +957,9 @@ def is_wage_query(query: str) -> tuple[bool, list]:
     for pattern in wage_patterns:
         if re.search(pattern, query_lower):
             matched.append(f"pattern:{pattern}")
+
+    if re.search(r"\b(pay|wage|rate|hourly)\b", query_lower) and re.search(r"\b(for|as)\b", query_lower):
+        matched.append("pattern:role_targeted_pay_for")
 
     return len(matched) > 0, matched
 
@@ -1116,6 +1135,16 @@ def classify_intent(query: str, user_classification: str = None, contract_id: st
         if contextual_wage:
             is_wage = True
             wage_matches = wage_matches + contextual_matches
+    if not is_wage and classes_for_routing:
+        query_norm = _normalize_query_text(query)
+        if re.search(r"\b(pay|wage|rate|make|earn|paid|hourly)\b", query_norm):
+            is_wage = True
+            wage_matches = wage_matches + ["contextual_role_targeted_wage"]
+
+    if is_wage and classes_for_routing:
+        # Explicit role mention in the user query should override profile role
+        # for wage targeting.
+        classification = classes_for_routing[0]
     high_stakes_topic, active_urgent_context, hs_matches = classify_high_stakes_context(query)
 
     # Determine primary intent

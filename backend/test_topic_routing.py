@@ -155,6 +155,65 @@ def _test_role_comparison_query_maps_multiple_classifications() -> None:
     )
 
 
+def _test_role_targeted_wage_followup_prefers_explicit_role() -> None:
+    contract_id = "local7_safeway_pueblo_clerks_2022"
+    profile_classification = "nonfood_gm_floral"
+    retriever = HybridRetriever(vector_store=None)
+
+    followup_query = "you dont know what the pay is for cc's"
+    intent = classify_intent(
+        followup_query,
+        user_classification=profile_classification,
+        contract_id=contract_id,
+    )
+    assert intent.intent_type == "wage", (
+        f"Expected wage intent for role-targeted follow-up, got: {intent.intent_type}"
+    )
+    assert intent.classification == "courtesy_clerk", (
+        f"Expected explicit CC role targeting, got: {intent.classification}"
+    )
+
+    result = retriever.retrieve(
+        query=followup_query,
+        intent=intent,
+        n_results=8,
+        use_hybrid=True,
+        contract_id=contract_id,
+    )
+    wage_info = result.get("wage_info") or {}
+    assert wage_info, "Expected deterministic wage lookup for explicit CC follow-up query."
+    assert wage_info.get("classification_key") == "courtesy_clerk", (
+        f"Expected courtesy_clerk wage lookup key, got: {wage_info.get('classification_key')}"
+    )
+
+    formal_query = "what does a courtesy clerk make"
+    formal_intent = classify_intent(
+        formal_query,
+        user_classification=profile_classification,
+        contract_id=contract_id,
+    )
+    assert formal_intent.intent_type == "wage", (
+        f"Expected wage intent for formal role-targeted phrasing, got: {formal_intent.intent_type}"
+    )
+    assert formal_intent.classification == "courtesy_clerk", (
+        f"Expected courtesy_clerk classification for formal role-targeted phrasing, got: {formal_intent.classification}"
+    )
+
+    self_query = "what is my pay"
+    self_intent = classify_intent(
+        self_query,
+        user_classification=profile_classification,
+        contract_id=contract_id,
+    )
+    assert self_intent.intent_type == "wage", (
+        f"Expected wage intent for self-pay query, got: {self_intent.intent_type}"
+    )
+    assert self_intent.classification == profile_classification, (
+        "Expected profile classification to remain active when no explicit target role "
+        f"is mentioned. Got: {self_intent.classification}"
+    )
+
+
 def main() -> None:
     original_vector = router_module.HYBRID_VECTOR_WEIGHT
     original_keyword = router_module.HYBRID_KEYWORD_WEIGHT
@@ -170,6 +229,7 @@ def main() -> None:
         _test_vacation_entitlement_query_surfaces_section_42()
         _test_holiday_work_premium_query_maps_to_premium_article()
         _test_role_comparison_query_maps_multiple_classifications()
+        _test_role_targeted_wage_followup_prefers_explicit_role()
     finally:
         router_module.HYBRID_VECTOR_WEIGHT = original_vector
         router_module.HYBRID_KEYWORD_WEIGHT = original_keyword

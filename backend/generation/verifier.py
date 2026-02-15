@@ -362,6 +362,15 @@ def format_response_with_sources(
                 continue
             citations.append(chunk_citation)
     
+    def _table_id_to_article_num(table_id: str) -> int | None:
+        match = re.search(r"tbl_art(\d+)_", str(table_id or "").lower())
+        if not match:
+            return None
+        try:
+            return int(match.group(1))
+        except ValueError:
+            return None
+
     sources = []
     for citation in citations:
         match = re.search(r'Article\s+(\d+)', citation)
@@ -373,7 +382,10 @@ def format_response_with_sources(
                     sources.append({
                         'citation': citation,
                         'article_title': chunk.get('article_title', ''),
-                        'doc_type': chunk.get('doc_type', 'cba')
+                        'doc_type': chunk.get('doc_type', 'cba'),
+                        'article_num': chunk.get('article_num'),
+                        'section_num': chunk.get('section_num'),
+                        'subsection': chunk.get('subsection'),
                     })
                     break
             continue
@@ -388,6 +400,9 @@ def format_response_with_sources(
                 'citation': citation,
                 'article_title': chunk.get('article_title', ''),
                 'doc_type': chunk.get('doc_type', 'appendix'),
+                'article_num': chunk.get('article_num'),
+                'section_num': chunk.get('section_num'),
+                'subsection': chunk.get('subsection'),
             })
             break
     
@@ -395,10 +410,18 @@ def format_response_with_sources(
     if wage_info:
         wage_citation = wage_info.get('citation') or 'Appendix A'
         if not any((s.get("citation") or "").strip().lower() == str(wage_citation).strip().lower() for s in sources):
+            first_table = next(
+                (row for row in (wage_info.get("table_evidence") or []) if isinstance(row, dict) and row.get("table_id")),
+                None,
+            )
+            wage_article_num = _table_id_to_article_num((first_table or {}).get("table_id") if first_table else "")
             sources.append({
                 'citation': wage_citation,
                 'article_title': 'Wage Tables',
-                'doc_type': 'appendix'
+                'doc_type': 'appendix',
+                'article_num': wage_article_num,
+                'section_num': None,
+                'subsection': None,
             })
         for row in (wage_info.get("table_evidence") or []):
             if not isinstance(row, dict):
@@ -417,6 +440,11 @@ def format_response_with_sources(
                 'citation': citation,
                 'article_title': 'Wage Tables',
                 'doc_type': 'appendix',
+                'article_num': _table_id_to_article_num(table_id),
+                'section_num': None,
+                'subsection': None,
+                'table_id': table_id,
+                'row_index': row_index,
             })
     
     return {

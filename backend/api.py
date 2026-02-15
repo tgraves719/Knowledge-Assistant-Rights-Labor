@@ -1618,7 +1618,7 @@ async def get_article(article_num: int, contract_id: Optional[str] = None):
             section_num=chunk.get('section_num') or 0,
             subsection=chunk.get('subsection'),
             citation=chunk.get('citation', ''),
-            content=chunk.get('content', ''),
+            content=chunk.get('content_with_tables') or chunk.get('content', ''),
             summary=chunk.get('summary')
         ))
 
@@ -1688,12 +1688,12 @@ async def get_section(
     # If there are multiple subsections, combine content
     if len(matching_chunks) > 1:
         combined_content = "\n\n".join([
-            f"**{c.get('subsection', '')}**: {c.get('content', '')}"
-            if c.get('subsection') else c.get('content', '')
+            f"**{c.get('subsection', '')}**: {c.get('content_with_tables') or c.get('content', '')}"
+            if c.get('subsection') else (c.get('content_with_tables') or c.get('content', ''))
             for c in matching_chunks
         ])
     else:
-        combined_content = chunk.get('content', '')
+        combined_content = chunk.get('content_with_tables') or chunk.get('content', '')
 
     return SectionResponse(
         article_num=article_num,

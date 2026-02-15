@@ -1,5 +1,40 @@
 # Karl Update Log
 
+## v0.8.68 - Role-Targeted Wage Follow-Up Hardening + Appendix Citation UX (February 2026)
+
+### Overview
+
+Fixed a deterministic follow-up gap where wage questions that explicitly target a different role (for example, `cc's` while profile role is `dug`) could be routed as non-wage or resolved against the profile role instead of the requested role.
+
+### What Changed
+
+- Wage intent and role-targeting hardening:
+  - `backend/retrieval/router.py`
+    - strengthened normalization (`cc's -> ccs`) for alias detection stability.
+    - expanded wage intent patterns for role-targeted phrasing (`what does X make`, `pay ... for ...`).
+    - when a wage query explicitly mentions one or more roles, wage targeting now prefers the first explicitly mentioned role rather than profile-default role.
+    - query-plan internals now keep query-mentioned roles separate from profile role used for anchor expansion.
+- Contract-view table fidelity:
+  - `backend/api.py`
+    - `/api/article/{article_num}` and `/api/section/{article_num}/{section_num}` now return `content_with_tables` when available so table content renders in contract view.
+- Appendix citation clickability:
+  - `backend/generation/verifier.py`
+    - source metadata now includes `article_num`/`section_num`/`subsection` (and table metadata for wage-table citations).
+  - `frontend/index.html`
+    - chat citation badges now use source metadata fallback to make non-`Article ...` citations (for example `Appendix A`) clickable when article anchors are available.
+    - query response metadata wiring now includes `sources`.
+- Targeted deterministic regression coverage:
+  - `backend/test_topic_routing.py`
+    - added `role-targeted wage follow-up` checks for:
+      - `"you dont know what the pay is for cc's"`
+      - `"what does a courtesy clerk make"`
+      - profile-only fallback behavior for `"what is my pay"`.
+
+### Validation
+
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_gate_check` -> PASS
+
 ## v0.8.67 - Classification Key Canonicalization + Multi-Role Comparison Routing Hardening (February 2026)
 
 ### Overview
