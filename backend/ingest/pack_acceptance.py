@@ -111,6 +111,7 @@ def _resolve_artifacts(package_dir: Path, contract_id: str) -> dict[str, Path]:
     chunks_dir = package_dir / "chunks"
     tables_dir = package_dir / "tables"
     wages_dir = package_dir / "wages"
+    entitlements_dir = package_dir / "entitlements"
     ontology_dir = package_dir / "ontology"
 
     md_candidates = sorted(source_dir.glob("*.md"))
@@ -126,8 +127,10 @@ def _resolve_artifacts(package_dir: Path, contract_id: str) -> dict[str, Path]:
         "concept_index": chunks_dir / f"concept_index_{contract_id}.json",
         "tables": tables_dir / "structured_tables.json",
         "wages": wages_dir / f"wage_tables_{contract_id}.json",
+        "entitlements": entitlements_dir / f"entitlement_tables_{contract_id}.json",
         "classification_ontology": ontology_dir / "classification_ontology.json",
         "language_lexicon": ontology_dir / "language_lexicon.json",
+        "role_catalog": ontology_dir / "role_catalog.json",
         "ingestion_review_queue": ontology_dir / "ingestion_review_queue.json",
         "manual_classification_overrides": ontology_dir / "manual_classification_overrides.json",
     }
@@ -150,8 +153,10 @@ def evaluate_contract_pack(
     manifest = None
     chunks = []
     wages_data = None
+    entitlements_data = None
     table_registry = []
     classification_ontology = None
+    role_catalog = None
     ingestion_review_queue = None
 
     # Manifest presence + schema integrity
@@ -819,6 +824,72 @@ def evaluate_contract_pack(
                 {"unresolved_critical_aliases": unresolved_critical},
             )
 
+    # Entitlement artifact checks
+    entitlements_path = artifacts["entitlements"]
+    entitlements_exists = entitlements_path.exists()
+    requires_entitlements = False
+    if manifest:
+        article_titles = manifest.get("article_titles", {}) or {}
+        requires_entitlements = any("vacation" in str(v or "").lower() for v in article_titles.values())
+    _check(
+        checks,
+        "entitlements_exists",
+        entitlements_exists or not requires_entitlements,
+        "required",
+        "Entitlement artifact is present."
+        if entitlements_exists
+        else "Entitlement artifact missing for manifest with vacation language."
+        if requires_entitlements
+        else "Entitlement artifact missing but vacation entitlement extraction is not required.",
+        {"path": str(entitlements_path), "requires_entitlements": requires_entitlements},
+    )
+    if entitlements_exists:
+        try:
+            entitlements_data = _load_json(entitlements_path)
+        except Exception as exc:
+            entitlements_data = None
+            _check(
+                checks,
+                "entitlements_json_load",
+                False,
+                "required",
+                f"Entitlement JSON load failed: {exc}",
+            )
+
+    if entitlements_data:
+        schema_ok = str(entitlements_data.get("schema_version") or "") == "entitlement_tables_v1"
+        contract_ok = str(entitlements_data.get("contract_id") or "") == contract_id
+        region_ok = bool(str(entitlements_data.get("region_id") or "").strip())
+        schedules = list(entitlements_data.get("vacation_entitlements") or [])
+        schedule_count = len(schedules)
+        _check(
+            checks,
+            "entitlements_schema_valid",
+            schema_ok and contract_ok and region_ok,
+            "required",
+            "Entitlement artifact schema/contract/region are valid."
+            if schema_ok and contract_ok and region_ok
+            else "Entitlement artifact schema/contract/region validation failed.",
+            {
+                "schema_version": entitlements_data.get("schema_version"),
+                "artifact_contract_id": entitlements_data.get("contract_id"),
+                "region_id": entitlements_data.get("region_id"),
+            },
+        )
+        _check(
+            checks,
+            "vacation_entitlement_non_empty",
+            schedule_count > 0 or not requires_entitlements,
+            "required",
+            "Vacation entitlement schedules are present."
+            if schedule_count > 0
+            else "Vacation entitlement schedules are empty.",
+            {
+                "schedule_count": schedule_count,
+                "requires_entitlements": requires_entitlements,
+            },
+        )
+
     # Classification ontology checks
     ontology_path = artifacts["classification_ontology"]
     requires_ontology = bool(manifest and (manifest.get("classifications") or []))
@@ -925,6 +996,106 @@ def evaluate_contract_pack(
                 "resolved_manifest_classes": ontology_summary.get("resolved_manifest_classes"),
                 "total_manifest_classes": ontology_summary.get("total_manifest_classes"),
                 "unresolved_manifest_keys": (ontology_summary.get("unresolved_manifest_keys") or [])[:40],
+            },
+        )
+
+    # Role catalog checks
+    role_catalog_path = artifacts["role_catalog"]
+    requires_role_catalog = bool(manifest and (manifest.get("classifications") or []))
+    role_catalog_exists = role_catalog_path.exists()
+    _check(
+        checks,
+        "role_catalog_exists",
+        role_catalog_exists or not requires_role_catalog,
+        "required",
+        "Role catalog artifact is present."
+        if role_catalog_exists
+        else "Role catalog artifact missing for manifest classifications."
+        if requires_role_catalog
+        else "Role catalog not required (no manifest classifications).",
+        {"path": str(role_catalog_path), "requires_role_catalog": requires_role_catalog},
+    )
+    if role_catalog_exists:
+        try:
+            role_catalog = _load_json(role_catalog_path)
+        except Exception as exc:
+            role_catalog = None
+            _check(
+                checks,
+                "role_catalog_json_load",
+                False,
+                "required",
+                f"Role catalog JSON load failed: {exc}",
+            )
+
+    if role_catalog:
+        roles = role_catalog.get("roles") or []
+        schema_ok = role_catalog.get("schema_version") == "role_catalog_v1"
+        contract_match_ok = role_catalog.get("contract_id") == contract_id
+        roles_ok = isinstance(roles, list)
+        roles_non_empty_ok = bool(roles) if requires_role_catalog else True
+        _check(
+            checks,
+            "role_catalog_schema_valid",
+            schema_ok and contract_match_ok and roles_ok and roles_non_empty_ok,
+            "required",
+            "Role catalog schema and contract_id are valid."
+            if schema_ok and contract_match_ok and roles_ok and roles_non_empty_ok
+            else "Role catalog schema_version/contract_id/roles are invalid.",
+            {
+                "schema_version": role_catalog.get("schema_version"),
+                "catalog_contract_id": role_catalog.get("contract_id"),
+                "role_count": len(roles) if isinstance(roles, list) else None,
+            },
+        )
+
+        default_unmapped_roles = []
+        unresolved_manifest_roles = []
+        manifest_roles_total = 0
+        if isinstance(roles, list):
+            for role in roles:
+                if not isinstance(role, dict):
+                    continue
+                role_value = str(role.get("value") or "").strip()
+                is_default = bool(role.get("onboarding_default"))
+                wage_available = bool(role.get("wage_available"))
+                manifest_present = bool(role.get("manifest_present"))
+
+                if is_default and not wage_available:
+                    default_unmapped_roles.append(role_value)
+                if manifest_present:
+                    manifest_roles_total += 1
+                    if not wage_available:
+                        unresolved_manifest_roles.append(role_value)
+
+        _check(
+            checks,
+            "role_catalog_onboarding_default_wage_ready",
+            len(default_unmapped_roles) == 0,
+            "required",
+            "All onboarding-default roles are wage-available."
+            if len(default_unmapped_roles) == 0
+            else "Some onboarding-default roles are not wage-available.",
+            {"default_unmapped_roles": default_unmapped_roles[:40]},
+        )
+
+        unresolved_rate = (
+            len(unresolved_manifest_roles) / manifest_roles_total
+            if manifest_roles_total > 0 else 0.0
+        )
+        _check(
+            checks,
+            "role_catalog_unresolved_manifest_rate",
+            unresolved_rate <= 0.4,
+            "advisory",
+            "Role catalog unresolved-manifest rate is within advisory threshold."
+            if unresolved_rate <= 0.4
+            else "Role catalog unresolved-manifest rate exceeds advisory threshold.",
+            {
+                "manifest_roles_total": manifest_roles_total,
+                "unresolved_manifest_roles": len(unresolved_manifest_roles),
+                "unresolved_manifest_rate": round(unresolved_rate, 4),
+                "unresolved_manifest_role_values": unresolved_manifest_roles[:40],
             },
         )
 

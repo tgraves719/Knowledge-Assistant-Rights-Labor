@@ -3,35 +3,35 @@
   "accepted_packs": {
     "local7_safeway_pueblo_clerks_2022": {
       "contract_id": "local7_safeway_pueblo_clerks_2022",
-      "pack_hash": "a842bfb3b23d0b97acbe9b2b8c067a8c3527b50915fd6ddce6db27bc8c09a0e1",
+      "pack_hash": "5f440f65e15602524ad484febbd99ca8de699dafd6c0044945273621db259226",
       "scorecard_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\pack\\pack_scorecard.json",
       "strict_mode": false,
-      "accepted_at_utc": "2026-02-15T05:32:12.647475+00:00",
+      "accepted_at_utc": "2026-02-15T18:43:14.016184+00:00",
       "required_failed": [],
       "advisory_failed": []
     },
     "local7_safeway_pueblo_meat_2022": {
       "contract_id": "local7_safeway_pueblo_meat_2022",
-      "pack_hash": "d9e391422e76a2d01da0249261d9e9eef18cd50ab49296b03db97e77734f7117",
+      "pack_hash": "b48a439ff7a5383e0b932f377c4c0808963f924cff2571fe029c5d0b58d89ee6",
       "scorecard_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\pack\\pack_scorecard.json",
       "strict_mode": false,
-      "accepted_at_utc": "2026-02-15T05:32:14.291013+00:00",
+      "accepted_at_utc": "2026-02-15T18:43:12.136428+00:00",
       "required_failed": [],
       "advisory_failed": [
         "manifest_classification_wage_coverage",
-        "classification_ontology_mapping_coverage"
+        "classification_ontology_mapping_coverage",
+        "role_catalog_unresolved_manifest_rate"
       ]
     },
     "local7_kingsoopers_loveland_meat_2019": {
       "contract_id": "local7_kingsoopers_loveland_meat_2019",
-      "pack_hash": "e33a5cc7c30d0da987c280bc1eeb7cef6cd75b4ae831fa72220d48594383ebf0",
+      "pack_hash": "f588ea72a3ee63352afb4ab75e8bd0f401f08e0709179a9d2a007b2c52229ded",
       "scorecard_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\pack\\pack_scorecard.json",
       "strict_mode": false,
-      "accepted_at_utc": "2026-02-15T05:32:15.799376+00:00",
+      "accepted_at_utc": "2026-02-15T18:43:10.385514+00:00",
       "required_failed": [],
       "advisory_failed": [
-        "manifest_classification_wage_coverage",
-        "classification_ontology_mapping_coverage"
+        "role_catalog_unresolved_manifest_rate"
       ]
     }
   }

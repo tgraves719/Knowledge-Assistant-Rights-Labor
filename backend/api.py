@@ -11,6 +11,9 @@ import os
 import json
 import time
 import asyncio
+import re
+import datetime
+from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 from contextlib import asynccontextmanager
@@ -35,7 +38,12 @@ from backend.contracts import (
     get_contract_catalog_entry,
     resolve_default_contract_id,
 )
-from backend.retrieval.router import HybridRetriever, classify_intent, ensure_contract_manifest
+from backend.retrieval.router import (
+    HybridRetriever,
+    classify_intent,
+    ensure_contract_manifest,
+    VACATION_ENTITLEMENT_QUERY_PATTERN,
+)
 from backend.retrieval.vector_store import ContractVectorStore
 from backend.chunk_files import resolve_chunk_file
 from backend.generation.prompts import build_prompt, SYSTEM_PROMPT
@@ -68,6 +76,117 @@ except ImportError:
 _genai_client = None
 
 
+_UNAVAILABLE_ANSWER_PATTERNS = (
+    r"\bi\s+(?:cannot|can['’]t)\s+find\b",
+    r"\bi\s+am\s+unable\s+to\s+find\b",
+    r"\bi\s+do\s+not\s+have\b",
+    r"\bi\s+cannot\s+determine\b",
+    r"\bthat\s+(?:specific\s+)?information\s+is\s+not\s+available\b",
+)
+
+_QUERY_EVIDENCE_STOPWORDS = {
+    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "i",
+    "if", "in", "is", "it", "me", "my", "of", "on", "or", "the", "to", "we",
+    "what", "when", "where", "which", "who", "why", "you", "your",
+}
+
+_TOPIC_RECOVERY_SIGNALS = {
+    "vacation": ("vacation", "time off", "holiday", "personal holiday", "floater", "pto"),
+    "overtime": ("overtime", "ot", "time and a half"),
+    "grievance": ("grievance", "arbitration", "dispute", "complaint"),
+    "layoff": ("layoff", "bump", "displacement", "reduction in hours", "reduction"),
+    "term": ("term", "start", "end", "expiration", "effective", "agreement"),
+    "breaks": ("break", "lunch", "meal", "rest", "between shifts"),
+    "bereavement": ("bereavement", "funeral", "death"),
+}
+
+_FOREIGN_CONTRACT_UNAVAILABLE_ANSWER = (
+    "I cannot find that specific information in your contract. "
+    "Your question appears to reference a different agreement. "
+    "Please switch contract context or contact your steward for the correct contract."
+)
+
+
+def _normalize_text_token_space(text: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", str(text or "").lower())).strip()
+
+
+def _contract_aliases(contract_id: str) -> set[str]:
+    """
+    Build deterministic alias phrases for explicit contract mention detection.
+
+    Aliases are intentionally multi-token to reduce accidental matches.
+    """
+    aliases: set[str] = set()
+    cid = str(contract_id or "").strip().lower()
+    if not cid:
+        return aliases
+
+    phrase = cid.replace("_", " ")
+    phrase = re.sub(r"\blocal\s*\d+\b", " ", phrase)
+    phrase = re.sub(r"\blocal\d+\b", " ", phrase)
+    phrase = re.sub(r"\b(19|20)\d{2}\b", " ", phrase)
+    phrase = _normalize_text_token_space(phrase)
+    if phrase:
+        aliases.add(phrase)
+
+    # Expand common collapsed employer token.
+    if "kingsoopers" in phrase:
+        aliases.add(phrase.replace("kingsoopers", "king soopers"))
+
+    entry = get_contract_catalog_entry(cid)
+    if entry:
+        employer = _normalize_text_token_space(entry.get("employer") or "")
+        if employer:
+            employer = re.sub(r"\b(inc|llc|ltd|co|companies|company|division|of|a|the)\b", " ", employer)
+            employer = _normalize_text_token_space(employer)
+            words = employer.split()
+            if len(words) >= 2:
+                aliases.add(" ".join(words[:2]))
+
+    return {a for a in aliases if len(a.split()) >= 2}
+
+
+@lru_cache(maxsize=16)
+def _active_and_foreign_aliases(active_contract_id: str) -> tuple[set[str], set[str]]:
+    active = _contract_aliases(active_contract_id)
+    foreign: set[str] = set()
+    for entry in list_contract_catalog():
+        other = str(entry.get("contract_id") or "")
+        if not other or other == active_contract_id:
+            continue
+        foreign.update(_contract_aliases(other))
+    return active, foreign
+
+
+def _mentions_foreign_contract_context(question: str, active_contract_id: str) -> bool:
+    """
+    Detect explicit references to a different known contract family.
+
+    This prevents deterministic recovery from treating foreign-contract prompts
+    as answerable in the active contract context.
+    """
+    query = _normalize_text_token_space(question)
+    if not query:
+        return False
+    active_aliases, foreign_aliases = _active_and_foreign_aliases(active_contract_id)
+    for alias in sorted(foreign_aliases, key=len, reverse=True):
+        if alias in query and alias not in active_aliases:
+            return True
+    return False
+
+
+def _classification_option_for_contract(contract_id: str, classification: Optional[str]) -> Optional[dict]:
+    """Resolve a classification option record for contract-scoped guardrails."""
+    value = str(classification or "").strip().lower()
+    if not value:
+        return None
+    for opt in get_classification_options(contract_id=contract_id, include_unmapped=True):
+        if str(opt.get("value") or "").strip().lower() == value:
+            return opt
+    return None
+
+
 def get_genai_client():
     """Lazy load Google GenAI client."""
     global _genai_client
@@ -76,6 +195,224 @@ def get_genai_client():
         if api_key:
             _genai_client = _genai_sdk.Client(api_key=api_key)
     return _genai_client
+
+
+def _is_unavailable_answer(text: str) -> bool:
+    """Detect uncertainty/unavailability phrasing in model output."""
+    value = str(text or "").strip().lower()
+    if not value:
+        return False
+    # Evaluate only opening span to avoid matching quoted contract text deep in
+    # evidence-heavy responses.
+    head = value[:320]
+    return any(re.search(pattern, head) for pattern in _UNAVAILABLE_ANSWER_PATTERNS)
+
+
+def _question_terms(question: str) -> set[str]:
+    tokens = re.findall(r"[a-z0-9]+", str(question or "").lower())
+    return {t for t in tokens if len(t) >= 3 and t not in _QUERY_EVIDENCE_STOPWORDS}
+
+
+def _has_strong_evidence_for_query(question: str, chunks: list[dict], min_token_hits: int = 3) -> bool:
+    """
+    Determine whether retrieved chunks likely contain actionable evidence.
+
+    Uses deterministic lexical overlap + citation presence checks so we can
+    avoid false "not available" responses when strong evidence exists.
+    """
+    if not chunks:
+        return False
+
+    query_terms = _question_terms(question)
+    if not query_terms:
+        return False
+
+    for chunk in chunks[:8]:
+        citation = str(chunk.get("citation") or "")
+        if not re.search(r"article\s+\d+", citation, re.IGNORECASE):
+            continue
+
+        text = (
+            f"{citation} "
+            f"{chunk.get('article_title', '')} "
+            f"{chunk.get('content_with_tables') or chunk.get('content') or ''}"
+        ).lower()
+        hit_count = sum(1 for term in query_terms if term in text)
+        if hit_count >= min_token_hits:
+            return True
+
+    return False
+
+
+def _merge_unique_chunks(primary: list[dict], secondary: list[dict], limit: int = 12) -> list[dict]:
+    """Stable chunk merge preserving order and uniqueness by chunk_id/citation."""
+    merged: list[dict] = []
+    seen: set[str] = set()
+    for collection in (primary or [], secondary or []):
+        for chunk in collection:
+            chunk_key = str(chunk.get("chunk_id") or chunk.get("citation") or "")
+            if not chunk_key or chunk_key in seen:
+                continue
+            seen.add(chunk_key)
+            merged.append(chunk)
+            if len(merged) >= limit:
+                return merged
+    return merged
+
+
+def _normalize_article_anchors(values: list) -> list[int]:
+    anchors: list[int] = []
+    seen: set[int] = set()
+    for raw in values or []:
+        try:
+            num = int(raw)
+        except (TypeError, ValueError):
+            continue
+        if num <= 0 or num in seen:
+            continue
+        seen.add(num)
+        anchors.append(num)
+    return anchors
+
+
+def _has_article_anchor_evidence(article_numbers: list[int], chunks: list[dict], min_article_hits: int = 1) -> bool:
+    if not article_numbers or not chunks or min_article_hits <= 0:
+        return False
+    article_set = set(article_numbers)
+    hits = 0
+    seen_articles: set[int] = set()
+    for chunk in chunks[:10]:
+        article_num = chunk.get("article_num")
+        if not isinstance(article_num, int):
+            continue
+        if article_num not in article_set or article_num in seen_articles:
+            continue
+        seen_articles.add(article_num)
+        hits += 1
+        if hits >= min_article_hits:
+            return True
+    return False
+
+
+def _query_supports_topic_recovery(topic: Optional[str], query: str) -> bool:
+    topic_key = str(topic or "").strip().lower()
+    if not topic_key:
+        return False
+    query_lower = str(query or "").lower()
+    signals = _TOPIC_RECOVERY_SIGNALS.get(topic_key, ())
+    if not signals:
+        return bool(re.search(rf"\b{re.escape(topic_key)}\b", query_lower))
+    for sig in signals:
+        if re.search(rf"\b{re.escape(sig)}\b", query_lower):
+            return True
+    return False
+
+
+def _is_vacation_entitlement_query(text: str) -> bool:
+    normalized = _normalize_text_token_space(text)
+    if not normalized:
+        return False
+    return bool(re.search(VACATION_ENTITLEMENT_QUERY_PATTERN, normalized))
+
+
+def _format_iso_date(date_value: Optional[str]) -> str:
+    value = str(date_value or "").strip()
+    if not value:
+        return ""
+    try:
+        return datetime.date.fromisoformat(value).strftime("%B %-d, %Y")
+    except Exception:
+        try:
+            return datetime.date.fromisoformat(value).strftime("%B %d, %Y")
+        except Exception:
+            return value
+
+
+def _format_vacation_tiers(tiers: list[dict]) -> str:
+    parts = []
+    for tier in tiers or []:
+        years = int(tier.get("years_of_service") or 0)
+        weeks = int(tier.get("weeks_per_year") or 0)
+        parts.append(
+            f"{weeks} week{'s' if weeks != 1 else ''} after {years} year{'s' if years != 1 else ''}"
+        )
+    return ", ".join(parts)
+
+
+def _format_vacation_conditions(conditions: dict) -> str:
+    if not isinstance(conditions, dict):
+        return "general eligibility conditions"
+    parts = []
+    before = str(conditions.get("hire_date_on_or_before") or "").strip()
+    after = str(conditions.get("hire_date_on_or_after") or "").strip()
+    hours = conditions.get("anniversary_hours_min")
+    if before:
+        parts.append(f"hired on or before {_format_iso_date(before)}")
+    if after:
+        parts.append(f"hired on or after {_format_iso_date(after)}")
+    if isinstance(hours, int) and hours > 0:
+        parts.append(f"at least {hours} hours in the anniversary year")
+    return "; ".join(parts) if parts else "general eligibility conditions"
+
+
+def _build_vacation_entitlement_answer(entitlement_info: dict) -> str:
+    selected = entitlement_info.get("selected_schedule") or {}
+    considered = entitlement_info.get("schedules_considered") or []
+    months = int(entitlement_info.get("months_employed") or 0)
+    years = entitlement_info.get("years_completed")
+    weeks = entitlement_info.get("estimated_weeks_per_year")
+    citation = str(entitlement_info.get("citation") or selected.get("citation") or "Article 17")
+
+    if selected and weeks is not None and years is not None:
+        cond_text = _format_vacation_conditions(selected.get("conditions") or {})
+        tier_text = _format_vacation_tiers(selected.get("tiers") or [])
+        return (
+            f"Based on {citation}, at {months} months of service ({years} completed years), "
+            f"your vacation accrual is {weeks} week{'s' if weeks != 1 else ''} per year "
+            f"under the schedule for employees with {cond_text}. "
+            f"Vacation ladder: {tier_text}."
+        )
+
+    if considered:
+        schedule_lines = []
+        for s in considered[:3]:
+            schedule_lines.append(
+                f"- {s.get('citation') or 'Article 17'}: "
+                f"{_format_vacation_conditions(s.get('conditions') or {})}; "
+                f"{_format_vacation_tiers(s.get('tiers') or [])}"
+            )
+        return (
+            "Your contract includes these vacation accrual schedules. "
+            "I need your hire date (and anniversary-year hours if close to thresholds) to pick one schedule exactly:\n"
+            + "\n".join(schedule_lines)
+        )
+
+    return (
+        "I found vacation article coverage, but I could not deterministically resolve "
+        "an accrual schedule from the entitlement artifact."
+    )
+
+
+def _entitlement_sources(entitlement_info: dict) -> list[dict]:
+    sources = []
+    seen = set()
+    for ev in (entitlement_info.get("entitlement_evidence") or []):
+        if not isinstance(ev, dict):
+            continue
+        citation = str(ev.get("citation") or "").strip()
+        if not citation or citation in seen:
+            continue
+        seen.add(citation)
+        sources.append(
+            {
+                "citation": citation,
+                "article_num": ev.get("article_num"),
+                "section_num": ev.get("section_num"),
+                "content": str(ev.get("source_excerpt") or "").strip(),
+                "source_method": "entitlement_artifact",
+            }
+        )
+    return sources
 
 
 @asynccontextmanager
@@ -165,6 +502,7 @@ class QueryResponse(BaseModel):
     active_urgent_context: bool = False
     escalation_policy: Optional[str] = None
     wage_info: Optional[dict] = None
+    entitlement_info: Optional[dict] = None
     confidence: float
     verification_passed: bool
     # CAG (Context-Aware Generation) metrics
@@ -188,6 +526,7 @@ class WageResponse(BaseModel):
     rate: float
     effective_date: str
     citation: str
+    table_evidence: list[dict] = Field(default_factory=list)
 
 
 class HealthResponse(BaseModel):
@@ -230,6 +569,9 @@ class ClassificationOption(BaseModel):
     """Classification option for a specific contract context."""
     value: str
     label: str
+    wage_available: bool = True
+    wage_key: Optional[str] = None
+    source: Optional[str] = None
 
 
 class ClassificationsResponse(BaseModel):
@@ -280,6 +622,7 @@ class WageEstimateResponse(BaseModel):
     next_step: Optional[str] = None
     next_rate: Optional[float] = None
     hours_to_next_step: Optional[int] = None
+    table_evidence: list[dict] = Field(default_factory=list)
     # Verification guidance
     verification_message: str
 
@@ -459,6 +802,20 @@ async def get_wage_estimate(session_id: str):
     estimated_hours = hours_estimate.estimated_hours if hours_estimate else 0
     months = profile.months_employed or 0
 
+    class_opt = _classification_option_for_contract(
+        contract_id=profile.contract_id,
+        classification=profile.classification,
+    )
+    if class_opt and class_opt.get("wage_available") is False:
+        role_label = str(class_opt.get("label") or profile.classification).strip()
+        raise HTTPException(
+            status_code=404,
+            detail=(
+                f"No Appendix A wage row is available for '{role_label}' "
+                f"in contract '{profile.contract_id}'."
+            ),
+        )
+
     wage_info = retriever.lookup_wage(
         classification=profile.classification,
         hours_worked=estimated_hours,
@@ -509,6 +866,7 @@ async def get_wage_estimate(session_id: str):
         next_step=wage_info.get("next_step"),
         next_rate=wage_info.get("next_rate"),
         hours_to_next_step=wage_info.get("hours_to_next"),
+        table_evidence=wage_info.get("table_evidence", []),
         verification_message=verification_message,
     )
 
@@ -619,6 +977,90 @@ async def query_contract(request: QueryRequest):
         user_classification=effective_classification,
         contract_id=effective_contract_id,
     )
+    foreign_contract_reference = _mentions_foreign_contract_context(
+        request.question,
+        effective_contract_id,
+    )
+
+    # Deterministic tenant guard: explicit foreign-contract references must not
+    # flow into retrieval/generation for the active contract context.
+    if foreign_contract_reference:
+        answer = _FOREIGN_CONTRACT_UNAVAILABLE_ANSWER
+        verification = verify_response(
+            response=answer,
+            chunks=[],
+            requires_escalation=False,
+        )
+        formatted = format_response_with_sources(answer, [], None)
+        return QueryResponse(
+            answer=formatted["response"],
+            citations=formatted["citations"],
+            sources=formatted["sources"],
+            intent_type=intent.intent_type,
+            escalation_required=False,
+            union_local_id=request.union_local_id,
+            contract_id=effective_contract_id,
+            contract_version=request.contract_version,
+            high_stakes_topic=intent.high_stakes_topic,
+            active_urgent_context=intent.active_urgent_context,
+            escalation_policy=intent.escalation_policy,
+            wage_info=None,
+            confidence=verification.confidence,
+            verification_passed=verification.is_valid,
+            hypothesis_titles=None,
+            hypothesis_latency_ms=None,
+            full_article_expanded=False,
+            winning_article=None,
+            reranker_latency_ms=None,
+            reranker_position_changes=None,
+            interpretation_latency_ms=None,
+            search_angles_used=None,
+        )
+
+    # Deterministic guardrail: when a role is selected but has no Appendix A wage
+    # mapping for this contract, return explicit unavailability for wage intents.
+    if intent.intent_type == "wage" and effective_classification:
+        class_opt = _classification_option_for_contract(
+            contract_id=effective_contract_id,
+            classification=effective_classification,
+        )
+        if class_opt and class_opt.get("wage_available") is False:
+            role_label = str(class_opt.get("label") or effective_classification).strip()
+            answer = (
+                f"I cannot find a contract wage-table rate for '{role_label}' in this contract. "
+                "Your selected role appears in contract references, but no contract-scoped wage row is available. "
+                "Please verify your classification with your steward."
+            )
+            verification = verify_response(
+                response=answer,
+                chunks=[],
+                requires_escalation=False,
+            )
+            formatted = format_response_with_sources(answer, [], None)
+            return QueryResponse(
+                answer=formatted["response"],
+                citations=formatted["citations"],
+                sources=formatted["sources"],
+                intent_type=intent.intent_type,
+                escalation_required=False,
+                union_local_id=request.union_local_id,
+                contract_id=effective_contract_id,
+                contract_version=request.contract_version,
+                high_stakes_topic=intent.high_stakes_topic,
+                active_urgent_context=intent.active_urgent_context,
+                escalation_policy=intent.escalation_policy,
+                wage_info=None,
+                confidence=verification.confidence,
+                verification_passed=verification.is_valid,
+                hypothesis_titles=None,
+                hypothesis_latency_ms=None,
+                full_article_expanded=False,
+                winning_article=None,
+                reranker_latency_ms=None,
+                reranker_position_changes=None,
+                interpretation_latency_ms=None,
+                search_angles_used=None,
+            )
 
     # Deterministic guardrail: wage estimates require a classification context.
     if intent.intent_type == "wage" and not effective_classification:
@@ -680,6 +1122,7 @@ async def query_contract(request: QueryRequest):
     
     chunks = retrieval_result["chunks"]
     wage_info = retrieval_result["wage_info"]
+    entitlement_info = retrieval_result.get("entitlement_info")
     escalation_required = retrieval_result["escalation_required"]
     query_expansions = retrieval_result.get("query_expansions", [])
 
@@ -696,6 +1139,9 @@ async def query_contract(request: QueryRequest):
     interpretation_latency_ms = None
     search_angles_used = retrieval_result.get("search_angles_used", 1)
     explicit_articles = retrieval_result.get("explicit_articles_fetched", [])
+    anchor_articles = _normalize_article_anchors(
+        list(getattr(intent, "relevant_articles", []) or []) + list(explicit_articles or [])
+    )
     if interpretation and interpretation.success:
         interpretation_latency_ms = interpretation.latency_ms
 
@@ -713,6 +1159,78 @@ async def query_contract(request: QueryRequest):
         (c.get('winning_article') for c in chunks if c.get('is_full_article_context')),
         None
     )
+
+    # Deterministic vacation entitlement path:
+    # answer accrual-amount questions from ingestion-owned entitlement artifacts.
+    if (
+        str(intent.topic or "").strip().lower() == "vacation"
+        and _is_vacation_entitlement_query(request.question)
+        and not escalation_required
+    ):
+        hire_date_hint = str((user_profile or {}).get("hire_date") or "").strip() or None
+        enriched_entitlement = retriever.lookup_vacation_entitlement(
+            months_employed=months_employed,
+            hours_worked=hours_worked,
+            hire_date=hire_date_hint,
+            contract_id=effective_contract_id,
+        )
+        if enriched_entitlement:
+            entitlement_info = enriched_entitlement
+        if entitlement_info:
+            answer = _build_vacation_entitlement_answer(entitlement_info)
+            verification = verify_response(
+                response=answer,
+                chunks=chunks,
+                requires_escalation=False,
+            )
+            sources = _entitlement_sources(entitlement_info)
+            citations = []
+            for source in sources:
+                citation = str(source.get("citation") or "").strip()
+                if citation and citation not in citations:
+                    citations.append(citation)
+            if not citations:
+                citation_text = str(entitlement_info.get("citation") or "").strip()
+                if citation_text:
+                    citations = [c.strip() for c in citation_text.split(";") if c.strip()]
+
+            if request.session_id:
+                ctx = get_session_context(request.session_id)
+                ctx.add_turn(
+                    question=request.question,
+                    answer=answer,
+                    citations=citations,
+                    detected_entities={
+                        "topic": intent.topic,
+                        "classification": request.user_classification or intent.classification,
+                    }
+                )
+
+            return QueryResponse(
+                answer=answer,
+                citations=citations,
+                sources=sources,
+                intent_type=intent.intent_type,
+                escalation_required=False,
+                union_local_id=request.union_local_id,
+                contract_id=effective_contract_id,
+                contract_version=request.contract_version,
+                high_stakes_topic=intent.high_stakes_topic,
+                active_urgent_context=intent.active_urgent_context,
+                escalation_policy=intent.escalation_policy,
+                wage_info=None,
+                entitlement_info=entitlement_info,
+                confidence=verification.confidence,
+                verification_passed=verification.is_valid,
+                hypothesis_titles=hypothesis_titles,
+                hypothesis_latency_ms=hypothesis_latency_ms,
+                full_article_expanded=full_article_expanded,
+                winning_article=winning_article,
+                reranker_latency_ms=reranker_latency_ms,
+                reranker_position_changes=reranker_position_changes,
+                interpretation_latency_ms=interpretation_latency_ms,
+                search_angles_used=search_angles_used,
+            )
     
     # Only include wage info in prompt if this is actually a wage query
     # This prevents erroneous wage artifacts appearing on unrelated questions
@@ -758,9 +1276,106 @@ async def query_contract(request: QueryRequest):
     
     # Generate response (pass chunks for fallback)
     answer = await generate_response(request.question, system_prompt, chunks)
-    
+
     # Add escalation if missing but required
     answer = add_escalation_if_missing(answer, escalation_required)
+
+    # Deterministic evidence-gap recovery:
+    # if the model says "not available/cannot find" despite strong evidence,
+    # run one broader retrieval pass and regenerate once before returning.
+    anchor_evidence_present = (
+        _has_article_anchor_evidence(anchor_articles, chunks, min_article_hits=2)
+        and _query_supports_topic_recovery(intent.topic, request.question)
+    )
+    recovery_evidence_present = (not foreign_contract_reference) and (
+        _has_strong_evidence_for_query(request.question, chunks) or anchor_evidence_present
+    )
+    if _is_unavailable_answer(answer) and not escalation_required and recovery_evidence_present:
+        retry_result = retriever.multi_angle_retrieve(
+            query=request.question,
+            intent=intent,
+            n_results=8,
+            hours_worked=hours_worked,
+            months_employed=months_employed,
+            contract_id=effective_contract_id,
+        )
+
+        retry_chunks = retry_result.get("chunks", [])
+        merged_chunks = _merge_unique_chunks(chunks, retry_chunks, limit=12)
+        if merged_chunks:
+            chunks = merged_chunks
+            full_article_expanded = any(c.get('is_full_article_context') for c in chunks)
+            winning_article = next(
+                (c.get('winning_article') for c in chunks if c.get('is_full_article_context')),
+                None
+            )
+
+        if anchor_articles and hasattr(retriever, "_ensure_topic_article_coverage"):
+            chunks = retriever._ensure_topic_article_coverage(
+                chunks=chunks,
+                article_numbers=anchor_articles,
+                contract_id=effective_contract_id,
+                max_additional=3,
+                query_text=request.question,
+            )
+        if anchor_articles and hasattr(retriever, "_prioritize_topic_articles"):
+            chunks = retriever._prioritize_topic_articles(
+                chunks=chunks,
+                article_numbers=anchor_articles,
+                topic=intent.topic,
+                query_text=request.question,
+            )
+        if anchor_articles:
+            seed_chunks = [c for c in chunks if c.get("is_topic_seed")]
+            non_seed_chunks = [c for c in chunks if not c.get("is_topic_seed")]
+            if seed_chunks:
+                chunks = seed_chunks + non_seed_chunks
+
+        retry_wage_info = retry_result.get("wage_info")
+        if not wage_info and retry_wage_info:
+            wage_info = retry_wage_info
+        retry_entitlement_info = retry_result.get("entitlement_info")
+        if not entitlement_info and retry_entitlement_info:
+            entitlement_info = retry_entitlement_info
+
+        retry_expansions = retry_result.get("query_expansions", [])
+        if retry_expansions:
+            merged_expansions = list(dict.fromkeys(list(query_expansions) + list(retry_expansions)))
+            query_expansions = merged_expansions
+
+        search_angles_used = max(search_angles_used, int(retry_result.get("search_angles_used", 1) or 1))
+
+        retry_prompt = build_prompt(
+            query=request.question,
+            chunks=chunks,
+            wage_info=wage_info if is_wage_query else None,
+            contract_context={
+                "contract_id": effective_contract_id,
+                "union_local_id": request.union_local_id,
+                "contract_version": request.contract_version,
+                "employer": manifest.get("employer", ""),
+            },
+            requires_escalation=escalation_required,
+            query_expansions=query_expansions,
+            user_classification=effective_classification,
+            conversation_context=conversation_context,
+            user_profile=user_profile,
+            is_wage_estimate=is_wage_estimate and is_wage_query
+        )
+        answer = await generate_response(request.question, retry_prompt, chunks)
+        answer = add_escalation_if_missing(answer, escalation_required)
+
+        # Final deterministic guard: if model still refuses but evidence is strong,
+        # return chunk-grounded fallback rather than claiming information is absent.
+        anchor_evidence_present = (
+            _has_article_anchor_evidence(anchor_articles, chunks, min_article_hits=2)
+            and _query_supports_topic_recovery(intent.topic, request.question)
+        )
+        recovery_evidence_present = (not foreign_contract_reference) and (
+            _has_strong_evidence_for_query(request.question, chunks) or anchor_evidence_present
+        )
+        if _is_unavailable_answer(answer) and recovery_evidence_present:
+            answer = generate_fallback_response(chunks)
     
     # Verify response
     verification = verify_response(
@@ -798,6 +1413,7 @@ async def query_contract(request: QueryRequest):
         active_urgent_context=intent.active_urgent_context,
         escalation_policy=intent.escalation_policy,
         wage_info=wage_info if is_wage_query else None,
+        entitlement_info=entitlement_info,
         confidence=verification.confidence,
         verification_passed=verification.is_valid,
         # CAG metrics
@@ -825,6 +1441,20 @@ async def lookup_wage(request: WageLookupRequest):
         raise HTTPException(status_code=503, detail="RAG system not initialized")
     
     effective_contract_id = _resolve_contract_id_for_viewer(request.contract_id)
+    class_opt = _classification_option_for_contract(
+        contract_id=effective_contract_id,
+        classification=request.classification,
+    )
+    if class_opt and class_opt.get("wage_available") is False:
+        role_label = str(class_opt.get("label") or request.classification).strip()
+        raise HTTPException(
+            status_code=404,
+            detail=(
+                f"No Appendix A wage row is available for '{role_label}' "
+                f"in contract '{effective_contract_id}'."
+            ),
+        )
+
     wage_info = retriever.lookup_wage(
         classification=request.classification,
         hours_worked=request.hours_worked,
@@ -845,7 +1475,8 @@ async def lookup_wage(request: WageLookupRequest):
         step=wage_info["step"],
         rate=wage_info["rate"],
         effective_date=wage_info["effective_date"],
-        citation=wage_info["citation"]
+        citation=wage_info["citation"],
+        table_evidence=wage_info.get("table_evidence", []),
     )
 
 

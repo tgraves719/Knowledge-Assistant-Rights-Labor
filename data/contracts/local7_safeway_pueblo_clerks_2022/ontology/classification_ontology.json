@@ -1,6 +1,6 @@
 {
   "schema_version": "classification_ontology_v1",
-  "generated_at_utc": "2026-02-15T05:32:11.719019+00:00",
+  "generated_at_utc": "2026-02-15T18:43:12.889359+00:00",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "manifest_classifications": [
     {
@@ -13,6 +13,12 @@
       "normalized": "bakery_department_manager",
       "labels": [
         "Bakery Department Manager"
+      ]
+    },
+    {
+      "normalized": "bakery_manager",
+      "labels": [
+        "Bakery Manager"
       ]
     },
     {
@@ -58,9 +64,9 @@
       ]
     },
     {
-      "normalized": "meatcutter",
+      "normalized": "meat_cutter",
       "labels": [
-        "Meatcutter"
+        "Meat Cutter"
       ]
     },
     {
@@ -79,6 +85,12 @@
       "normalized": "produce_department_manager",
       "labels": [
         "Produce Department Manager"
+      ]
+    },
+    {
+      "normalized": "produce_manager",
+      "labels": [
+        "Produce Manager"
       ]
     },
     {
@@ -197,6 +209,16 @@
       ]
     },
     {
+      "source_key": "bakery_manager",
+      "source_labels": [
+        "Bakery Manager"
+      ],
+      "mapped_wage_key": "bakery_manager",
+      "mapping_method": "exact",
+      "score": 1.0,
+      "candidate_scores": []
+    },
+    {
       "source_key": "cake_decorator",
       "source_labels": [
         "Cake Decorator"
@@ -294,9 +316,9 @@
       "candidate_scores": []
     },
     {
-      "source_key": "meatcutter",
+      "source_key": "meat_cutter",
       "source_labels": [
-        "Meatcutter"
+        "Meat Cutter"
       ],
       "mapped_wage_key": null,
       "mapping_method": "unresolved",
@@ -339,6 +361,37 @@
       "candidate_scores": []
     },
     {
+      "source_key": "produce_manager",
+      "source_labels": [
+        "Produce Manager"
+      ],
+      "mapped_wage_key": "produce_department_manager",
+      "mapping_method": "token_similarity",
+      "score": 0.7695,
+      "candidate_scores": [
+        {
+          "wage_key": "produce_department_manager",
+          "score": 0.769512
+        },
+        {
+          "wage_key": "variety_manager",
+          "score": 0.475
+        },
+        {
+          "wage_key": "bakery_manager",
+          "score": 0.461207
+        },
+        {
+          "wage_key": "floral_manager",
+          "score": 0.461207
+        },
+        {
+          "wage_key": "manager_trainee",
+          "score": 0.415
+        }
+      ]
+    },
+    {
       "source_key": "sanitation_clerk",
       "source_labels": [
         "Sanitation Clerk"
@@ -369,6 +422,7 @@
   "alias_to_wage_key": {
     "all_purpose_clerk": "all_purpose_clerk",
     "bakery_department_manager": "bakery_manager",
+    "bakery_manager": "bakery_manager",
     "cake_decorator": "cake_decorator",
     "courtesy_clerk": "courtesy_clerk",
     "drive_up_and_go": "nonfood_gm_floral",
@@ -377,9 +431,9 @@
     "head_clerk": "head_clerk",
     "nonfood_clerk": "nonfood_gm_floral",
     "produce_department_manager": "produce_department_manager",
+    "produce_manager": "produce_department_manager",
     "5star_cake_decorator": "5star_cake_decorator",
     "bakery_fresh_cut_liquor_clerk": "bakery_fresh_cut_liquor_clerk",
-    "bakery_manager": "bakery_manager",
     "fresh_cut_supervisor": "fresh_cut_supervisor",
     "fuel_lead": "fuel_lead",
     "head_baker": "head_baker",
@@ -389,13 +443,13 @@
     "variety_manager": "variety_manager"
   },
   "summary": {
-    "total_manifest_classes": 14,
-    "resolved_manifest_classes": 10,
+    "total_manifest_classes": 16,
+    "resolved_manifest_classes": 12,
     "unresolved_manifest_classes": 4,
-    "coverage": 0.7143,
+    "coverage": 0.75,
     "unresolved_manifest_keys": [
       "deli_clerk",
-      "meatcutter",
+      "meat_cutter",
       "pharmacy_technician",
       "sanitation_clerk"
     ],

@@ -4662,6 +4662,7 @@
       "shift",
       "hours",
       "posting",
+      "bakery manager",
       "cake decorator"
     ],
     "worker_questions": [
@@ -4747,6 +4748,7 @@
       "seniority",
       "years of service",
       "service time",
+      "bakery manager",
       "cake decorator"
     ],
     "worker_questions": [
@@ -4796,7 +4798,8 @@
       "layoff",
       "laid off",
       "bumping",
-      "displacement"
+      "displacement",
+      "bakery manager"
     ],
     "worker_questions": [
       "how much should i be making per hour",
@@ -4870,7 +4873,8 @@
       "laid off",
       "bumping",
       "displacement",
-      "head clerk"
+      "head clerk",
+      "produce manager"
     ],
     "worker_questions": [
       "what are my rights if i get laid off"
@@ -4920,7 +4924,7 @@
       "hours",
       "posting",
       "all purpose clerk",
-      "head clerk"
+      "bakery manager"
     ],
     "worker_questions": [
       "how does seniority affect my rights",
@@ -8409,8 +8413,7 @@
     "region_id": "region-pueblo",
     "alternative_names": [
       "pension",
-      "retirement",
-      "meatcutter"
+      "retirement"
     ],
     "worker_questions": [
       "how does this affect my pension"
@@ -11554,7 +11557,8 @@
       "scheduling",
       "shift",
       "hours",
-      "posting"
+      "posting",
+      "meat cutter"
     ],
     "worker_questions": [
       "how much should i be making per hour",
@@ -11639,6 +11643,7 @@
       "hours",
       "posting",
       "all purpose clerk",
+      "bakery manager",
       "floral manager",
       "head clerk",
       "produce department manager"
@@ -12602,7 +12607,8 @@
     "table_refs": [],
     "region_id": "region-pueblo",
     "alternative_names": [
-      "courtesy clerk"
+      "courtesy clerk",
+      "meat cutter"
     ],
     "worker_questions": [
       "what does letter of understanding 8 dress requirements letter pursuant to article 52 of this part 2 say about courtesy clerk"
@@ -12963,9 +12969,11 @@
     "content_with_tables": "On or before October 31, 2022, the parties shall meet to discuss Journeyperson Meat Cutters [ADDITION FOR ROCK SPRINGS CONTRACTS ONLY: and healthcare for Rock Springs]. [ADDITION FOR DENVER SAFEWAY MEAT CONTRACT ONLY: On or before October 31, 2022, the parties shall meet to discuss the possibility of entering into a new agreement specific to the Meat Warehouse.]\n\nALBERTSONS/SAFEWAY                                                    UFCW LOCAL 7\n\nName: ______________________________      Name: __________________________________\n\nDate: 7/10/2024                           Date: 6/21/2024",
     "table_refs": [],
     "region_id": "region-pueblo",
-    "alternative_names": [],
+    "alternative_names": [
+      "meat cutter"
+    ],
     "worker_questions": [
-      "what does letter of understanding 8 dress requirements letter pursuant to article 52 of this part 12 say about this section"
+      "what does letter of understanding 8 dress requirements letter pursuant to article 52 of this part 12 say about meat cutter"
     ]
   },
   {
@@ -13253,8 +13261,8 @@
       "hours",
       "posting",
       "all purpose clerk",
-      "floral manager",
-      "head clerk"
+      "bakery manager",
+      "floral manager"
     ],
     "worker_questions": [
       "how much should i be making per hour",
@@ -13403,8 +13411,8 @@
       "hours",
       "posting",
       "all purpose clerk",
-      "floral manager",
-      "head clerk"
+      "bakery manager",
+      "floral manager"
     ],
     "worker_questions": [
       "how much should i be making per hour",

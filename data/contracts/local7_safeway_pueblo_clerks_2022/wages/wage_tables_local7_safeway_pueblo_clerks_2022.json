@@ -3463,6 +3463,7 @@
   "classification_aliases": {
     "all_purpose_clerk": "all_purpose_clerk",
     "bakery_department_manager": "bakery_manager",
+    "bakery_manager": "bakery_manager",
     "cake_decorator": "cake_decorator",
     "courtesy_clerk": "courtesy_clerk",
     "drive_up_and_go": "nonfood_gm_floral",
@@ -3471,9 +3472,9 @@
     "head_clerk": "head_clerk",
     "nonfood_clerk": "nonfood_gm_floral",
     "produce_department_manager": "produce_department_manager",
+    "produce_manager": "produce_department_manager",
     "5star_cake_decorator": "5star_cake_decorator",
     "bakery_fresh_cut_liquor_clerk": "bakery_fresh_cut_liquor_clerk",
-    "bakery_manager": "bakery_manager",
     "fresh_cut_supervisor": "fresh_cut_supervisor",
     "fuel_lead": "fuel_lead",
     "head_baker": "head_baker",
@@ -3483,13 +3484,13 @@
     "variety_manager": "variety_manager"
   },
   "classification_ontology_summary": {
-    "total_manifest_classes": 14,
-    "resolved_manifest_classes": 10,
+    "total_manifest_classes": 16,
+    "resolved_manifest_classes": 12,
     "unresolved_manifest_classes": 4,
-    "coverage": 0.7143,
+    "coverage": 0.75,
     "unresolved_manifest_keys": [
       "deli_clerk",
-      "meatcutter",
+      "meat_cutter",
       "pharmacy_technician",
       "sanitation_clerk"
     ],

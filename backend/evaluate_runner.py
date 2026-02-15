@@ -5,10 +5,18 @@ Tracks:
 - v1: legacy golden benchmark
 - v2: comprehensive benchmark (ablation-capable)
 - v2_multi_contract: multi-contract benchmark slice with per-contract reporting
+- v3: canonical multi-contract phase suite
 - escalation: escalation precision slice
 - paraphrase: paraphrase/slang robustness slice
+- adversarial: deterministic formal-precedence near-miss slice
+- unanswerable: deterministic multi-contract abstention slice
+- cross_contract_mentions: deterministic /api/query guard for foreign-contract references
+- false_unavailable: deterministic guard against false "not available" responses
+- wage_table_evidence: deterministic canonical wage-row table evidence slice
+- entitlement_table_evidence: deterministic canonical entitlement schedule evidence slice
+- role_catalog_integrity: deterministic contract-scoped role integrity slice
 - needle: needle retrieval integrity slice
-- all: run v1 + v2 + v2_multi_contract + escalation + paraphrase + needle
+- all: run v1 + v2 + v2_multi_contract + escalation + paraphrase + adversarial + unanswerable + cross_contract_mentions + false_unavailable + wage_table_evidence + entitlement_table_evidence + role_catalog_integrity + needle + v3
 
 This runner records deterministic run metadata for auditability:
 - timestamp, command, cwd
@@ -165,10 +173,26 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
         return [cmd]
     if track == "v2_multi_contract":
         return [[py, "-m", "backend.evaluate_multi_contract", "--bm25-only"]]
+    if track == "v3":
+        return [[py, "-m", "backend.evaluate_v3", "--bm25-only"]]
     if track == "escalation":
         return [[py, "-m", "backend.evaluate_escalation_precision"]]
     if track == "paraphrase":
         return [[py, "-m", "backend.evaluate_paraphrase", "--bm25-only"]]
+    if track == "adversarial":
+        return [[py, "-m", "backend.evaluate_adversarial_precedence", "--bm25-only"]]
+    if track == "unanswerable":
+        return [[py, "-m", "backend.evaluate_unanswerable", "--bm25-only"]]
+    if track == "cross_contract_mentions":
+        return [[py, "-m", "backend.evaluate_cross_contract_mentions", "--bm25-only"]]
+    if track == "false_unavailable":
+        return [[py, "-m", "backend.evaluate_false_unavailable", "--bm25-only"]]
+    if track == "wage_table_evidence":
+        return [[py, "-m", "backend.evaluate_wage_table_evidence", "--bm25-only"]]
+    if track == "entitlement_table_evidence":
+        return [[py, "-m", "backend.evaluate_entitlement_table_evidence"]]
+    if track == "role_catalog_integrity":
+        return [[py, "-m", "backend.evaluate_role_catalog_integrity"]]
     if track == "needle":
         return [[py, "-m", "backend.evaluate_needle", "--bm25-only"]]
     if track == "all":
@@ -178,7 +202,15 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
             + _build_commands("v2_multi_contract", ablation_mode, bucket_filter, seed)
             + _build_commands("escalation", ablation_mode, bucket_filter, seed)
             + _build_commands("paraphrase", ablation_mode, bucket_filter, seed)
+            + _build_commands("adversarial", ablation_mode, bucket_filter, seed)
+            + _build_commands("unanswerable", ablation_mode, bucket_filter, seed)
+            + _build_commands("cross_contract_mentions", ablation_mode, bucket_filter, seed)
+            + _build_commands("false_unavailable", ablation_mode, bucket_filter, seed)
+            + _build_commands("wage_table_evidence", ablation_mode, bucket_filter, seed)
+            + _build_commands("entitlement_table_evidence", ablation_mode, bucket_filter, seed)
+            + _build_commands("role_catalog_integrity", ablation_mode, bucket_filter, seed)
             + _build_commands("needle", ablation_mode, bucket_filter, seed)
+            + _build_commands("v3", ablation_mode, bucket_filter, seed)
         )
     raise ValueError(f"Unsupported track: {track}")
 
@@ -240,7 +272,7 @@ def main():
     parser = argparse.ArgumentParser(description="Canonical KARL evaluation runner with metadata capture.")
     parser.add_argument(
         "--track",
-        choices=["v1", "v2", "v2_multi_contract", "escalation", "paraphrase", "needle", "all"],
+        choices=["v1", "v2", "v2_multi_contract", "v3", "escalation", "paraphrase", "adversarial", "unanswerable", "cross_contract_mentions", "false_unavailable", "wage_table_evidence", "entitlement_table_evidence", "role_catalog_integrity", "needle", "all"],
         default="v2",
     )
     parser.add_argument("--ablation-mode", default="normal")

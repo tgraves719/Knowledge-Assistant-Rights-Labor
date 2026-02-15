@@ -16,7 +16,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from backend.config import CHUNKS_DIR, ONTOLOGIES_DIR, MANIFESTS_DIR
+from backend.config import CHUNKS_DIR, ONTOLOGIES_DIR, MANIFESTS_DIR, ENTITLEMENTS_DIR
 from backend.chunk_files import resolve_chunk_file
 from backend.contracts import list_contract_catalog
 from backend.ingest.language_lexicon import (
@@ -28,6 +28,7 @@ from backend.ingest.query_routing import (
     synthesize_query_routing,
     merge_query_routing,
 )
+from backend.ingest.extract_entitlements import extract_entitlements, save_entitlements
 
 
 def _discover_contract_chunk_inputs(contract_id: str = None, explicit_chunks_file: Path = None) -> list[tuple[str, Path]]:
@@ -174,6 +175,18 @@ def rebuild_index(
                 f"slang={routing_stats.get('slang_entries')} "
                 f"classifications={routing_stats.get('classification_entries')}"
             )
+
+        entitlement_artifact = extract_entitlements(
+            chunks=chunks,
+            contract_id=cid,
+            manifest=manifest,
+        )
+        entitlement_path = ENTITLEMENTS_DIR / f"entitlement_tables_{cid}.json"
+        save_entitlements(entitlement_artifact, entitlement_path)
+        print(
+            f"Saved entitlement tables [{cid}]: {entitlement_path} "
+            f"(schedules={len(entitlement_artifact.get('vacation_entitlements') or [])})"
+        )
 
     # Step 2: Rebuild vector store (optional)
     if not skip_vector_store:

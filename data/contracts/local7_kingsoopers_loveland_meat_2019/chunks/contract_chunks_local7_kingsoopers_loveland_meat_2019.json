@@ -27,7 +27,6 @@
     "region_id": "region-loveland",
     "alternative_names": [
       "recognition exclusions",
-      "courtesy clerk",
       "meat cutter"
     ],
     "worker_questions": [
@@ -5585,8 +5584,7 @@
       "scheduling",
       "shift",
       "hours",
-      "posting",
-      "courtesy clerk"
+      "posting"
     ],
     "worker_questions": [
       "how does seniority affect my rights",
@@ -7356,11 +7354,9 @@
     "content_with_tables": "1. For those stores that do not have a separate specialty meat department that the preparation, display, handling and sale of case ready items normally offered for sale in the specialty meat/seafood department may be done by deli clerks. For those stores with a separate specialty meat department, then the preparation of such items will be performed by butcher block clerks, but the items may be displayed, handled and sold in the deli by deli clerks.\n\n2. Nothing in this agreement precludes the Company from selling the final product in other areas of the meat department.",
     "table_refs": [],
     "region_id": "region-loveland",
-    "alternative_names": [
-      "deli clerk"
-    ],
+    "alternative_names": [],
     "worker_questions": [
-      "what does article 57 section 128 part 1 2 say about deli clerk"
+      "what does article 57 section 128 part 1 2 say about this section"
     ]
   },
   {
@@ -8246,7 +8242,6 @@
       "laid off",
       "bumping",
       "displacement",
-      "courtesy clerk",
       "meat cutter"
     ],
     "worker_questions": [
@@ -8945,8 +8940,7 @@
       "scheduling",
       "shift",
       "hours",
-      "posting",
-      "deli clerk"
+      "posting"
     ],
     "worker_questions": [
       "how much should i be making per hour",
@@ -9223,8 +9217,7 @@
       "pay",
       "pay rate",
       "hourly rate",
-      "rate of pay",
-      "cake decorator"
+      "rate of pay"
     ],
     "worker_questions": [
       "how much should i be making per hour"

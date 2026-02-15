@@ -26,7 +26,20 @@ Required:
 - Precedence failure threshold met
 - Citation fabrication rate at or near zero per policy target
 - Paraphrase robustness threshold met (family pass rate + worker-slang floor)
+- Formal-rewrite drift threshold met (non-slang `formal_rewrite` variant pass-rate floor)
+- Adversarial formal-precedence threshold met (overall + per-contract pass floors, precedence-order pass floor, canonical dataset schema)
+- Adversarial dataset integrity checks passed (required schema version, minimum distribution, active-contract coverage)
+- Unanswerable/abstention threshold met (overall + per-contract floors, canonical dataset schema)
+- Unanswerable dataset integrity checks passed (required schema version, minimum distribution, scenario diversity, active-contract coverage)
+- Cross-contract mention abstention threshold met (overall + per-contract floors, no-citation floor, canonical dataset schema)
+- Cross-contract mention dataset integrity checks passed (required schema version, minimum distribution, active-contract coverage)
+- False-unavailable guard check passed (no "not available" claim when strong in-context evidence exists)
+- False-unavailable canonical evaluation thresholds met (recovery-rate floor on evidence-present cases, proper-uncertainty floor on evidence-absent cases, and overall/per-contract floors)
+- False-unavailable dataset integrity checks passed (required schema version, minimum distribution, active-contract coverage)
 - Needle retrieval threshold met (overall pass rate + top/middle/bottom position floors)
+- Wage-table evidence threshold met (overall + per-contract floors, canonical dataset schema, source-method floor, table-evidence/table-id presence floors)
+- Entitlement-table evidence threshold met (overall + per-contract floors, canonical dataset schema, weeks-resolution floor, source/evidence presence floors)
+- Role-catalog integrity threshold met (overall + per-contract floors, canonical dataset schema, dataset-case pass floor, default-role wage-readiness floor, unresolved-role containment floor)
 
 Owner: Model Risk Council
 
@@ -50,6 +63,13 @@ Owner: Model Risk Council + Mission Council
 ## Gate D: Multi-Contract Safety
 
 Required:
+- Canonical v3 suite pass (`data/test_set/v3_results.json`)
+- Canonical adversarial formal-precedence slice pass (`data/test_set/adversarial_results.json`)
+- Canonical multi-contract unanswerable slice pass (`data/test_set/unanswerable_results.json`)
+- Canonical cross-contract mention slice pass (`data/test_set/cross_contract_mentions_results.json`)
+- Canonical wage-table evidence slice pass (`data/test_set/wage_table_evidence_results.json`)
+- Canonical entitlement-table evidence slice pass (`data/test_set/entitlement_table_evidence_results.json`)
+- Canonical role-catalog integrity slice pass (`data/test_set/role_catalog_integrity_results.json`)
 - Cross-contamination test pass (zero wrong-tenant retrievals)
 - Multi-contract benchmark slice pass (overall threshold + per-contract floor)
 - Retrieval hard-filter enforcement verified (`contract_id` + `region_id`)
@@ -86,7 +106,9 @@ Required:
 - Language lexicon artifact gate passes (artifact present, alias graph non-empty, region metadata present)
 - Manifest query-routing coverage gate passes (topic/article map + topic patterns + slang map + classification/article map)
 - Classification ontology gate passes (artifact present, alias targets valid, manifest mapping decisions complete)
+- Role catalog gate passes (artifact present, schema-valid, onboarding-default roles all wage-resolvable)
 - Canonical wage-row schema gate passes (rows present when wages exist, row schema valid, no required integrity failures)
+- Entitlement schedule artifact gate passes (artifact present, schema-valid, vacation schedules non-empty when vacation article language exists)
 - Ingestion review-queue gate passes when unresolved/ambiguous ingestion issues exist
 - Accepted pack hash recorded in `data/contracts/pack_registry.json`
 - Benchmark metadata references active accepted pack hashes

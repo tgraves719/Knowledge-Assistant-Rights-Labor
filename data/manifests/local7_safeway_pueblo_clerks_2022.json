@@ -71,6 +71,7 @@
   "classifications": [
     "All Purpose Clerk",
     "Bakery Department Manager",
+    "Bakery Manager",
     "Cake Decorator",
     "Courtesy Clerk",
     "Deli Clerk",
@@ -78,10 +79,11 @@
     "Dug Shopper",
     "Floral Manager",
     "Head Clerk",
-    "Meatcutter",
+    "Meat Cutter",
     "Non-Food Clerk",
     "Pharmacy Technician",
     "Produce Department Manager",
+    "Produce Manager",
     "Sanitation Clerk"
   ],
   "key_dates": [
@@ -250,6 +252,9 @@
       "warning": "discipline"
     },
     "topic_to_articles": {
+      "bereavement": [
+        33
+      ],
       "breaks": [
         21,
         24,
@@ -336,6 +341,7 @@
       ]
     },
     "topic_patterns": {
+      "bereavement": "\\bbereavement\\b|\\bbereavement\\s*leave\\b|\\bfuneral\\b|\\bfuneral\\s*leave\\b|\\bdeath\\s*in\\s*family\\b|\\bdays\\s*off\\s*for\\s*funeral\\b",
       "breaks": "\\blunch\\s*break\\b|\\brelief\\s*period\\b|\\bmeal\\s*period\\b|\\brest\\s*period\\b|\\bbetween\\s*shifts\\b|\\blunch\\s*breaks\\b|\\brelief\\s*periods\\b|\\bsplit\\s*shifts\\b|\\bbreak\\s*between\\s*shifts\\b|\\bbreaks\\b|\\bclopen\\b|\\bclose\\s*and\\s*open\\b|\\bhours\\s*between\\s*shifts\\b|\\brest\\s*break\\b|\\bturnaround\\s*shift\\b",
       "discipline": "\\bdiscipline\\b|\\bwrite\\s*up\\b|\\bwritten\\s*up\\b|\\bdischarge\\b|\\btermination\\b|\\bdischarge\\s*and\\s*no\\s*discrimination\\b|\\bunion\\s*security\\s*and\\s*conditions\\b|\\brights\\s*of\\s*management\\b|\\bprior\\s*experience\\b|\\bdischarge\\s*discrimination\\b|\\bwarning\\b",
       "grievance": "\\bgrievance\\b|\\barbitration\\b|\\bdispute\\s*procedure\\b|\\bappeal\\b|\\bprior\\s*experience\\b|\\bvacations\\b|\\bprobationary\\s*period\\b|\\bdispute\\b",
@@ -361,6 +367,12 @@
         8
       ],
       "bakery_department_manager": [
+        4,
+        5,
+        7,
+        58
+      ],
+      "bakery_manager": [
         4,
         5,
         7,
@@ -408,7 +420,7 @@
         7,
         8
       ],
-      "meatcutter": [
+      "meat_cutter": [
         4,
         5,
         7,
@@ -427,6 +439,12 @@
         56
       ],
       "produce_department_manager": [
+        4,
+        5,
+        7,
+        8
+      ],
+      "produce_manager": [
         4,
         5,
         7,

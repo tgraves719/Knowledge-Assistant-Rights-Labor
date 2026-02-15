@@ -20,6 +20,8 @@ import re
 from backend.contracts import get_contract_catalog_entry
 from backend.wage_files import resolve_wage_file
 from backend.classification_ontology_files import resolve_classification_ontology_file
+from backend.role_catalog_files import resolve_role_catalog_file
+from backend.ingest.extract_wages import normalize_classification_name
 
 
 class EmploymentType(str, Enum):
@@ -288,16 +290,16 @@ def _normalize_profile_classification_value(
     lowered = raw.lower()
 
     if contract_id:
-        options = get_classification_options(contract_id=contract_id)
+        options = get_classification_options(contract_id=contract_id, include_unmapped=True)
         for opt in options:
             candidate = str(opt.get("value") or "").strip().lower()
             if candidate and candidate == lowered:
-                return candidate
+                return str(opt.get("wage_key") or candidate).strip().lower() or candidate
         for opt in options:
             label = str(opt.get("label") or "").strip().lower()
             candidate = str(opt.get("value") or "").strip().lower()
             if label and label == lowered and candidate:
-                return candidate
+                return str(opt.get("wage_key") or candidate).strip().lower() or candidate
 
     for key, label in CLASSIFICATION_DISPLAY_NAMES.items():
         if lowered == key.lower() or lowered == str(label).strip().lower():
@@ -437,16 +439,97 @@ def _load_contract_classification_options_from_wages(contract_id: str) -> list[d
     classes = wages_data.get("classifications") or {}
     options: list[dict] = []
     for key, cls in classes.items():
-        value = (cls.get("normalized_name") or key or "").strip().lower()
+        value = normalize_classification_name(str(cls.get("normalized_name") or key or ""))
         if not value:
             continue
         label = (cls.get("name") or "").strip()
         if not label:
             label = CLASSIFICATION_DISPLAY_NAMES.get(value) or _prettify_classification_label(value)
         label = _normalize_classification_label(label) or _prettify_classification_label(value)
-        options.append({"value": value, "label": label})
+        options.append(
+            {
+                "value": value,
+                "label": label,
+                "wage_available": True,
+                "wage_key": value,
+                "source": "wage_table",
+            }
+        )
 
     # Preserve first-seen uniqueness by value.
+    seen = set()
+    deduped: list[dict] = []
+    for opt in options:
+        if opt["value"] in seen:
+            continue
+        seen.add(opt["value"])
+        deduped.append(opt)
+    return deduped
+
+
+def _load_contract_classification_options_from_role_catalog(contract_id: str) -> list[dict]:
+    """Build classification options from contract-scoped role catalog when available."""
+    role_catalog_file = resolve_role_catalog_file(
+        contract_id=contract_id,
+        allow_shared_fallback=False,
+    )
+    if not role_catalog_file or not role_catalog_file.exists():
+        return []
+
+    try:
+        with open(role_catalog_file, "r", encoding="utf-8") as f:
+            role_catalog_data = json.load(f)
+    except Exception:
+        return []
+
+    if str(role_catalog_data.get("contract_id") or "").strip().lower() != contract_id.strip().lower():
+        return []
+
+    roles = role_catalog_data.get("roles") or []
+    if not isinstance(roles, list):
+        return []
+
+    options: list[dict] = []
+    for role in roles:
+        if not isinstance(role, dict):
+            continue
+        value = normalize_classification_name(str(role.get("value") or ""))
+        if not value:
+            continue
+        label = _normalize_classification_label(str(role.get("label") or ""))
+        if not label:
+            label = CLASSIFICATION_DISPLAY_NAMES.get(value) or _prettify_classification_label(value)
+        alias_labels = role.get("alias_labels") if isinstance(role.get("alias_labels"), list) else []
+        alias_labels = [str(x).strip() for x in alias_labels if str(x).strip()]
+        if alias_labels and bool(role.get("onboarding_default")):
+            preview = " / ".join(alias_labels[:2])
+            if preview and preview.lower() not in label.lower():
+                label = f"{label} ({preview})"
+
+        wage_available = bool(role.get("wage_available"))
+        wage_key = normalize_classification_name(str(role.get("wage_key") or "")) or None
+        if not wage_available:
+            wage_key = None
+        onboarding_default = (
+            bool(role.get("onboarding_default"))
+            if "onboarding_default" in role
+            else wage_available
+        )
+
+        options.append(
+            {
+                "value": value,
+                "label": label,
+                "wage_available": wage_available,
+                "wage_key": wage_key,
+                "source": str(role.get("source") or "role_catalog"),
+                "mapping_method": str(role.get("mapping_method") or ""),
+                "manifest_present": bool(role.get("manifest_present")),
+                "onboarding_default": onboarding_default,
+                "alias_labels": alias_labels,
+            }
+        )
+
     seen = set()
     deduped: list[dict] = []
     for opt in options:
@@ -480,7 +563,7 @@ def _load_contract_classification_options_from_ontology(contract_id: str) -> lis
     for decision in decisions:
         if not isinstance(decision, dict):
             continue
-        value = str(decision.get("source_key") or "").strip().lower()
+        value = normalize_classification_name(str(decision.get("source_key") or ""))
         if not value:
             continue
         labels = decision.get("source_labels") or []
@@ -492,7 +575,16 @@ def _load_contract_classification_options_from_ontology(contract_id: str) -> lis
                     break
         if not label:
             label = CLASSIFICATION_DISPLAY_NAMES.get(value) or _prettify_classification_label(value)
-        options.append({"value": value, "label": label})
+        mapped_wage_key = normalize_classification_name(str(decision.get("mapped_wage_key") or "")) or None
+        options.append(
+            {
+                "value": value,
+                "label": label,
+                "wage_available": bool(mapped_wage_key),
+                "wage_key": mapped_wage_key,
+                "source": "ontology_resolved" if mapped_wage_key else "ontology_unresolved",
+            }
+        )
 
     # Stable first-seen dedupe.
     seen = set()
@@ -505,7 +597,10 @@ def _load_contract_classification_options_from_ontology(contract_id: str) -> lis
     return deduped
 
 
-def get_classification_options(contract_id: Optional[str] = None) -> list[dict]:
+def get_classification_options(
+    contract_id: Optional[str] = None,
+    include_unmapped: bool = False,
+) -> list[dict]:
     """
     Get classification options for onboarding/profile UI.
 
@@ -513,32 +608,111 @@ def get_classification_options(contract_id: Optional[str] = None) -> list[dict]:
     1) contract-specific wage classifications (when contract_id provided)
     2) static legacy map fallback
     """
+    def _option_rank(opt: dict) -> tuple[int, int]:
+        source_rank = {
+            "role_catalog": 5,
+            "wage_table": 4,
+            "ontology_resolved": 3,
+            "legacy": 2,
+            "ontology_unresolved": 1,
+        }
+        return (
+            1 if bool(opt.get("wage_available")) else 0,
+            source_rank.get(str(opt.get("source") or ""), 0),
+        )
+
+    def _merge(existing: dict, candidate: dict) -> dict:
+        ex = dict(existing or {})
+        cand = dict(candidate or {})
+        if _option_rank(cand) > _option_rank(ex):
+            merged = dict(ex)
+            merged.update(cand)
+            return merged
+
+        if not ex.get("wage_key") and cand.get("wage_key"):
+            ex["wage_key"] = cand.get("wage_key")
+        if cand.get("wage_available"):
+            ex["wage_available"] = True
+        if not ex.get("source") and cand.get("source"):
+            ex["source"] = cand.get("source")
+        if not ex.get("label") and cand.get("label"):
+            ex["label"] = cand.get("label")
+        return ex
+
     if contract_id:
         if contract_id in _classification_cache_by_contract:
-            return _classification_cache_by_contract[contract_id]
-        options = _load_contract_classification_options_from_wages(contract_id)
+            cached = _classification_cache_by_contract[contract_id]
+            if include_unmapped:
+                return cached
+            default_cached = [
+                o for o in cached
+                if bool(o.get("onboarding_default", o.get("wage_available", True)))
+            ]
+            if default_cached:
+                return default_cached
+            filtered_cached = [o for o in cached if o.get("wage_available", True)]
+            return filtered_cached or cached
+
+        role_catalog_options = _load_contract_classification_options_from_role_catalog(contract_id)
+        if role_catalog_options:
+            _classification_cache_by_contract[contract_id] = role_catalog_options
+            if include_unmapped:
+                return role_catalog_options
+            default_opts = [
+                o for o in role_catalog_options
+                if bool(o.get("onboarding_default", o.get("wage_available", True)))
+            ]
+            if default_opts:
+                return default_opts
+            filtered = [o for o in role_catalog_options if o.get("wage_available", True)]
+            return filtered or role_catalog_options
+
+        options: list[dict] = []
+        option_index: dict[str, int] = {}
+
+        def _upsert(opt: dict) -> None:
+            value = str(opt.get("value") or "").strip().lower()
+            if not value:
+                return
+            normalized_opt = dict(opt)
+            normalized_opt["value"] = value
+            if not normalized_opt.get("label"):
+                normalized_opt["label"] = _prettify_classification_label(value)
+            if value not in option_index:
+                option_index[value] = len(options)
+                options.append(normalized_opt)
+                return
+            idx = option_index[value]
+            options[idx] = _merge(options[idx], normalized_opt)
+
+        for opt in _load_contract_classification_options_from_wages(contract_id):
+            _upsert(opt)
+
         ontology_options = _load_contract_classification_options_from_ontology(contract_id)
-        if ontology_options:
-            existing_values = {o["value"] for o in options}
-            for opt in ontology_options:
-                if opt["value"] in existing_values:
-                    continue
-                options.append(opt)
-                existing_values.add(opt["value"])
+        for opt in ontology_options:
+            _upsert(opt)
         contract_id_lower = contract_id.lower()
 
         # Clerks contracts often have role variants not present in wage tables.
         # Include legacy clerks role map as supplemental options.
         if "clerks" in contract_id_lower:
-            existing = {o["value"] for o in options}
             for key, label in CLASSIFICATION_DISPLAY_NAMES.items():
-                if key in existing:
-                    continue
-                options.append({"value": key, "label": label})
+                _upsert(
+                    {
+                        "value": key,
+                        "label": label,
+                        "wage_available": False,
+                        "wage_key": None,
+                        "source": "legacy",
+                    }
+                )
 
         if options:
             _classification_cache_by_contract[contract_id] = options
-            return options
+            if include_unmapped:
+                return options
+            filtered = [o for o in options if o.get("wage_available", True)]
+            return filtered or options
 
     return [{"value": key, "label": label} for key, label in CLASSIFICATION_DISPLAY_NAMES.items()]
 

@@ -1,6 +1,6 @@
 {
   "schema_version": "classification_ontology_v1",
-  "generated_at_utc": "2026-02-15T05:32:13.294186+00:00",
+  "generated_at_utc": "2026-02-15T18:43:11.024473+00:00",
   "contract_id": "local7_safeway_pueblo_meat_2022",
   "manifest_classifications": [
     {
@@ -48,12 +48,8 @@
       "name": "DELI MANAGER"
     },
     {
-      "wage_key": "deli_manager_after_5_20_77__directing_5_or_less_deli_employees",
-      "name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES"
-    },
-    {
       "wage_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
-      "name": "DELI MANAGER AFTER 5/20/77 &DIRECTING 5 OR LESS DELI EMPLOYEES"
+      "name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES"
     },
     {
       "wage_key": "first_cutter",
@@ -185,7 +181,6 @@
     "assistant_deli_manager": "assistant_deli_manager",
     "deli_clerks": "deli_clerks",
     "deli_manager": "deli_manager",
-    "deli_manager_after_5_20_77__directing_5_or_less_deli_employees": "deli_manager_after_5_20_77__directing_5_or_less_deli_employees",
     "deli_manager_after_5_20_77_directing_5_or_less_deli_employees": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
     "first_cutter": "first_cutter",
     "head_meat_cutter": "head_meat_cutter",

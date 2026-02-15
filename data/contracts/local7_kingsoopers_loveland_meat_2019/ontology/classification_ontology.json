@@ -1,26 +1,8 @@
 {
   "schema_version": "classification_ontology_v1",
-  "generated_at_utc": "2026-02-15T05:32:14.998293+00:00",
+  "generated_at_utc": "2026-02-15T18:43:09.477383+00:00",
   "contract_id": "local7_kingsoopers_loveland_meat_2019",
   "manifest_classifications": [
-    {
-      "normalized": "cake_decorator",
-      "labels": [
-        "Cake Decorator"
-      ]
-    },
-    {
-      "normalized": "courtesy_clerk",
-      "labels": [
-        "Courtesy Clerk"
-      ]
-    },
-    {
-      "normalized": "deli_clerk",
-      "labels": [
-        "Deli Clerk"
-      ]
-    },
     {
       "normalized": "head_clerk",
       "labels": [
@@ -31,12 +13,6 @@
       "normalized": "meat_cutter",
       "labels": [
         "Meat Cutter"
-      ]
-    },
-    {
-      "normalized": "pharmacy_tech",
-      "labels": [
-        "Pharmacy Tech"
       ]
     }
   ],
@@ -79,70 +55,6 @@
     }
   ],
   "decisions": [
-    {
-      "source_key": "cake_decorator",
-      "source_labels": [
-        "Cake Decorator"
-      ],
-      "mapped_wage_key": null,
-      "mapping_method": "unresolved",
-      "score": 0.0,
-      "candidate_scores": []
-    },
-    {
-      "source_key": "courtesy_clerk",
-      "source_labels": [
-        "Courtesy Clerk"
-      ],
-      "mapped_wage_key": null,
-      "mapping_method": "unresolved_low_score",
-      "score": 0.3412,
-      "candidate_scores": [
-        {
-          "wage_key": "deli_coffee_cheese_clerk",
-          "score": 0.341228
-        },
-        {
-          "wage_key": "meat_head_clerk_asst",
-          "score": 0.32451
-        },
-        {
-          "wage_key": "deli_head_clerk_asst",
-          "score": 0.306863
-        }
-      ]
-    },
-    {
-      "source_key": "deli_clerk",
-      "source_labels": [
-        "Deli Clerk"
-      ],
-      "mapped_wage_key": null,
-      "mapping_method": "unresolved_ambiguous",
-      "score": 0.5667,
-      "candidate_scores": [
-        {
-          "wage_key": "deli_head_clerk_asst",
-          "score": 0.566667
-        },
-        {
-          "wage_key": "deli_coffee_cheese_clerk",
-          "score": 0.543137
-        },
-        {
-          "wage_key": "deli_chef",
-          "score": 0.496053
-        },
-        {
-          "wage_key": "deli_department_head",
-          "score": 0.415
-        },
-        {
-          "wage_key": "meat_head_clerk_asst",
-          "score": 0.323333
-        }
-      ]
-    },
     {
       "source_key": "head_clerk",
       "source_labels": [
@@ -188,16 +100,6 @@
           "score": 0.99
         }
       ]
-    },
-    {
-      "source_key": "pharmacy_tech",
-      "source_labels": [
-        "Pharmacy Tech"
-      ],
-      "mapped_wage_key": null,
-      "mapping_method": "unresolved",
-      "score": 0.0,
-      "candidate_scores": []
     }
   ],
   "alias_to_wage_key": {
@@ -213,16 +115,12 @@
     "seafood_manager": "seafood_manager"
   },
   "summary": {
-    "total_manifest_classes": 6,
+    "total_manifest_classes": 2,
     "resolved_manifest_classes": 1,
-    "unresolved_manifest_classes": 5,
-    "coverage": 0.1667,
+    "unresolved_manifest_classes": 1,
+    "coverage": 0.5,
     "unresolved_manifest_keys": [
-      "cake_decorator",
-      "courtesy_clerk",
-      "deli_clerk",
-      "head_clerk",
-      "pharmacy_tech"
+      "head_clerk"
     ],
     "manual_override_count": 0
   }

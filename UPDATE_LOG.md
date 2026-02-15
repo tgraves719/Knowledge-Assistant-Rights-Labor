@@ -1,5 +1,932 @@
 # Karl Update Log
 
+## v0.8.67 - Classification Key Canonicalization + Multi-Role Comparison Routing Hardening (February 2026)
+
+### Overview
+
+Fixed duplicate role-option surfacing caused by punctuation/spacing normalization drift, and hardened comparison-query routing so prompts like "cc's vs dug workers" deterministically anchor both role article maps.
+
+### What Changed
+
+- Classification key canonicalization:
+  - `backend/ingest/extract_wages.py`
+    - `normalize_classification_name(...)` now collapses repeated underscores and trims edge underscores.
+  - `backend/user/profile.py`
+    - contract option loaders now normalize `value`/`wage_key` through canonical classifier normalization.
+    - removes duplicate default options that only differ by punctuation/spacing artifacts.
+- Multi-role comparison routing:
+  - `backend/retrieval/router.py`
+    - `_contract_classification_aliases(...)` now includes unmapped options + alias labels and generates acronym aliases (e.g., `cc`, `dug`).
+    - new `extract_classifications_for_contract(...)` to detect multiple role mentions in query order.
+    - `classify_intent(...)` now merges classification article anchors across all mentioned roles (not only one classification).
+- Targeted deterministic tests:
+  - `backend/test_topic_routing.py`
+    - added role-comparison routing test for `"what is the difference between cc's and dug workers"`.
+  - `backend/test_classification_options.py`
+    - added normalized uniqueness guard for Pueblo Meat default role options.
+
+### Validation
+
+- `python backend/test_classification_options.py` -> PASS
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> PASS (`15/15`, `45/45`)
+- `python -m backend.evaluate_multi_contract --bm25-only` -> PASS (`18/18`)
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.66 - Canonical Role-Catalog Integrity Slice + v3/Gate Enforcement (February 2026)
+
+### Overview
+
+Promoted contract-scoped role integrity from ad-hoc tests into a canonical, release-gated evaluation slice to prevent role drift/cross-pollination regressions (for example, `cake_decorator` leakage into meat-contract defaults).
+
+### What Changed
+
+- New canonical evaluator + dataset:
+  - `backend/evaluate_role_catalog_integrity.py`
+    - validates dataset-driven role expectations per contract
+    - validates invariants per contract:
+      - default onboarding roles are wage-ready
+      - unresolved manifest roles do not appear in default options
+      - onboarding defaults are unique per `wage_key`
+  - `data/test_set/role_catalog_integrity_test.json`
+    - canonical expectations for Loveland meat / Pueblo meat / Pueblo clerks role behavior
+  - Artifact output:
+    - `data/test_set/role_catalog_integrity_results.json`
+- Canonical runner integration:
+  - `backend/evaluate_runner.py`
+    - new track: `role_catalog_integrity`
+    - included in `--track all`
+- Canonical v3 integration:
+  - `backend/evaluate_v3.py`
+    - new required component: `role_catalog_integrity`
+    - full v3 run now executes `python -m backend.evaluate_role_catalog_integrity`
+    - added threshold CLI flags for schema/coverage/rates
+    - schema version bumped to `v3_eval_v4`
+- Release gate integration:
+  - `backend/evaluate_gate_check.py`
+    - required role-catalog-integrity artifact checks + thresholds
+    - new CLI args for role-catalog-integrity artifact path/thresholds
+    - non-release bypass flag: `--allow-missing-role-catalog-integrity`
+- Docs + gate policy sync:
+  - `README.md`
+    - added canonical runner command, standalone evaluator command, gate-check sample args, CI slice list update
+  - `legal/RELEASE-GATES.md`
+    - Gate B includes role-catalog-integrity threshold requirement
+    - Gate D includes canonical role-catalog-integrity artifact requirement
+
+### Validation
+
+- `python -m backend.evaluate_role_catalog_integrity` -> PASS (`20/20`, `100%`)
+- `python -m backend.evaluate_runner --track role_catalog_integrity` -> PASS
+- `python -m backend.evaluate_v3 --bm25-only` -> PASS (`15/15`)
+- `python -m backend.evaluate_gate_check` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> PASS (`15/15`, `45/45`)
+- `python -m backend.evaluate_runner --track paraphrase` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> PASS (`18/18`)
+- `python backend/test_topic_routing.py` -> PASS
+
+## v0.8.65 - Deterministic Vacation Entitlement Artifact + Release-Gated Entitlement Evidence (February 2026)
+
+### Overview
+
+Added an ingestion-owned vacation entitlement schedule artifact and a deterministic runtime entitlement lookup path, then promoted entitlement evidence into canonical v3 and release gates.
+
+### What Changed
+
+- New ingestion/runtime artifact pipeline:
+  - `backend/ingest/extract_entitlements.py`
+    - deterministic extraction of vacation accrual ladders (`years_of_service -> weeks_per_year`)
+    - schedule condition parsing (`hire_date_on_or_before/on_or_after`, `anniversary_hours_min`)
+    - deterministic runtime resolver `lookup_vacation_entitlement(...)`
+  - `backend/entitlement_files.py`
+    - contract-scoped entitlement artifact resolver (`entitlement_tables_<contract_id>.json`)
+- Ingestion integration:
+  - `scripts/onboard_contract_packages.py`
+    - generates package entitlement artifact under `data/contracts/<contract_id>/entitlements/`
+    - syncs runtime artifact to `data/entitlements/entitlement_tables_<contract_id>.json`
+  - `backend/ingest/rebuild_index.py`
+    - regenerates entitlement artifacts during rebuild for each active contract
+  - `backend/ingest/pack_acceptance.py`
+    - required checks:
+      - `entitlements_exists`
+      - `entitlements_schema_valid`
+      - `vacation_entitlement_non_empty`
+- Retrieval/runtime integration:
+  - `backend/retrieval/router.py`
+    - added entitlement artifact loading cache
+    - added `lookup_vacation_entitlement(...)`
+    - retrieval results now include `entitlement_info` for vacation-entitlement queries
+  - `backend/api.py`
+    - `QueryResponse` now includes optional `entitlement_info`
+    - deterministic `/api/query` short-circuit for vacation entitlement amount questions:
+      - returns schedule-backed answer from entitlement artifact
+      - avoids stochastic "not available" failure for accrual schedules
+      - requires hire-date disambiguation when multiple hire-date schedules exist
+- New canonical eval and tests:
+  - `backend/evaluate_entitlement_table_evidence.py`
+  - `data/test_set/entitlement_table_evidence_test.json`
+  - `backend/test_vacation_entitlement_lookup.py`
+- Canonical runner/v3/gate integration:
+  - `backend/evaluate_runner.py`
+    - new track: `entitlement_table_evidence`
+    - included in `all`
+  - `backend/evaluate_v3.py`
+    - new required component: `entitlement_table_evidence`
+    - v3 component count now includes entitlement evidence checks
+  - `backend/evaluate_gate_check.py`
+    - required artifact checks/thresholds for entitlement-table-evidence
+- Docs and release-gate sync:
+  - `README.md`
+  - `legal/RELEASE-GATES.md`
+
+### Validation
+
+- `python scripts/onboard_contract_packages.py --package local7_kingsoopers_loveland_meat_2019 --package local7_safeway_pueblo_meat_2022 --package local7_safeway_pueblo_clerks_2022` -> PASS (pack required gates pass)
+- `python backend/test_vacation_entitlement_lookup.py` -> PASS
+- `python -m backend.evaluate_entitlement_table_evidence` -> PASS (`12/12`)
+- `python -m backend.evaluate_runner --track entitlement_table_evidence` -> PASS
+- `python -m backend.evaluate_v3 --bm25-only` -> PASS (`14/14`)
+- `python -m backend.evaluate_gate_check` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> PASS (`15/15`, `45/45`)
+- `python -m backend.evaluate_multi_contract --bm25-only` -> PASS (`18/18`)
+- `python backend/test_topic_routing.py` -> PASS
+
+## v0.8.64 - Canonical Wage-Table-Evidence Gate Promotion (February 2026)
+
+### Overview
+
+Promoted wage-table evidence from a standalone evaluator to a canonical release-gated slice in v3 and gate checks. This enforces deterministic Appendix-table grounding integrity at release time (dataset schema, coverage, per-contract floors, and evidence-presence metrics).
+
+### What Changed
+
+- `backend/evaluate_v3.py`
+  - Added canonical wage-table-evidence component:
+    - artifact: `data/test_set/wage_table_evidence_results.json`
+    - checks: dataset schema, minimum total/per-contract coverage, overall/per-contract pass floors, source-method pass floor, table-evidence presence floor, table-id presence floor.
+  - Full v3 run now executes:
+    - `python -m backend.evaluate_wage_table_evidence --bm25-only`
+  - Added CLI thresholds:
+    - `--required-wage-table-evidence-dataset-schema-version`
+    - `--min-wage-table-evidence-total-cases`
+    - `--min-wage-table-evidence-cases-per-contract`
+    - `--min-wage-table-evidence-pass-rate`
+    - `--min-wage-table-evidence-per-contract`
+    - `--min-wage-table-evidence-source-method-pass-rate`
+    - `--min-wage-table-evidence-presence-rate`
+    - `--min-wage-table-evidence-table-id-presence-rate`
+- `backend/evaluate_gate_check.py`
+  - Added required wage-table-evidence artifact checks with the same deterministic threshold set as v3.
+  - Added CLI args for artifact path and thresholds:
+    - `--wage-table-evidence-results`
+    - `--required-wage-table-evidence-dataset-schema-version`
+    - `--min-wage-table-evidence-total-cases`
+    - `--min-wage-table-evidence-cases-per-contract`
+    - `--min-wage-table-evidence-pass-rate`
+    - `--min-wage-table-evidence-per-contract`
+    - `--min-wage-table-evidence-source-method-pass-rate`
+    - `--min-wage-table-evidence-presence-rate`
+    - `--min-wage-table-evidence-table-id-presence-rate`
+  - Added non-release debug bypass:
+    - `--allow-missing-wage-table-evidence`
+- `README.md`
+  - Added canonical runner/evaluator commands for wage-table-evidence.
+  - Added gate-check example flags for wage-table-evidence thresholds.
+  - Added wage-table-evidence to canonical CI slice list in docs.
+- `legal/RELEASE-GATES.md`
+  - Added wage-table-evidence threshold requirement to Gate B.
+  - Added canonical wage-table-evidence artifact requirement to Gate D.
+
+## v0.8.63 - Canonical Wage-Row Runtime Retrieval + Table Evidence Surfacing (February 2026)
+
+### Overview
+
+Implemented a deterministic table-native wage path at runtime: wage lookups now resolve canonical wage rows first and return structured Appendix table evidence metadata (`table_id`, `row_index`, step/date/rate). This improves explainability and prepares the frontend for table-aware wage rendering.
+
+### What Changed
+
+- `backend/ingest/extract_wages.py`
+  - Added deterministic classification-key resolver utility for wage lookup.
+  - Added canonical-row-first wage resolver:
+    - selects class-scoped canonical rows
+    - resolves effective date deterministically
+    - resolves applicable step by threshold (`hours` / `months` / `fixed`)
+    - falls back to legacy classification-step lookup when canonical rows are absent
+  - `lookup_wage(...)` now returns:
+    - `classification_key`
+    - `source_method` (`canonical_rows` or `classification_steps`)
+    - `table_evidence` (list)
+- `backend/retrieval/router.py`
+  - `_ensure_wage_table_context(...)` now accepts `wage_info` and preferentially boosts appendix chunks whose `table_refs` match canonical row `table_evidence`.
+- `backend/api.py`
+  - Added optional `table_evidence` in:
+    - `WageResponse`
+    - `WageEstimateResponse`
+  - `/api/wage` and `/api/wage/estimate/{session_id}` now include structured table evidence when available.
+- `backend/generation/verifier.py`
+  - `format_response_with_sources(...)` now appends deterministic table-specific Appendix citations from `wage_info.table_evidence`.
+- `frontend/index.html`
+  - Chat wage cards now render a compact “Appendix Table Evidence” block when `wage_info.table_evidence` is present.
+- New deterministic test:
+  - `backend/test_canonical_wage_lookup.py`
+    - asserts canonical-row lookup path emits table evidence
+    - asserts deterministic fallback behavior when canonical rows are removed
+
+### Validation
+
+- `python backend/test_canonical_wage_lookup.py` -> PASS
+- `python backend/test_role_catalog.py` -> PASS
+- `python backend/test_classification_options.py` -> PASS
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> PASS (`18/18`)
+- `python -m backend.evaluate_paraphrase --bm25-only` -> PASS (`15/15`, `45/45`)
+- `python -m backend.evaluate_runner --track paraphrase` -> PASS
+- `python -m backend.evaluate_runner --track v3` -> PASS
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.62 - Wage-Equivalent Role Alias Collapse for Onboarding Defaults (February 2026)
+
+### Overview
+
+Removed duplicate selectable roles when multiple manifest aliases map to the same wage key (for example, `dug_shopper` and `drive_up_and_go` both mapping to `nonfood_gm_floral` in Pueblo clerks), while preserving alias matching for runtime classification normalization.
+
+### What Changed
+
+- `backend/ingest/role_catalog.py`
+  - Added deterministic wage-equivalent alias collapse:
+    - exactly one `onboarding_default=true` role per `wage_key`
+    - non-primary aliases retained with `alias_of_wage_key`
+    - primary role enriched with `alias_labels` / `alias_values`
+- `backend/user/profile.py`
+  - Role-catalog option labels can surface alias previews for default options (e.g., one merged role label includes both DUG/Drive Up & Go).
+  - Contract classification normalization now resolves against `include_unmapped=True` options and canonicalizes to `wage_key` when available.
+  - Default role list in role-catalog mode now uses `onboarding_default` first (not raw `wage_available`), preventing duplicate wage-equivalent options.
+- `backend/test_role_catalog.py`
+  - Added assertions for:
+    - at most one onboarding-default role per wage key
+    - no duplicate default DUG/Drive Up alias options in Pueblo clerks
+
+### Validation
+
+- `python scripts/onboard_contract_packages.py --package local7_kingsoopers_loveland_meat_2019 --package local7_safeway_pueblo_meat_2022 --package local7_safeway_pueblo_clerks_2022` -> PASS
+- `python backend/test_role_catalog.py` -> PASS
+- `python backend/test_classification_options.py` -> PASS
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> PASS (`18/18`)
+- `python -m backend.evaluate_paraphrase --bm25-only` -> PASS (`15/15`, `45/45`)
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.61 - Contract-Scoped Role Catalog Artifact + Pack-Gate Enforcement (February 2026)
+
+### Overview
+
+Added an ingestion-owned contract role catalog artifact and made it the runtime default source for onboarding classification options. This hardens role typing at scale by separating "role exists in contract metadata" from "role has Appendix A wage row" with deterministic, contract-scoped metadata.
+
+### What Changed
+
+- New role-catalog artifact builder and runtime resolver:
+  - `backend/ingest/role_catalog.py`
+    - Added deterministic `role_catalog_v1` schema:
+      - `roles[].value`, `label`
+      - `wage_available`, `wage_key`
+      - `source`, `mapping_method`
+      - `manifest_present`, `onboarding_default`
+    - Added summary counters including unresolved manifest roles.
+  - `backend/role_catalog_files.py`
+    - Added contract-scoped runtime resolver for `role_catalog_<contract_id>.json`.
+- Onboarding integration:
+  - `scripts/onboard_contract_packages.py`
+    - Builds `ontology/role_catalog.json` during package processing.
+    - Syncs runtime artifact to `data/ontologies/role_catalog_<contract_id>.json`.
+    - Includes role-catalog stats in onboarding output.
+- Pack acceptance integration:
+  - `backend/ingest/pack_acceptance.py`
+    - Added required checks:
+      - `role_catalog_exists`
+      - `role_catalog_schema_valid`
+      - `role_catalog_onboarding_default_wage_ready`
+    - Added advisory check:
+      - `role_catalog_unresolved_manifest_rate`
+- Runtime option loading hardening:
+  - `backend/user/profile.py`
+    - `get_classification_options(contract_id=...)` now prefers role-catalog options when present.
+    - Existing wage+ontology+legacy merge path remains deterministic fallback when role catalog is absent.
+- New deterministic test:
+  - `backend/test_role_catalog.py`
+    - Verifies schema/contract integrity and that unresolved manifest roles do not leak into default onboarding options.
+- Docs and gate policy sync:
+  - `README.md`
+  - `legal/RELEASE-GATES.md`
+
+### Validation
+
+- `python scripts/onboard_contract_packages.py --package local7_kingsoopers_loveland_meat_2019 --package local7_safeway_pueblo_meat_2022 --package local7_safeway_pueblo_clerks_2022` -> PASS
+- `python backend/test_manifest_role_extraction.py` -> PASS
+- `python backend/test_classification_options.py` -> PASS
+- `python backend/test_role_catalog.py` -> PASS
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> PASS (`18/18`)
+- `python -m backend.evaluate_paraphrase --bm25-only` -> PASS (`15/15`, `45/45`)
+- `python -m backend.evaluate_runner --track paraphrase` -> PASS
+- `python -m backend.evaluate_runner --track v3` -> PASS
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.60 - Contract-Scoped Role Generation Hardening (February 2026)
+
+### Overview
+
+Hardened role generation to reduce cross-domain role bleed (for example, clerk-like or matrix-only role mentions showing up in meat-contract onboarding) and made wage availability explicit per contract role.
+
+### What Changed
+
+- Runtime classification option model now includes deterministic wage metadata:
+  - `backend/api.py`
+    - `ClassificationOption` now carries:
+      - `wage_available`
+      - `wage_key`
+      - `source`
+- Classification option assembly now merges wage + ontology + legacy roles with deterministic ranking:
+  - `backend/user/profile.py`
+    - wage-table roles ranked highest
+    - ontology unresolved roles retained only in `include_unmapped=True` view
+    - default onboarding options now return wage-resolvable roles first-class
+- Added contract-scoped wage guards for unresolved classifications:
+  - `backend/api.py`
+    - `/api/query` wage-intent path returns explicit no-wage-row message when classification has no contract wage row
+    - `/api/wage` and `/api/wage/estimate/{session_id}` return deterministic 404 with contract-scoped reason for unresolved roles
+- Frontend role dropdown reflects wage metadata (when present):
+  - `frontend/index.html`
+    - unresolved roles render as `(... no Appendix A wage row)` when surfaced
+- Ingestion role extraction precision improved:
+  - `backend/ingest/manifest.py`
+    - classification detection is now context-biased to wage/definition sections
+    - added exclusion-context suppressors for incidental matrix/non-union mention patterns
+
+### New Deterministic Tests
+
+- `backend/test_manifest_role_extraction.py`
+  - Guards against incidental role mentions polluting manifest classifications for Loveland meat.
+- `backend/test_classification_options.py`
+  - Verifies unresolved roles are hidden from default onboarding options and still available in internal unmapped view.
+
+### Validation
+
+- `python backend/test_manifest_role_extraction.py` -> PASS
+- `python backend/test_classification_options.py` -> PASS
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> PASS (`18/18`)
+- `python -m backend.evaluate_paraphrase --bm25-only` -> PASS (`15/15`, `45/45`)
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.59 - Cross-Contract Mention Guard Ordering Fix + Gate/Docs Sync (February 2026)
+
+### Overview
+
+Closed a deterministic ordering gap where foreign-contract questions could hit the wage-classification fallback before foreign-contract abstention logic. Promoted and synchronized cross-contract mention release-gate documentation.
+
+### What Changed
+
+- Runtime ordering fix in `backend/api.py`:
+  - Added `_FOREIGN_CONTRACT_UNAVAILABLE_ANSWER` constant.
+  - Moved explicit foreign-contract guard to run immediately after intent classification.
+  - Foreign-contract references now short-circuit before retrieval/generation and before wage-classification fallback.
+  - Response is deterministic unavailable with zero citations and no escalation.
+- Removed late redundant foreign-contract override after generation in `backend/api.py`.
+- Documentation/release-gate synchronization:
+  - `README.md`
+    - added canonical runner/validator commands for `cross_contract_mentions`
+    - added cross-contract mention artifact + thresholds to gate-check example
+    - updated CI canonical-slice list to include `cross_contract_mentions`
+  - `legal/RELEASE-GATES.md`
+    - added cross-contract mention abstention + dataset-integrity requirements
+    - added required artifact `data/test_set/cross_contract_mentions_results.json`
+
+### Before/After Metrics
+
+- Cross-contract mention slice:
+  - Before: `8/9` (`88.9%`), no-citation rate `88.9%`
+  - After: `9/9` (`100.0%`), no-citation rate `100.0%`
+
+### Failing-Case Delta
+
+- Case fixed: `CCM-CL-02`
+  - Active contract: `local7_safeway_pueblo_clerks_2022`
+  - Prompt referenced: `local7 kingsoopers loveland meat 2019`
+- Failure mode:
+  - Query classified as wage and exited through missing-classification fallback path, returning citation-bearing response.
+- Fix:
+  - Enforced foreign-contract guard before wage fallback.
+- Result:
+  - Deterministic unavailable answer with zero citations.
+
+### Validation
+
+- `python -m backend.validate_cross_contract_mentions_dataset` -> PASS
+- `python -m backend.evaluate_cross_contract_mentions --bm25-only` -> PASS (`9/9`)
+- `python -m backend.evaluate_runner --track cross_contract_mentions` -> PASS
+- `python -m backend.evaluate_v3 --from-artifacts --bm25-only` -> PASS (`12/12`)
+- `python -m backend.evaluate_gate_check` -> PASS
+- `python backend/test_topic_routing.py` -> PASS
+
+## v0.8.58 - Canonical Unanswerable Multi-Contract Slice + Gate Integration (February 2026)
+
+### Overview
+
+Added a deterministic multi-contract unanswerable/abstention benchmark, integrated it into canonical v3 and release gates, and hardened runtime handling for explicit foreign-contract references.
+
+### What Changed
+
+- New canonical unanswerable evaluator:
+  - `backend/evaluate_unanswerable.py`
+  - Writes `data/test_set/unanswerable_results.json`
+  - Executes `/api/query` with forced unavailable first-pass generation and verifies abstention preservation.
+- New canonical dataset + validator:
+  - `data/test_set/unanswerable_multi_contract_test.json`
+  - `backend/validate_unanswerable_dataset.py`
+  - Enforces schema, minimum total/per-contract coverage, and scenario diversity floors.
+- Runtime deterministic hardening for cross-contract mention drift:
+  - `backend/api.py`
+  - Added explicit foreign-contract reference detector based on active catalog aliases.
+  - When query references a different known contract family, runtime now preserves uncertainty and blocks false recovery.
+- Canonical orchestration/gate integration:
+  - `backend/evaluate_runner.py`
+    - new track: `unanswerable`
+    - included in `all`
+  - `backend/evaluate_v3.py`
+    - added:
+      - `unanswerable_dataset_validation`
+      - `unanswerable` component
+  - `backend/evaluate_gate_check.py`
+    - added unanswerable artifact checks + dataset integrity checks with thresholds
+    - new args include:
+      - `--unanswerable-results`
+      - `--unanswerable-dataset`
+      - `--required-unanswerable-dataset-schema-version`
+      - `--min-unanswerable-total-cases`
+      - `--min-unanswerable-cases-per-contract`
+      - `--min-unanswerable-scenario-types`
+      - `--min-unanswerable-pass-rate`
+      - `--min-unanswerable-per-contract`
+      - `--allow-missing-unanswerable`
+- CI/docs sync:
+  - `.github/workflows/eval-ci.yml`
+  - `README.md`
+  - `legal/RELEASE-GATES.md`
+
+### Before/After Metrics
+
+- Unanswerable slice:
+  - Initial dataset/evaluator integration: `10/12` (`83.3%`)
+  - Final after foreign-contract reference guard: `12/12` (`100.0%`)
+- v3 canonical suite:
+  - Final: `10/10` (`100.0%`) pass
+- Release gate:
+  - Final: PASS (including new unanswerable artifact + dataset checks)
+
+### Failing-Case Delta
+
+- Failing cases:
+  - `UN-KG-04` (King Soopers active context, Safeway clerks reference)
+  - `UN-CL-04` (Safeway clerks active context, King Soopers reference)
+- Failure mode:
+  - recovery path over-interpreted same-topic evidence from active contract and converted unavailable to answerable.
+- Fix:
+  - explicit foreign-contract alias detection in `backend/api.py` and recovery suppression for those queries.
+- Result:
+  - both cases now abstain deterministically.
+
+### Validation
+
+- `python -m backend.validate_unanswerable_dataset` -> PASS
+- `python -m backend.evaluate_unanswerable --bm25-only` -> PASS (`12/12`)
+- `python -m backend.evaluate_runner --track unanswerable` -> PASS
+- `python -m backend.evaluate_v3 --from-artifacts --bm25-only` -> PASS (`10/10`)
+- `python -m backend.evaluate_runner --track v3` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> PASS (`15/15`, `45/45`)
+- `python -m backend.evaluate_multi_contract --bm25-only` -> PASS (`18/18`)
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.57 - Adversarial Dataset Integrity Gates + Premium Routing Regression Guard (February 2026)
+
+### Overview
+
+Extended the new adversarial formal-precedence track with dataset-integrity validation and added a deterministic routing regression guard for holiday-work premium phrasing.
+
+### What Changed
+
+- New validator:
+  - `backend/validate_adversarial_dataset.py`
+  - Enforces:
+    - required schema version
+    - minimum total case count
+    - per-contract minimum case coverage across active contracts
+    - minimum precedence-case count
+    - required-field integrity (IDs, contract IDs, expected citations/keywords, precedence config)
+- Canonical v3 integration:
+  - `backend/evaluate_v3.py`
+  - Added component:
+    - `adversarial_dataset_validation`
+  - Full v3 run now executes adversarial dataset validation before adversarial evaluation.
+- CI integration:
+  - `.github/workflows/eval-ci.yml`
+  - Added:
+    - `python -m backend.validate_adversarial_dataset`
+  - Included in both PR and main release-gate workflows.
+- Gate-check integrity extension:
+  - `backend/evaluate_gate_check.py`
+  - Now validates adversarial dataset structure/coverage directly (not only adversarial results artifact),
+    including precedence-case minimums.
+- Deterministic routing regression test:
+  - `backend/test_topic_routing.py`
+  - Added holiday-work premium case ensuring premium phrasing maps to premium topic and surfaces `Article 16, Section 40` for King Soopers meat.
+- Docs synchronized:
+  - `README.md`
+  - `legal/RELEASE-GATES.md`
+
+### Validation
+
+- `python -m backend.validate_adversarial_dataset` -> PASS
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_adversarial_precedence --bm25-only` -> PASS (`12/12`)
+- `python -m backend.evaluate_v3 --from-artifacts --bm25-only` -> PASS
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.56 - Canonical Adversarial Formal-Precedence Slice + v3/Gate Integration (February 2026)
+
+### Overview
+
+Added a deterministic multi-contract adversarial formal-rewrite/precedence benchmark, integrated it into canonical v3 and release gates, and hardened holiday-work premium routing so exception clauses are surfaced reliably.
+
+### What Changed
+
+- New canonical evaluator:
+  - `backend/evaluate_adversarial_precedence.py`
+  - Writes `data/test_set/adversarial_results.json`
+  - Enforces deterministic checks for:
+    - specific citation retrieval
+    - exception-keyword coverage
+    - optional specific-vs-competing precedence ordering
+    - tenant isolation at retrieval output
+- Canonical adversarial dataset:
+  - `data/test_set/adversarial_test.json`
+  - New schema: `adversarial_precedence_test_v1`
+  - 12 formal near-miss cases with explicit `contract_id` coverage:
+    - `local7_kingsoopers_loveland_meat_2019` (4)
+    - `local7_safeway_pueblo_clerks_2022` (4)
+    - `local7_safeway_pueblo_meat_2022` (4)
+- Runtime deterministic routing/retrieval hardening:
+  - `backend/retrieval/router.py`
+  - Added holiday-work premium query detection/coverage seed:
+    - `_is_holiday_work_premium_query`
+    - `_ensure_holiday_work_premium_coverage`
+  - Rebalanced topic routing for holiday premium prompts:
+    - moved `premiums` ahead of `vacation` in topic priority
+    - expanded premium topic patterns + lexical signals for holiday-work premium language
+- Canonical orchestration updates:
+  - `backend/evaluate_runner.py`
+    - new track: `adversarial`
+    - included in `all`
+  - `backend/evaluate_v3.py`
+    - new component: `adversarial_precedence`
+    - full run now executes adversarial slice
+    - `from-artifacts` validation now enforces adversarial thresholds
+  - `backend/evaluate_gate_check.py`
+    - added `--adversarial-results` checks and thresholds:
+      - `--required-adversarial-dataset-schema-version`
+      - `--min-adversarial-total-cases`
+      - `--min-adversarial-cases-per-contract`
+      - `--min-adversarial-pass-rate`
+      - `--min-adversarial-per-contract`
+      - `--min-adversarial-precedence-pass-rate`
+    - added `--allow-missing-adversarial` debug bypass
+- CI and docs synchronized:
+  - `.github/workflows/eval-ci.yml`
+    - runs `evaluate_runner --track adversarial` in PR/main gate flows
+    - gate-check now includes adversarial artifact + thresholds
+    - uploads `data/test_set/adversarial_results.json`
+  - `README.md`
+  - `legal/RELEASE-GATES.md`
+
+### Before/After Metrics
+
+- Adversarial formal-precedence:
+  - Before routing/priority hardening: `9/12` (`75.0%`), precedence `0.5`
+  - Intermediate after evaluator/schema tuning: `11/12` (`91.7%`), precedence `1.0`
+  - Final: `12/12` (`100.0%`), precedence `1.0`, per-contract `4/4` each
+- v3 canonical suite:
+  - Before adversarial integration: `6/6` (`100.0%`)
+  - During integration while adversarial failing: `6/7` (`85.7%`) blocked
+  - Final: `7/7` (`100.0%`) pass
+- Release gate:
+  - During integration: BLOCKED (v3 + adversarial per-contract floor miss)
+  - Final: PASS
+
+### Failing-Case Delta
+
+- `ADV-KS-03` (King Soopers holiday-work premium, post-2005 hire):
+  - Failure mode: routed as `vacation` (holiday token over-match), missing Article 16 Section 40 in top-k
+  - Fix: premium-topic priority and expanded premium lexical patterns + deterministic holiday-premium seed coverage
+  - Result: case now passes with expected citation/keyword evidence
+
+### Validation
+
+- `python -m backend.evaluate_adversarial_precedence --bm25-only` -> PASS (`12/12`)
+- `python -m backend.evaluate_v3 --from-artifacts --bm25-only` -> PASS (`7/7`)
+- `python -m backend.evaluate_runner --track v3` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> PASS (`15/15` families, `45/45` variants)
+- `python -m backend.evaluate_runner --track paraphrase` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> PASS (`18/18`)
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.55 - Canonical v3 Multi-Contract Evaluation Suite + Gate Integration (February 2026)
+
+### Overview
+
+Implemented Benchmark v3 as a canonical multi-contract evaluation track and integrated it into release gating/CI with explicit artifact-based integrity checks.
+
+### What Changed
+
+- New canonical v3 evaluator:
+  - `backend/evaluate_v3.py`
+  - Produces `data/test_set/v3_results.json`.
+  - Validates multi-contract phase components:
+    - false-unavailable dataset validation
+    - cross-contamination isolation
+    - multi-contract benchmark
+    - paraphrase robustness
+    - false-unavailable behavior
+    - needle retrieval integrity
+  - Supports `--from-artifacts` mode for CI aggregation.
+- Cross-contamination artifactization:
+  - `backend/evaluate_cross_contamination.py`
+  - Now writes `data/test_set/cross_contamination_results.json` with pass/failure metadata.
+- Canonical runner integration:
+  - `backend/evaluate_runner.py`
+  - Added `--track v3`.
+  - Added `v3` to `all`.
+- Release gate integration:
+  - `backend/evaluate_gate_check.py`
+  - Added required checks for:
+    - cross-contamination artifact pass
+    - v3 suite artifact pass-rate/boolean
+  - Added args:
+    - `--cross-contamination-results`
+    - `--v3-results`
+    - `--min-v3-components-pass-rate`
+    - `--allow-missing-cross-contamination`
+    - `--allow-missing-v3`
+- CI integration:
+  - `.github/workflows/eval-ci.yml`
+  - Runs `python -m backend.evaluate_v3 --from-artifacts --bm25-only` in PR/main gate jobs.
+  - Gate-check invocation now includes cross-contamination/v3 artifacts and v3 threshold.
+  - Uploads `cross_contamination_results.json` and `v3_results.json`.
+- Docs synchronized:
+  - `README.md` (v3 benchmark now canonical, command/docs updated)
+  - `legal/RELEASE-GATES.md` (Gate D includes canonical v3 suite pass)
+
+### Validation
+
+- `python -m backend.evaluate_cross_contamination --require-multi-contract` -> PASS
+- `python -m backend.evaluate_v3 --bm25-only` -> PASS (`6/6` components)
+- `python -m backend.evaluate_runner --track v3` -> PASS metadata/artifact generation
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> `15/15` families, `45/45` variants
+- `python -m backend.evaluate_runner --track paraphrase` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> `18/18`
+- `python -m backend.evaluate_gate_check` -> PASS (includes cross-contamination + v3 checks)
+
+## v0.8.54 - False-Unavailable Dataset Integrity Gates (Schema + Distribution + Coverage) (February 2026)
+
+### Overview
+
+Added explicit benchmark-integrity controls for the false-unavailable slice so release gates block on schema drift, insufficient negative controls, or missing active-contract coverage.
+
+### What Changed
+
+- New validator:
+  - `backend/validate_false_unavailable_dataset.py`
+  - Enforces:
+    - required dataset schema version
+    - minimum total/recover/uncertain case counts
+    - minimum per-contract total + recover coverage
+    - active contract ID membership
+    - case ID uniqueness and expectation/citation consistency
+- Dataset schema pin:
+  - `data/test_set/false_unavailable_test.json`
+  - Added `"schema_version": "false_unavailable_test_v1"`.
+- Evaluator metadata:
+  - `backend/evaluate_false_unavailable.py`
+  - Result artifact now includes `dataset_schema_version` for gate-level enforcement.
+- Gate hardening:
+  - `backend/evaluate_gate_check.py`
+  - Added required false-unavailable integrity checks:
+    - `--required-false-unavailable-dataset-schema-version`
+    - `--min-false-unavailable-total-cases`
+    - `--min-false-unavailable-recover-cases`
+    - `--min-false-unavailable-uncertain-cases`
+    - `--min-false-unavailable-cases-per-contract`
+- CI wiring:
+  - `.github/workflows/eval-ci.yml`
+  - Added preflight step:
+    - `python -m backend.validate_false_unavailable_dataset`
+  - Added new dataset-integrity threshold flags to CI gate-check invocations.
+- Docs synchronized:
+  - `README.md`
+  - `legal/RELEASE-GATES.md`
+
+### Validation
+
+- `python -m backend.validate_false_unavailable_dataset` -> PASS
+- `python -m backend.evaluate_false_unavailable --bm25-only` -> PASS (`15/15`, recovered `12/12`, uncertainty `3/3`)
+- `python -m backend.evaluate_gate_check` -> PASS (includes dataset integrity + false-unavailable behavior rates)
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> `15/15` families, `45/45` variants
+- `python -m backend.evaluate_runner --track paraphrase` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> `18/18`
+
+## v0.8.53 - False-Unavailable Robustness Slice Expansion (Recovery + Proper Uncertainty) (February 2026)
+
+### Overview
+
+Expanded the canonical false-unavailable slice so it now tests both sides of behavior:
+- recover when evidence exists
+- preserve uncertainty when evidence is absent
+
+### What Changed
+
+- `data/test_set/false_unavailable_test.json`
+  - Expanded from 4 to 15 cases.
+  - Added coverage across all active contracts.
+  - Added explicit negative controls (`expectation: "uncertain"`) for non-contract facts.
+- `backend/evaluate_false_unavailable.py`
+  - Added expectation-aware scoring (`recover` vs `uncertain`).
+  - Added explicit metrics:
+    - `overall.false_unavailable_recovered_rate`
+    - `overall.proper_uncertainty_rate`
+  - Updated schema to `false_unavailable_eval_v2`.
+- `backend/api.py`
+  - Tightened unavailable-phrase detection to assistant-refusal phrasing (avoids false matches on quoted contract text).
+  - Added topic-signal gating for article-anchor recovery to prevent confidence inflation on unrelated prompts.
+  - Recovery now front-loads topic-seed chunks when retry evidence exists, improving citation visibility in deterministic fallback.
+- `backend/evaluate_gate_check.py`
+  - Added required thresholds:
+    - `--min-false-unavailable-recovered-rate` (default `0.90`)
+    - `--min-false-unavailable-proper-uncertainty-rate` (default `0.90`)
+- `.github/workflows/eval-ci.yml`
+  - CI gate invocations now enforce the two new false-unavailable rate thresholds.
+- Docs synchronized:
+  - `README.md`
+  - `legal/RELEASE-GATES.md`
+
+### Validation
+
+- `python -m backend.evaluate_false_unavailable --bm25-only` -> PASS
+- `python -m backend.evaluate_gate_check` -> PASS (includes recovered/proper-uncertainty thresholds)
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> `15/15` families, `45/45` variants
+- `python -m backend.evaluate_runner --track paraphrase` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> `18/18`
+
+## v0.8.52 - CI Gate Wiring for False-Unavailable Canonical Slice (February 2026)
+
+### Overview
+
+Updated CI workflows so false-unavailable integrity is enforced automatically on PR and main gate jobs.
+
+### What Changed
+
+- `.github/workflows/eval-ci.yml`
+  - Added canonical runner step:
+    - `python -m backend.evaluate_runner --track false_unavailable`
+  - Added release-gate thresholds in CI invocation:
+    - `--min-paraphrase-formal-rewrite-pass-rate 0.90`
+    - `--min-false-unavailable-pass-rate 0.90`
+    - `--min-false-unavailable-per-contract 0.80`
+  - Added artifact upload path:
+    - `data/test_set/false_unavailable_results.json`
+  - Applied to both:
+    - `pr-core-eval`
+    - `main-escalation-gate`
+- `README.md`
+  - CI behavior section now lists `false_unavailable` in canonical PR slices.
+
+### Validation
+
+- Workflow file updated and verified by static grep:
+  - PR job includes `--track false_unavailable`
+  - Main gate job includes `--track false_unavailable`
+  - Gate-check CLI in CI includes false-unavailable thresholds
+  - Artifact upload includes `false_unavailable_results.json`
+
+## v0.8.51 - Canonical False-Unavailable Evaluation Track + Release Gate Enforcement (February 2026)
+
+### Overview
+
+Promoted false-unavailable behavior from ad hoc checks into a canonical deterministic evaluation track and made it release-gated with thresholds.
+
+### What Changed
+
+- Added canonical test dataset:
+  - `data/test_set/false_unavailable_test.json`
+  - Multi-contract prompts covering vacation entitlement, term-of-agreement, inter-shift rest phrasing, and bereavement phrasing.
+- New evaluator:
+  - `backend/evaluate_false_unavailable.py`
+  - Forces unavailable first-pass generation, runs end-to-end `/api/query` path, and verifies:
+    - final answer is not unavailable-style
+    - expected citation evidence is present
+  - Writes `data/test_set/false_unavailable_results.json`.
+- Runner integration:
+  - `backend/evaluate_runner.py`
+  - Added `false_unavailable` track and included it in `all`.
+- Release gate integration:
+  - `backend/evaluate_gate_check.py`
+  - Added required false-unavailable artifact check with thresholds:
+    - `--min-false-unavailable-pass-rate` (default `0.90`)
+    - `--min-false-unavailable-per-contract` (default `0.80`)
+  - Missing artifact is blocking unless `--allow-missing-false-unavailable` is explicitly set.
+- Docs synchronized:
+  - `README.md`
+  - `legal/RELEASE-GATES.md`
+
+### Validation
+
+- `python -m backend.evaluate_runner --track false_unavailable` -> PASS (artifact generated)
+- `python -m backend.evaluate_gate_check` -> PASS (includes false-unavailable checks)
+- `python backend/test_unavailability_recovery.py` -> PASS
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> `15/15` families, `45/45` variants
+- `python -m backend.evaluate_runner --track paraphrase` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> `18/18`
+- `python -m backend.evaluate_runner --track needle` -> PASS
+
+## v0.8.50 - Deterministic Evidence-Gap Recovery Before "Not Available" Responses (February 2026)
+
+### Overview
+
+Added a contract-agnostic deterministic recovery loop in the API response path so KARL does one broader retrieval/regeneration pass before returning unavailable-style language when strong evidence is already in context.
+
+### What Changed
+
+- `backend/api.py`
+  - Added deterministic unavailable-language detection.
+  - Added deterministic evidence-strength check using citation presence + lexical overlap with query terms.
+  - Added one-pass broader retrieval retry (`n_results=8`) when first answer claims unavailable but evidence appears strong.
+  - Added stable chunk merge/dedupe for retry context.
+  - Added final guard fallback to chunk-grounded response when model still refuses despite strong evidence.
+- New deterministic test:
+  - `backend/test_unavailability_recovery.py`
+    - unavailable-language detection
+    - strong/weak evidence classification
+    - stable unique chunk merge behavior
+- Docs synced:
+  - `README.md`
+  - `legal/RELEASE-GATES.md`
+
+### Validation
+
+- `python backend/test_unavailability_recovery.py` -> PASS
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> `15/15` families, `45/45` variants
+- `python -m backend.evaluate_runner --track paraphrase` -> PASS
+- `python -m backend.evaluate_multi_contract --bm25-only` -> `18/18`
+- `python -m backend.evaluate_runner --track needle` -> PASS
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.49 - Formal-Rewrite Drift Gate + Vacation Entitlement Phrasing Hardening (February 2026)
+
+### Overview
+
+Closed the post-optimization deterministic hardening loop by converting non-slang formal-rewrite robustness into an explicit release gate and extending vacation entitlement phrasing coverage for tenure-style prompts.
+
+### What Changed
+
+- `backend/evaluate_paraphrase.py`
+  - Added `overall.formal_rewrite_pass_rate` to artifact output for first-class gate consumption.
+- `backend/evaluate_gate_check.py`
+  - Added required formal-rewrite gate check sourced from paraphrase artifacts.
+  - New CLI threshold: `--min-paraphrase-formal-rewrite-pass-rate` (default `0.90`).
+  - Release now blocks when formal-rewrite pass-rate metadata is missing or below floor.
+- `backend/retrieval/router.py`
+  - Expanded deterministic vacation entitlement query cues to include tenure/service/anniversary phrasing.
+  - Added additional entitlement markers used by deterministic seed-chunk backfill.
+- `backend/test_topic_routing.py`
+  - Expanded vacation entitlement test into a multi-query deterministic slice:
+    - plain phrasing ("How much vacation do I get per year?")
+    - formal entitlement schedule phrasing
+    - tenure-specific phrasing ("33 months of service")
+- Docs synchronized:
+  - `README.md`
+  - `legal/RELEASE-GATES.md`
+
+### Validation
+
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> `15/15` families, `45/45` variants, formal_rewrite `1.0`
+- `python -m backend.evaluate_runner --track paraphrase` -> PASS metadata/artifact generation
+- `python -m backend.evaluate_multi_contract --bm25-only` -> `18/18`
+- `python -m backend.evaluate_gate_check` -> PASS (includes formal-rewrite floor + needle floors)
+
 ## v0.8.48 - Ingestion-Owned Query-Routing Synthesis + Pack Gate Coverage (February 2026)
 
 ### Overview

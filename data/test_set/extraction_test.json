@@ -1,0 +1,104 @@
+{
+  "description": "Extraction Test Set: 10 questions requiring verbatim clause quotes from the contract",
+  "purpose": "Tests whether the system can retrieve and quote exact contract language rather than paraphrasing. Critical for legal accuracy where exact wording matters (e.g., 'shall' vs 'may', exact dollar amounts, specific date cutoffs).",
+  "total_questions": 10,
+  "evaluation_criteria": {
+    "verbatim_match": "System must quote exact contract language, not paraphrase",
+    "citation_accuracy": "Must cite the correct Article and Section",
+    "completeness": "Must include the full relevant clause, not truncate key terms"
+  },
+  "test_cases": [
+    {
+      "id": "ext-01",
+      "question": "Quote the exact contract language that defines the term of this agreement, including all effective dates.",
+      "expected_articles": ["Article 58"],
+      "expected_verbatim_fragment": "January 23, 2022 to and including January 18, 2025",
+      "bucket": "contract_only",
+      "difficulty": "basic",
+      "why_verbatim_matters": "Exact start and end dates are legally binding"
+    },
+    {
+      "id": "ext-02",
+      "question": "Quote the exact language defining the probationary period for new employees.",
+      "expected_articles": ["Article 26"],
+      "expected_verbatim_fragment": "worked a total of five hundred twenty (520) hours",
+      "bucket": "contract_only",
+      "difficulty": "basic",
+      "why_verbatim_matters": "The exact hour threshold determines when employee protections begin"
+    },
+    {
+      "id": "ext-03",
+      "question": "What is the exact contract language regarding management's right to make rules? Quote the full provision.",
+      "expected_articles": ["Article 6"],
+      "expected_verbatim_fragment": "make such necessary and reasonable rules and regulations not in conflict with the express provisions of this Agreement",
+      "bucket": "contract_only",
+      "difficulty": "intermediate",
+      "why_verbatim_matters": "The qualifier 'not in conflict with express provisions' is legally critical"
+    },
+    {
+      "id": "ext-04",
+      "question": "Quote the exact language that defines when overtime pay begins in a regular workday.",
+      "expected_articles": ["Article 12"],
+      "expected_verbatim_fragment": "in excess of eight (8) hours in any one (1) day",
+      "bucket": "exact_numeric",
+      "difficulty": "basic",
+      "why_verbatim_matters": "The 8-hour threshold and 'in any one day' scope are legally binding"
+    },
+    {
+      "id": "ext-05",
+      "question": "Quote the exact contract language regarding the Sunday premium for employees hired on or before March 26, 2005.",
+      "expected_articles": ["Article 13"],
+      "expected_verbatim_fragment": "time and one-quarter (1¼)",
+      "bucket": "exact_numeric",
+      "difficulty": "intermediate",
+      "why_verbatim_matters": "The exact multiplier (1.25x vs other rates) and the date cutoff are critical"
+    },
+    {
+      "id": "ext-06",
+      "question": "Quote the exact language defining what constitutes 'just cause' for discharge or the limits on the arbitrator's authority regarding discharge cases.",
+      "expected_articles": ["Article 43", "Article 46"],
+      "expected_verbatim_fragment": "The arbitrator shall have no power to add to, subtract from, or modify the terms of this Agreement",
+      "bucket": "contract_only",
+      "difficulty": "advanced",
+      "why_verbatim_matters": "The exact scope of arbitral authority determines what remedies are available"
+    },
+    {
+      "id": "ext-07",
+      "question": "Quote the exact language regarding the Cake Decorator displacement protection during layoffs.",
+      "expected_articles": ["Article 29"],
+      "expected_verbatim_fragment": "six (6) months experience as a Cake Decorator within the last three (3) years",
+      "bucket": "contract_only",
+      "difficulty": "advanced",
+      "why_verbatim_matters": "The exact experience threshold and lookback period determine bumping rights"
+    },
+    {
+      "id": "ext-08",
+      "question": "Quote the exact contract language regarding the working spouse provision for health benefits.",
+      "expected_articles": ["Article 40", "Letter of Understanding"],
+      "expected_verbatim_fragment": "working spouse",
+      "bucket": "contract_only",
+      "difficulty": "advanced",
+      "why_verbatim_matters": "The exact terms define when the surcharge applies and what notification is required"
+    },
+    {
+      "id": "ext-09",
+      "question": "Quote the exact language regarding the employee's right to refuse a lie detector test.",
+      "expected_articles": ["Article 51"],
+      "expected_verbatim_fragment": "No employee shall be required or requested to take or submit to a lie detector test",
+      "bucket": "contract_only",
+      "difficulty": "basic",
+      "why_verbatim_matters": "The difference between 'required' and 'requested' broadens the protection"
+    },
+    {
+      "id": "ext-10",
+      "question": "Quote the exact language regarding the retroactive liability limit for wage grievances.",
+      "expected_articles": ["Article 46"],
+      "expected_verbatim_fragment": "ninety (90) days",
+      "bucket": "exact_numeric",
+      "difficulty": "intermediate",
+      "why_verbatim_matters": "The exact retroactive period limits the monetary remedy available in wage disputes"
+    }
+  ]
+}
+
+

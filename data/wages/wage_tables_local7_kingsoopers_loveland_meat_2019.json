@@ -2305,16 +2305,12 @@
     "seafood_manager": "seafood_manager"
   },
   "classification_ontology_summary": {
-    "total_manifest_classes": 6,
+    "total_manifest_classes": 2,
     "resolved_manifest_classes": 1,
-    "unresolved_manifest_classes": 5,
-    "coverage": 0.1667,
+    "unresolved_manifest_classes": 1,
+    "coverage": 0.5,
     "unresolved_manifest_keys": [
-      "cake_decorator",
-      "courtesy_clerk",
-      "deli_clerk",
-      "head_clerk",
-      "pharmacy_tech"
+      "head_clerk"
     ],
     "manual_override_count": 0
   }

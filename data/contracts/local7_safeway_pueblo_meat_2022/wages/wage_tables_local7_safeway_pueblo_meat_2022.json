@@ -74,9 +74,9 @@
         }
       ]
     },
-    "deli_manager_after_5_20_77__directing_5_or_less_deli_employees": {
+    "deli_manager_after_5_20_77_directing_5_or_less_deli_employees": {
       "name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES",
-      "normalized_name": "deli_manager_after_5_20_77__directing_5_or_less_deli_employees",
+      "normalized_name": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
       "is_manager": true,
       "steps": [
         {
@@ -599,23 +599,6 @@
           }
         }
       ]
-    },
-    "deli_manager_after_5_20_77_directing_5_or_less_deli_employees": {
-      "name": "DELI MANAGER AFTER 5/20/77 &DIRECTING 5 OR LESS DELI EMPLOYEES",
-      "normalized_name": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
-      "is_manager": true,
-      "steps": [
-        {
-          "step_name": "Rate",
-          "hours_required": null,
-          "months_required": null,
-          "rates": {
-            "2022-02-27": 21.65,
-            "2023-02-26": 22.45,
-            "2024-02-25": 23.25
-          }
-        }
-      ]
     }
   },
   "canonical_wage_rows": [
@@ -838,7 +821,7 @@
     {
       "schema_version": "wage_canonical_rows_v1",
       "contract_id": "local7_safeway_pueblo_meat_2022",
-      "classification_key": "deli_manager_after_5_20_77__directing_5_or_less_deli_employees",
+      "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
       "classification_name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES",
       "step_name": "Rate",
       "step_type": "fixed",
@@ -856,7 +839,7 @@
     {
       "schema_version": "wage_canonical_rows_v1",
       "contract_id": "local7_safeway_pueblo_meat_2022",
-      "classification_key": "deli_manager_after_5_20_77__directing_5_or_less_deli_employees",
+      "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
       "classification_name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES",
       "step_name": "Rate",
       "step_type": "fixed",
@@ -874,7 +857,7 @@
     {
       "schema_version": "wage_canonical_rows_v1",
       "contract_id": "local7_safeway_pueblo_meat_2022",
-      "classification_key": "deli_manager_after_5_20_77__directing_5_or_less_deli_employees",
+      "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
       "classification_name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES",
       "step_name": "Rate",
       "step_type": "fixed",
@@ -3372,60 +3355,6 @@
         "table_id": "tbl_art57_3",
         "row_index": 27
       }
-    },
-    {
-      "schema_version": "wage_canonical_rows_v1",
-      "contract_id": "local7_safeway_pueblo_meat_2022",
-      "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
-      "classification_name": "DELI MANAGER AFTER 5/20/77 &DIRECTING 5 OR LESS DELI EMPLOYEES",
-      "step_name": "Rate",
-      "step_type": "fixed",
-      "threshold_value": null,
-      "effective_date": "2022-02-27",
-      "rate": 21.65,
-      "source_method": "table_registry",
-      "row_type": "rate_row",
-      "confidence": 0.9,
-      "source_reference": {
-        "table_id": "tbl_fallback_art57_7d2ba970",
-        "row_index": 5
-      }
-    },
-    {
-      "schema_version": "wage_canonical_rows_v1",
-      "contract_id": "local7_safeway_pueblo_meat_2022",
-      "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
-      "classification_name": "DELI MANAGER AFTER 5/20/77 &DIRECTING 5 OR LESS DELI EMPLOYEES",
-      "step_name": "Rate",
-      "step_type": "fixed",
-      "threshold_value": null,
-      "effective_date": "2023-02-26",
-      "rate": 22.45,
-      "source_method": "table_registry",
-      "row_type": "rate_row",
-      "confidence": 0.9,
-      "source_reference": {
-        "table_id": "tbl_fallback_art57_7d2ba970",
-        "row_index": 5
-      }
-    },
-    {
-      "schema_version": "wage_canonical_rows_v1",
-      "contract_id": "local7_safeway_pueblo_meat_2022",
-      "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
-      "classification_name": "DELI MANAGER AFTER 5/20/77 &DIRECTING 5 OR LESS DELI EMPLOYEES",
-      "step_name": "Rate",
-      "step_type": "fixed",
-      "threshold_value": null,
-      "effective_date": "2024-02-25",
-      "rate": 23.25,
-      "source_method": "table_registry",
-      "row_type": "rate_row",
-      "confidence": 0.9,
-      "source_reference": {
-        "table_id": "tbl_fallback_art57_7d2ba970",
-        "row_index": 5
-      }
     }
   ],
   "extraction_metadata": {
@@ -3458,7 +3387,6 @@
     "assistant_deli_manager": "assistant_deli_manager",
     "deli_clerks": "deli_clerks",
     "deli_manager": "deli_manager",
-    "deli_manager_after_5_20_77__directing_5_or_less_deli_employees": "deli_manager_after_5_20_77__directing_5_or_less_deli_employees",
     "deli_manager_after_5_20_77_directing_5_or_less_deli_employees": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
     "first_cutter": "first_cutter",
     "head_meat_cutter": "head_meat_cutter",

@@ -58,12 +58,8 @@
   "has_appendix_a": true,
   "has_lous": true,
   "classifications": [
-    "Cake Decorator",
-    "Courtesy Clerk",
-    "Deli Clerk",
     "Head Clerk",
-    "Meat Cutter",
-    "Pharmacy Tech"
+    "Meat Cutter"
   ],
   "key_dates": [
     "1/1/2020",
@@ -211,6 +207,9 @@
       "warning": "discipline"
     },
     "topic_to_articles": {
+      "bereavement": [
+        36
+      ],
       "breaks": [
         24,
         25,
@@ -292,6 +291,7 @@
       ]
     },
     "topic_patterns": {
+      "bereavement": "\\bbereavement\\b|\\bbereavement\\s*leave\\b|\\bfuneral\\b|\\bfuneral\\s*leave\\b|\\bdeath\\s*in\\s*family\\b|\\bdays\\s*off\\s*for\\s*funeral\\b",
       "breaks": "\\blunch\\s*break\\b|\\brelief\\s*period\\b|\\bmeal\\s*period\\b|\\brest\\s*period\\b|\\bbetween\\s*shifts\\b|\\blunch\\s*breaks\\b|\\brelief\\s*periods\\b|\\bterm\\s*of\\s*agreement\\b|\\bbreak\\s*between\\s*shifts\\b|\\bbreaks\\b|\\bclopen\\b|\\bclose\\s*and\\s*open\\b|\\bhours\\s*between\\s*shifts\\b|\\brest\\s*break\\b|\\bturnaround\\s*shift\\b",
       "discipline": "\\bdiscipline\\b|\\bwrite\\s*up\\b|\\bwritten\\s*up\\b|\\bdischarge\\b|\\btermination\\b|\\bunion\\s*security\\s*and\\s*conditions\\b|\\btimekeeping\\b|\\bseniority\\b|\\bno\\s*discrimination\\b|\\bwarning\\b",
       "grievance": "\\bgrievance\\b|\\barbitration\\b|\\bdispute\\s*procedure\\b|\\bappeal\\b|\\bgrievance\\s*and\\s*arbitration\\s*procedure\\b|\\brates\\s*of\\s*pay\\b|\\bvacations\\b|\\bseniority\\b|\\barbitration\\s*procedure\\b|\\bdispute\\b|\\bgrievance\\s*arbitration\\b|\\bgrievance\\s*arbitration\\s*procedure\\b",
@@ -309,24 +309,6 @@
       "weingarten": "\\bweingarten\\b|\\bright\\s*to\\s*representation\\b|\\bunion\\s*representative\\b|\\bunion\\s*representative\\s*visitation\\b|\\brepresentative\\s*visitation\\b"
     },
     "classification_to_articles": {
-      "cake_decorator": [
-        2,
-        8,
-        12,
-        16
-      ],
-      "courtesy_clerk": [
-        2,
-        8,
-        12,
-        16
-      ],
-      "deli_clerk": [
-        2,
-        8,
-        12,
-        16
-      ],
       "head_clerk": [
         2,
         8,
@@ -334,12 +316,6 @@
         16
       ],
       "meat_cutter": [
-        2,
-        8,
-        12,
-        16
-      ],
-      "pharmacy_tech": [
         2,
         8,
         12,

@@ -88,6 +88,17 @@ class ManifestExtractor:
         r"dug\s*shopper",
         r"drive\s*up\s*(?:and\s*)?go",
     ]
+
+    # Prefer extracting classifications from sections likely to define roles/rates
+    # instead of matching any incidental mention in the full contract body.
+    CLASSIFICATION_CONTEXT_PATTERNS = [
+        r"appendix\s*\"?a\"?",
+        r"rates?\s+of\s+pay",
+        r"definitions?\s+of\s+classifications?",
+        r"classifications?\s+and\s+rates?",
+        r"wage\s+progression",
+        r"wage\s+schedule",
+    ]
     
     # Date patterns
     DATE_PATTERNS = [
@@ -247,21 +258,84 @@ class ManifestExtractor:
         return len(set(matches))
     
     def _extract_classifications(self) -> list[str]:
-        """Extract job classifications mentioned in the contract."""
-        classifications = set()
-        content_lower = self.content.lower()
-        
-        for pattern in self.CLASSIFICATION_PATTERNS:
-            if re.search(pattern, content_lower):
-                # Normalize the classification name
-                match = re.search(pattern, content_lower)
-                if match:
-                    name = match.group(0)
-                    # Convert to title case and normalize
-                    name = re.sub(r'\s+', ' ', name).strip().title()
-                    classifications.add(name)
-        
-        return sorted(list(classifications))
+        """Extract job classifications from role/rate-defining contract contexts."""
+
+        def _is_exclusion_context(text: str, start: int, end: int) -> bool:
+            window = text[max(0, start - 140): min(len(text), end + 140)]
+            if re.search(
+                r"\b(non[-\s]?union|experience\s+credit|education\s+credit|wec\s+matrix|please\s+see\s+.*matrix|independent\s+\w+\s+stores?)\b",
+                window,
+                re.IGNORECASE,
+            ):
+                return True
+            if not re.search(
+                r"\b(excluding|exclude|excluded|not\s+covered|outside\s+the\s+bargaining\s+unit)\b",
+                window,
+                re.IGNORECASE,
+            ):
+                return False
+            # Keep matches when wage/rate context is also explicitly present.
+            has_wage_signal = re.search(
+                r"\b(appendix|wage|rate|rates|effective|hours?\s+worked)\b",
+                window,
+                re.IGNORECASE,
+            )
+            return not bool(has_wage_signal)
+
+        def _context_text() -> str:
+            lines = self.content.splitlines()
+            if not lines:
+                return self.content
+
+            heading_patterns = [
+                re.compile(pat, re.IGNORECASE) for pat in self.CLASSIFICATION_CONTEXT_PATTERNS
+            ]
+            spans: list[tuple[int, int]] = []
+            total = len(lines)
+
+            for idx, raw_line in enumerate(lines):
+                line = str(raw_line or "").strip()
+                if not line:
+                    continue
+                if not any(p.search(line) for p in heading_patterns):
+                    continue
+                # Capture forward context where role tables/definitions usually live.
+                spans.append((idx, min(total, idx + 260)))
+
+            if not spans:
+                return self.content
+
+            spans.sort(key=lambda s: (s[0], s[1]))
+            merged: list[tuple[int, int]] = []
+            cur_start, cur_end = spans[0]
+            for start, end in spans[1:]:
+                if start <= cur_end + 3:
+                    cur_end = max(cur_end, end)
+                else:
+                    merged.append((cur_start, cur_end))
+                    cur_start, cur_end = start, end
+            merged.append((cur_start, cur_end))
+
+            return "\n".join("\n".join(lines[s:e]) for s, e in merged)
+
+        def _extract_from_text(text: str) -> set[str]:
+            classifications: set[str] = set()
+            lowered = text.lower()
+            for pattern in self.CLASSIFICATION_PATTERNS:
+                for match in re.finditer(pattern, lowered):
+                    if _is_exclusion_context(lowered, match.start(), match.end()):
+                        continue
+                    name = re.sub(r"\s+", " ", match.group(0)).strip().title()
+                    if name:
+                        classifications.add(name)
+            return classifications
+
+        scoped_text = _context_text()
+        extracted = _extract_from_text(scoped_text)
+        if not extracted and scoped_text != self.content:
+            # Compatibility fallback when contracts lack recognizable headings.
+            extracted = _extract_from_text(self.content)
+        return sorted(extracted)
     
     def _extract_key_dates(self) -> list[str]:
         """Extract key dates (hire cutoffs, grandfathering dates)."""

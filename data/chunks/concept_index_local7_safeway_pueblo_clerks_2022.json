@@ -854,6 +854,7 @@
         "all purpose clerk",
         "appeal",
         "arbitration",
+        "bakery manager",
         "bumping",
         "cake decorator",
         "courtesy clerk",
@@ -869,6 +870,7 @@
         "pay",
         "pay rate",
         "posting",
+        "produce manager",
         "rate of pay",
         "schedule",
         "scheduling",
@@ -1288,7 +1290,6 @@
         "courtesy clerk",
         "hourly rate",
         "hours",
-        "meatcutter",
         "pay",
         "pay rate",
         "pension",
@@ -1713,6 +1714,7 @@
       "all_alternative_names": [
         "accident",
         "all purpose clerk",
+        "bakery manager",
         "cake decorator",
         "courtesy clerk",
         "deli clerk",
@@ -1727,6 +1729,7 @@
         "hours",
         "injury",
         "insurance",
+        "meat cutter",
         "medical",
         "pay",
         "pay rate",
@@ -2700,6 +2703,13 @@
     "unscheduled overtime": [
       28
     ],
+    "bakery manager": [
+      29,
+      58
+    ],
+    "produce manager": [
+      29
+    ],
     "transfer store": [
       30
     ],
@@ -2776,9 +2786,6 @@
       42,
       54
     ],
-    "meatcutter": [
-      42
-    ],
     "discharge discrimination": [
       43
     ],
@@ -2832,6 +2839,9 @@
     ],
     "pharmacy technician": [
       56,
+      58
+    ],
+    "meat cutter": [
       58
     ],
     "deli clerk": [

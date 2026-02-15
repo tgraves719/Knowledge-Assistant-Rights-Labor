@@ -1,6 +1,6 @@
 {
   "schema_version": "language_lexicon_v1",
-  "generated_at_utc": "2026-02-15T05:32:14.648848+00:00",
+  "generated_at_utc": "2026-02-15T18:43:09.265842+00:00",
   "contract_id": "local7_kingsoopers_loveland_meat_2019",
   "region_id": "region-loveland",
   "union_local_id": "UFCW LOCAL 7",
@@ -654,7 +654,6 @@
   },
   "article_aliases": {
     "1": [
-      "courtesy clerk",
       "meat cutter",
       "recognition exclusions"
     ],
@@ -1272,7 +1271,6 @@
       "retirement"
     ],
     "42": [
-      "courtesy clerk",
       "hourly rate",
       "hours",
       "pay",
@@ -1450,10 +1448,7 @@
       "break",
       "breaks",
       "bumping",
-      "cake decorator",
       "call in sick",
-      "courtesy clerk",
-      "deli clerk",
       "discharge",
       "discipline",
       "displacement",

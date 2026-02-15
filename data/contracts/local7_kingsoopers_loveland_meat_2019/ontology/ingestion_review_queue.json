@@ -1,6 +1,6 @@
 {
   "schema_version": "ingestion_review_queue_v1",
-  "generated_at_utc": "2026-02-15T05:32:14.999866+00:00",
+  "generated_at_utc": "2026-02-15T18:43:09.478674+00:00",
   "contract_id": "local7_kingsoopers_loveland_meat_2019",
   "summary": {
     "total_items": 2,
@@ -9,7 +9,7 @@
       "medium": 1,
       "low": 0
     },
-    "unresolved_manifest_classes": 5,
+    "unresolved_manifest_classes": 1,
     "canonical_conflicts": 0,
     "canonical_ambiguities": 3,
     "unresolved_wage_rows": 0
@@ -21,13 +21,9 @@
       "severity": "high",
       "summary": "Some manifest classifications do not map to wage keys.",
       "evidence": {
-        "unresolved_count": 5,
+        "unresolved_count": 1,
         "unresolved_source_keys": [
-          "cake_decorator",
-          "courtesy_clerk",
-          "deli_clerk",
-          "head_clerk",
-          "pharmacy_tech"
+          "head_clerk"
         ]
       },
       "recommended_action": "Review candidate_scores and add manual_classification_overrides entries where appropriate."

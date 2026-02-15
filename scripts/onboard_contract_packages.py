@@ -30,6 +30,7 @@ from backend.config import DATA_DIR
 from backend.ingest.smart_chunker import SmartChunker
 from backend.ingest.manifest import extract_manifest
 from backend.ingest.extract_wages import extract_wages
+from backend.ingest.extract_entitlements import extract_entitlements, save_entitlements
 from backend.ingest.classification_ontology import (
     build_classification_ontology,
     apply_ontology_aliases,
@@ -58,6 +59,10 @@ from backend.ingest.query_routing import (
     synthesize_query_routing,
     merge_query_routing,
 )
+from backend.ingest.role_catalog import (
+    build_role_catalog,
+    save_role_catalog,
+)
 from backend.ingest.pack_acceptance import evaluate_contract_pack
 
 
@@ -67,6 +72,7 @@ RUNTIME_CHUNKS = DATA_DIR / "chunks"
 RUNTIME_WAGES = DATA_DIR / "wages"
 RUNTIME_TABLES = DATA_DIR / "tables"
 RUNTIME_ONTOLOGIES = DATA_DIR / "ontologies"
+RUNTIME_ENTITLEMENTS = DATA_DIR / "entitlements"
 PACK_REGISTRY_FILE = CONTRACTS_ROOT / "pack_registry.json"
 
 
@@ -249,6 +255,7 @@ def _process_package(
     manifests_dir = package_dir / "manifests"
     tables_dir = package_dir / "tables"
     wages_dir = package_dir / "wages"
+    entitlements_dir = package_dir / "entitlements"
     ontology_dir = package_dir / "ontology"
 
     if not source_dir.exists():
@@ -348,11 +355,14 @@ def _process_package(
 
     wage_path = None
     ontology_path = None
+    role_catalog_path = ontology_dir / "role_catalog.json"
     review_queue_path = None
     ontology_data = None
+    role_catalog = None
     manual_override_path = ontology_dir / "manual_classification_overrides.json"
     wage_classification_count = 0
     ontology_coverage = None
+    role_catalog_summary = {}
     review_queue_items = 0
     if build_wages:
         write_manual_override_template(manual_override_path, contract_id=contract_id)
@@ -388,6 +398,43 @@ def _process_package(
         wage_classification_count = len(wages_data.get("classifications", {}))
         wage_path = wages_dir / f"wage_tables_{contract_id}.json"
         _write_json(wage_path, wages_data)
+
+    if manifest.get("classifications"):
+        role_catalog_wages = None
+        if build_wages and wage_path is not None and wage_path.exists():
+            role_catalog_wages = wages_data
+        else:
+            existing_wage_path = wages_dir / f"wage_tables_{contract_id}.json"
+            if existing_wage_path.exists():
+                with open(existing_wage_path, "r", encoding="utf-8") as f:
+                    role_catalog_wages = json.load(f)
+
+        role_catalog_ontology = None
+        if ontology_path is not None and ontology_path.exists():
+            role_catalog_ontology = ontology_data
+        else:
+            existing_ontology_path = ontology_dir / "classification_ontology.json"
+            if existing_ontology_path.exists():
+                with open(existing_ontology_path, "r", encoding="utf-8") as f:
+                    role_catalog_ontology = json.load(f)
+
+        role_catalog = build_role_catalog(
+            contract_id=contract_id,
+            manifest=manifest,
+            wages_data=role_catalog_wages or {},
+            classification_ontology=role_catalog_ontology or {},
+        )
+        save_role_catalog(role_catalog_path, role_catalog)
+        role_catalog_summary = role_catalog.get("summary", {}) or {}
+
+    entitlement_data = extract_entitlements(
+        chunks=enriched_chunks,
+        contract_id=contract_id,
+        manifest=manifest,
+    )
+    entitlement_path = entitlements_dir / f"entitlement_tables_{contract_id}.json"
+    save_entitlements(entitlement_data, entitlement_path)
+    save_entitlements(entitlement_data, entitlements_dir / "entitlement_tables.json")
 
     generated_routing, routing_stats = synthesize_query_routing(
         manifest=manifest,
@@ -429,6 +476,10 @@ def _process_package(
             _sync(ontology_path, RUNTIME_ONTOLOGIES / f"classification_ontology_{contract_id}.json")
         if language_lexicon_path.exists():
             _sync(language_lexicon_path, RUNTIME_ONTOLOGIES / f"language_lexicon_{contract_id}.json")
+        if role_catalog_path.exists():
+            _sync(role_catalog_path, RUNTIME_ONTOLOGIES / f"role_catalog_{contract_id}.json")
+        if entitlement_path.exists():
+            _sync(entitlement_path, RUNTIME_ENTITLEMENTS / f"entitlement_tables_{contract_id}.json")
         if run_pack_gates and pack_gate_pass and pack_scorecard is not None:
             _record_pack_acceptance(contract_id, pack_scorecard)
 
@@ -447,8 +498,15 @@ def _process_package(
         "wage_classification_count": wage_classification_count,
         "classification_ontology_path": str(ontology_path) if ontology_path else None,
         "classification_ontology_coverage": ontology_coverage,
+        "role_catalog_path": str(role_catalog_path) if role_catalog_path.exists() else None,
+        "role_catalog_total_roles": int(role_catalog_summary.get("total_roles", 0) or 0),
+        "role_catalog_unresolved_manifest_roles": (
+            role_catalog_summary.get("unresolved_manifest_roles", []) if role_catalog_summary else []
+        ),
         "ingestion_review_queue_path": str(review_queue_path) if review_queue_path else None,
         "ingestion_review_queue_items": review_queue_items,
+        "entitlement_path": str(entitlement_path),
+        "vacation_schedule_count": len(entitlement_data.get("vacation_entitlements") or []),
         "runtime_synced": runtime_sync_allowed,
         "pack_gate_ran": run_pack_gates,
         "pack_gate_pass": pack_gate_pass if run_pack_gates else None,
@@ -538,6 +596,7 @@ def main() -> int:
                 f"table_chunks+={result.get('table_chunk_synthesis', {}).get('added_table_chunks', 0)} "
                 f"routing_topics={result.get('query_routing_stats', {}).get('topic_entries')} "
                 f"ontology_cov={result.get('classification_ontology_coverage')} "
+                f"role_catalog={result.get('role_catalog_total_roles', 0)} "
                 f"review_items={result.get('ingestion_review_queue_items', 0)}{gate_suffix}"
             )
         except Exception as exc:
@@ -553,6 +612,7 @@ def main() -> int:
             f"wages={r['wage_classification_count']} synced={r['runtime_synced']} "
             f"routing_topics={r.get('query_routing_stats', {}).get('topic_entries')} "
             f"ontology_cov={r.get('classification_ontology_coverage')} "
+            f"role_catalog={r.get('role_catalog_total_roles', 0)} "
             f"review_items={r.get('ingestion_review_queue_items', 0)} "
             f"gates={r.get('pack_gate_pass')}"
         )

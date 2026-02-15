@@ -297,7 +297,8 @@ def normalize_classification_name(name: str) -> str:
     clean = _strip_html(name).upper()
     clean = re.sub(r"[/\s]+", "_", clean)
     clean = re.sub(r"[^A-Z0-9_]", "", clean)
-    return clean.lower()
+    clean = re.sub(r"_+", "_", clean)
+    return clean.strip("_").lower()
 
 
 def parse_rate(rate_text: str) -> Optional[float]:
@@ -999,6 +1000,225 @@ def extract_wages(
     return markdown_result
 
 
+def _resolve_classification_key(wages_data: dict, classification: str) -> Optional[str]:
+    """Resolve user-provided classification to a canonical wage class key."""
+    norm_class = normalize_classification_name(classification)
+    classes = wages_data.get("classifications", {}) or {}
+    if not classes:
+        return None
+
+    alias_map = {
+        normalize_classification_name(k): normalize_classification_name(v)
+        for k, v in (wages_data.get("classification_aliases") or {}).items()
+        if str(k).strip() and str(v).strip()
+    }
+    alias_target = alias_map.get(norm_class)
+    if alias_target and alias_target in classes:
+        norm_class = alias_target
+
+    if norm_class not in classes:
+        # 1) Explicit deterministic lexical aliases.
+        for alias in _CLASSIFICATION_ALIASES.get(norm_class, ()):
+            if alias in classes:
+                norm_class = alias
+                break
+
+    if norm_class not in classes:
+        # 2) Broad deterministic containment fallback.
+        for key in classes:
+            if norm_class in key or key in norm_class:
+                norm_class = key
+                break
+        else:
+            return None
+
+    return norm_class
+
+
+def _pick_effective_date(
+    available_dates: list[str],
+    requested_date: Optional[str],
+    fallback_dates: list[str],
+) -> Optional[str]:
+    if not available_dates:
+        return None
+
+    normalized = sorted({d for d in available_dates if _ISO_DATE_RE.match(str(d or ""))})
+    if not normalized:
+        return None
+
+    if requested_date and _ISO_DATE_RE.match(str(requested_date)):
+        if requested_date in normalized:
+            return requested_date
+        prior_or_equal = [d for d in normalized if d <= requested_date]
+        if prior_or_equal:
+            return prior_or_equal[-1]
+
+    for d in reversed(fallback_dates or []):
+        if d in normalized:
+            return d
+
+    return normalized[-1]
+
+
+def _lookup_wage_from_canonical_rows(
+    wages_data: dict,
+    class_key: str,
+    class_data: dict,
+    hours_worked: int,
+    months_employed: int,
+    effective_date: Optional[str],
+) -> Optional[dict]:
+    """Deterministically resolve wage from canonical row artifact first."""
+    canonical_rows = wages_data.get("canonical_wage_rows", []) or []
+    if not isinstance(canonical_rows, list) or not canonical_rows:
+        return None
+
+    target_rows = [
+        row for row in canonical_rows
+        if isinstance(row, dict)
+        and normalize_classification_name(str(row.get("classification_key") or "")) == class_key
+    ]
+    if not target_rows:
+        return None
+
+    selected_date = _pick_effective_date(
+        available_dates=[str(r.get("effective_date") or "") for r in target_rows],
+        requested_date=effective_date,
+        fallback_dates=wages_data.get("effective_dates") or _WAGE_DEFAULT_EFFECTIVE_DATES,
+    )
+    if not selected_date:
+        return None
+
+    rows_at_date = [
+        row for row in target_rows
+        if str(row.get("effective_date") or "") == selected_date
+        and row.get("rate") is not None
+    ]
+    if not rows_at_date:
+        return None
+
+    step_types = {str(r.get("step_type") or "") for r in rows_at_date}
+    if "hours" in step_types:
+        progression_type = "hours"
+        comparator_value = int(hours_worked or 0)
+    elif "months" in step_types:
+        progression_type = "months"
+        comparator_value = int(months_employed or 0)
+    else:
+        progression_type = "fixed"
+        comparator_value = 0
+
+    applicable: list[dict] = []
+    for row in rows_at_date:
+        step_type = str(row.get("step_type") or "fixed")
+        threshold_raw = row.get("threshold_value")
+        threshold = 0
+        if threshold_raw not in (None, ""):
+            try:
+                threshold = int(threshold_raw)
+            except (TypeError, ValueError):
+                continue
+
+        if progression_type == "hours":
+            if step_type == "hours" and comparator_value >= threshold:
+                applicable.append(row)
+            elif step_type == "fixed":
+                applicable.append(row)
+        elif progression_type == "months":
+            if step_type == "months" and comparator_value >= threshold:
+                applicable.append(row)
+            elif step_type == "fixed":
+                applicable.append(row)
+        else:
+            applicable.append(row)
+
+    if not applicable:
+        applicable = rows_at_date
+
+    def _row_rank(row: dict) -> tuple:
+        step_type = str(row.get("step_type") or "fixed")
+        threshold_raw = row.get("threshold_value")
+        threshold = 0
+        if threshold_raw not in (None, ""):
+            try:
+                threshold = int(threshold_raw)
+            except (TypeError, ValueError):
+                threshold = 0
+        confidence = float(row.get("confidence", 0.0) or 0.0)
+        source_ref = row.get("source_reference") if isinstance(row.get("source_reference"), dict) else {}
+        has_table_ref = 0 if source_ref.get("table_id") else 1
+        progression_priority = 0 if step_type == progression_type else (1 if step_type == "fixed" else 2)
+        return (
+            progression_priority,
+            -threshold,
+            -confidence,
+            has_table_ref,
+            str(row.get("step_name") or ""),
+        )
+
+    chosen = sorted(applicable, key=_row_rank)[0]
+    rate = chosen.get("rate")
+    if rate is None:
+        return None
+
+    chosen_step_name = str(chosen.get("step_name") or "Rate")
+    chosen_rate = float(rate)
+    evidence_rows = []
+    evidence_seen = set()
+    for row in rows_at_date:
+        if str(row.get("step_name") or "") != chosen_step_name:
+            continue
+        try:
+            row_rate = float(row.get("rate"))
+        except (TypeError, ValueError):
+            continue
+        if abs(row_rate - chosen_rate) > 1e-9:
+            continue
+        source_ref = row.get("source_reference") if isinstance(row.get("source_reference"), dict) else {}
+        table_id = str(source_ref.get("table_id") or "").strip()
+        row_index_raw = source_ref.get("row_index")
+        row_index = None
+        if row_index_raw is not None:
+            try:
+                row_index = int(row_index_raw)
+            except (TypeError, ValueError):
+                row_index = None
+        evidence_key = (table_id, row_index)
+        if evidence_key in evidence_seen:
+            continue
+        evidence_seen.add(evidence_key)
+        evidence_rows.append(
+            {
+                "table_id": table_id or None,
+                "row_index": row_index,
+                "classification_key": class_key,
+                "step_name": chosen_step_name,
+                "effective_date": selected_date,
+                "rate": chosen_rate,
+                "row_type": str(row.get("row_type") or ""),
+                "source_method": str(row.get("source_method") or "canonical_rows"),
+                "confidence": float(row.get("confidence", 0.0) or 0.0),
+            }
+        )
+
+    display_name = (
+        class_data.get("name")
+        or chosen.get("classification_name")
+        or class_key
+    )
+    return {
+        "classification": display_name,
+        "classification_key": class_key,
+        "step": chosen_step_name,
+        "rate": chosen_rate,
+        "effective_date": selected_date,
+        "citation": "Appendix A",
+        "source_method": "canonical_rows",
+        "table_evidence": evidence_rows,
+    }
+
+
 def lookup_wage(
     wages_data: dict,
     classification: str,
@@ -1011,37 +1231,26 @@ def lookup_wage(
     if effective_date is None:
         effective_date = effective_dates[-1]
 
-    norm_class = normalize_classification_name(classification)
-    classes = wages_data.get("classifications", {})
-    alias_map = {
-        normalize_classification_name(k): normalize_classification_name(v)
-        for k, v in (wages_data.get("classification_aliases") or {}).items()
-        if str(k).strip() and str(v).strip()
-    }
-    alias_target = alias_map.get(norm_class)
-    if alias_target and alias_target in classes:
-        norm_class = alias_target
-
-    if norm_class not in classes:
-        # 1) Explicit alias map.
-        for alias in _CLASSIFICATION_ALIASES.get(norm_class, ()):
-            if alias in classes:
-                norm_class = alias
-                break
-
-    if norm_class not in classes:
-        # 2) Broad fuzzy containment fallback.
-        for key in classes:
-            if norm_class in key or key in norm_class:
-                norm_class = key
-                break
-        else:
-            return None
+    classes = wages_data.get("classifications", {}) or {}
+    norm_class = _resolve_classification_key(wages_data, classification)
+    if not norm_class or norm_class not in classes:
+        return None
 
     class_data = classes[norm_class]
     steps = class_data.get("steps", [])
     if not steps:
         return None
+
+    canonical_match = _lookup_wage_from_canonical_rows(
+        wages_data=wages_data,
+        class_key=norm_class,
+        class_data=class_data,
+        hours_worked=hours_worked,
+        months_employed=months_employed,
+        effective_date=effective_date,
+    )
+    if canonical_match:
+        return canonical_match
 
     applicable_step = steps[0]
     for step in steps:
@@ -1066,10 +1275,13 @@ def lookup_wage(
 
     return {
         "classification": class_data.get("name", classification),
+        "classification_key": norm_class,
         "step": applicable_step.get("step_name", "Rate"),
         "rate": rate,
         "effective_date": effective_date,
         "citation": "Appendix A",
+        "source_method": "classification_steps",
+        "table_evidence": [],
     }
 
 

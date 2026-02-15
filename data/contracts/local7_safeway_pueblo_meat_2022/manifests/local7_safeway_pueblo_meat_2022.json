@@ -262,6 +262,9 @@
       "warning": "discipline"
     },
     "topic_to_articles": {
+      "bereavement": [
+        36
+      ],
       "breaks": [
         24,
         25
@@ -351,6 +354,7 @@
       ]
     },
     "topic_patterns": {
+      "bereavement": "\\bbereavement\\b|\\bbereavement\\s*leave\\b|\\bfuneral\\b|\\bfuneral\\s*leave\\b|\\bdeath\\s*in\\s*family\\b|\\bdays\\s*off\\s*for\\s*funeral\\b",
       "breaks": "\\blunch\\s*break\\b|\\brelief\\s*period\\b|\\bmeal\\s*period\\b|\\brest\\s*period\\b|\\bbetween\\s*shifts\\b|\\blunch\\s*breaks\\b|\\brelief\\s*periods\\b|\\bbreak\\s*between\\s*shifts\\b|\\bbreaks\\b|\\bclopen\\b|\\bclose\\s*and\\s*open\\b|\\bhours\\s*between\\s*shifts\\b|\\brest\\s*break\\b|\\bturnaround\\s*shift\\b",
       "discipline": "\\bdiscipline\\b|\\bwrite\\s*up\\b|\\bwritten\\s*up\\b|\\bdischarge\\b|\\btermination\\b|\\bdischarge\\s*and\\s*no\\s*discrimination\\b|\\bunion\\s*security\\s*and\\s*conditions\\b|\\brights\\s*of\\s*management\\b|\\bschedule\\s*posting\\b|\\bdischarge\\s*discrimination\\b|\\bwarning\\b",
       "grievance": "\\bgrievance\\b|\\barbitration\\b|\\bdispute\\s*procedure\\b|\\bappeal\\b|\\brates\\s*of\\s*pay\\b|\\bavailable\\s*hours\\b|\\bdischarge\\s*and\\s*no\\s*discrimination\\b|\\bdispute\\b",

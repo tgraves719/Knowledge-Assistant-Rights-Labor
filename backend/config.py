@@ -19,6 +19,7 @@ TEST_SET_DIR = DATA_DIR / "test_set"
 TABLES_DIR = DATA_DIR / "tables"
 MANIFESTS_DIR = DATA_DIR / "manifests"
 ONTOLOGIES_DIR = DATA_DIR / "ontologies"
+ENTITLEMENTS_DIR = DATA_DIR / "entitlements"
 
 
 def _discover_default_contract_id() -> str:
@@ -115,4 +116,3 @@ RERANKER_ORIGINAL_WEIGHT = 0.3         # Weight for original similarity score
 RERANKER_LLM_WEIGHT = 0.7              # Weight for LLM relevance score
 RERANKER_MAX_CHUNKS = 15               # Max chunks to rerank per call
 RERANKER_CONTENT_TRUNCATE = 500        # Max chars per chunk in prompt
-

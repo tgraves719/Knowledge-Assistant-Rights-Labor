@@ -199,6 +199,7 @@ def run(
             }
 
         worker_slang = by_variant_summary.get("worker_slang", {})
+        formal_rewrite = by_variant_summary.get("formal_rewrite", {})
         report = {
             "schema_version": "paraphrase_eval_v1",
             "timestamp_utc": datetime.now(timezone.utc).isoformat(),
@@ -216,6 +217,7 @@ def run(
                 "variant_pass_rate": round((variants_passed / variants_total) if variants_total else 0.0, 4),
                 "retrieval_recall_at_k": round((variants_passed / variants_total) if variants_total else 0.0, 4),
                 "worker_slang_pass_rate": worker_slang.get("pass_rate"),
+                "formal_rewrite_pass_rate": formal_rewrite.get("pass_rate"),
             },
             "by_variant_type": by_variant_summary,
             "by_bucket": by_bucket_summary,

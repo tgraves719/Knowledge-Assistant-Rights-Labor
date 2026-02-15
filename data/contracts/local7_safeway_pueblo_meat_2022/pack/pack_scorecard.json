@@ -1,6 +1,6 @@
 {
   "scorecard_version": "contract_pack_scorecard_v1",
-  "generated_at_utc": "2026-02-15T05:32:14.245353+00:00",
+  "generated_at_utc": "2026-02-15T18:43:12.090496+00:00",
   "strict_mode": false,
   "contract_id": "local7_safeway_pueblo_meat_2022",
   "package_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022",
@@ -14,27 +14,31 @@
     "concept_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\chunks\\concept_index_local7_safeway_pueblo_meat_2022.json",
     "tables": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\tables\\structured_tables.json",
     "wages": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\wages\\wage_tables_local7_safeway_pueblo_meat_2022.json",
+    "entitlements": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\entitlements\\entitlement_tables_local7_safeway_pueblo_meat_2022.json",
     "classification_ontology": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\ontology\\classification_ontology.json",
     "language_lexicon": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\ontology\\language_lexicon.json",
+    "role_catalog": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\ontology\\role_catalog.json",
     "ingestion_review_queue": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\ontology\\ingestion_review_queue.json",
     "manual_classification_overrides": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\ontology\\manual_classification_overrides.json"
   },
   "artifact_hashes": {
     "source_md": "8d392e8a2945b9555138f77e780bcb828022453f2bc9907d8dc2150b885cf8d6",
     "source_json": "d42468cb31ef493cb684a52e5d28a0156716b6a80f85f42d2b1ed765dffa8b12",
-    "manifest": "7e5e4ee1d468432ce67200627ff525c292bc3fc6ec9ecc2472c1f62d94d1d19e",
+    "manifest": "4b4f898243a349ccd34d98e66c52cc7531f23429be7301026bd9844cb3bd75e7",
     "chunks_enriched": "01406ecb7c486881353227694725eacdb79798dde66e691b31b0b1ec31aa7dc0",
     "chunks_smart": "44f89886bc7baabec5acbc1fc74a3b63431497767c4cf5f93bec74ceba508fdb",
     "chunks_base": "01406ecb7c486881353227694725eacdb79798dde66e691b31b0b1ec31aa7dc0",
     "concept_index": "e0e4208504c4b2e1c32add8ef629c5a5f53228d7f70377238bd8e71f3f693c70",
     "tables": "20225dec9a7a4070b81507df792b94e56ea577e95f48a45ec5a826c88a407fd1",
-    "wages": "e73b9409544578d75a0280e4776efb77fbc5b4e24e644cff18c68c4a4dba8f22",
-    "classification_ontology": "8997e9efc753d3a0e344f2acba7d85cd47cdc17460ec63b0ff088dd552435d29",
-    "language_lexicon": "55aaa480eee7c6446ea84ed733ece5d31b41967446411c2519fbee0d51372955",
-    "ingestion_review_queue": "398df9a03e22855395833fe63a746dbad92e584c9c59056fa0f8915df5536867",
+    "wages": "09101eacaf94441707eda2ff8be12924968a36cc27fc42f7b9e460d1550bef8f",
+    "entitlements": "317a0d5999b0921ffcb77d9118a47682a50e7ba9e3d26d380b3ef864f29e0b38",
+    "classification_ontology": "d0c0adfe141887c6c6ddac6677324265042f1ad8b1dc2d3e19561800f0b60b90",
+    "language_lexicon": "4622cda1e9dd56a07947de920ef2cf74ce397b62aeedc7c8a4c8f89004fbd08f",
+    "role_catalog": "981fb0adfcc7b61eb3221dff25401dc2da10df376f8a300275d1fe696546f38b",
+    "ingestion_review_queue": "28b7e02216f86632d30305a04886294936bdeebbe34ec7106aac6727f0449356",
     "manual_classification_overrides": "82e5fc5b78eb5be51beb6f28e2604c1beae23f4f49e411830b20c837bc32e6e0"
   },
-  "pack_hash": "d9e391422e76a2d01da0249261d9e9eef18cd50ab49296b03db97e77734f7117",
+  "pack_hash": "b48a439ff7a5383e0b932f377c4c0808963f924cff2571fe029c5d0b58d89ee6",
   "checks": [
     {
       "id": "manifest_exists",
@@ -60,8 +64,8 @@
       "status": "pass",
       "message": "Manifest query_routing coverage meets deterministic minimums.",
       "metrics": {
-        "topic_entries": 17,
-        "topic_pattern_entries": 17,
+        "topic_entries": 18,
+        "topic_pattern_entries": 18,
         "slang_entries": 148,
         "classification_entries": 5,
         "min_classification_entries": 2
@@ -242,7 +246,7 @@
       "status": "pass",
       "message": "Wage classifications extracted.",
       "metrics": {
-        "classification_count": 13
+        "classification_count": 12
       }
     },
     {
@@ -260,7 +264,7 @@
       "status": "pass",
       "message": "Canonical wage rows are present.",
       "metrics": {
-        "canonical_row_count": 156,
+        "canonical_row_count": 153,
         "requires_canonical_rows": true
       }
     },
@@ -292,7 +296,7 @@
       "metrics": {
         "conflict_rate": 0.0,
         "conflict_count": 0,
-        "canonical_row_count": 156
+        "canonical_row_count": 153
       }
     },
     {
@@ -303,7 +307,7 @@
       "metrics": {
         "ambiguity_rate": 0.0,
         "ambiguity_count": 0,
-        "canonical_row_count": 156
+        "canonical_row_count": 153
       }
     },
     {
@@ -329,6 +333,37 @@
       "message": "Critical shopper/dug aliases resolve in wage lookup.",
       "metrics": {
         "unresolved_critical_aliases": []
+      }
+    },
+    {
+      "id": "entitlements_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Entitlement artifact is present.",
+      "metrics": {
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\entitlements\\entitlement_tables_local7_safeway_pueblo_meat_2022.json",
+        "requires_entitlements": true
+      }
+    },
+    {
+      "id": "entitlements_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Entitlement artifact schema/contract/region are valid.",
+      "metrics": {
+        "schema_version": "entitlement_tables_v1",
+        "artifact_contract_id": "local7_safeway_pueblo_meat_2022",
+        "region_id": "region-pueblo"
+      }
+    },
+    {
+      "id": "vacation_entitlement_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Vacation entitlement schedules are present.",
+      "metrics": {
+        "schedule_count": 2,
+        "requires_entitlements": true
       }
     },
     {
@@ -386,6 +421,52 @@
       }
     },
     {
+      "id": "role_catalog_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Role catalog artifact is present.",
+      "metrics": {
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\ontology\\role_catalog.json",
+        "requires_role_catalog": true
+      }
+    },
+    {
+      "id": "role_catalog_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Role catalog schema and contract_id are valid.",
+      "metrics": {
+        "schema_version": "role_catalog_v1",
+        "catalog_contract_id": "local7_safeway_pueblo_meat_2022",
+        "role_count": 17
+      }
+    },
+    {
+      "id": "role_catalog_onboarding_default_wage_ready",
+      "severity": "required",
+      "status": "pass",
+      "message": "All onboarding-default roles are wage-available.",
+      "metrics": {
+        "default_unmapped_roles": []
+      }
+    },
+    {
+      "id": "role_catalog_unresolved_manifest_rate",
+      "severity": "advisory",
+      "status": "fail",
+      "message": "Role catalog unresolved-manifest rate exceeds advisory threshold.",
+      "metrics": {
+        "manifest_roles_total": 5,
+        "unresolved_manifest_roles": 3,
+        "unresolved_manifest_rate": 0.6,
+        "unresolved_manifest_role_values": [
+          "cake_decorator",
+          "courtesy_clerk",
+          "pharmacy_technician"
+        ]
+      }
+    },
+    {
       "id": "ingestion_review_queue_exists",
       "severity": "required",
       "status": "pass",
@@ -427,7 +508,8 @@
     "required_failed": [],
     "advisory_failed": [
       "manifest_classification_wage_coverage",
-      "classification_ontology_mapping_coverage"
+      "classification_ontology_mapping_coverage",
+      "role_catalog_unresolved_manifest_rate"
     ],
     "pass": true
   }

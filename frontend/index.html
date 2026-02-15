@@ -849,7 +849,26 @@
     </div>
 
     <script>
-        const API_BASE = 'http://127.0.0.1:8000';
+        function resolveApiBase() {
+            const params = new URLSearchParams(window.location.search);
+            const queryOverride = (params.get('api_base') || '').trim();
+            const localOverride = (localStorage.getItem('karl_api_base') || '').trim();
+            const globalOverride = typeof window.__KARL_API_BASE__ === 'string'
+                ? window.__KARL_API_BASE__.trim()
+                : '';
+            const chosenOverride = globalOverride || queryOverride || localOverride;
+            if (chosenOverride) {
+                return chosenOverride.replace(/\/+$/, '');
+            }
+            // When served by FastAPI, same-origin is the correct API target.
+            // Keep localhost fallback for file:// local testing.
+            if (window.location.protocol === 'file:') {
+                return 'http://127.0.0.1:8000';
+            }
+            return window.location.origin.replace(/\/+$/, '');
+        }
+
+        const API_BASE = resolveApiBase();
         const ACTIVE_CONTRACT_STORAGE_KEY = 'karl_active_contract_id';
         const SESSION_ID_STORAGE_KEY = 'karl_session_id';
         const SESSION_META_STORAGE_KEY = 'karl_session_meta';
@@ -1036,7 +1055,13 @@
                 classifications.forEach(c => {
                     const option = document.createElement('option');
                     option.value = c.value;
-                    option.textContent = c.label;
+                    const hasWage = c.wage_available !== false;
+                    option.textContent = hasWage
+                        ? c.label
+                        : `${c.label} (no Appendix A wage row)`;
+                    if (!hasWage) {
+                        option.dataset.wageAvailable = 'false';
+                    }
                     select.appendChild(option);
                 });
 
@@ -2344,6 +2369,34 @@
 
                 let wageHtml = '';
                 if (metadata?.wage_info) {
+                    const tableEvidence = Array.isArray(metadata.wage_info.table_evidence)
+                        ? metadata.wage_info.table_evidence.slice(0, 3)
+                        : [];
+                    const tableEvidenceHtml = tableEvidence.length > 0
+                        ? `
+                            <div class="mt-3 pt-2 border-t border-green-200">
+                                <p class="text-[11px] font-semibold text-green-700 uppercase tracking-wide">Appendix Table Evidence</p>
+                                <div class="mt-1.5 space-y-1">
+                                    ${tableEvidence.map(row => {
+                                        const tableId = row?.table_id ? escapeHtml(String(row.table_id)) : 'table';
+                                        const rowLabel = Number.isInteger(row?.row_index) ? `row ${row.row_index + 1}` : 'row';
+                                        const step = row?.step_name ? escapeHtml(String(row.step_name)) : 'Rate';
+                                        const rate = typeof row?.rate === 'number'
+                                            ? `$${row.rate.toFixed(2)}`
+                                            : '';
+                                        return `
+                                            <div class="bg-white/70 border border-green-200 rounded px-2 py-1 text-[11px] text-green-800 flex flex-wrap items-center gap-x-2">
+                                                <span class="font-semibold">${tableId}</span>
+                                                <span>${escapeHtml(rowLabel)}</span>
+                                                <span>${step}</span>
+                                                <span class="font-semibold">${rate}</span>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        `
+                        : '';
                     wageHtml = `
                         <div class="bg-green-50 border border-green-200 rounded-lg p-3 mt-3">
                             <div class="flex items-center gap-3">
@@ -2361,6 +2414,7 @@
                                 </svg>
                                 <span>This is an estimate based on your tenure. Verify via pay stub or Company HR Portal.</span>
                             </p>
+                            ${tableEvidenceHtml}
                         </div>
                     `;
                 }

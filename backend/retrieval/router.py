@@ -11,7 +11,7 @@ import re
 import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 from dataclasses import dataclass
 
 import sys
@@ -38,6 +38,7 @@ from backend.retrieval.query_interpreter import (
 )
 from backend.chunk_files import resolve_chunk_file
 from backend.wage_files import resolve_wage_file
+from backend.entitlement_files import resolve_entitlement_file
 from backend.user.profile import get_classification_options
 from backend.language_lexicon_files import resolve_language_lexicon_file
 from backend.contracts import resolve_contract_region_id
@@ -269,7 +270,15 @@ _TOPIC_ARTICLE_TITLE_HINTS: dict[str, tuple[str, ...]] = {
     "discipline": ("discharge", "discrimination", "discipline"),
     "breaks": ("lunch break", "relief period", "meal period", "break"),
     "health_benefits": ("health and welfare", "health benefits", "health benefits plan"),
-    "premiums": ("premium", "holiday pay", "night premium", "sunday premium"),
+    "premiums": (
+        "premium",
+        "holiday pay",
+        "holiday premium",
+        "when a holiday is worked",
+        "per hour worked",
+        "night premium",
+        "sunday premium",
+    ),
     "term": ("term of agreement",),
 }
 
@@ -408,8 +417,44 @@ def expand_query(query: str, contract_id: str = CONTRACT_ID) -> Tuple[str, list]
 @lru_cache(maxsize=16)
 def _contract_classification_aliases(contract_id: str = CONTRACT_ID) -> dict[str, str]:
     """Map normalized labels/phrases to canonical contract classification values."""
-    options = get_classification_options(contract_id=contract_id) or []
+    options = get_classification_options(contract_id=contract_id, include_unmapped=True) or []
     alias_to_value: dict[str, str] = {}
+
+    def _register_alias(alias: str, value: str) -> None:
+        key = _normalize_query_text(alias)
+        if key:
+            alias_to_value[key] = value
+
+    def _alias_variants(raw_text: str) -> set[str]:
+        text = _normalize_query_text(raw_text)
+        if not text:
+            return set()
+        variants: set[str] = {text}
+
+        # Keep a plain form without parenthetical hints.
+        no_paren = _normalize_query_text(re.sub(r"\([^)]*\)", " ", text))
+        if no_paren:
+            variants.add(no_paren)
+
+        # Split common list separators while preserving full phrase.
+        for part in re.split(r"[/,;]", text):
+            token = _normalize_query_text(part)
+            if len(token) >= 2:
+                variants.add(token)
+
+        # Acronym aliases: "courtesy clerk" -> "cc", "drive up and go" -> "dug".
+        for candidate in list(variants):
+            words = [
+                w for w in re.findall(r"[a-z0-9]+", candidate)
+                if w not in {"and", "or", "of", "the", "to", "for"}
+            ]
+            if len(words) >= 2:
+                acronym = "".join(w[0] for w in words)
+                if 2 <= len(acronym) <= 6:
+                    variants.add(acronym)
+                    variants.add(f"{acronym}s")
+
+        return {v for v in variants if len(v) >= 2}
 
     for opt in options:
         value = str(opt.get("value") or "").strip().lower()
@@ -418,21 +463,27 @@ def _contract_classification_aliases(contract_id: str = CONTRACT_ID) -> dict[str
             continue
 
         value_phrase = value.replace("_", " ")
-        alias_to_value[value] = value
-        alias_to_value[value_phrase] = value
-        if label:
-            alias_to_value[label] = value
+        for alias in _alias_variants(value):
+            _register_alias(alias, value)
+        for alias in _alias_variants(value_phrase):
+            _register_alias(alias, value)
+        for alias in _alias_variants(label):
+            _register_alias(alias, value)
 
         # Normalize common '&' variants for stable matching.
         if " & " in value_phrase:
-            alias_to_value[value_phrase.replace(" & ", " and ")] = value
+            _register_alias(value_phrase.replace(" & ", " and "), value)
         if " and " in value_phrase:
-            alias_to_value[value_phrase.replace(" and ", " & ")] = value
+            _register_alias(value_phrase.replace(" and ", " & "), value)
         if label:
             if " & " in label:
-                alias_to_value[label.replace(" & ", " and ")] = value
+                _register_alias(label.replace(" & ", " and "), value)
             if " and " in label:
-                alias_to_value[label.replace(" and ", " & ")] = value
+                _register_alias(label.replace(" and ", " & "), value)
+
+        for raw_alias in (opt.get("alias_labels") or []):
+            for alias in _alias_variants(str(raw_alias or "")):
+                _register_alias(alias, value)
 
     return alias_to_value
 
@@ -478,10 +529,17 @@ class QueryIntent:
     active_urgent_context: bool = False
     escalation_policy: str = "deterministic_v1"
     relevant_articles: list = None  # Articles relevant to detected topic
+    mentioned_classifications: list = None
+    comparison_mode: bool = False
+    required_evidence_slots: list = None
     
     def __post_init__(self):
         if self.relevant_articles is None:
             self.relevant_articles = []
+        if self.mentioned_classifications is None:
+            self.mentioned_classifications = []
+        if self.required_evidence_slots is None:
+            self.required_evidence_slots = []
 
 
 # Wage-related keywords (specific phrases to avoid false positives)
@@ -540,21 +598,57 @@ _UNIVERSAL_TOPIC_PATTERNS = {
     "discipline": r"disciplin|warning|write\s*up|written up|tardiness|tardy|late|attendance",
     "grievance": r"grievance|arbitration|file\s*a\s*complaint",
     "breaks": rf"break|lunch|meal\s*period|relief|rest\s*period|{INTER_SHIFT_REST_CUE_PATTERN}",
-    "premiums": r"premium|night\s*pay|sunday\s*pay|sunday\s*premium",
+    "premiums": (
+        r"premium|night\s*pay|sunday\s*pay|sunday\s*premium|holiday\s*premium|"
+        r"holiday.*(premium|pay).*worked|worked.*holiday.*(premium|pay)"
+    ),
     "weingarten": r"weingarten|right\s*to\s*representation|union\s*rep",
     "health_benefits": r"health\s*(benefit|insurance|coverage|care)|medical\s*benefit|eligible.*(health|benefit)|benefit.*eligible",
     "promotion": r"promot|advance|move up|basket.*hours|credit.*hours",
-    "drive_up_go": r"drive\s*up|dug|personal\s*shopper|clicklist",
     "probation": r"probation|probationary|trial\s*period|new\s*employee.*hours",
     "term": CONTRACT_TERM_CUE_PATTERN,
     "minimum_wage": r"minimum\s*wage|colorado.*wage|\$15",
     "joint_committee": r"joint.*committee|labor.*management\s*committee",
 }
 
+# Topics that represent role/entities, not cross-contract semantic topics.
+# These should be handled via contract-scoped entity extraction.
+_ROLE_LIKE_TOPICS = {"drive_up_go"}
+
+_ROLE_COMPARISON_PATTERN = (
+    r"\b(difference|compare|comparison|vs\.?|versus|between)\b"
+    r"|what\s+is\s+the\s+difference\s+between"
+)
+
+_TOPIC_EVIDENCE_SLOTS: dict[str, list[str]] = {
+    "wages": ["rate_schedule", "progression_rules"],
+    "vacation": ["vacation_entitlement", "vacation_scheduling_rules"],
+    "personal_holiday": ["personal_holiday_eligibility", "personal_holiday_usage_rules"],
+    "overtime": ["overtime_thresholds", "overtime_rate_rules"],
+    "breaks": ["break_meal_rules", "inter_shift_rest_rules"],
+    "discipline": ["discipline_procedure", "representation_rights"],
+    "grievance": ["grievance_steps", "timelines"],
+    "term": ["term_start_end_dates"],
+    "layoff": ["seniority_bumping_rules", "notice_rules"],
+    "scheduling": ["scheduling_rules", "minimum_hours_rules"],
+    "bereavement": ["bereavement_eligibility", "bereavement_pay_rules"],
+    "sick_leave": ["sick_leave_eligibility", "sick_leave_usage_rules"],
+    "health_benefits": ["eligibility_rules", "benefit_scope"],
+    "premiums": ["premium_conditions", "premium_rate_rules"],
+    "promotion": ["progression_credits", "promotion_rate_rules"],
+    "probation": ["probation_duration", "probation_rights"],
+}
+
 VACATION_ENTITLEMENT_QUERY_PATTERN = (
     r"(how\s+much|how\s+many).*\bvacation\b"
-    r"|\bvacation\b.*(per\s+year|entitlement|accrual|do\s+i\s+get)"
+    r"|\bvacation\b.*(per\s+year|entitlement|accrual|do\s+i\s+get|years?\s+of\s+(continuous\s+)?service|tenure|anniversary\s+year)"
     r"|\bweeks?\s+of\s+vacation\b"
+    r"|annual\s+paid\s+vacation"
+)
+
+HOLIDAY_WORK_PREMIUM_QUERY_PATTERN = (
+    r"\bholiday\b.*\b(work|worked|working)\b.*\b(premium|pay|rate)\b"
+    r"|\b(work|worked|working)\b.*\bholiday\b.*\b(premium|pay|rate)\b"
 )
 
 
@@ -587,7 +681,7 @@ def extract_classification_for_contract(query: str, contract_id: str = CONTRACT_
     matches: list[tuple[str, str, int]] = []  # (phrase, value, start_idx)
 
     for phrase, value in aliases.items():
-        if not phrase or len(phrase) < 3:
+        if not phrase or len(phrase) < 2:
             continue
         pattern = rf"(?<![a-z0-9]){re.escape(phrase)}(?![a-z0-9])"
         m = re.search(pattern, query_lower)
@@ -622,6 +716,48 @@ def extract_classification_for_contract(query: str, contract_id: str = CONTRACT_
     return None
 
 
+def extract_classifications_for_contract(
+    query: str,
+    contract_id: str = CONTRACT_ID,
+    max_matches: int = 3,
+) -> list[str]:
+    """
+    Extract up to max_matches classification mentions in query order.
+
+    Used for comparison prompts such as "difference between X and Y" so retrieval
+    can anchor both role-specific article maps deterministically.
+    """
+    query_lower = _normalize_query_text(query)
+    aliases = _contract_classification_aliases(contract_id)
+    matches: list[tuple[int, int, str]] = []  # (start, -len(phrase), value)
+
+    for phrase, value in aliases.items():
+        if not phrase or len(phrase) < 2:
+            continue
+        pattern = rf"(?<![a-z0-9]){re.escape(phrase)}(?![a-z0-9])"
+        for m in re.finditer(pattern, query_lower):
+            matches.append((m.start(), -len(phrase), value))
+
+    if not matches:
+        legacy = extract_classification(query_lower)
+        if legacy:
+            normalized = normalize_classification_for_contract(legacy, contract_id=contract_id)
+            return [normalized] if normalized else []
+        return []
+
+    matches.sort(key=lambda t: (t[0], t[1]))
+    ordered_values: list[str] = []
+    seen: set[str] = set()
+    for _, _, value in matches:
+        if value in seen:
+            continue
+        seen.add(value)
+        ordered_values.append(value)
+        if len(ordered_values) >= max_matches:
+            break
+    return ordered_values
+
+
 def extract_topic(query: str, contract_id: str = CONTRACT_ID) -> Optional[str]:
     """
     Extract main topic from query.
@@ -637,7 +773,6 @@ def extract_topic(query: str, contract_id: str = CONTRACT_ID) -> Optional[str]:
         "retirement_savings",
         "weingarten",
         "health_benefits",
-        "drive_up_go",
         "probation",
         "promotion",
         "term",
@@ -645,18 +780,20 @@ def extract_topic(query: str, contract_id: str = CONTRACT_ID) -> Optional[str]:
         "bereavement",
         "layoff",
         "sick_leave",
+        "premiums",
         "vacation",
         "overtime",
         "grievance",
         "discipline",
         "seniority",
-        "premiums",
         "breaks",
         "scheduling",  # Generic - matches "hours" so put last
     ]
 
     # First pass: check topics in priority order
     for topic in TOPIC_PRIORITY:
+        if topic in _ROLE_LIKE_TOPICS:
+            continue
         if topic in topic_patterns:
             pattern = topic_patterns[topic]
             if re.search(pattern, query_lower):
@@ -664,11 +801,118 @@ def extract_topic(query: str, contract_id: str = CONTRACT_ID) -> Optional[str]:
 
     # Second pass: check any remaining topics
     for topic, pattern in topic_patterns.items():
+        if topic in _ROLE_LIKE_TOPICS:
+            continue
         if topic not in TOPIC_PRIORITY:
             if re.search(pattern, query_lower):
                 return topic
 
     return None
+
+
+@dataclass
+class QueryPlan:
+    """Deterministic query plan for evidence orchestration."""
+    contract_id: str
+    topic: Optional[str]
+    primary_classification: Optional[str]
+    mentioned_classifications: list[str]
+    comparison_mode: bool
+    article_anchors: list[int]
+    required_evidence_slots: list[str]
+    explicit_articles: list[int]
+
+
+def _is_role_comparison_query(query: str) -> bool:
+    return bool(re.search(_ROLE_COMPARISON_PATTERN, _normalize_query_text(query)))
+
+
+def _required_evidence_slots_for_plan(
+    topic: Optional[str],
+    comparison_mode: bool,
+    mentioned_classifications: list[str],
+) -> list[str]:
+    slots: list[str] = []
+    if comparison_mode and len(mentioned_classifications) >= 2:
+        slots.extend(
+            [
+                "classification_definition",
+                "classification_rate_rules",
+                "classification_scheduling_rules",
+            ]
+        )
+    topic_key = str(topic or "").strip().lower()
+    slots.extend(_TOPIC_EVIDENCE_SLOTS.get(topic_key, []))
+    # Stable de-dup preserving order.
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for slot in slots:
+        if not slot or slot in seen:
+            continue
+        seen.add(slot)
+        deduped.append(slot)
+    return deduped
+
+
+def build_query_plan(
+    query: str,
+    contract_id: str = CONTRACT_ID,
+    user_classification: Optional[str] = None,
+) -> QueryPlan:
+    """
+    Build deterministic query plan for retrieval orchestration.
+
+    Roles/entities are extracted from contract-scoped role catalog and used as
+    article anchors; semantic topics remain contract-domain concepts.
+    """
+    ensure_contract_manifest(contract_id)
+    query_text = str(query or "")
+
+    mentioned_classes = extract_classifications_for_contract(query_text, contract_id=contract_id, max_matches=4)
+    primary_class = normalize_classification_for_contract(user_classification, contract_id=contract_id)
+    if not primary_class:
+        primary_class = extract_classification_for_contract(query_text, contract_id=contract_id)
+    if not primary_class and mentioned_classes:
+        primary_class = mentioned_classes[0]
+
+    topic = extract_topic(query_text, contract_id=contract_id)
+    if topic in _ROLE_LIKE_TOPICS:
+        topic = None
+
+    topic_article_map = get_topic_article_map(contract_id)
+    class_article_map = get_classification_article_map(contract_id)
+    anchors = list(topic_article_map.get(topic, []) if topic else [])
+    classes_for_routing = list(mentioned_classes)
+    if primary_class and primary_class not in classes_for_routing:
+        classes_for_routing.insert(0, primary_class)
+    for cls in classes_for_routing:
+        anchors.extend(class_article_map.get(cls, []) or [])
+
+    explicit_articles: list[int] = []
+    for match in re.findall(r"\b(?:article|art\.?)\s*(\d+)\b", query_text.lower()):
+        try:
+            explicit_articles.append(int(match))
+        except ValueError:
+            continue
+    anchors.extend(explicit_articles)
+    anchors = _normalize_article_list(anchors)
+
+    comparison_mode = _is_role_comparison_query(query_text) and len(classes_for_routing) >= 2
+    required_slots = _required_evidence_slots_for_plan(
+        topic=topic,
+        comparison_mode=comparison_mode,
+        mentioned_classifications=classes_for_routing,
+    )
+    return QueryPlan(
+        contract_id=contract_id,
+        topic=topic,
+        primary_classification=primary_class,
+        mentioned_classifications=classes_for_routing,
+        comparison_mode=comparison_mode,
+        article_anchors=anchors,
+        required_evidence_slots=required_slots,
+        explicit_articles=_normalize_article_list(explicit_articles),
+    )
 
 
 def is_wage_query(query: str) -> tuple[bool, list]:
@@ -852,32 +1096,15 @@ def classify_intent(query: str, user_classification: str = None, contract_id: st
         QueryIntent with type, confidence, and metadata
     """
     ensure_contract_manifest(contract_id)
-
-    # Use provided classification or try to extract from query
-    classification = normalize_classification_for_contract(user_classification, contract_id=contract_id)
-    if not classification:
-        classification = extract_classification_for_contract(query, contract_id=contract_id)
-    topic = extract_topic(query, contract_id)
-
-    # Get relevant articles from manifest (contract-specific)
-    topic_article_map = get_topic_article_map(contract_id)
-    relevant_articles = topic_article_map.get(topic, []) if topic else []
-
-    # Deterministic explicit article anchoring (works even without query interpreter).
-    explicit_article_refs = []
-    for match in re.findall(r"\b(?:article|art\.?)\s*(\d+)\b", query.lower()):
-        try:
-            explicit_article_refs.append(int(match))
-        except ValueError:
-            continue
-    if explicit_article_refs:
-        relevant_articles = list(set(relevant_articles + explicit_article_refs))
-
-    # Add classification-specific articles for role-based boosting
-    if classification:
-        classification_article_map = get_classification_article_map(contract_id)
-        classification_articles = classification_article_map.get(classification, [])
-        relevant_articles = list(set(relevant_articles + classification_articles))
+    plan = build_query_plan(
+        query=query,
+        contract_id=contract_id,
+        user_classification=user_classification,
+    )
+    classification = plan.primary_classification
+    topic = plan.topic
+    relevant_articles = list(plan.article_anchors)
+    classes_for_routing = list(plan.mentioned_classifications)
     
     is_wage, wage_matches = is_wage_query(query)
     if not is_wage:
@@ -906,7 +1133,10 @@ def classify_intent(query: str, user_classification: str = None, contract_id: st
             high_stakes_topic=high_stakes_topic,
             active_urgent_context=active_urgent_context,
             escalation_policy="deterministic_v2",
-            relevant_articles=relevant_articles
+            relevant_articles=relevant_articles,
+            mentioned_classifications=classes_for_routing,
+            comparison_mode=plan.comparison_mode,
+            required_evidence_slots=plan.required_evidence_slots,
         )
     
     if is_wage:
@@ -923,7 +1153,10 @@ def classify_intent(query: str, user_classification: str = None, contract_id: st
             high_stakes_topic=False,
             active_urgent_context=False,
             escalation_policy="deterministic_v2",
-            relevant_articles=relevant_articles
+            relevant_articles=relevant_articles,
+            mentioned_classifications=classes_for_routing,
+            comparison_mode=plan.comparison_mode,
+            required_evidence_slots=plan.required_evidence_slots,
         )
     
     # Default to contract query
@@ -937,7 +1170,10 @@ def classify_intent(query: str, user_classification: str = None, contract_id: st
         high_stakes_topic=False,
         active_urgent_context=False,
         escalation_policy="deterministic_v2",
-        relevant_articles=relevant_articles
+        relevant_articles=relevant_articles,
+        mentioned_classifications=classes_for_routing,
+        comparison_mode=plan.comparison_mode,
+        required_evidence_slots=plan.required_evidence_slots,
     )
 
 
@@ -955,8 +1191,11 @@ class HybridRetriever:
         self.hybrid_searcher = None
         self.wages_data = None
         self._wages_by_contract = {}
+        self.entitlements_data = None
+        self._entitlements_by_contract = {}
         self._all_chunks_by_contract = {}
         self._load_wages(CONTRACT_ID)
+        self._load_entitlements(CONTRACT_ID)
     
     def _load_wages(self, contract_id: str = CONTRACT_ID):
         """Load wage data for a contract from JSON."""
@@ -983,6 +1222,23 @@ class HybridRetriever:
         cross-tenant leakage once multiple manifests are present.
         """
         return len(list(MANIFESTS_DIR.glob("*.json"))) == 1
+
+    def _load_entitlements(self, contract_id: str = CONTRACT_ID):
+        """Load entitlement data for a contract from JSON."""
+        if contract_id in self._entitlements_by_contract:
+            self.entitlements_data = self._entitlements_by_contract[contract_id]
+            return
+
+        entitlement_file = resolve_entitlement_file(contract_id=contract_id, allow_shared_fallback=True)
+        if entitlement_file and entitlement_file.exists():
+            with open(entitlement_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            self._entitlements_by_contract[contract_id] = data
+            self.entitlements_data = data
+            return
+
+        self._entitlements_by_contract[contract_id] = None
+        self.entitlements_data = None
     
     def _ensure_hybrid_searcher(self):
         """Lazy-initialize the hybrid searcher."""
@@ -1009,6 +1265,25 @@ class HybridRetriever:
         # Import here to avoid circular dependency
         from backend.ingest.extract_wages import lookup_wage
         return lookup_wage(self.wages_data, classification, hours_worked, months_employed, effective_date)
+
+    def lookup_vacation_entitlement(
+        self,
+        months_employed: int = 0,
+        hours_worked: int = 0,
+        hire_date: Optional[str] = None,
+        contract_id: str = CONTRACT_ID,
+    ) -> Optional[dict]:
+        """Look up deterministic vacation entitlement schedule data."""
+        self._load_entitlements(contract_id=contract_id)
+        if not self.entitlements_data:
+            return None
+        from backend.ingest.extract_entitlements import lookup_vacation_entitlement
+        return lookup_vacation_entitlement(
+            self.entitlements_data,
+            months_employed=months_employed,
+            hours_worked=hours_worked,
+            hire_date=hire_date,
+        )
     
     def _load_all_chunks_for_contract(self, contract_id: str) -> list:
         """Load and cache chunks scoped to a specific contract."""
@@ -1303,6 +1578,7 @@ class HybridRetriever:
         self,
         chunks: list,
         classification: Optional[str],
+        wage_info: Optional[dict] = None,
         contract_id: str = CONTRACT_ID,
         max_additional: int = 2,
     ) -> list:
@@ -1322,6 +1598,11 @@ class HybridRetriever:
         existing_ids = {c.get("chunk_id", c.get("citation", "")) for c in chunks}
         norm_class = re.sub(r"[^a-z0-9]+", "_", str(classification).lower()).strip("_")
         class_tokens = [t for t in norm_class.split("_") if len(t) > 2]
+        preferred_table_ids: set[str] = set()
+        for row in (wage_info or {}).get("table_evidence", []) or []:
+            table_id = str((row or {}).get("table_id") or "").strip()
+            if table_id:
+                preferred_table_ids.add(table_id)
 
         scored: list[tuple[float, dict]] = []
         for chunk in contract_chunks:
@@ -1334,6 +1615,7 @@ class HybridRetriever:
             citation = str(chunk.get("citation") or "")
             doc_type = str(chunk.get("doc_type") or "").lower()
             text = (chunk.get("content_with_tables") or chunk.get("content") or "").lower()
+            table_refs = {str(tid).strip() for tid in (chunk.get("table_refs") or []) if str(tid).strip()}
 
             # Require strong appendix/table signal.
             if doc_type != "appendix" and "appendix" not in citation.lower() and "table" not in citation.lower():
@@ -1341,10 +1623,13 @@ class HybridRetriever:
 
             token_hits = sum(1 for token in class_tokens if token in text)
             has_wage_grid_signal = "classification" in text and "$" in text
-            if token_hits == 0 and not has_wage_grid_signal:
+            has_preferred_table = bool(preferred_table_ids and table_refs.intersection(preferred_table_ids))
+            if token_hits == 0 and not has_wage_grid_signal and not has_preferred_table:
                 continue
 
             score = 0.0
+            if has_preferred_table:
+                score += 4.0
             if token_hits:
                 score += 2.0 + min(1.0, token_hits * 0.25)
             if "appendix" in citation.lower() or doc_type == "appendix":
@@ -1411,6 +1696,8 @@ class HybridRetriever:
             "anniversary year",
             "continuous service",
             "years service",
+            "years of service",
+            "weeks of vacation",
         )
 
         def _norm_text(chunk: dict) -> str:
@@ -1462,6 +1749,103 @@ class HybridRetriever:
         seed = dict(candidates[0][1])
         seed["similarity"] = max(0.53, float(seed.get("similarity", 0) or 0))
         seed["is_topic_entitlement_seed"] = True
+        return chunks + [seed]
+
+    @staticmethod
+    def _is_holiday_work_premium_query(query_text: Optional[str]) -> bool:
+        """Detect holiday-work premium questions that need premium-rule coverage."""
+        q = _normalize_query_text(query_text or "")
+        if not q:
+            return False
+        return bool(re.search(HOLIDAY_WORK_PREMIUM_QUERY_PATTERN, q))
+
+    def _ensure_holiday_work_premium_coverage(
+        self,
+        chunks: list,
+        contract_id: str = CONTRACT_ID,
+        query_text: Optional[str] = None,
+    ) -> list:
+        """
+        Ensure holiday-work premium queries include premium-rule evidence.
+
+        Holiday prompts can over-retrieve eligibility/scheduling sections
+        while missing the premium-pay section. This adds one deterministic
+        seed chunk when holiday-work premium markers are absent.
+        """
+        if not chunks:
+            return chunks
+        if not self._is_holiday_work_premium_query(query_text):
+            return chunks
+
+        premium_markers = (
+            "when a holiday is worked",
+            "per hour worked",
+            "one and one-half",
+            "1.00",
+            "premium pay for holiday work",
+        )
+        strong_markers = (
+            "per hour worked",
+            "one and one-half",
+            "premium pay for holiday work",
+        )
+
+        def _norm_text(chunk: dict) -> str:
+            text = (
+                f"{chunk.get('citation', '')} "
+                f"{chunk.get('article_title', '')} "
+                f"{chunk.get('content_with_tables') or chunk.get('content') or ''}"
+            )
+            return re.sub(r"[^a-z0-9.]+", " ", text.lower())
+
+        for c in chunks:
+            text = _norm_text(c)
+            if "holiday" not in text:
+                continue
+            if "worked" not in text and "work" not in text:
+                continue
+            marker_hits = sum(1 for marker in premium_markers if marker in text)
+            if marker_hits >= 2 and any(marker in text for marker in strong_markers):
+                return chunks
+
+        contract_chunks = self._load_all_chunks_for_contract(contract_id)
+        if not contract_chunks:
+            return chunks
+
+        query_tokens = [
+            tok for tok in re.findall(r"[a-z0-9]+", (query_text or "").lower())
+            if len(tok) >= 3
+        ]
+        existing_ids = {c.get("chunk_id", c.get("citation", "")) for c in chunks}
+
+        candidates: list[tuple[float, dict]] = []
+        for c in contract_chunks:
+            cid = c.get("chunk_id", c.get("citation", ""))
+            if cid in existing_ids:
+                continue
+            text = _norm_text(c)
+            if "holiday" not in text:
+                continue
+            if "worked" not in text and "work" not in text:
+                continue
+
+            marker_hits = sum(1 for marker in premium_markers if marker in text)
+            if marker_hits == 0:
+                continue
+            if not any(marker in text for marker in strong_markers):
+                continue
+            overlap = sum(1 for tok in query_tokens if tok in text) if query_tokens else 0
+            section_num = int(c.get("section_num") or 0)
+            score = float(marker_hits) + (0.05 * overlap) + (0.2 if section_num > 0 else 0.0)
+            candidates.append((score, c))
+
+        if not candidates:
+            return chunks
+
+        candidates.sort(key=lambda x: (x[0], -int(x[1].get("section_num") or 0)), reverse=True)
+        seed = dict(candidates[0][1])
+        seed["similarity"] = max(0.52, float(seed.get("similarity", 0) or 0))
+        seed["is_holiday_premium_seed"] = True
         return chunks + [seed]
 
     def _expand_to_full_article(
@@ -1672,6 +2056,7 @@ class HybridRetriever:
         result = {
             "chunks": [],
             "wage_info": None,
+            "entitlement_info": None,
             "intent": intent,
             "escalation_required": intent.requires_escalation,
             "contract_id": contract_id,
@@ -1755,6 +2140,11 @@ class HybridRetriever:
             topic=intent.topic,
             query_text=query,
         )
+        chunks = self._ensure_holiday_work_premium_coverage(
+            chunks,
+            contract_id=contract_id,
+            query_text=query,
+        )
         chunks = self._prioritize_topic_articles(
             chunks,
             intent.relevant_articles,
@@ -1777,8 +2167,20 @@ class HybridRetriever:
                 result["chunks"] = self._ensure_wage_table_context(
                     result["chunks"],
                     classification=intent.classification,
+                    wage_info=wage_info,
                     contract_id=contract_id,
                 )
+
+        if (
+            str(intent.topic or "").strip().lower() == "vacation"
+            and self._is_vacation_entitlement_query(query)
+        ):
+            result["entitlement_info"] = self.lookup_vacation_entitlement(
+                months_employed=months_employed,
+                hours_worked=hours_worked,
+                hire_date=None,
+                contract_id=contract_id,
+            )
 
         return result
 
@@ -1968,6 +2370,11 @@ class HybridRetriever:
             topic=intent.topic,
             query_text=query,
         )
+        final_chunks = self._ensure_holiday_work_premium_coverage(
+            final_chunks,
+            contract_id=contract_id,
+            query_text=query,
+        )
         final_chunks = self._prioritize_topic_articles(
             final_chunks,
             intent.relevant_articles,
@@ -1979,6 +2386,7 @@ class HybridRetriever:
         result = {
             "chunks": final_chunks,
             "wage_info": None,
+            "entitlement_info": None,
             "intent": intent,
             "escalation_required": intent.requires_escalation,
             "contract_id": contract_id,
@@ -2002,8 +2410,20 @@ class HybridRetriever:
                 result["chunks"] = self._ensure_wage_table_context(
                     result["chunks"],
                     classification=intent.classification,
+                    wage_info=wage_info,
                     contract_id=contract_id,
                 )
+
+        if (
+            str(intent.topic or "").strip().lower() == "vacation"
+            and self._is_vacation_entitlement_query(query)
+        ):
+            result["entitlement_info"] = self.lookup_vacation_entitlement(
+                months_employed=months_employed,
+                hours_worked=hours_worked,
+                hire_date=None,
+                contract_id=contract_id,
+            )
 
         return result
 

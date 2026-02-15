@@ -6,7 +6,6 @@
         "what does article 1 section 1 say about recognition exclusions"
       ],
       "all_alternative_names": [
-        "courtesy clerk",
         "meat cutter",
         "recognition exclusions"
       ],
@@ -1164,7 +1163,6 @@
         "how much vacation time do i get"
       ],
       "all_alternative_names": [
-        "courtesy clerk",
         "hourly rate",
         "hours",
         "pay",
@@ -1523,7 +1521,6 @@
         "what does article 57 section 127 part 1 say about this section",
         "what does article 57 section 127 part 3 say about this section",
         "what does article 57 section 128 part 1 1 say about this section",
-        "what does article 57 section 128 part 1 2 say about deli clerk",
         "what does article 57 section 128 part 1 2 say about this section",
         "what does article 57 section 128 part 2 2 say about this section",
         "what does article 57 section 128 part 4 4 say about this section",
@@ -1539,10 +1536,7 @@
         "break",
         "breaks",
         "bumping",
-        "cake decorator",
         "call in sick",
-        "courtesy clerk",
-        "deli clerk",
         "discharge",
         "discipline",
         "displacement",
@@ -1661,11 +1655,6 @@
   "concept_to_articles": {
     "recognition exclusions": [
       1
-    ],
-    "courtesy clerk": [
-      1,
-      42,
-      57
     ],
     "meat cutter": [
       1,
@@ -2692,13 +2681,7 @@
     "technological changes": [
       56
     ],
-    "deli clerk": [
-      57
-    ],
     "head clerk": [
-      57
-    ],
-    "cake decorator": [
       57
     ]
   },
@@ -2981,9 +2964,6 @@
       57
     ],
     "what does article 57 section 128 part 4 4 say about this section": [
-      57
-    ],
-    "what does article 57 section 128 part 1 2 say about deli clerk": [
       57
     ],
     "what does article 57 section 128 part 1 1 say about this section": [
