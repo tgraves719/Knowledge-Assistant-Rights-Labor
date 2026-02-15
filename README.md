@@ -321,6 +321,9 @@ python -m backend.evaluate_runner --track entitlement_table_evidence
 
 # Role-catalog integrity slice (contract-scoped role containment + default wage readiness)
 python -m backend.evaluate_runner --track role_catalog_integrity
+
+# Follow-up role-targeted wage integrity slice
+python -m backend.evaluate_runner --track followup_role_wage
 ```
 
 False-unavailable evaluation now includes both:
@@ -390,6 +393,15 @@ python -m backend.evaluate_role_catalog_integrity
 `backend.evaluate_gate_check` treats role-catalog-integrity thresholds as blocking when
 `data/test_set/role_catalog_integrity_results.json` is missing or below floor.
 
+### Follow-up role-targeted wage slice
+
+```bash
+python -m backend.evaluate_followup_role_wage --bm25-only
+```
+
+`backend.evaluate_gate_check` treats followup-role-wage thresholds as blocking when
+`data/test_set/followup_role_wage_results.json` is missing or below floor.
+
 ### Release-gate check from artifacts
 
 ```bash
@@ -406,6 +418,7 @@ python -m backend.evaluate_gate_check \
   --wage-table-evidence-results data/test_set/wage_table_evidence_results.json \
   --entitlement-table-evidence-results data/test_set/entitlement_table_evidence_results.json \
   --role-catalog-integrity-results data/test_set/role_catalog_integrity_results.json \
+  --followup-role-wage-results data/test_set/followup_role_wage_results.json \
   --min-v3-components-pass-rate 1.00 \
   --min-paraphrase-formal-rewrite-pass-rate 0.90 \
   --required-adversarial-dataset-schema-version adversarial_precedence_test_v1 \
@@ -434,6 +447,18 @@ python -m backend.evaluate_gate_check \
   --min-false-unavailable-cases-per-contract 3 \
   --min-false-unavailable-recovered-rate 0.90 \
   --min-false-unavailable-proper-uncertainty-rate 0.90 \
+  --required-followup-role-wage-dataset-schema-version followup_role_wage_test_v1 \
+  --min-followup-role-wage-total-cases 12 \
+  --min-followup-role-wage-cases-per-contract 3 \
+  --min-followup-role-wage-pass-rate 0.90 \
+  --min-followup-role-wage-per-contract 0.80 \
+  --min-followup-role-wage-target-resolution-rate 0.95 \
+  --min-followup-role-wage-table-evidence-presence-rate 0.95 \
+  --min-followup-role-wage-appendix-citation-rate 0.95 \
+  --min-followup-role-wage-intent-wage-rate 0.95 \
+  --min-followup-role-wage-no-unavailable-rate 0.95 \
+  --min-followup-role-wage-explicit-override-rate 0.90 \
+  --min-followup-role-wage-profile-fallback-rate 0.90 \
   --required-wage-table-evidence-dataset-schema-version wage_table_evidence_test_v1 \
   --min-wage-table-evidence-total-cases 12 \
   --min-wage-table-evidence-cases-per-contract 3 \
@@ -470,7 +495,7 @@ python -m backend.validate_manifests
 
 ### CI behavior
 
-- Pull requests: manifest validation + canonical slices (`v2`, `escalation`, `v2_multi_contract`, `paraphrase`, `adversarial`, `unanswerable`, `cross_contract_mentions`, `false_unavailable`, `needle`, `wage_table_evidence`, `entitlement_table_evidence`, `role_catalog_integrity`, `v3`) + isolation/cross-contamination/topic-routing checks + gate-check thresholds
+- Pull requests: manifest validation + canonical slices (`v2`, `escalation`, `v2_multi_contract`, `paraphrase`, `adversarial`, `unanswerable`, `cross_contract_mentions`, `false_unavailable`, `needle`, `wage_table_evidence`, `entitlement_table_evidence`, `role_catalog_integrity`, `followup_role_wage`, `v3`) + isolation/cross-contamination/topic-routing checks + gate-check thresholds
 - Push to `main`: manifest validation + full v2 ablation suite + deterministic release slices + cross-contamination/topic-routing + gate-check job
 
 `backend.evaluate_cross_contamination` skips automatically when only one manifest is present.

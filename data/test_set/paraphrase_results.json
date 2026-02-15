@@ -1,6 +1,6 @@
 {
   "schema_version": "paraphrase_eval_v1",
-  "timestamp_utc": "2026-02-15T19:11:17.631238+00:00",
+  "timestamp_utc": "2026-02-15T19:57:23.203773+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\paraphrase_test.json",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "n_results": 5,
@@ -265,10 +265,11 @@
           "variant_type": "worker_slang",
           "question": "Do I get extra pay for working Sundays if I was hired in 2003?",
           "retrieved_articles": [
+            "Article 8",
             "Article 13",
             "Article 16",
-            "Article 15",
-            "Article 12"
+            "Article 9",
+            "Article 15"
           ],
           "pass": true
         },
@@ -305,6 +306,7 @@
           "question": "Calculate the severance pay for a full-time employee with 7 years and 4 months of continuous service whose store closes.",
           "retrieved_articles": [
             "Article 3",
+            "Article 8",
             "Article 43",
             "Article 6",
             "Article 9",
@@ -408,7 +410,10 @@
       "variants_passed": 3,
       "family_pass": true,
       "shared_retrieved_articles": [
-        "Article 29"
+        "Article 10",
+        "Article 2",
+        "Article 29",
+        "Article 31"
       ],
       "variants": [
         {
@@ -442,9 +447,10 @@
           "variant_type": "formal_rewrite",
           "question": "What is the duration of recall rights for a laid-off employee with hire date in 2010?",
           "retrieved_articles": [
-            "Article 17",
+            "Article 2",
+            "Article 10",
             "Article 29",
-            "Article 27"
+            "Article 31"
           ],
           "pass": true
         }
@@ -530,8 +536,9 @@
           "variant_type": "worker_slang",
           "question": "My wife's grandma died. How many days off with pay can I get for the funeral?",
           "retrieved_articles": [
+            "Article 8",
+            "Article 9",
             "Article 33",
-            "Article 10",
             "Article 35"
           ],
           "pass": true
@@ -716,8 +723,10 @@
           "question": "What is the hourly differential for night shift work per Article 15?",
           "retrieved_articles": [
             "Article 15",
+            "Article 8",
             "Article 10",
             "Article 18",
+            "Article 9",
             "Article 21",
             "Article 28",
             "Article 58"

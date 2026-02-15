@@ -1,5 +1,40 @@
 # Karl Update Log
 
+## v0.8.69 - Canonical Follow-Up Role Wage Gate (February 2026)
+
+### Overview
+
+Promoted role-targeted wage follow-up integrity into the canonical multi-contract evaluation stack and release gates. This makes explicit-role override and profile-fallback wage behavior release-blocking with deterministic table/citation grounding checks.
+
+### What Changed
+
+- New canonical dataset:
+  - `data/test_set/followup_role_wage_test.json`
+  - 12 deterministic cases across active contracts, including formal rewrite phrasing and follow-up role overrides.
+- Canonical runner integration:
+  - `backend/evaluate_runner.py`
+    - new track: `followup_role_wage`
+    - included in `--track all`
+- Canonical v3 integration:
+  - `backend/evaluate_v3.py`
+    - new required component: `followup_role_wage`
+    - full v3 run now executes `python -m backend.evaluate_followup_role_wage --bm25-only`
+    - added threshold flags for dataset schema, overall/per-contract floors, target resolution, table evidence, Appendix citation, intent/no-unavailable, and override/fallback rates
+    - schema version bumped to `v3_eval_v5`
+- Release gate integration:
+  - `backend/evaluate_gate_check.py`
+    - new required artifact checks and thresholds for follow-up role wage slice
+    - added non-release bypass: `--allow-missing-followup-role-wage`
+- CI + docs + policy sync:
+  - `.github/workflows/eval-ci.yml`
+    - PR/main jobs now run `followup_role_wage` and upload artifact
+    - gate enforcement includes follow-up role wage thresholds
+  - `README.md`
+    - added runner/evaluator commands and gate-check arguments for follow-up role wage
+    - updated canonical CI slice list
+  - `legal/RELEASE-GATES.md`
+    - Gate B threshold requirement + Gate D canonical artifact requirement
+
 ## v0.8.68 - Role-Targeted Wage Follow-Up Hardening + Appendix Citation UX (February 2026)
 
 ### Overview

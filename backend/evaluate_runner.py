@@ -15,8 +15,9 @@ Tracks:
 - wage_table_evidence: deterministic canonical wage-row table evidence slice
 - entitlement_table_evidence: deterministic canonical entitlement schedule evidence slice
 - role_catalog_integrity: deterministic contract-scoped role integrity slice
+- followup_role_wage: deterministic role-targeted wage follow-up integrity slice
 - needle: needle retrieval integrity slice
-- all: run v1 + v2 + v2_multi_contract + escalation + paraphrase + adversarial + unanswerable + cross_contract_mentions + false_unavailable + wage_table_evidence + entitlement_table_evidence + role_catalog_integrity + needle + v3
+- all: run v1 + v2 + v2_multi_contract + escalation + paraphrase + adversarial + unanswerable + cross_contract_mentions + false_unavailable + wage_table_evidence + entitlement_table_evidence + role_catalog_integrity + followup_role_wage + needle + v3
 
 This runner records deterministic run metadata for auditability:
 - timestamp, command, cwd
@@ -193,6 +194,8 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
         return [[py, "-m", "backend.evaluate_entitlement_table_evidence"]]
     if track == "role_catalog_integrity":
         return [[py, "-m", "backend.evaluate_role_catalog_integrity"]]
+    if track == "followup_role_wage":
+        return [[py, "-m", "backend.evaluate_followup_role_wage", "--bm25-only"]]
     if track == "needle":
         return [[py, "-m", "backend.evaluate_needle", "--bm25-only"]]
     if track == "all":
@@ -209,6 +212,7 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
             + _build_commands("wage_table_evidence", ablation_mode, bucket_filter, seed)
             + _build_commands("entitlement_table_evidence", ablation_mode, bucket_filter, seed)
             + _build_commands("role_catalog_integrity", ablation_mode, bucket_filter, seed)
+            + _build_commands("followup_role_wage", ablation_mode, bucket_filter, seed)
             + _build_commands("needle", ablation_mode, bucket_filter, seed)
             + _build_commands("v3", ablation_mode, bucket_filter, seed)
         )
@@ -272,7 +276,7 @@ def main():
     parser = argparse.ArgumentParser(description="Canonical KARL evaluation runner with metadata capture.")
     parser.add_argument(
         "--track",
-        choices=["v1", "v2", "v2_multi_contract", "v3", "escalation", "paraphrase", "adversarial", "unanswerable", "cross_contract_mentions", "false_unavailable", "wage_table_evidence", "entitlement_table_evidence", "role_catalog_integrity", "needle", "all"],
+        choices=["v1", "v2", "v2_multi_contract", "v3", "escalation", "paraphrase", "adversarial", "unanswerable", "cross_contract_mentions", "false_unavailable", "wage_table_evidence", "entitlement_table_evidence", "role_catalog_integrity", "followup_role_wage", "needle", "all"],
         default="v2",
     )
     parser.add_argument("--ablation-mode", default="normal")

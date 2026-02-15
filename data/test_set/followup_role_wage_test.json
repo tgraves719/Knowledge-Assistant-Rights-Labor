@@ -1,0 +1,114 @@
+{
+  "schema_version": "followup_role_wage_test_v1",
+  "description": "Deterministic role-targeted wage follow-up checks across active contracts.",
+  "test_cases": [
+    {
+      "id": "FRW-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "user_classification": "nonfood_gm_floral",
+      "question": "you dont know what the pay is for cc's",
+      "expectation": "explicit_role_override",
+      "expected_target_classification": "courtesy_clerk",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "user_classification": "nonfood_gm_floral",
+      "question": "Please provide the hourly wage for a Courtesy Clerk classification.",
+      "expectation": "explicit_role_override",
+      "expected_target_classification": "courtesy_clerk",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "user_classification": "courtesy_clerk",
+      "question": "what does dug make per hour",
+      "expectation": "explicit_role_override",
+      "expected_target_classification": "nonfood_gm_floral",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-04",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "user_classification": "nonfood_gm_floral",
+      "question": "what is my pay right now?",
+      "expectation": "profile_fallback",
+      "expected_target_classification": "nonfood_gm_floral",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-05",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "user_classification": "meat_wrappers",
+      "question": "what does a seafood manager make",
+      "expectation": "explicit_role_override",
+      "expected_target_classification": "seafood_manager",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-06",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "user_classification": "meat_wrappers",
+      "question": "Please state the contractual hourly rate for Deli Manager.",
+      "expectation": "explicit_role_override",
+      "expected_target_classification": "deli_manager",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-07",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "user_classification": "meat_wrappers",
+      "question": "how much does head meat cutter make per hour",
+      "expectation": "explicit_role_override",
+      "expected_target_classification": "head_meat_cutter",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-08",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "user_classification": "meat_wrappers",
+      "question": "what is my current pay rate",
+      "expectation": "profile_fallback",
+      "expected_target_classification": "meat_wrappers",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-09",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "user_classification": "meat_manager",
+      "question": "what does meat cutter make",
+      "expectation": "explicit_role_override",
+      "expected_target_classification": "meat_cutters",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-10",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "user_classification": "deli_coffee_cheese_clerk",
+      "question": "Please provide the wage progression rate for the Deli Department Head classification.",
+      "expectation": "explicit_role_override",
+      "expected_target_classification": "deli_department_head",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-11",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "user_classification": "seafood_manager",
+      "question": "what does deli head clerk make",
+      "expectation": "explicit_role_override",
+      "expected_target_classification": "meat_head_clerk_asst",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-12",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "user_classification": "deli_chef",
+      "question": "what is my pay",
+      "expectation": "profile_fallback",
+      "expected_target_classification": "deli_chef",
+      "min_table_evidence_rows": 1
+    }
+  ]
+}

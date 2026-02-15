@@ -40,6 +40,7 @@ Required:
 - Wage-table evidence threshold met (overall + per-contract floors, canonical dataset schema, source-method floor, table-evidence/table-id presence floors)
 - Entitlement-table evidence threshold met (overall + per-contract floors, canonical dataset schema, weeks-resolution floor, source/evidence presence floors)
 - Role-catalog integrity threshold met (overall + per-contract floors, canonical dataset schema, dataset-case pass floor, default-role wage-readiness floor, unresolved-role containment floor)
+- Follow-up role-targeted wage threshold met (overall + per-contract floors, canonical dataset schema, target-resolution/evidence/citation floors, explicit-override + profile-fallback floors)
 
 Owner: Model Risk Council
 
@@ -70,6 +71,7 @@ Required:
 - Canonical wage-table evidence slice pass (`data/test_set/wage_table_evidence_results.json`)
 - Canonical entitlement-table evidence slice pass (`data/test_set/entitlement_table_evidence_results.json`)
 - Canonical role-catalog integrity slice pass (`data/test_set/role_catalog_integrity_results.json`)
+- Canonical follow-up role-targeted wage slice pass (`data/test_set/followup_role_wage_results.json`)
 - Cross-contamination test pass (zero wrong-tenant retrievals)
 - Multi-contract benchmark slice pass (overall threshold + per-contract floor)
 - Retrieval hard-filter enforcement verified (`contract_id` + `region_id`)

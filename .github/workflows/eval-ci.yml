@@ -64,6 +64,9 @@ jobs:
       - name: Run needle slice (canonical runner)
         run: python -m backend.evaluate_runner --track needle
 
+      - name: Run follow-up role wage slice (canonical runner)
+        run: python -m backend.evaluate_runner --track followup_role_wage
+
       - name: Run contract isolation checks
         run: python -m backend.test_contract_isolation
 
@@ -86,6 +89,7 @@ jobs:
             --adversarial-results data/test_set/adversarial_results.json \
             --unanswerable-results data/test_set/unanswerable_results.json \
             --cross-contract-mentions-results data/test_set/cross_contract_mentions_results.json \
+            --followup-role-wage-results data/test_set/followup_role_wage_results.json \
             --min-v2-accuracy 0.80 \
             --min-escalation-precision 0.90 \
             --min-escalation-recall 0.70 \
@@ -123,6 +127,18 @@ jobs:
             --min-false-unavailable-per-contract 0.80 \
             --min-false-unavailable-recovered-rate 0.90 \
             --min-false-unavailable-proper-uncertainty-rate 0.90 \
+            --required-followup-role-wage-dataset-schema-version followup_role_wage_test_v1 \
+            --min-followup-role-wage-total-cases 12 \
+            --min-followup-role-wage-cases-per-contract 3 \
+            --min-followup-role-wage-pass-rate 0.90 \
+            --min-followup-role-wage-per-contract 0.80 \
+            --min-followup-role-wage-target-resolution-rate 0.95 \
+            --min-followup-role-wage-table-evidence-presence-rate 0.95 \
+            --min-followup-role-wage-appendix-citation-rate 0.95 \
+            --min-followup-role-wage-intent-wage-rate 0.95 \
+            --min-followup-role-wage-no-unavailable-rate 0.95 \
+            --min-followup-role-wage-explicit-override-rate 0.90 \
+            --min-followup-role-wage-profile-fallback-rate 0.90 \
             --min-needle-pass-rate 0.80 \
             --min-needle-position-pass-rate 0.80
 
@@ -142,6 +158,7 @@ jobs:
             data/test_set/cross_contract_mentions_results.json
             data/test_set/false_unavailable_results.json
             data/test_set/needle_results.json
+            data/test_set/followup_role_wage_results.json
             data/test_set/eval_run_metadata*.json
 
   main-full-v2-suite:
@@ -218,6 +235,7 @@ jobs:
           python -m backend.validate_false_unavailable_dataset
           python -m backend.evaluate_runner --track false_unavailable
           python -m backend.evaluate_runner --track needle
+          python -m backend.evaluate_runner --track followup_role_wage
 
       - name: Run cross-contamination evaluator
         run: python -m backend.evaluate_cross_contamination
@@ -238,6 +256,7 @@ jobs:
             --adversarial-results data/test_set/adversarial_results.json \
             --unanswerable-results data/test_set/unanswerable_results.json \
             --cross-contract-mentions-results data/test_set/cross_contract_mentions_results.json \
+            --followup-role-wage-results data/test_set/followup_role_wage_results.json \
             --min-v2-accuracy 0.80 \
             --min-escalation-precision 0.90 \
             --min-escalation-recall 0.70 \
@@ -275,6 +294,18 @@ jobs:
             --min-false-unavailable-per-contract 0.80 \
             --min-false-unavailable-recovered-rate 0.90 \
             --min-false-unavailable-proper-uncertainty-rate 0.90 \
+            --required-followup-role-wage-dataset-schema-version followup_role_wage_test_v1 \
+            --min-followup-role-wage-total-cases 12 \
+            --min-followup-role-wage-cases-per-contract 3 \
+            --min-followup-role-wage-pass-rate 0.90 \
+            --min-followup-role-wage-per-contract 0.80 \
+            --min-followup-role-wage-target-resolution-rate 0.95 \
+            --min-followup-role-wage-table-evidence-presence-rate 0.95 \
+            --min-followup-role-wage-appendix-citation-rate 0.95 \
+            --min-followup-role-wage-intent-wage-rate 0.95 \
+            --min-followup-role-wage-no-unavailable-rate 0.95 \
+            --min-followup-role-wage-explicit-override-rate 0.90 \
+            --min-followup-role-wage-profile-fallback-rate 0.90 \
             --min-needle-pass-rate 0.80 \
             --min-needle-position-pass-rate 0.80
 
@@ -294,4 +325,5 @@ jobs:
             data/test_set/cross_contract_mentions_results.json
             data/test_set/false_unavailable_results.json
             data/test_set/needle_results.json
+            data/test_set/followup_role_wage_results.json
             data/test_set/eval_run_metadata*.json

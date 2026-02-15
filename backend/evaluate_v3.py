@@ -554,6 +554,89 @@ def _check_role_catalog_integrity(
     }
 
 
+def _check_followup_role_wage(
+    results: dict | None,
+    required_dataset_schema_version: str,
+    min_total_cases: int,
+    min_cases_per_contract: int,
+    min_overall: float,
+    min_per_contract: float,
+    min_target_resolution_rate: float,
+    min_table_evidence_presence_rate: float,
+    min_appendix_citation_rate: float,
+    min_intent_wage_rate: float,
+    min_no_unavailable_rate: float,
+    min_explicit_override_rate: float,
+    min_profile_fallback_rate: float,
+) -> tuple[bool, dict]:
+    if not results:
+        return False, {"reason": "artifact missing"}
+    overall = results.get("overall") or {}
+    by_contract = results.get("by_contract") or {}
+    dataset_schema = str(results.get("dataset_schema_version") or "")
+    total = int(overall.get("total") or 0)
+    overall_rate = float(overall.get("pass_rate") or 0.0)
+    target_resolution_rate = float(overall.get("target_resolution_rate") or 0.0)
+    table_evidence_rate = float(overall.get("table_evidence_presence_rate") or 0.0)
+    appendix_rate = float(overall.get("appendix_citation_rate") or 0.0)
+    intent_wage_rate = float(overall.get("intent_wage_rate") or 0.0)
+    no_unavailable_rate = float(overall.get("no_unavailable_rate") or 0.0)
+    explicit_override_rate = float(overall.get("explicit_override_rate") or 0.0)
+    profile_fallback_rate = float(overall.get("profile_fallback_rate") or 0.0)
+
+    per_contract = {}
+    per_contract_ok = True
+    for cid, stats in sorted(by_contract.items()):
+        rate = float((stats or {}).get("pass_rate") or 0.0)
+        c_total = int((stats or {}).get("total") or 0)
+        ok = rate >= min_per_contract and c_total >= min_cases_per_contract
+        per_contract[cid] = {"pass_rate": rate, "total": c_total, "pass": ok}
+        if not ok:
+            per_contract_ok = False
+
+    ok = (
+        dataset_schema == required_dataset_schema_version
+        and total >= min_total_cases
+        and overall_rate >= min_overall
+        and target_resolution_rate >= min_target_resolution_rate
+        and table_evidence_rate >= min_table_evidence_presence_rate
+        and appendix_rate >= min_appendix_citation_rate
+        and intent_wage_rate >= min_intent_wage_rate
+        and no_unavailable_rate >= min_no_unavailable_rate
+        and explicit_override_rate >= min_explicit_override_rate
+        and profile_fallback_rate >= min_profile_fallback_rate
+        and bool(by_contract)
+        and per_contract_ok
+    )
+    return ok, {
+        "dataset_schema_version": dataset_schema,
+        "overall_pass_rate": overall_rate,
+        "target_resolution_rate": target_resolution_rate,
+        "table_evidence_presence_rate": table_evidence_rate,
+        "appendix_citation_rate": appendix_rate,
+        "intent_wage_rate": intent_wage_rate,
+        "no_unavailable_rate": no_unavailable_rate,
+        "explicit_override_rate": explicit_override_rate,
+        "profile_fallback_rate": profile_fallback_rate,
+        "total_cases": total,
+        "per_contract": per_contract,
+        "thresholds": {
+            "required_dataset_schema_version": required_dataset_schema_version,
+            "min_total_cases": min_total_cases,
+            "min_cases_per_contract": min_cases_per_contract,
+            "min_overall": min_overall,
+            "min_per_contract": min_per_contract,
+            "min_target_resolution_rate": min_target_resolution_rate,
+            "min_table_evidence_presence_rate": min_table_evidence_presence_rate,
+            "min_appendix_citation_rate": min_appendix_citation_rate,
+            "min_intent_wage_rate": min_intent_wage_rate,
+            "min_no_unavailable_rate": min_no_unavailable_rate,
+            "min_explicit_override_rate": min_explicit_override_rate,
+            "min_profile_fallback_rate": min_profile_fallback_rate,
+        },
+    }
+
+
 def _evaluate_from_artifacts(args) -> dict:
     components = {}
     pass_count = 0
@@ -701,6 +784,24 @@ def _evaluate_from_artifacts(args) -> dict:
     components["role_catalog_integrity"] = {"pass": role_integrity_ok, "details": role_integrity_details}
     pass_count += int(role_integrity_ok)
 
+    followup_role_wage_ok, followup_role_wage_details = _check_followup_role_wage(
+        _load_json(DATA_DIR / "test_set" / "followup_role_wage_results.json"),
+        required_dataset_schema_version=args.required_followup_role_wage_dataset_schema_version,
+        min_total_cases=args.min_followup_role_wage_total_cases,
+        min_cases_per_contract=args.min_followup_role_wage_cases_per_contract,
+        min_overall=args.min_followup_role_wage_pass_rate,
+        min_per_contract=args.min_followup_role_wage_per_contract,
+        min_target_resolution_rate=args.min_followup_role_wage_target_resolution_rate,
+        min_table_evidence_presence_rate=args.min_followup_role_wage_table_evidence_presence_rate,
+        min_appendix_citation_rate=args.min_followup_role_wage_appendix_citation_rate,
+        min_intent_wage_rate=args.min_followup_role_wage_intent_wage_rate,
+        min_no_unavailable_rate=args.min_followup_role_wage_no_unavailable_rate,
+        min_explicit_override_rate=args.min_followup_role_wage_explicit_override_rate,
+        min_profile_fallback_rate=args.min_followup_role_wage_profile_fallback_rate,
+    )
+    components["followup_role_wage"] = {"pass": followup_role_wage_ok, "details": followup_role_wage_details}
+    pass_count += int(followup_role_wage_ok)
+
     total_components = len(components)
     overall_pass = pass_count == total_components
     return {
@@ -733,6 +834,7 @@ def run(args) -> dict:
             [sys.executable, "-m", "backend.evaluate_wage_table_evidence", "--bm25-only"],
             [sys.executable, "-m", "backend.evaluate_entitlement_table_evidence"],
             [sys.executable, "-m", "backend.evaluate_role_catalog_integrity"],
+            [sys.executable, "-m", "backend.evaluate_followup_role_wage", "--bm25-only"],
         ]
         for cmd in run_list:
             result = _run_cmd(cmd)
@@ -742,7 +844,7 @@ def run(args) -> dict:
 
     artifact_eval = _evaluate_from_artifacts(args)
     report = {
-        "schema_version": "v3_eval_v4",
+        "schema_version": "v3_eval_v5",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "mode": "from_artifacts" if args.from_artifacts else "full",
         "active_contract_ids": _active_contract_ids(),
@@ -805,6 +907,18 @@ def run(args) -> dict:
             "min_role_catalog_integrity_default_wage_ready_rate": args.min_role_catalog_integrity_default_wage_ready_rate,
             "min_role_catalog_integrity_unresolved_not_default_rate": args.min_role_catalog_integrity_unresolved_not_default_rate,
             "min_role_catalog_integrity_default_wage_key_unique_rate": args.min_role_catalog_integrity_default_wage_key_unique_rate,
+            "required_followup_role_wage_dataset_schema_version": args.required_followup_role_wage_dataset_schema_version,
+            "min_followup_role_wage_total_cases": args.min_followup_role_wage_total_cases,
+            "min_followup_role_wage_cases_per_contract": args.min_followup_role_wage_cases_per_contract,
+            "min_followup_role_wage_pass_rate": args.min_followup_role_wage_pass_rate,
+            "min_followup_role_wage_per_contract": args.min_followup_role_wage_per_contract,
+            "min_followup_role_wage_target_resolution_rate": args.min_followup_role_wage_target_resolution_rate,
+            "min_followup_role_wage_table_evidence_presence_rate": args.min_followup_role_wage_table_evidence_presence_rate,
+            "min_followup_role_wage_appendix_citation_rate": args.min_followup_role_wage_appendix_citation_rate,
+            "min_followup_role_wage_intent_wage_rate": args.min_followup_role_wage_intent_wage_rate,
+            "min_followup_role_wage_no_unavailable_rate": args.min_followup_role_wage_no_unavailable_rate,
+            "min_followup_role_wage_explicit_override_rate": args.min_followup_role_wage_explicit_override_rate,
+            "min_followup_role_wage_profile_fallback_rate": args.min_followup_role_wage_profile_fallback_rate,
         },
         "components": artifact_eval["components"],
         "overall": artifact_eval["overall"],
@@ -880,6 +994,18 @@ def main() -> int:
     parser.add_argument("--min-role-catalog-integrity-default-wage-ready-rate", type=float, default=1.0)
     parser.add_argument("--min-role-catalog-integrity-unresolved-not-default-rate", type=float, default=1.0)
     parser.add_argument("--min-role-catalog-integrity-default-wage-key-unique-rate", type=float, default=1.0)
+    parser.add_argument("--required-followup-role-wage-dataset-schema-version", default="followup_role_wage_test_v1")
+    parser.add_argument("--min-followup-role-wage-total-cases", type=int, default=12)
+    parser.add_argument("--min-followup-role-wage-cases-per-contract", type=int, default=3)
+    parser.add_argument("--min-followup-role-wage-pass-rate", type=float, default=0.90)
+    parser.add_argument("--min-followup-role-wage-per-contract", type=float, default=0.80)
+    parser.add_argument("--min-followup-role-wage-target-resolution-rate", type=float, default=0.95)
+    parser.add_argument("--min-followup-role-wage-table-evidence-presence-rate", type=float, default=0.95)
+    parser.add_argument("--min-followup-role-wage-appendix-citation-rate", type=float, default=0.95)
+    parser.add_argument("--min-followup-role-wage-intent-wage-rate", type=float, default=0.95)
+    parser.add_argument("--min-followup-role-wage-no-unavailable-rate", type=float, default=0.95)
+    parser.add_argument("--min-followup-role-wage-explicit-override-rate", type=float, default=0.90)
+    parser.add_argument("--min-followup-role-wage-profile-fallback-rate", type=float, default=0.90)
     args = parser.parse_args()
 
     report = run(args)

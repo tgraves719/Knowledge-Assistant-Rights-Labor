@@ -845,6 +845,172 @@ def _check_role_catalog_integrity(
     return checks
 
 
+def _check_followup_role_wage(
+    results: dict,
+    required_dataset_schema_version: str,
+    min_total_cases: int,
+    min_cases_per_contract: int,
+    min_pass_rate: float,
+    min_per_contract_pass_rate: float,
+    min_target_resolution_rate: float,
+    min_table_evidence_presence_rate: float,
+    min_appendix_citation_rate: float,
+    min_intent_wage_rate: float,
+    min_no_unavailable_rate: float,
+    min_explicit_override_rate: float,
+    min_profile_fallback_rate: float,
+) -> list[tuple[bool, str]]:
+    checks: list[tuple[bool, str]] = []
+    overall = results.get("overall", {}) or {}
+    by_contract = results.get("by_contract", {}) or {}
+
+    dataset_schema_version = str(results.get("dataset_schema_version") or "")
+    total_cases = overall.get("total")
+    pass_rate = overall.get("pass_rate")
+    target_resolution_rate = overall.get("target_resolution_rate")
+    table_evidence_rate = overall.get("table_evidence_presence_rate")
+    appendix_citation_rate = overall.get("appendix_citation_rate")
+    intent_wage_rate = overall.get("intent_wage_rate")
+    no_unavailable_rate = overall.get("no_unavailable_rate")
+    explicit_override_rate = overall.get("explicit_override_rate")
+    profile_fallback_rate = overall.get("profile_fallback_rate")
+
+    if not dataset_schema_version:
+        checks.append((False, "followup-role-wage dataset_schema_version missing"))
+    else:
+        checks.append(
+            (
+                dataset_schema_version == required_dataset_schema_version,
+                "followup-role-wage dataset_schema_version="
+                f"{dataset_schema_version} expected={required_dataset_schema_version}",
+            )
+        )
+
+    if total_cases is None:
+        checks.append((False, "followup-role-wage overall.total missing"))
+    else:
+        checks.append(
+            (
+                int(total_cases) >= min_total_cases,
+                f"followup-role-wage total_cases={int(total_cases)} threshold>={min_total_cases}",
+            )
+        )
+
+    if pass_rate is None:
+        checks.append((False, "followup-role-wage overall.pass_rate missing"))
+    else:
+        checks.append(
+            (
+                pass_rate >= min_pass_rate,
+                f"followup-role-wage overall pass_rate={pass_rate:.3f} threshold>={min_pass_rate:.3f}",
+            )
+        )
+
+    if target_resolution_rate is None:
+        checks.append((False, "followup-role-wage overall.target_resolution_rate missing"))
+    else:
+        checks.append(
+            (
+                target_resolution_rate >= min_target_resolution_rate,
+                "followup-role-wage target_resolution_rate="
+                f"{target_resolution_rate:.3f} threshold>={min_target_resolution_rate:.3f}",
+            )
+        )
+
+    if table_evidence_rate is None:
+        checks.append((False, "followup-role-wage overall.table_evidence_presence_rate missing"))
+    else:
+        checks.append(
+            (
+                table_evidence_rate >= min_table_evidence_presence_rate,
+                "followup-role-wage table_evidence_presence_rate="
+                f"{table_evidence_rate:.3f} threshold>={min_table_evidence_presence_rate:.3f}",
+            )
+        )
+
+    if appendix_citation_rate is None:
+        checks.append((False, "followup-role-wage overall.appendix_citation_rate missing"))
+    else:
+        checks.append(
+            (
+                appendix_citation_rate >= min_appendix_citation_rate,
+                "followup-role-wage appendix_citation_rate="
+                f"{appendix_citation_rate:.3f} threshold>={min_appendix_citation_rate:.3f}",
+            )
+        )
+
+    if intent_wage_rate is None:
+        checks.append((False, "followup-role-wage overall.intent_wage_rate missing"))
+    else:
+        checks.append(
+            (
+                intent_wage_rate >= min_intent_wage_rate,
+                f"followup-role-wage intent_wage_rate={intent_wage_rate:.3f} threshold>={min_intent_wage_rate:.3f}",
+            )
+        )
+
+    if no_unavailable_rate is None:
+        checks.append((False, "followup-role-wage overall.no_unavailable_rate missing"))
+    else:
+        checks.append(
+            (
+                no_unavailable_rate >= min_no_unavailable_rate,
+                f"followup-role-wage no_unavailable_rate={no_unavailable_rate:.3f} threshold>={min_no_unavailable_rate:.3f}",
+            )
+        )
+
+    if explicit_override_rate is None:
+        checks.append((False, "followup-role-wage overall.explicit_override_rate missing"))
+    else:
+        checks.append(
+            (
+                explicit_override_rate >= min_explicit_override_rate,
+                "followup-role-wage explicit_override_rate="
+                f"{explicit_override_rate:.3f} threshold>={min_explicit_override_rate:.3f}",
+            )
+        )
+
+    if profile_fallback_rate is None:
+        checks.append((False, "followup-role-wage overall.profile_fallback_rate missing"))
+    else:
+        checks.append(
+            (
+                profile_fallback_rate >= min_profile_fallback_rate,
+                "followup-role-wage profile_fallback_rate="
+                f"{profile_fallback_rate:.3f} threshold>={min_profile_fallback_rate:.3f}",
+            )
+        )
+
+    if not by_contract:
+        checks.append((False, "followup-role-wage by_contract summary missing"))
+        return checks
+
+    for contract_id, stats in sorted(by_contract.items()):
+        rate = (stats or {}).get("pass_rate")
+        if rate is None:
+            checks.append((False, f"followup-role-wage {contract_id} pass_rate missing"))
+        else:
+            checks.append(
+                (
+                    rate >= min_per_contract_pass_rate,
+                    "followup-role-wage "
+                    f"{contract_id} pass_rate={rate:.3f} threshold>={min_per_contract_pass_rate:.3f}",
+                )
+            )
+        total = (stats or {}).get("total")
+        if total is None:
+            checks.append((False, f"followup-role-wage {contract_id} total missing"))
+        else:
+            checks.append(
+                (
+                    int(total) >= min_cases_per_contract,
+                    f"followup-role-wage {contract_id} total={int(total)} threshold>={min_cases_per_contract}",
+                )
+            )
+
+    return checks
+
+
 def _check_false_unavailable(
     results: dict,
     required_dataset_schema_version: str,
@@ -989,6 +1155,7 @@ def main():
     parser.add_argument("--wage-table-evidence-results", default="data/test_set/wage_table_evidence_results.json")
     parser.add_argument("--entitlement-table-evidence-results", default="data/test_set/entitlement_table_evidence_results.json")
     parser.add_argument("--role-catalog-integrity-results", default="data/test_set/role_catalog_integrity_results.json")
+    parser.add_argument("--followup-role-wage-results", default="data/test_set/followup_role_wage_results.json")
 
     parser.add_argument("--min-v2-accuracy", type=float, default=0.80)
     parser.add_argument("--min-escalation-precision", type=float, default=0.90)
@@ -1055,6 +1222,18 @@ def main():
     parser.add_argument("--min-role-catalog-integrity-default-wage-ready-rate", type=float, default=1.0)
     parser.add_argument("--min-role-catalog-integrity-unresolved-not-default-rate", type=float, default=1.0)
     parser.add_argument("--min-role-catalog-integrity-default-wage-key-unique-rate", type=float, default=1.0)
+    parser.add_argument("--required-followup-role-wage-dataset-schema-version", default="followup_role_wage_test_v1")
+    parser.add_argument("--min-followup-role-wage-total-cases", type=int, default=12)
+    parser.add_argument("--min-followup-role-wage-cases-per-contract", type=int, default=3)
+    parser.add_argument("--min-followup-role-wage-pass-rate", type=float, default=0.90)
+    parser.add_argument("--min-followup-role-wage-per-contract", type=float, default=0.80)
+    parser.add_argument("--min-followup-role-wage-target-resolution-rate", type=float, default=0.95)
+    parser.add_argument("--min-followup-role-wage-table-evidence-presence-rate", type=float, default=0.95)
+    parser.add_argument("--min-followup-role-wage-appendix-citation-rate", type=float, default=0.95)
+    parser.add_argument("--min-followup-role-wage-intent-wage-rate", type=float, default=0.95)
+    parser.add_argument("--min-followup-role-wage-no-unavailable-rate", type=float, default=0.95)
+    parser.add_argument("--min-followup-role-wage-explicit-override-rate", type=float, default=0.90)
+    parser.add_argument("--min-followup-role-wage-profile-fallback-rate", type=float, default=0.90)
     parser.add_argument(
         "--allow-missing-cross-contamination",
         action="store_true",
@@ -1114,6 +1293,11 @@ def main():
         "--allow-missing-role-catalog-integrity",
         action="store_true",
         help="Allow missing role-catalog-integrity artifact (non-release debugging only).",
+    )
+    parser.add_argument(
+        "--allow-missing-followup-role-wage",
+        action="store_true",
+        help="Allow missing followup-role-wage artifact (non-release debugging only).",
     )
     args = parser.parse_args()
 
@@ -1659,6 +1843,40 @@ def main():
     else:
         msg = f"role-catalog-integrity artifact missing: {args.role_catalog_integrity_results}"
         if args.allow_missing_role_catalog_integrity:
+            print(f"[--] {msg}")
+        else:
+            print(f"[XX] {msg}")
+            failures.append(msg)
+
+    followup_role_wage_path = Path(args.followup_role_wage_results)
+    if followup_role_wage_path.exists():
+        try:
+            followup_role_wage = _load_json(args.followup_role_wage_results)
+            for ok, msg in _check_followup_role_wage(
+                followup_role_wage,
+                required_dataset_schema_version=args.required_followup_role_wage_dataset_schema_version,
+                min_total_cases=args.min_followup_role_wage_total_cases,
+                min_cases_per_contract=args.min_followup_role_wage_cases_per_contract,
+                min_pass_rate=args.min_followup_role_wage_pass_rate,
+                min_per_contract_pass_rate=args.min_followup_role_wage_per_contract,
+                min_target_resolution_rate=args.min_followup_role_wage_target_resolution_rate,
+                min_table_evidence_presence_rate=args.min_followup_role_wage_table_evidence_presence_rate,
+                min_appendix_citation_rate=args.min_followup_role_wage_appendix_citation_rate,
+                min_intent_wage_rate=args.min_followup_role_wage_intent_wage_rate,
+                min_no_unavailable_rate=args.min_followup_role_wage_no_unavailable_rate,
+                min_explicit_override_rate=args.min_followup_role_wage_explicit_override_rate,
+                min_profile_fallback_rate=args.min_followup_role_wage_profile_fallback_rate,
+            ):
+                print(f"[{'OK' if ok else 'XX'}] {msg}")
+                if not ok:
+                    failures.append(msg)
+        except Exception as e:
+            msg = f"followup-role-wage check error: {e}"
+            print(f"[XX] {msg}")
+            failures.append(msg)
+    else:
+        msg = f"followup-role-wage artifact missing: {args.followup_role_wage_results}"
+        if args.allow_missing_followup_role_wage:
             print(f"[--] {msg}")
         else:
             print(f"[XX] {msg}")
