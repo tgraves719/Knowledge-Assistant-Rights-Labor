@@ -69,6 +69,42 @@ def _check(
     )
 
 
+def _non_empty_article_map_entries(value: Any) -> int:
+    if not isinstance(value, dict):
+        return 0
+    count = 0
+    for articles in value.values():
+        if _to_article_list(articles):
+            count += 1
+    return count
+
+
+def _to_article_list(values: Any) -> list[int]:
+    out: list[int] = []
+    seen = set()
+    for raw in values or []:
+        try:
+            article_num = int(raw)
+        except (TypeError, ValueError):
+            continue
+        if article_num in seen:
+            continue
+        seen.add(article_num)
+        out.append(article_num)
+    return out
+
+
+def _invalid_article_refs(value: Any, valid_articles: set[int]) -> list[str]:
+    if not isinstance(value, dict):
+        return ["<map-not-object>"]
+    invalid: list[str] = []
+    for key, raw_articles in value.items():
+        for article_num in _to_article_list(raw_articles):
+            if article_num not in valid_articles:
+                invalid.append(f"{key}:{article_num}")
+    return sorted(invalid)
+
+
 def _resolve_artifacts(package_dir: Path, contract_id: str) -> dict[str, Path]:
     source_dir = package_dir / "source"
     manifests_dir = package_dir / "manifests"
@@ -152,6 +188,71 @@ def evaluate_contract_pack(
                 "required",
                 f"Manifest JSON load failed: {exc}",
             )
+
+    if manifest:
+        article_titles = manifest.get("article_titles", {}) or {}
+        valid_articles = set()
+        for raw_key in article_titles.keys():
+            try:
+                valid_articles.add(int(raw_key))
+            except (TypeError, ValueError):
+                continue
+
+        routing = manifest.get("query_routing") or {}
+        topic_to_articles = routing.get("topic_to_articles") if isinstance(routing, dict) else {}
+        topic_patterns = routing.get("topic_patterns") if isinstance(routing, dict) else {}
+        slang_to_contract = routing.get("slang_to_contract") if isinstance(routing, dict) else {}
+        classification_to_articles = routing.get("classification_to_articles") if isinstance(routing, dict) else {}
+
+        topic_entries = _non_empty_article_map_entries(topic_to_articles)
+        pattern_entries = len(topic_patterns) if isinstance(topic_patterns, dict) else 0
+        slang_entries = len(slang_to_contract) if isinstance(slang_to_contract, dict) else 0
+        class_entries = _non_empty_article_map_entries(classification_to_articles)
+
+        manifest_classifications = manifest.get("classifications", []) or []
+        min_class_entries = 0
+        if manifest_classifications:
+            min_class_entries = max(1, min(6, int(round(len(manifest_classifications) * 0.4))))
+
+        routing_coverage_ok = (
+            topic_entries >= 4
+            and pattern_entries >= 4
+            and slang_entries >= 8
+            and class_entries >= min_class_entries
+        )
+        _check(
+            checks,
+            "query_routing_coverage",
+            routing_coverage_ok,
+            "required",
+            "Manifest query_routing coverage meets deterministic minimums."
+            if routing_coverage_ok
+            else "Manifest query_routing coverage below deterministic minimums.",
+            {
+                "topic_entries": topic_entries,
+                "topic_pattern_entries": pattern_entries,
+                "slang_entries": slang_entries,
+                "classification_entries": class_entries,
+                "min_classification_entries": min_class_entries,
+            },
+        )
+
+        invalid_topic_refs = _invalid_article_refs(topic_to_articles, valid_articles)
+        invalid_class_refs = _invalid_article_refs(classification_to_articles, valid_articles)
+        routing_refs_ok = len(invalid_topic_refs) == 0 and len(invalid_class_refs) == 0
+        _check(
+            checks,
+            "query_routing_article_ref_integrity",
+            routing_refs_ok,
+            "required",
+            "Manifest query_routing article references are valid."
+            if routing_refs_ok
+            else "Manifest query_routing contains invalid article references.",
+            {
+                "invalid_topic_refs": invalid_topic_refs[:40],
+                "invalid_classification_refs": invalid_class_refs[:40],
+            },
+        )
 
     # Chunk artifact checks
     chunks_path = artifacts["chunks_enriched"]

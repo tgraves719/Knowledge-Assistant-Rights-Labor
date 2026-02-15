@@ -84,6 +84,7 @@ Required:
 - Pack scorecard generated for each active contract package
 - Pack scorecard passes required checks (and advisory checks in strict releases)
 - Language lexicon artifact gate passes (artifact present, alias graph non-empty, region metadata present)
+- Manifest query-routing coverage gate passes (topic/article map + topic patterns + slang map + classification/article map)
 - Classification ontology gate passes (artifact present, alias targets valid, manifest mapping decisions complete)
 - Canonical wage-row schema gate passes (rows present when wages exist, row schema valid, no required integrity failures)
 - Ingestion review-queue gate passes when unresolved/ambiguous ingestion issues exist

@@ -1,6 +1,6 @@
 {
   "scorecard_version": "contract_pack_scorecard_v1",
-  "generated_at_utc": "2026-02-14T20:51:48.569182+00:00",
+  "generated_at_utc": "2026-02-15T05:32:14.245353+00:00",
   "strict_mode": false,
   "contract_id": "local7_safeway_pueblo_meat_2022",
   "package_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022",
@@ -22,19 +22,19 @@
   "artifact_hashes": {
     "source_md": "8d392e8a2945b9555138f77e780bcb828022453f2bc9907d8dc2150b885cf8d6",
     "source_json": "d42468cb31ef493cb684a52e5d28a0156716b6a80f85f42d2b1ed765dffa8b12",
-    "manifest": "1b63e37a1e7ab30f80d799f5b21e5061823223d1341171e657ed74dd6a8b335d",
+    "manifest": "7e5e4ee1d468432ce67200627ff525c292bc3fc6ec9ecc2472c1f62d94d1d19e",
     "chunks_enriched": "01406ecb7c486881353227694725eacdb79798dde66e691b31b0b1ec31aa7dc0",
     "chunks_smart": "44f89886bc7baabec5acbc1fc74a3b63431497767c4cf5f93bec74ceba508fdb",
     "chunks_base": "01406ecb7c486881353227694725eacdb79798dde66e691b31b0b1ec31aa7dc0",
     "concept_index": "e0e4208504c4b2e1c32add8ef629c5a5f53228d7f70377238bd8e71f3f693c70",
     "tables": "20225dec9a7a4070b81507df792b94e56ea577e95f48a45ec5a826c88a407fd1",
     "wages": "e73b9409544578d75a0280e4776efb77fbc5b4e24e644cff18c68c4a4dba8f22",
-    "classification_ontology": "3d0d0a7d222cb808f3edcf6ab53680589d8b469861021d5ce7301131dd2df911",
-    "language_lexicon": "63fe9d8868c7f6feb3278c4518659e03e7cfb8d65e63100574616eb01ac9d946",
-    "ingestion_review_queue": "87da85324858fab24b19e622d18cfd4115712d37ef52a0f18f8ac9a45914325a",
+    "classification_ontology": "8997e9efc753d3a0e344f2acba7d85cd47cdc17460ec63b0ff088dd552435d29",
+    "language_lexicon": "55aaa480eee7c6446ea84ed733ece5d31b41967446411c2519fbee0d51372955",
+    "ingestion_review_queue": "398df9a03e22855395833fe63a746dbad92e584c9c59056fa0f8915df5536867",
     "manual_classification_overrides": "82e5fc5b78eb5be51beb6f28e2604c1beae23f4f49e411830b20c837bc32e6e0"
   },
-  "pack_hash": "86c8c4def01aee2a92acc3a66ddcf49545c8018e4d30751a05a2a36656ded735",
+  "pack_hash": "d9e391422e76a2d01da0249261d9e9eef18cd50ab49296b03db97e77734f7117",
   "checks": [
     {
       "id": "manifest_exists",
@@ -52,6 +52,29 @@
       "message": "Manifest schema passed validation.",
       "metrics": {
         "errors": []
+      }
+    },
+    {
+      "id": "query_routing_coverage",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest query_routing coverage meets deterministic minimums.",
+      "metrics": {
+        "topic_entries": 17,
+        "topic_pattern_entries": 17,
+        "slang_entries": 148,
+        "classification_entries": 5,
+        "min_classification_entries": 2
+      }
+    },
+    {
+      "id": "query_routing_article_ref_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest query_routing article references are valid.",
+      "metrics": {
+        "invalid_topic_refs": [],
+        "invalid_classification_refs": []
       }
     },
     {

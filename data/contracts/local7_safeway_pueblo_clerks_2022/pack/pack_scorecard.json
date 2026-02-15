@@ -1,6 +1,6 @@
 {
   "scorecard_version": "contract_pack_scorecard_v1",
-  "generated_at_utc": "2026-02-14T20:51:47.749060+00:00",
+  "generated_at_utc": "2026-02-15T05:32:12.615205+00:00",
   "strict_mode": false,
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "package_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022",
@@ -22,19 +22,19 @@
   "artifact_hashes": {
     "source_md": "567e1c9bf36160275e7598fb937b1327cc13ec0fc496af522a7655ae359f4d3a",
     "source_json": "64ab08556965c0f8daf0e92fc871da0322bafe184b7e90ddc150efd975ecf482",
-    "manifest": "11a5f440857cb8c4b878a38d7900685821d551566fd5d5e8aa9e9bf444e8f72a",
+    "manifest": "73a7bd2c251376db700e28e6ecf92a2ea9255d943e29a64a6fc591e93c238117",
     "chunks_enriched": "584f8237c18d843f958cc98eab213c671d901253265ab606637aa187c0148aa5",
     "chunks_smart": "43319fb9d19989cb8c1cb9a9f5cbca2a8818c1dd90ac65e67ad5898eb185f60f",
     "chunks_base": "584f8237c18d843f958cc98eab213c671d901253265ab606637aa187c0148aa5",
     "concept_index": "4aa8881189c43a3d6ea9bb182197f72bcaef814d83c9c29cde3fa84ef9eb61a6",
     "tables": "f7f51a73c460e0186bb0c1bfa0e334516f001010f89ff76658152c147ff54c89",
     "wages": "7c54921113fd02a49bbf9f4a4e5aa709a94779cd346b042f57d006659db81393",
-    "classification_ontology": "0895537c40f70be52e3a3a8ff7c5dcdac94359c5ec8d2e223341ad9117fffc0a",
-    "language_lexicon": "d89ef616d33922b4eefd150778e2f33a8280113827df75188faaa3342a9b1f01",
-    "ingestion_review_queue": "1f258d927a4b65630fc9fc36123dc4f7f30bcd533e70bc6ff423bd94293bbca9",
+    "classification_ontology": "9f3aacd1d73c70a090c1888a6914ed0af351b9a37bca65cbfc9adfc964f0cafd",
+    "language_lexicon": "40570cece8937cf2f98750b133d19e0beff2fa349f3d444d8373f3a1e2ccc6cd",
+    "ingestion_review_queue": "a098564c8a08d55a23f206a6440f84ed05aa80c62254668c5e0502fb60948073",
     "manual_classification_overrides": "cd8bce6568087984149742452ad53ff14812456f8461799450f5415bafb77cd5"
   },
-  "pack_hash": "70abf1203ef6e1e46b7d213af503a7a89aa046ecf13e3170360e036ba89877e2",
+  "pack_hash": "a842bfb3b23d0b97acbe9b2b8c067a8c3527b50915fd6ddce6db27bc8c09a0e1",
   "checks": [
     {
       "id": "manifest_exists",
@@ -52,6 +52,29 @@
       "message": "Manifest schema passed validation.",
       "metrics": {
         "errors": []
+      }
+    },
+    {
+      "id": "query_routing_coverage",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest query_routing coverage meets deterministic minimums.",
+      "metrics": {
+        "topic_entries": 16,
+        "topic_pattern_entries": 16,
+        "slang_entries": 126,
+        "classification_entries": 14,
+        "min_classification_entries": 6
+      }
+    },
+    {
+      "id": "query_routing_article_ref_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest query_routing article references are valid.",
+      "metrics": {
+        "invalid_topic_refs": [],
+        "invalid_classification_refs": []
       }
     },
     {

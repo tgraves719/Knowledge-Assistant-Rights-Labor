@@ -24,6 +24,10 @@ from backend.ingest.language_lexicon import (
     build_language_lexicon,
     save_language_lexicon,
 )
+from backend.ingest.query_routing import (
+    synthesize_query_routing,
+    merge_query_routing,
+)
 
 
 def _discover_contract_chunk_inputs(contract_id: str = None, explicit_chunks_file: Path = None) -> list[tuple[str, Path]]:
@@ -146,6 +150,30 @@ def rebuild_index(
         lex_path = ONTOLOGIES_DIR / f"language_lexicon_{cid}.json"
         save_language_lexicon(lex_path, lexicon)
         print(f"Saved language lexicon: {lex_path}")
+
+        concept_index_data = {}
+        if out_path.exists():
+            with open(out_path, "r", encoding="utf-8") as cf:
+                concept_index_data = json.load(cf)
+        generated_routing, routing_stats = synthesize_query_routing(
+            manifest=manifest,
+            concept_index=concept_index_data,
+            language_lexicon=lexicon,
+            classification_ontology=None,
+        )
+        manifest["query_routing"] = merge_query_routing(
+            generated=generated_routing,
+            existing=manifest.get("query_routing") or {},
+        )
+        if manifest_path.exists():
+            with open(manifest_path, "w", encoding="utf-8") as mf:
+                json.dump(manifest, mf, indent=2, ensure_ascii=False)
+            print(
+                f"Updated manifest routing [{cid}]: "
+                f"topics={routing_stats.get('topic_entries')} "
+                f"slang={routing_stats.get('slang_entries')} "
+                f"classifications={routing_stats.get('classification_entries')}"
+            )
 
     # Step 2: Rebuild vector store (optional)
     if not skip_vector_store:

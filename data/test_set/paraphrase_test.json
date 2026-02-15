@@ -1,0 +1,359 @@
+{
+  "description": "Paraphrase Test Set: 15 question families, 3 variants each (45 total)",
+  "purpose": "Tests semantic answer equivalence across different phrasings of the same underlying question. If the system gives inconsistent answers to paraphrases, it suggests retrieval fragility or memorization of specific phrasings.",
+  "total_questions": 45,
+  "evaluation_criteria": {
+    "semantic_equivalence": "All variants in a family must produce semantically equivalent answers",
+    "retrieval_stability": "Same articles should be retrieved for all variants",
+    "threshold": ">85% semantic equivalence across families"
+  },
+  "test_cases": [
+    {
+      "family_id": "PF-01",
+      "canonical_question": "What is the exact term of this collective bargaining agreement?",
+      "expected_articles": ["Article 58"],
+      "bucket": "contract_only",
+      "variants": [
+        {
+          "id": "PF-01-a",
+          "question": "What is the exact term of this collective bargaining agreement?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-01-b",
+          "question": "When does this union contract start and end?",
+          "variant_type": "informal"
+        },
+        {
+          "id": "PF-01-c",
+          "question": "How long is the current CBA effective for, and what are the start and expiration dates?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-02",
+      "canonical_question": "What is the starting hourly rate for an All Purpose Clerk as of January 21, 2024?",
+      "expected_articles": ["Appendix A"],
+      "bucket": "exact_numeric",
+      "variants": [
+        {
+          "id": "PF-02-a",
+          "question": "What is the starting hourly rate for an All Purpose Clerk as of January 21, 2024?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-02-b",
+          "question": "How much does a new All Purpose Clerk make per hour starting 1/21/2024?",
+          "variant_type": "informal"
+        },
+        {
+          "id": "PF-02-c",
+          "question": "I just got hired as an All Purpose Clerk. What's my pay rate gonna be? Today is January 21, 2024.",
+          "variant_type": "worker_slang"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-03",
+      "canonical_question": "How many hours constitute the probationary period for new employees?",
+      "expected_articles": ["Article 26"],
+      "bucket": "contract_only",
+      "variants": [
+        {
+          "id": "PF-03-a",
+          "question": "How many hours constitute the probationary period for new employees?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-03-b",
+          "question": "How long is the probation period for a new hire?",
+          "variant_type": "informal"
+        },
+        {
+          "id": "PF-03-c",
+          "question": "I'm new, when am I done with my trial period? Is it based on hours or days?",
+          "variant_type": "worker_slang"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-04",
+      "canonical_question": "What is the Sunday premium pay rate for employees hired before March 27, 2005?",
+      "expected_articles": ["Article 13"],
+      "bucket": "exact_numeric",
+      "variants": [
+        {
+          "id": "PF-04-a",
+          "question": "What is the Sunday premium pay rate for employees hired before March 27, 2005?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-04-b",
+          "question": "Do I get extra pay for working Sundays if I was hired in 2003?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-04-c",
+          "question": "What Sunday premium applies to grandfathered employees hired prior to 3/27/2005?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-05",
+      "canonical_question": "Calculate the severance pay for a full-time employee with 7 years and 4 months of continuous service whose store closes.",
+      "expected_articles": ["Article 48"],
+      "bucket": "exact_numeric",
+      "variants": [
+        {
+          "id": "PF-05-a",
+          "question": "Calculate the severance pay for a full-time employee with 7 years and 4 months of continuous service whose store closes.",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-05-b",
+          "question": "My store is shutting down. I've worked here full-time for about 7 years and 4 months. How much severance do I get?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-05-c",
+          "question": "Under the store closure severance provisions, what would a full-time employee with 7 years 4 months seniority receive?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-06",
+      "canonical_question": "An employee works 9 hours on Monday, 8 hours Tuesday-Thursday, and 6 hours on Friday. How many overtime hours are owed?",
+      "expected_articles": ["Article 12"],
+      "bucket": "contract_only",
+      "variants": [
+        {
+          "id": "PF-06-a",
+          "question": "An employee works 9 hours on Monday, 8 hours Tuesday-Thursday, and 6 hours on Friday. How many overtime hours are owed?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-06-b",
+          "question": "I worked 9 hrs Monday, 8 each from Tuesday to Thursday, and 6 on Friday. Do I get any OT?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-06-c",
+          "question": "For a weekly schedule of Mon=9h, Tue-Thu=8h each, Fri=6h, what is the total overtime liability per Article 12?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-07",
+      "canonical_question": "An employee hired in 2010 is laid off. How long do they retain recall rights?",
+      "expected_articles": ["Article 27", "Article 29"],
+      "bucket": "contract_only",
+      "variants": [
+        {
+          "id": "PF-07-a",
+          "question": "An employee hired in 2010 is laid off. How long do they retain recall rights?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-07-b",
+          "question": "I got laid off and I've been working here since 2010. How long can they call me back?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-07-c",
+          "question": "What is the duration of recall rights for a laid-off employee with hire date in 2010?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-08",
+      "canonical_question": "How many personal holidays are employees hired after March 27, 2005 entitled to after four years of service?",
+      "expected_articles": ["Article 16"],
+      "bucket": "exact_numeric",
+      "variants": [
+        {
+          "id": "PF-08-a",
+          "question": "How many personal holidays are employees hired after March 27, 2005 entitled to after four years of service?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-08-b",
+          "question": "I was hired in 2010 and I've been here 4 years now. How many floater days do I get?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-08-c",
+          "question": "Personal holiday entitlement after 4 years for post-March 2005 hires?",
+          "variant_type": "terse"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-09",
+      "canonical_question": "An employee requests bereavement leave for their spouse's grandmother's funeral. How many paid days are they entitled to?",
+      "expected_articles": ["Article 33"],
+      "bucket": "contract_only",
+      "variants": [
+        {
+          "id": "PF-09-a",
+          "question": "An employee requests bereavement leave for their spouse's grandmother's funeral. How many paid days are they entitled to?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-09-b",
+          "question": "My wife's grandma died. How many days off with pay can I get for the funeral?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-09-c",
+          "question": "Under bereavement leave provisions, what is the paid leave entitlement for the death of an in-law grandparent?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-10",
+      "canonical_question": "A 'specially trained' Cake Decorator is subject to layoff. Another employee with more seniority has only 4 months experience as a Cake Decorator. Can they displace the Cake Decorator?",
+      "expected_articles": ["Article 29"],
+      "bucket": "contract_only",
+      "variants": [
+        {
+          "id": "PF-10-a",
+          "question": "A 'specially trained' Cake Decorator is subject to layoff. Another employee with more seniority has only 4 months experience as a Cake Decorator. Can they displace the Cake Decorator?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-10-b",
+          "question": "I'm a cake decorator about to get laid off. Can someone with more seniority but only 4 months decorating experience bump me?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-10-c",
+          "question": "Under layoff bumping provisions, can a senior employee with fewer than 6 months of Cake Decorator experience within the past 3 years displace a specially-trained Cake Decorator?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-11",
+      "canonical_question": "An employee is enrolled in Plan B health coverage. Their spouse becomes eligible for coverage through their own employer. What fee applies?",
+      "expected_articles": ["Article 40", "Letter of Understanding"],
+      "bucket": "contract_only",
+      "variants": [
+        {
+          "id": "PF-11-a",
+          "question": "An employee is enrolled in Plan B health coverage. Their spouse becomes eligible for coverage through their own employer. What fee applies?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-11-b",
+          "question": "My husband just got a job with health insurance. I have Plan B through the union. Do we have to pay extra now?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-11-c",
+          "question": "What is the spousal surcharge or working spouse fee under Plan B when a dependent spouse has access to other employer-sponsored coverage?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-12",
+      "canonical_question": "What is the night premium for employees?",
+      "expected_articles": ["Article 15"],
+      "bucket": "exact_numeric",
+      "variants": [
+        {
+          "id": "PF-12-a",
+          "question": "What is the night premium for employees?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-12-b",
+          "question": "Do I get extra money for working the graveyard shift?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-12-c",
+          "question": "What is the hourly differential for night shift work per Article 15?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-13",
+      "canonical_question": "What happens if an employee refuses a lie detector test?",
+      "expected_articles": ["Article 51"],
+      "bucket": "contract_only",
+      "variants": [
+        {
+          "id": "PF-13-a",
+          "question": "What happens if an employee refuses a lie detector test?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-13-b",
+          "question": "Can my boss fire me if I say no to a polygraph?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-13-c",
+          "question": "Under Article 51, what protections exist for employees who decline to submit to a lie detector examination?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-14",
+      "canonical_question": "What is the grievance filing deadline for a discharge?",
+      "expected_articles": ["Article 46"],
+      "bucket": "exact_numeric",
+      "variants": [
+        {
+          "id": "PF-14-a",
+          "question": "What is the grievance filing deadline for a discharge?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-14-b",
+          "question": "I got fired. How long do I have to file a grievance?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-14-c",
+          "question": "What is the time limit to initiate the grievance procedure following a termination under Article 46?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    },
+    {
+      "family_id": "PF-15",
+      "canonical_question": "What is the minimum rest period between shifts?",
+      "expected_articles": ["Article 24", "Article 25"],
+      "bucket": "contract_only",
+      "variants": [
+        {
+          "id": "PF-15-a",
+          "question": "What is the minimum rest period between shifts?",
+          "variant_type": "original"
+        },
+        {
+          "id": "PF-15-b",
+          "question": "My boss scheduled me to close at 11pm and open at 5am the next day. Is that allowed?",
+          "variant_type": "worker_slang"
+        },
+        {
+          "id": "PF-15-c",
+          "question": "What are the contractual requirements for minimum hours between the end of one shift and the start of the next?",
+          "variant_type": "formal_rewrite"
+        }
+      ]
+    }
+  ]
+}
+
+

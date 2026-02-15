@@ -201,9 +201,25 @@ def get_topic_article_map(contract_id: str = CONTRACT_ID) -> dict:
 
 
 def get_topic_patterns(contract_id: str = CONTRACT_ID) -> dict:
-    """Get merged topic patterns: universal defaults + manifest additions."""
+    """Get merged topic patterns with additive contract extensions."""
     routing = load_manifest_routing(contract_id)
-    return {**_UNIVERSAL_TOPIC_PATTERNS, **routing.get("topic_patterns", {})}
+    contract_patterns = routing.get("topic_patterns", {}) or {}
+
+    merged: dict[str, str] = {}
+    for topic, base_pattern in _UNIVERSAL_TOPIC_PATTERNS.items():
+        contract_pattern = contract_patterns.get(topic)
+        if isinstance(contract_pattern, str) and contract_pattern.strip():
+            merged[topic] = f"(?:{base_pattern})|(?:{contract_pattern})"
+        else:
+            merged[topic] = base_pattern
+
+    for topic, pattern in contract_patterns.items():
+        if topic in merged:
+            continue
+        if isinstance(pattern, str) and pattern.strip():
+            merged[topic] = pattern
+
+    return merged
 
 
 def get_classification_article_map(contract_id: str = CONTRACT_ID) -> dict:
@@ -238,6 +254,7 @@ _TOPIC_ARTICLE_TITLE_HINTS: dict[str, tuple[str, ...]] = {
     ),
     "probation": ("probationary period", "probation"),
     "vacation": ("vacation",),
+    "bereavement": ("bereavement leave", "bereavement"),
     "personal_holiday": (
         "personal holiday",
         "holidays",
@@ -273,6 +290,7 @@ _TOPIC_LEXICAL_SIGNALS: dict[str, tuple[str, ...]] = {
         "anniversary year",
         "continuous service",
     ),
+    "bereavement": ("bereavement leave", "funeral leave", "death in family", "funeral"),
     "sick_leave": ("sick leave", "sick pay"),
     "term": ("term of agreement", "effective date", "expiration", "start and end"),
 }
@@ -517,6 +535,7 @@ _UNIVERSAL_TOPIC_PATTERNS = {
     "layoff": r"layoff|lay\s*off|bumping|displacement|reduction",
     "personal_holiday": r"personal\s*holiday|float\s*(day|days)?|floater|pto",
     "vacation": r"vacation|time\s*off|holiday|personal day",
+    "bereavement": r"bereavement|funeral|death\s*in\s*the\s*family|died",
     "sick_leave": r"sick\s*leave|sick\s*day|illness|call\s*in\s*sick",
     "discipline": r"disciplin|warning|write\s*up|written up|tardiness|tardy|late|attendance",
     "grievance": r"grievance|arbitration|file\s*a\s*complaint",
@@ -623,6 +642,7 @@ def extract_topic(query: str, contract_id: str = CONTRACT_ID) -> Optional[str]:
         "promotion",
         "term",
         "personal_holiday",  # Check before vacation since it's more specific
+        "bereavement",
         "layoff",
         "sick_leave",
         "vacation",
@@ -1622,46 +1642,15 @@ class HybridRetriever:
             - query_expansions: List of slang->contract term expansions applied
             - hypothesis_result: HypothesisResult from pre-retrieval reasoning (NEW)
         """
-        # #region agent log
-        import json
-        log_path = Path(__file__).parent.parent.parent / ".cursor" / "debug.log"
-        try:
-            with open(log_path, 'a', encoding='utf-8') as f:
-                f.write(json.dumps({
-                    "id": f"log_retrieve_entry_{hash(query) % 10000}",
-                    "timestamp": __import__('time').time() * 1000,
-                    "location": "router.py:retrieve",
-                    "message": "Retrieve entry",
-                    "data": {"query": query[:100], "n_results": n_results},
-                    "runId": "debug_q40",
-                    "hypothesisId": "A"
-                }) + "\n")
-        except: pass
-        # #endregion
-        
         # Expand query with contract terminology (static mappings)
         ensure_contract_manifest(contract_id)
 
         expanded_query, expansions = expand_query(query, contract_id=contract_id)
-        
-        # #region agent log
+
         # Detect LOU keywords in query
         lou_keywords = ['letter of understanding', 'lou', 'letters of understanding']
         query_lower = query.lower()
         lou_detected = any(kw in query_lower for kw in lou_keywords)
-        try:
-            with open(log_path, 'a', encoding='utf-8') as f:
-                f.write(json.dumps({
-                    "id": f"log_lou_detection_{hash(query) % 10000}",
-                    "timestamp": __import__('time').time() * 1000,
-                    "location": "router.py:retrieve",
-                    "message": "LOU detection",
-                    "data": {"lou_detected": lou_detected, "query_lower": query_lower[:100]},
-                    "runId": "debug_q40",
-                    "hypothesisId": "B"
-                }) + "\n")
-        except: pass
-        # #endregion
 
         if intent is None:
             # Use expanded query for intent classification
@@ -1692,22 +1681,8 @@ class HybridRetriever:
 
         # Use hybrid search (vector + BM25 with RRF)
         # Weights configured in config.py (default: equal 1.0/1.0 for balanced fusion)
-        # #region agent log
         doc_type_filter = "lou" if lou_detected else None
-        try:
-            with open(log_path, 'a', encoding='utf-8') as f:
-                f.write(json.dumps({
-                    "id": f"log_doc_type_filter_{hash(query) % 10000}",
-                    "timestamp": __import__('time').time() * 1000,
-                    "location": "router.py:retrieve",
-                    "message": "Doc type filter",
-                    "data": {"doc_type_filter": doc_type_filter, "use_hybrid": use_hybrid},
-                    "runId": "debug_q40",
-                    "hypothesisId": "C"
-                }) + "\n")
-        except: pass
-        # #endregion
-        
+
         if use_hybrid:
             region_id = resolve_contract_region_id(contract_id)
             self._ensure_hybrid_searcher()
@@ -1746,27 +1721,6 @@ class HybridRetriever:
             max_additional=3,
             query_text=query,
         )
-        
-        # #region agent log
-        lou_chunks_found = sum(1 for c in chunks if c.get('doc_type') == 'lou')
-        try:
-            with open(log_path, 'a', encoding='utf-8') as f:
-                f.write(json.dumps({
-                    "id": f"log_retrieval_results_{hash(query) % 10000}",
-                    "timestamp": __import__('time').time() * 1000,
-                    "location": "router.py:retrieve",
-                    "message": "Retrieval results",
-                    "data": {
-                        "total_chunks": len(chunks),
-                        "lou_chunks_found": lou_chunks_found,
-                        "top_3_chunk_ids": [c.get('chunk_id', 'N/A') for c in chunks[:3]],
-                        "top_3_doc_types": [c.get('doc_type', 'N/A') for c in chunks[:3]]
-                    },
-                    "runId": "debug_q40",
-                    "hypothesisId": "D"
-                }) + "\n")
-        except: pass
-        # #endregion
 
         # ===== PHASE 2: TITLE BOOSTING =====
         # Boost chunks whose article_title matches hypothesized titles

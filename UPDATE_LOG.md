@@ -1,5 +1,96 @@
 # Karl Update Log
 
+## v0.8.48 - Ingestion-Owned Query-Routing Synthesis + Pack Gate Coverage (February 2026)
+
+### Overview
+
+Extended deterministic-first hardening by moving manifest routing population into ingestion, then enforcing routing coverage as a required pack-acceptance gate.
+
+### What Changed
+
+- New module: `backend/ingest/query_routing.py`
+  - Added deterministic synthesis of manifest `query_routing` using:
+    - manifest article titles/classifications
+    - concept index (`concept_to_articles`, `question_to_articles`)
+    - language lexicon (`alias_to_canonical`)
+    - optional classification ontology context
+  - Produces:
+    - `slang_to_contract`
+    - `topic_to_articles`
+    - `topic_patterns`
+    - `classification_to_articles`
+  - Added deterministic merge utility so curated/manual routing overrides are preserved.
+- `scripts/onboard_contract_packages.py`
+  - Integrated query-routing synthesis into onboarding flow.
+  - Rewrites package manifest with merged deterministic routing before runtime sync.
+  - Added routing stats to onboarding summaries.
+- `backend/ingest/rebuild_index.py`
+  - Integrated query-routing synthesis after concept-index + lexicon rebuild.
+  - Updates contract manifest routing in-place for rebuild-based repair flows.
+- `backend/ingest/pack_acceptance.py`
+  - Added required checks:
+    - `query_routing_coverage`
+    - `query_routing_article_ref_integrity`
+  - Release now blocks when routing artifacts are too sparse or reference invalid articles.
+- New deterministic test:
+  - `backend/test_query_routing_ingest.py`
+    - Validates generated routing quality on clerks contract (term/vacation/breaks/classification anchors).
+
+### Validation
+
+- `python backend/test_query_routing_ingest.py` -> PASS
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> `15/15` families, `45/45` variants
+- `python -m backend.evaluate_multi_contract --bm25-only` -> `18/18`
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.47 - Canonical Needle Overlay + CI/Gate Parity Hardening (February 2026)
+
+### Overview
+
+Started the next hardening sprint by removing manual needle injection dependency, enforcing deterministic canonical runner behavior for release slices, and aligning CI with release-gate policy requirements.
+
+### What Changed
+
+- `backend/evaluate_needle.py`
+  - Added deterministic temporary synthetic-chunk overlay for needle evaluation:
+    - no manual `scripts/inject_needles.py` pre/post steps required
+    - no persistent corpus mutation
+  - Needle retrieval now runs as a raw deterministic retrieval slice (BM25-only in canonical runner path) without topic-prior boosts.
+  - Added `synthetic_overlay_applied` metadata field.
+  - Added debug flag `--no-synthetic-overlay`.
+- `backend/evaluate_runner.py`
+  - `v2_multi_contract` track now executes deterministic BM25-only mode.
+  - `paraphrase` track now executes deterministic BM25-only mode.
+- `backend/evaluate_gate_check.py`
+  - Missing multi-contract/paraphrase/needle artifacts are now release-blocking by default.
+  - Added explicit debug-only bypass flags:
+    - `--allow-missing-multi-contract`
+    - `--allow-missing-paraphrase`
+    - `--allow-missing-needle`
+- `.github/workflows/eval-ci.yml`
+  - PR and main gate jobs now run canonical deterministic release slices:
+    - `v2`
+    - `escalation`
+    - `v2_multi_contract`
+    - `paraphrase`
+    - `needle`
+  - Added deterministic topic-routing test to CI gate jobs.
+  - Gate-check invocation now enforces multi-contract/paraphrase/needle thresholds.
+  - Upload artifacts now include multi-contract/paraphrase/needle result files.
+- `backend/retrieval/router.py`
+  - Removed debug file-write side effects and broad `except: pass` blocks in `retrieve(...)`.
+
+### Validation
+
+- `python backend/test_topic_routing.py` -> PASS
+- `python -m backend.evaluate_paraphrase --bm25-only` -> `15/15` families, `45/45` variants, worker slang `1.0`
+- `python -m backend.evaluate_multi_contract --bm25-only` -> `18/18` (`100.0%`)
+- `python -m backend.evaluate_runner --track needle` -> PASS artifact generation
+- `python -m backend.evaluate_gate_check`:
+  - **Before this change** (needle canonicalization incomplete): needle pass `0/5` (`0.0%`) -> Gate BLOCKED
+  - **After this change**: needle pass `5/5` (`100.0%`) with top/middle/bottom all `1.0` -> Gate PASS
+
 ## v0.8.46 - Deterministic Formal-Phrase Hardening + Canonical Needle Gate Wiring (February 2026)
 
 ### Overview

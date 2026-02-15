@@ -54,6 +54,10 @@ from backend.ingest.language_lexicon import (
     build_language_lexicon,
     save_language_lexicon,
 )
+from backend.ingest.query_routing import (
+    synthesize_query_routing,
+    merge_query_routing,
+)
 from backend.ingest.pack_acceptance import evaluate_contract_pack
 
 
@@ -332,6 +336,10 @@ def _process_package(
         output_path=concept_index_path,
         manifest=manifest,
     )
+    concept_index_data = {}
+    if concept_index_path.exists():
+        with open(concept_index_path, "r", encoding="utf-8") as f:
+            concept_index_data = json.load(f)
 
     # Package-local compatibility aliases
     _write_json(chunks_dir / "contract_chunks_smart.json", smart_chunks)
@@ -341,6 +349,7 @@ def _process_package(
     wage_path = None
     ontology_path = None
     review_queue_path = None
+    ontology_data = None
     manual_override_path = ontology_dir / "manual_classification_overrides.json"
     wage_classification_count = 0
     ontology_coverage = None
@@ -379,6 +388,18 @@ def _process_package(
         wage_classification_count = len(wages_data.get("classifications", {}))
         wage_path = wages_dir / f"wage_tables_{contract_id}.json"
         _write_json(wage_path, wages_data)
+
+    generated_routing, routing_stats = synthesize_query_routing(
+        manifest=manifest,
+        concept_index=concept_index_data,
+        language_lexicon=language_lexicon,
+        classification_ontology=ontology_data,
+    )
+    manifest["query_routing"] = merge_query_routing(
+        generated=generated_routing,
+        existing=manifest.get("query_routing") or {},
+    )
+    _write_json(manifest_path, manifest)
 
     pack_scorecard = None
     pack_gate_pass = True
@@ -420,6 +441,7 @@ def _process_package(
         "concept_index_path": str(concept_index_path),
         "language_lexicon_path": str(language_lexicon_path),
         "language_lexicon_entries": len(language_lexicon.get("entries", [])),
+        "query_routing_stats": routing_stats,
         "language_enrichment_stats": language_enrichment_stats,
         "table_chunk_synthesis": table_chunk_synthesis,
         "wage_classification_count": wage_classification_count,
@@ -514,6 +536,7 @@ def main() -> int:
                 f"[OK] {package_dir.name} -> chunks={result['chunk_count']} "
                 f"wages={result['wage_classification_count']} synced={result['runtime_synced']} "
                 f"table_chunks+={result.get('table_chunk_synthesis', {}).get('added_table_chunks', 0)} "
+                f"routing_topics={result.get('query_routing_stats', {}).get('topic_entries')} "
                 f"ontology_cov={result.get('classification_ontology_coverage')} "
                 f"review_items={result.get('ingestion_review_queue_items', 0)}{gate_suffix}"
             )
@@ -528,6 +551,7 @@ def main() -> int:
         print(
             f"  - {r['contract_id']}: chunks={r['chunk_count']} "
             f"wages={r['wage_classification_count']} synced={r['runtime_synced']} "
+            f"routing_topics={r.get('query_routing_stats', {}).get('topic_entries')} "
             f"ontology_cov={r.get('classification_ontology_coverage')} "
             f"review_items={r.get('ingestion_review_queue_items', 0)} "
             f"gates={r.get('pack_gate_pass')}"

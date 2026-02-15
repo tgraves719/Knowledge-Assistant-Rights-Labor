@@ -166,6 +166,21 @@ def main():
     parser.add_argument("--min-paraphrase-worker-slang-pass-rate", type=float, default=0.80)
     parser.add_argument("--min-needle-pass-rate", type=float, default=0.80)
     parser.add_argument("--min-needle-position-pass-rate", type=float, default=0.80)
+    parser.add_argument(
+        "--allow-missing-multi-contract",
+        action="store_true",
+        help="Allow missing multi-contract artifact (non-release debugging only).",
+    )
+    parser.add_argument(
+        "--allow-missing-paraphrase",
+        action="store_true",
+        help="Allow missing paraphrase artifact (non-release debugging only).",
+    )
+    parser.add_argument(
+        "--allow-missing-needle",
+        action="store_true",
+        help="Allow missing needle artifact (non-release debugging only).",
+    )
     args = parser.parse_args()
 
     failures: list[str] = []
@@ -217,7 +232,12 @@ def main():
             print(f"[XX] {msg}")
             failures.append(msg)
     else:
-        print(f"[--] multi-contract check skipped (missing {args.multi_contract_results})")
+        msg = f"multi-contract artifact missing: {args.multi_contract_results}"
+        if args.allow_missing_multi_contract:
+            print(f"[--] {msg}")
+        else:
+            print(f"[XX] {msg}")
+            failures.append(msg)
 
     paraphrase_path = Path(args.paraphrase_results)
     if paraphrase_path.exists():
@@ -236,22 +256,36 @@ def main():
             print(f"[XX] {msg}")
             failures.append(msg)
     else:
-        print(f"[--] paraphrase check skipped (missing {args.paraphrase_results})")
+        msg = f"paraphrase artifact missing: {args.paraphrase_results}"
+        if args.allow_missing_paraphrase:
+            print(f"[--] {msg}")
+        else:
+            print(f"[XX] {msg}")
+            failures.append(msg)
 
-    try:
-        needle = _load_json(args.needle_results)
-        for ok, msg in _check_needle(
-            needle,
-            min_pass_rate=args.min_needle_pass_rate,
-            min_position_pass_rate=args.min_needle_position_pass_rate,
-        ):
-            print(f"[{'OK' if ok else 'XX'}] {msg}")
-            if not ok:
-                failures.append(msg)
-    except Exception as e:
-        msg = f"needle check error: {e}"
-        print(f"[XX] {msg}")
-        failures.append(msg)
+    needle_path = Path(args.needle_results)
+    if needle_path.exists():
+        try:
+            needle = _load_json(args.needle_results)
+            for ok, msg in _check_needle(
+                needle,
+                min_pass_rate=args.min_needle_pass_rate,
+                min_position_pass_rate=args.min_needle_position_pass_rate,
+            ):
+                print(f"[{'OK' if ok else 'XX'}] {msg}")
+                if not ok:
+                    failures.append(msg)
+        except Exception as e:
+            msg = f"needle check error: {e}"
+            print(f"[XX] {msg}")
+            failures.append(msg)
+    else:
+        msg = f"needle artifact missing: {args.needle_results}"
+        if args.allow_missing_needle:
+            print(f"[--] {msg}")
+        else:
+            print(f"[XX] {msg}")
+            failures.append(msg)
 
     if failures:
         print("\nGate status: BLOCKED")

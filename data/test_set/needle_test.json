@@ -1,0 +1,122 @@
+{
+  "description": "Needle-in-a-Haystack Test: 5 synthetic facts with KARL_NEEDLE_xxx tokens",
+  "purpose": "Tests the system's ability to retrieve and cite specific facts injected at known positions in the corpus. Detects 'Lost in the Middle' failures where information at certain positions in long contexts is missed.",
+  "total_questions": 5,
+  "setup_instructions": {
+    "step_1": "Before running this test, inject the synthetic facts below into the ChromaDB corpus at the specified positions.",
+    "step_2": "Each needle has a unique KARL_NEEDLE_xxx token that cannot appear naturally in any contract.",
+    "step_3": "Run with CAG_ENABLE_FULL_ARTICLE_EXPANSION=False to test raw retrieval without expansion.",
+    "step_4": "After testing, remove the injected needles from the corpus."
+  },
+  "synthetic_needles": [
+    {
+      "needle_id": "KARL_NEEDLE_001",
+      "injection_content": "KARL_NEEDLE_001: Notwithstanding any other provision of this Agreement, employees classified as Senior Night Stockers who have completed ten (10) or more years of continuous service shall receive a one-time annual retention bonus of four hundred fifty dollars ($450.00), payable on the first pay period in June of each contract year.",
+      "injection_position": "top",
+      "injection_article": "Article 15",
+      "injection_metadata": {
+        "article_num": 15,
+        "section_num": 999,
+        "citation": "Article 15, Section 999 (Synthetic)"
+      }
+    },
+    {
+      "needle_id": "KARL_NEEDLE_002",
+      "injection_content": "KARL_NEEDLE_002: In the event of a store-wide technology upgrade (defined as replacement of more than fifty percent (50%) of point-of-sale terminals within a ninety (90) day period), all affected employees shall receive eight (8) hours of paid training at their regular straight-time rate, scheduled within thirty (30) days of the upgrade completion.",
+      "injection_position": "middle",
+      "injection_article": "Article 36",
+      "injection_metadata": {
+        "article_num": 36,
+        "section_num": 998,
+        "citation": "Article 36, Section 998 (Synthetic)"
+      }
+    },
+    {
+      "needle_id": "KARL_NEEDLE_003",
+      "injection_content": "KARL_NEEDLE_003: Employees who are required to report to a store location other than their regularly assigned store for inventory purposes shall receive mileage reimbursement at the then-current IRS standard mileage rate for all miles driven in excess of their normal commute distance, provided they submit a completed Mileage Reimbursement Form (MRF-7) within fourteen (14) calendar days of the inventory assignment.",
+      "injection_position": "bottom",
+      "injection_article": "Article 48",
+      "injection_metadata": {
+        "article_num": 48,
+        "section_num": 997,
+        "citation": "Article 48, Section 997 (Synthetic)"
+      }
+    },
+    {
+      "needle_id": "KARL_NEEDLE_004",
+      "injection_content": "KARL_NEEDLE_004: The Employer shall maintain a minimum of two (2) AED (Automated External Defibrillator) devices per store, inspected quarterly by a certified technician. Employees who are certified AED operators and who use the device in good faith during a workplace medical emergency shall be held harmless from any civil liability arising from such use, to the maximum extent permitted by Colorado law.",
+      "injection_position": "middle",
+      "injection_article": "Article 36",
+      "injection_metadata": {
+        "article_num": 36,
+        "section_num": 996,
+        "citation": "Article 36, Section 996 (Synthetic)"
+      }
+    },
+    {
+      "needle_id": "KARL_NEEDLE_005",
+      "injection_content": "KARL_NEEDLE_005: Any employee who is subpoenaed to testify before the National Labor Relations Board (NLRB) in a proceeding involving the Employer shall receive their regular straight-time pay for all scheduled hours missed due to such testimony, not to exceed three (3) working days per proceeding. The Employer shall not require the employee to use vacation or personal holiday time for this purpose.",
+      "injection_position": "top",
+      "injection_article": "Article 5",
+      "injection_metadata": {
+        "article_num": 5,
+        "section_num": 995,
+        "citation": "Article 5, Section 995 (Synthetic)"
+      }
+    }
+  ],
+  "test_cases": [
+    {
+      "id": "needle-1",
+      "needle_id": "KARL_NEEDLE_001",
+      "question": "Is there a retention bonus for Senior Night Stockers with over 10 years of service?",
+      "expected_answer_keywords": ["$450", "four hundred fifty", "June", "ten years", "Senior Night Stockers", "retention bonus"],
+      "expected_citation": "Article 15, Section 999 (Synthetic)",
+      "injection_position": "top",
+      "bucket": "contract_only",
+      "success_criteria": "Must cite the exact synthetic section and quote the $450 amount"
+    },
+    {
+      "id": "needle-2",
+      "needle_id": "KARL_NEEDLE_002",
+      "question": "If my store replaces all the cash registers, do I get training time? How much?",
+      "expected_answer_keywords": ["eight hours", "8 hours", "paid training", "technology upgrade", "50%", "point-of-sale", "thirty days"],
+      "expected_citation": "Article 36, Section 998 (Synthetic)",
+      "injection_position": "middle",
+      "bucket": "contract_only",
+      "success_criteria": "Must cite the synthetic section and mention 8 hours of paid training"
+    },
+    {
+      "id": "needle-3",
+      "needle_id": "KARL_NEEDLE_003",
+      "question": "I had to drive to another store for inventory. Can I get my gas money back?",
+      "expected_answer_keywords": ["mileage reimbursement", "IRS standard mileage rate", "fourteen days", "MRF-7", "normal commute"],
+      "expected_citation": "Article 48, Section 997 (Synthetic)",
+      "injection_position": "bottom",
+      "bucket": "contract_only",
+      "success_criteria": "Must cite the synthetic section and mention the MRF-7 form and 14-day deadline"
+    },
+    {
+      "id": "needle-4",
+      "needle_id": "KARL_NEEDLE_004",
+      "question": "Does the store have to have a defibrillator? What if I use it on a customer and something goes wrong?",
+      "expected_answer_keywords": ["AED", "two devices", "quarterly", "held harmless", "good faith", "civil liability", "Colorado law"],
+      "expected_citation": "Article 36, Section 996 (Synthetic)",
+      "injection_position": "middle",
+      "bucket": "contract_only",
+      "success_criteria": "Must cite the synthetic section and explain the hold-harmless protection"
+    },
+    {
+      "id": "needle-5",
+      "needle_id": "KARL_NEEDLE_005",
+      "question": "I got called to testify at an NLRB hearing. Do I still get paid for the time I miss at work?",
+      "expected_answer_keywords": ["straight-time pay", "NLRB", "three working days", "subpoenaed", "cannot require vacation"],
+      "expected_citation": "Article 5, Section 995 (Synthetic)",
+      "injection_position": "top",
+      "bucket": "contract_only",
+      "success_criteria": "Must cite the synthetic section and mention the 3-day limit and no vacation requirement"
+    }
+  ]
+}
+
+

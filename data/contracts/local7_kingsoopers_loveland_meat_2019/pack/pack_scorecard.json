@@ -1,6 +1,6 @@
 {
   "scorecard_version": "contract_pack_scorecard_v1",
-  "generated_at_utc": "2026-02-14T20:51:49.328399+00:00",
+  "generated_at_utc": "2026-02-15T05:32:15.756265+00:00",
   "strict_mode": false,
   "contract_id": "local7_kingsoopers_loveland_meat_2019",
   "package_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019",
@@ -22,19 +22,19 @@
   "artifact_hashes": {
     "source_md": "268a0f8a4deba6462fc4f788e6d25ebb438fcf98ef511b907003cd31ca5bbe76",
     "source_json": "f8202c4e7bd1635b1fc5a84ea52754b910a840e72333f680e59b0854b181e568",
-    "manifest": "c747e87626941b17bb533081d6016918e9c43ee5801fff82ce97ccdb48619537",
+    "manifest": "fd3d09d8dea3899e5589441bfdb0c8a2a698eaa0260838cb616396de1a6453a8",
     "chunks_enriched": "cfb8dbfd0437fb20ef8f050bfc0dd880732cd1b39ad23bb7a2377629ff6529a8",
     "chunks_smart": "de09d1b81af98815f1ed5a730c0123e5ea1b117987e492a20d869f71657e107d",
     "chunks_base": "cfb8dbfd0437fb20ef8f050bfc0dd880732cd1b39ad23bb7a2377629ff6529a8",
     "concept_index": "cf5ad53514b914ec1c52d79daded1b3b04cc35a2a3c9467f220e0bf0f7ab1927",
     "tables": "0c2c6b54840444b541086cfe05d1f7b2f64b8e638a9c4ac89e66078999606579",
     "wages": "9f9e9866a12ca5d1cc3115ea145f3f0df8b5f1835d89cd311e0b9168965304dd",
-    "classification_ontology": "c82c551a9712caf206cfafebcec60015dfe906987528bc2209e0d7c46c5a6640",
-    "language_lexicon": "43c7e77b53179a3c5708d0c60b885a9b16bec889c038401aa3730d902e816442",
-    "ingestion_review_queue": "cb022d5902e9c69057c003d9596cbeebe6d3a19d6a49e9e06602e518c4bb4481",
+    "classification_ontology": "4678119a66af0bc598f3c5a63d35bf623d79c92ee7af17672e32bd7377c37358",
+    "language_lexicon": "b411df19b395513a501e14ea73a21bc142088d71ffeffdc41b12bf36fafe01fd",
+    "ingestion_review_queue": "5f930e81e12bb4170fa4bc373a87c3164938e17e801a4cdb329ad74a934bc360",
     "manual_classification_overrides": "3447a8dce8132ed3c9cae64dd36ae3e8b804eee3d4e28b0875f7c043d82f3ace"
   },
-  "pack_hash": "95bc8876f3b10615179f7af6cbef06384fcae739a573565c53e64da41df337d6",
+  "pack_hash": "e33a5cc7c30d0da987c280bc1eeb7cef6cd75b4ae831fa72220d48594383ebf0",
   "checks": [
     {
       "id": "manifest_exists",
@@ -52,6 +52,29 @@
       "message": "Manifest schema passed validation.",
       "metrics": {
         "errors": []
+      }
+    },
+    {
+      "id": "query_routing_coverage",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest query_routing coverage meets deterministic minimums.",
+      "metrics": {
+        "topic_entries": 15,
+        "topic_pattern_entries": 15,
+        "slang_entries": 112,
+        "classification_entries": 6,
+        "min_classification_entries": 2
+      }
+    },
+    {
+      "id": "query_routing_article_ref_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest query_routing article references are valid.",
+      "metrics": {
+        "invalid_topic_refs": [],
+        "invalid_classification_refs": []
       }
     },
     {

@@ -164,11 +164,11 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
             cmd.extend(["--bucket-filter", bucket_filter])
         return [cmd]
     if track == "v2_multi_contract":
-        return [[py, "-m", "backend.evaluate_multi_contract"]]
+        return [[py, "-m", "backend.evaluate_multi_contract", "--bm25-only"]]
     if track == "escalation":
         return [[py, "-m", "backend.evaluate_escalation_precision"]]
     if track == "paraphrase":
-        return [[py, "-m", "backend.evaluate_paraphrase"]]
+        return [[py, "-m", "backend.evaluate_paraphrase", "--bm25-only"]]
     if track == "needle":
         return [[py, "-m", "backend.evaluate_needle", "--bm25-only"]]
     if track == "all":

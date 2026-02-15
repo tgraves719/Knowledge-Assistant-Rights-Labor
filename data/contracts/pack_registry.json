@@ -3,19 +3,19 @@
   "accepted_packs": {
     "local7_safeway_pueblo_clerks_2022": {
       "contract_id": "local7_safeway_pueblo_clerks_2022",
-      "pack_hash": "70abf1203ef6e1e46b7d213af503a7a89aa046ecf13e3170360e036ba89877e2",
+      "pack_hash": "a842bfb3b23d0b97acbe9b2b8c067a8c3527b50915fd6ddce6db27bc8c09a0e1",
       "scorecard_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\pack\\pack_scorecard.json",
       "strict_mode": false,
-      "accepted_at_utc": "2026-02-14T20:51:47.780122+00:00",
+      "accepted_at_utc": "2026-02-15T05:32:12.647475+00:00",
       "required_failed": [],
       "advisory_failed": []
     },
     "local7_safeway_pueblo_meat_2022": {
       "contract_id": "local7_safeway_pueblo_meat_2022",
-      "pack_hash": "86c8c4def01aee2a92acc3a66ddcf49545c8018e4d30751a05a2a36656ded735",
+      "pack_hash": "d9e391422e76a2d01da0249261d9e9eef18cd50ab49296b03db97e77734f7117",
       "scorecard_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\pack\\pack_scorecard.json",
       "strict_mode": false,
-      "accepted_at_utc": "2026-02-14T20:51:48.610478+00:00",
+      "accepted_at_utc": "2026-02-15T05:32:14.291013+00:00",
       "required_failed": [],
       "advisory_failed": [
         "manifest_classification_wage_coverage",
@@ -24,10 +24,10 @@
     },
     "local7_kingsoopers_loveland_meat_2019": {
       "contract_id": "local7_kingsoopers_loveland_meat_2019",
-      "pack_hash": "95bc8876f3b10615179f7af6cbef06384fcae739a573565c53e64da41df337d6",
+      "pack_hash": "e33a5cc7c30d0da987c280bc1eeb7cef6cd75b4ae831fa72220d48594383ebf0",
       "scorecard_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\pack\\pack_scorecard.json",
       "strict_mode": false,
-      "accepted_at_utc": "2026-02-14T20:51:49.370705+00:00",
+      "accepted_at_utc": "2026-02-15T05:32:15.799376+00:00",
       "required_failed": [],
       "advisory_failed": [
         "manifest_classification_wage_coverage",

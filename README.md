@@ -239,6 +239,7 @@ python -m backend.ingest.pack_acceptance --package <contract_id> --strict
 Deterministic ingestion outputs now include:
 - Contract-scoped `concept_index_<contract_id>.json` with non-empty concept/question mappings
 - Contract-scoped `language_lexicon_<contract_id>.json` (frozen alias graph)
+- Contract-scoped manifest `query_routing` synthesized from ingestion artifacts (`topic_to_articles`, `topic_patterns`, `slang_to_contract`, `classification_to_articles`)
 - `region_id` on manifests/chunks for hard tenancy filtering (`contract_id` + `region_id`)
 
 Runtime query expansion order is deterministic:
@@ -259,6 +260,9 @@ python -m backend.evaluate_runner --track v2 --ablation-mode normal
 
 # Escalation precision slice
 python -m backend.evaluate_runner --track escalation
+
+# Multi-contract deterministic slice
+python -m backend.evaluate_runner --track v2_multi_contract
 
 # Paraphrase/slang robustness slice
 python -m backend.evaluate_runner --track paraphrase
@@ -296,8 +300,7 @@ python -m backend.evaluate_escalation_precision
 ### Needle retrieval slice
 
 ```bash
-# Requires synthetic needles to be injected first:
-# python scripts/inject_needles.py --inject
+# Synthetic needles are overlaid deterministically during this evaluator run.
 python -m backend.evaluate_needle --bm25-only
 ```
 
@@ -322,8 +325,8 @@ python -m backend.validate_manifests
 
 ### CI behavior
 
-- Pull requests: manifest validation + core v2 (`normal`) + escalation slice + isolation/cross-contamination checks + gate-check thresholds
-- Push to `main`: manifest validation + full v2 ablation suite + cross-contamination + gate-check job
+- Pull requests: manifest validation + canonical slices (`v2`, `escalation`, `v2_multi_contract`, `paraphrase`, `needle`) + isolation/cross-contamination/topic-routing checks + gate-check thresholds
+- Push to `main`: manifest validation + full v2 ablation suite + deterministic release slices + cross-contamination/topic-routing + gate-check job
 
 `backend.evaluate_cross_contamination` skips automatically when only one manifest is present.
 
@@ -331,6 +334,12 @@ python -m backend.validate_manifests
 
 ```bash
 python -m backend.test_contract_isolation
+```
+
+### Query-routing ingestion check
+
+```bash
+python backend/test_query_routing_ingest.py
 ```
 
 ### Cross-contamination evaluator (multi-contract scaffold)
