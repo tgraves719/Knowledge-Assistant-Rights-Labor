@@ -1,0 +1,297 @@
+name: KARL Evaluation CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  pr-core-eval:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate contract manifests
+        run: python -m backend.validate_manifests
+
+      - name: Run core v2 benchmark (canonical runner)
+        run: python -m backend.evaluate_runner --track v2 --ablation-mode normal
+
+      - name: Run escalation precision slice (canonical runner)
+        run: python -m backend.evaluate_runner --track escalation
+
+      - name: Run multi-contract slice (canonical runner)
+        run: python -m backend.evaluate_runner --track v2_multi_contract
+
+      - name: Run paraphrase slice (canonical runner)
+        run: python -m backend.evaluate_runner --track paraphrase
+
+      - name: Run adversarial formal-precedence slice (canonical runner)
+        run: python -m backend.evaluate_runner --track adversarial
+
+      - name: Run unanswerable multi-contract slice (canonical runner)
+        run: python -m backend.evaluate_runner --track unanswerable
+
+      - name: Run cross-contract mention slice (canonical runner)
+        run: python -m backend.evaluate_runner --track cross_contract_mentions
+
+      - name: Validate adversarial dataset coverage
+        run: python -m backend.validate_adversarial_dataset
+
+      - name: Validate unanswerable dataset coverage
+        run: python -m backend.validate_unanswerable_dataset
+
+      - name: Validate cross-contract mention dataset coverage
+        run: python -m backend.validate_cross_contract_mentions_dataset
+
+      - name: Validate false-unavailable dataset coverage
+        run: python -m backend.validate_false_unavailable_dataset
+
+      - name: Run false-unavailable guard slice (canonical runner)
+        run: python -m backend.evaluate_runner --track false_unavailable
+
+      - name: Run needle slice (canonical runner)
+        run: python -m backend.evaluate_runner --track needle
+
+      - name: Run contract isolation checks
+        run: python -m backend.test_contract_isolation
+
+      - name: Run deterministic topic routing checks
+        run: python backend/test_topic_routing.py
+
+      - name: Run cross-contamination evaluator
+        run: python -m backend.evaluate_cross_contamination
+
+      - name: Run canonical v3 suite summary (from artifacts)
+        run: python -m backend.evaluate_v3 --from-artifacts --bm25-only
+
+      - name: Enforce release-gate thresholds
+        run: |
+          python -m backend.evaluate_gate_check \
+            --v2-results data/test_set/comprehensive_results.json \
+            --escalation-results data/test_set/escalation_precision_results.json \
+            --cross-contamination-results data/test_set/cross_contamination_results.json \
+            --v3-results data/test_set/v3_results.json \
+            --adversarial-results data/test_set/adversarial_results.json \
+            --unanswerable-results data/test_set/unanswerable_results.json \
+            --cross-contract-mentions-results data/test_set/cross_contract_mentions_results.json \
+            --min-v2-accuracy 0.80 \
+            --min-escalation-precision 0.90 \
+            --min-escalation-recall 0.70 \
+            --max-escalation-fpr 0.10 \
+            --min-v3-components-pass-rate 1.00 \
+            --min-multi-contract-accuracy 0.80 \
+            --min-multi-contract-per-contract 0.75 \
+            --min-paraphrase-family-pass-rate 0.85 \
+            --min-paraphrase-worker-slang-pass-rate 0.80 \
+            --min-paraphrase-formal-rewrite-pass-rate 0.90 \
+            --required-adversarial-dataset-schema-version adversarial_precedence_test_v1 \
+            --min-adversarial-total-cases 12 \
+            --min-adversarial-cases-per-contract 3 \
+            --min-adversarial-pass-rate 0.90 \
+            --min-adversarial-per-contract 0.80 \
+            --min-adversarial-precedence-pass-rate 0.90 \
+            --required-unanswerable-dataset-schema-version unanswerable_multi_contract_test_v1 \
+            --min-unanswerable-total-cases 12 \
+            --min-unanswerable-cases-per-contract 3 \
+            --min-unanswerable-scenario-types 3 \
+            --min-unanswerable-pass-rate 0.90 \
+            --min-unanswerable-per-contract 0.80 \
+            --required-cross-contract-mentions-dataset-schema-version cross_contract_mentions_test_v1 \
+            --min-cross-contract-mentions-total-cases 9 \
+            --min-cross-contract-mentions-cases-per-contract 3 \
+            --min-cross-contract-mentions-pass-rate 0.90 \
+            --min-cross-contract-mentions-per-contract 0.80 \
+            --min-cross-contract-mentions-no-citation-rate 0.90 \
+            --required-false-unavailable-dataset-schema-version false_unavailable_test_v1 \
+            --min-false-unavailable-total-cases 12 \
+            --min-false-unavailable-recover-cases 9 \
+            --min-false-unavailable-uncertain-cases 3 \
+            --min-false-unavailable-cases-per-contract 3 \
+            --min-false-unavailable-pass-rate 0.90 \
+            --min-false-unavailable-per-contract 0.80 \
+            --min-false-unavailable-recovered-rate 0.90 \
+            --min-false-unavailable-proper-uncertainty-rate 0.90 \
+            --min-needle-pass-rate 0.80 \
+            --min-needle-position-pass-rate 0.80
+
+      - name: Upload evaluation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-eval-artifacts
+          path: |
+            data/test_set/comprehensive_results*.json
+            data/test_set/escalation_precision_results.json
+            data/test_set/cross_contamination_results.json
+            data/test_set/v3_results.json
+            data/test_set/multi_contract_v2_results.json
+            data/test_set/paraphrase_results.json
+            data/test_set/adversarial_results.json
+            data/test_set/unanswerable_results.json
+            data/test_set/cross_contract_mentions_results.json
+            data/test_set/false_unavailable_results.json
+            data/test_set/needle_results.json
+            data/test_set/eval_run_metadata*.json
+
+  main-full-v2-suite:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mode:
+          - normal
+          - no_retrieval
+          - random
+          - top1
+          - no_hypothesis
+          - bm25_only
+          - vector_only
+          - no_expansion
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate contract manifests
+        run: python -m backend.validate_manifests
+
+      - name: Run v2 suite mode
+        run: python -m backend.evaluate_runner --track v2 --ablation-mode ${{ matrix.mode }}
+
+      - name: Upload v2 suite artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: main-v2-${{ matrix.mode }}
+          path: |
+            data/test_set/comprehensive_results*.json
+            data/test_set/eval_run_metadata*.json
+
+  main-escalation-gate:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate contract manifests
+        run: python -m backend.validate_manifests
+
+      - name: Run v2 + deterministic release slices
+        run: |
+          python -m backend.evaluate_runner --track v2 --ablation-mode normal
+          python -m backend.evaluate_runner --track escalation
+          python -m backend.evaluate_runner --track v2_multi_contract
+          python -m backend.evaluate_runner --track paraphrase
+          python -m backend.evaluate_runner --track adversarial
+          python -m backend.evaluate_runner --track unanswerable
+          python -m backend.evaluate_runner --track cross_contract_mentions
+          python -m backend.validate_adversarial_dataset
+          python -m backend.validate_unanswerable_dataset
+          python -m backend.validate_cross_contract_mentions_dataset
+          python -m backend.validate_false_unavailable_dataset
+          python -m backend.evaluate_runner --track false_unavailable
+          python -m backend.evaluate_runner --track needle
+
+      - name: Run cross-contamination evaluator
+        run: python -m backend.evaluate_cross_contamination
+
+      - name: Run canonical v3 suite summary (from artifacts)
+        run: python -m backend.evaluate_v3 --from-artifacts --bm25-only
+
+      - name: Run deterministic topic routing checks
+        run: python backend/test_topic_routing.py
+
+      - name: Enforce release-gate thresholds
+        run: |
+          python -m backend.evaluate_gate_check \
+            --v2-results data/test_set/comprehensive_results.json \
+            --escalation-results data/test_set/escalation_precision_results.json \
+            --cross-contamination-results data/test_set/cross_contamination_results.json \
+            --v3-results data/test_set/v3_results.json \
+            --adversarial-results data/test_set/adversarial_results.json \
+            --unanswerable-results data/test_set/unanswerable_results.json \
+            --cross-contract-mentions-results data/test_set/cross_contract_mentions_results.json \
+            --min-v2-accuracy 0.80 \
+            --min-escalation-precision 0.90 \
+            --min-escalation-recall 0.70 \
+            --max-escalation-fpr 0.10 \
+            --min-v3-components-pass-rate 1.00 \
+            --min-multi-contract-accuracy 0.80 \
+            --min-multi-contract-per-contract 0.75 \
+            --min-paraphrase-family-pass-rate 0.85 \
+            --min-paraphrase-worker-slang-pass-rate 0.80 \
+            --min-paraphrase-formal-rewrite-pass-rate 0.90 \
+            --required-adversarial-dataset-schema-version adversarial_precedence_test_v1 \
+            --min-adversarial-total-cases 12 \
+            --min-adversarial-cases-per-contract 3 \
+            --min-adversarial-pass-rate 0.90 \
+            --min-adversarial-per-contract 0.80 \
+            --min-adversarial-precedence-pass-rate 0.90 \
+            --required-unanswerable-dataset-schema-version unanswerable_multi_contract_test_v1 \
+            --min-unanswerable-total-cases 12 \
+            --min-unanswerable-cases-per-contract 3 \
+            --min-unanswerable-scenario-types 3 \
+            --min-unanswerable-pass-rate 0.90 \
+            --min-unanswerable-per-contract 0.80 \
+            --required-cross-contract-mentions-dataset-schema-version cross_contract_mentions_test_v1 \
+            --min-cross-contract-mentions-total-cases 9 \
+            --min-cross-contract-mentions-cases-per-contract 3 \
+            --min-cross-contract-mentions-pass-rate 0.90 \
+            --min-cross-contract-mentions-per-contract 0.80 \
+            --min-cross-contract-mentions-no-citation-rate 0.90 \
+            --required-false-unavailable-dataset-schema-version false_unavailable_test_v1 \
+            --min-false-unavailable-total-cases 12 \
+            --min-false-unavailable-recover-cases 9 \
+            --min-false-unavailable-uncertain-cases 3 \
+            --min-false-unavailable-cases-per-contract 3 \
+            --min-false-unavailable-pass-rate 0.90 \
+            --min-false-unavailable-per-contract 0.80 \
+            --min-false-unavailable-recovered-rate 0.90 \
+            --min-false-unavailable-proper-uncertainty-rate 0.90 \
+            --min-needle-pass-rate 0.80 \
+            --min-needle-position-pass-rate 0.80
+
+      - name: Upload gate-check artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: main-gate-check
+          path: |
+            data/test_set/comprehensive_results*.json
+            data/test_set/escalation_precision_results.json
+            data/test_set/cross_contamination_results.json
+            data/test_set/v3_results.json
+            data/test_set/multi_contract_v2_results.json
+            data/test_set/paraphrase_results.json
+            data/test_set/adversarial_results.json
+            data/test_set/unanswerable_results.json
+            data/test_set/cross_contract_mentions_results.json
+            data/test_set/false_unavailable_results.json
+            data/test_set/needle_results.json
+            data/test_set/eval_run_metadata*.json

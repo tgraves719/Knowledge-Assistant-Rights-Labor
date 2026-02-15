@@ -1,0 +1,252 @@
+{
+  "schema_version": "adversarial_precedence_test_v1",
+  "description": "Deterministic adversarial formal-rewrite test set for specific-over-general precedence retrieval",
+  "purpose": "Stress retrieval/routing on formal non-slang phrasing where contract exceptions can be missed if generic rules dominate ranking.",
+  "total_questions": 12,
+  "evaluation_criteria": {
+    "citation_recall": "Expected specific citation must be retrieved in top-k",
+    "exception_signal": "Retrieved context must include exception-specific keywords",
+    "precedence_ordering": "When configured, specific citation should rank ahead of competing general citation",
+    "tenant_integrity": "No cross-contract retrieval leakage"
+  },
+  "test_cases": [
+    {
+      "id": "ADV-KS-01",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "For a meat employee hired in February 2004 with long tenure, what annual paid vacation schedule applies under this agreement?",
+      "user_context": {
+        "hire_date": "2004-02-15"
+      },
+      "expected_citations": [
+        "Article 17, Section 42"
+      ],
+      "competing_citations": [],
+      "require_specific_precedence": false,
+      "expected_keywords": [
+        "on or before march 5, 2005",
+        "832",
+        "five (5) weeks"
+      ],
+      "min_expected_keyword_hits": 2
+    },
+    {
+      "id": "ADV-KS-02",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "If an employee was hired in 2009, which vacation accrual track and anniversary-hours threshold govern annual paid vacation entitlement?",
+      "user_context": {
+        "hire_date": "2009-08-01"
+      },
+      "expected_citations": [
+        "Article 17, Section 42"
+      ],
+      "competing_citations": [],
+      "require_specific_precedence": false,
+      "expected_keywords": [
+        "on or after march 6, 2005",
+        "1,040",
+        "three (3) weeks paid vacation after eight (8) years"
+      ],
+      "min_expected_keyword_hits": 2
+    },
+    {
+      "id": "ADV-KS-03",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "For a post-2005 hire who works a contractual holiday, what premium applies to hours worked on that holiday?",
+      "user_context": {
+        "hire_date": "2011-04-20"
+      },
+      "expected_citations": [
+        "Article 16, Section 40"
+      ],
+      "competing_citations": [],
+      "require_specific_precedence": false,
+      "expected_keywords": [
+        "on or after march 6, 2005",
+        "$1.00",
+        "per hour worked"
+      ],
+      "min_expected_keyword_hits": 2
+    },
+    {
+      "id": "ADV-KS-04",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "For an employee hired before March 2005, what holiday-work premium applies in addition to holiday pay?",
+      "user_context": {
+        "hire_date": "2001-06-10"
+      },
+      "expected_citations": [
+        "Article 16, Section 40"
+      ],
+      "competing_citations": [],
+      "require_specific_precedence": false,
+      "expected_keywords": [
+        "on or before march 5, 2005",
+        "one and one-half",
+        "in addition to the holiday pay"
+      ],
+      "min_expected_keyword_hits": 2
+    },
+    {
+      "id": "ADV-CL-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "Please confirm the vacation entitlement schedule for an employee hired in 2003, including the anniversary-year hours qualifier.",
+      "user_context": {
+        "hire_date": "2003-09-01"
+      },
+      "expected_citations": [
+        "Article 17, Section 44, Part 1"
+      ],
+      "competing_citations": [
+        "Article 17, Section 44, Part 2"
+      ],
+      "require_specific_precedence": true,
+      "max_specific_rank_gap_vs_competing": 1,
+      "expected_keywords": [
+        "on or before march 26, 2005",
+        "832",
+        "five (5) weeks"
+      ],
+      "min_expected_keyword_hits": 2
+    },
+    {
+      "id": "ADV-CL-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "Which vacation progression schedule applies to an employee hired in 2018, and what anniversary-year hours threshold is required?",
+      "user_context": {
+        "hire_date": "2018-05-14"
+      },
+      "expected_citations": [
+        "Article 17, Section 44, Part 2"
+      ],
+      "competing_citations": [
+        "Article 17, Section 44, Part 1"
+      ],
+      "require_specific_precedence": true,
+      "max_specific_rank_gap_vs_competing": 1,
+      "expected_keywords": [
+        "on or after march 27, 2005",
+        "1,040",
+        "four (4) weeks"
+      ],
+      "min_expected_keyword_hits": 2
+    },
+    {
+      "id": "ADV-CL-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "As a Courtesy Clerk working overnight between midnight and 6:00 a.m., what night premium differential applies?",
+      "user_context": {
+        "classification": "courtesy_clerk"
+      },
+      "expected_citations": [
+        "Article 15, Section 34"
+      ],
+      "competing_citations": [],
+      "require_specific_precedence": false,
+      "expected_keywords": [
+        "excluding courtesy clerks",
+        "twenty-five cents",
+        "$.25"
+      ],
+      "min_expected_keyword_hits": 2
+    },
+    {
+      "id": "ADV-CL-04",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "Under the relief-period article, what is the minimum number of rest periods owed when a shift exceeds six hours?",
+      "user_context": {},
+      "expected_citations": [
+        "Article 25, Section 61"
+      ],
+      "competing_citations": [],
+      "require_specific_precedence": false,
+      "expected_keywords": [
+        "more than six (6)",
+        "at least two (2) rest periods",
+        "third relief period"
+      ],
+      "min_expected_keyword_hits": 2
+    },
+    {
+      "id": "ADV-MT-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "For a meat employee hired in 2002, identify the governing vacation entitlement schedule and anniversary-year hours requirement.",
+      "user_context": {
+        "hire_date": "2002-03-10"
+      },
+      "expected_citations": [
+        "Article 17, Section 48, Part 1"
+      ],
+      "competing_citations": [
+        "Article 17, Section 48, Part 2"
+      ],
+      "require_specific_precedence": true,
+      "max_specific_rank_gap_vs_competing": 1,
+      "expected_keywords": [
+        "on or before march 26, 2005",
+        "832",
+        "five (5) weeks"
+      ],
+      "min_expected_keyword_hits": 2
+    },
+    {
+      "id": "ADV-MT-02",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "For a meat employee hired after 2005, which vacation accrual progression and anniversary-year hours threshold control?",
+      "user_context": {
+        "hire_date": "2017-11-01"
+      },
+      "expected_citations": [
+        "Article 17, Section 48, Part 2"
+      ],
+      "competing_citations": [
+        "Article 17, Section 48, Part 1"
+      ],
+      "require_specific_precedence": true,
+      "max_specific_rank_gap_vs_competing": 1,
+      "expected_keywords": [
+        "on or after march 27, 2005",
+        "1,040",
+        "four (4) weeks"
+      ],
+      "min_expected_keyword_hits": 2
+    },
+    {
+      "id": "ADV-MT-03",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "For an employee hired in 2012, what holiday-work premium applies in general, and what specific exception applies on Christmas?",
+      "user_context": {
+        "hire_date": "2012-06-18"
+      },
+      "expected_citations": [
+        "Article 16, Section 46"
+      ],
+      "competing_citations": [],
+      "require_specific_precedence": false,
+      "expected_keywords": [
+        "on or after march 27, 2005",
+        "$1.00",
+        "except",
+        "christmas",
+        "one and one-half"
+      ],
+      "min_expected_keyword_hits": 3
+    },
+    {
+      "id": "ADV-MT-04",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "If an employee has fewer than eight hours between one shift and the next, what pay treatment applies under overtime rules?",
+      "user_context": {},
+      "expected_citations": [
+        "Article 12, Section 32"
+      ],
+      "competing_citations": [],
+      "require_specific_precedence": false,
+      "expected_keywords": [
+        "eight (8) hours between shifts",
+        "overtime rate",
+        "time and one-half"
+      ],
+      "min_expected_keyword_hits": 2
+    }
+  ]
+}

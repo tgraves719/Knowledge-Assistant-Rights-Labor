@@ -1,0 +1,149 @@
+{
+  "schema_version": "cross_contract_mentions_eval_v1",
+  "dataset_schema_version": "cross_contract_mentions_test_v1",
+  "timestamp_utc": "2026-02-15T18:43:50.274763+00:00",
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_test.json",
+  "bm25_only": true,
+  "overall": {
+    "passed": 9,
+    "total": 9,
+    "pass_rate": 1.0,
+    "no_citation_rate": 1.0
+  },
+  "by_contract": {
+    "local7_kingsoopers_loveland_meat_2019": {
+      "passed": 3,
+      "total": 3,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_clerks_2022": {
+      "passed": 3,
+      "total": 3,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_meat_2022": {
+      "passed": 3,
+      "total": 3,
+      "pass_rate": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "CCM-KG-01",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "In the Safeway Pueblo clerks contract, what is the holiday bonus trigger code?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "expected_max_citations": 0,
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "CCM-KG-02",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "For Safeway Pueblo meat, what is the premium exception rider for Aurora locations?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "expected_max_citations": 0,
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "CCM-KG-03",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "In local7 safeway pueblo clerks 2022, what is the kiosk stipend amount?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "expected_max_citations": 0,
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "CCM-CL-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "In the King Soopers Loveland meat contract, what is the severance bridge code?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "expected_max_citations": 0,
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "CCM-CL-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "For local7 kingsoopers loveland meat 2019, what is the wage harmonization rider number?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "expected_max_citations": 0,
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "CCM-CL-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "In Safeway Pueblo meat, what is the glacier Sunday premium supplement code?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "expected_max_citations": 0,
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "CCM-ME-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "In the King Soopers Loveland meat agreement, what is the marathon probation waiver clause?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "expected_max_citations": 0,
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "CCM-ME-02",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "For Safeway Pueblo clerks, what is the checker relocation voucher index?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "expected_max_citations": 0,
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "CCM-ME-03",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "In local7 safeway pueblo clerks 2022, what is the digital locker stipend formula?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "expected_max_citations": 0,
+      "citation_ok": true,
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "schema_version": "unanswerable_eval_v1",
+  "dataset_schema_version": "unanswerable_multi_contract_test_v1",
+  "timestamp_utc": "2026-02-15T18:43:47.276688+00:00",
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_multi_contract_test.json",
+  "bm25_only": true,
+  "overall": {
+    "passed": 12,
+    "total": 12,
+    "pass_rate": 1.0,
+    "abstention_rate": 1.0
+  },
+  "by_contract": {
+    "local7_kingsoopers_loveland_meat_2019": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_clerks_2022": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_meat_2022": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0
+    }
+  },
+  "by_scenario": {
+    "cross_contract_reference": {
+      "passed": 3,
+      "total": 3,
+      "pass_rate": 1.0
+    },
+    "external_policy": {
+      "passed": 3,
+      "total": 3,
+      "pass_rate": 1.0
+    },
+    "fictional_benefit": {
+      "passed": 6,
+      "total": 6,
+      "pass_rate": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "UN-KG-01",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "scenario": "fictional_benefit",
+      "question": "Do we get a blockchain equipment stipend each quarter?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-KG-02",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "scenario": "fictional_benefit",
+      "question": "What is the ZX91 cryptographic token allowance?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-KG-03",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "scenario": "external_policy",
+      "question": "What is the IRS Form 8938 reporting threshold for 2026?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-KG-04",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "scenario": "cross_contract_reference",
+      "question": "In the Safeway Pueblo clerks agreement, what is the Aurora kiosk stipend code?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-CL-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "scenario": "fictional_benefit",
+      "question": "What is the monthly drone commute subsidy amount?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-CL-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "scenario": "fictional_benefit",
+      "question": "Do we have a quantum scanner reimbursement code QSR-44?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-CL-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "scenario": "external_policy",
+      "question": "What was yesterday's S and P 500 closing value?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-CL-04",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "scenario": "cross_contract_reference",
+      "question": "In the King Soopers Loveland meat agreement, what is the Glacier overtime exception code?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-ME-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "scenario": "fictional_benefit",
+      "question": "What is the Neptune warehouse transit voucher amount?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-ME-02",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "scenario": "fictional_benefit",
+      "question": "Do we receive a holographic apron maintenance stipend?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-ME-03",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "scenario": "external_policy",
+      "question": "What is the Federal Register publication number for today's labor bulletin?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    },
+    {
+      "id": "UN-ME-04",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "scenario": "cross_contract_reference",
+      "question": "In the King Soopers contract, what is the Summit pension bridge rider amount?",
+      "contains_unavailable_language": true,
+      "expected_escalation": false,
+      "escalation_required": false,
+      "escalation_ok": true,
+      "citation_count": 0,
+      "pass": true
+    }
+  ]
+}

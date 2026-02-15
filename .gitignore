@@ -52,3 +52,16 @@ benchmark_results.json
 data/chroma_db/
 *.bin
 chroma.sqlite3
+
+# Evaluation run metadata (timestamped, non-canonical)
+data/test_set/eval_run_metadata_*.json
+data/test_set/eval_run_metadata_latest.json
+data/test_set/history/
+
+# Experimental ablation outputs (keep canonical comprehensive_results.json)
+data/test_set/comprehensive_results_*.json
+
+# Local scratch / OS oddities
+old/
+NUL
+pytest-cache-files-*/

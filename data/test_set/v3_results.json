@@ -1,0 +1,526 @@
+{
+  "schema_version": "v3_eval_v4",
+  "timestamp_utc": "2026-02-15T18:44:03.233738+00:00",
+  "mode": "full",
+  "active_contract_ids": [
+    "local7_kingsoopers_loveland_meat_2019",
+    "local7_safeway_pueblo_clerks_2022",
+    "local7_safeway_pueblo_meat_2022"
+  ],
+  "commands": [
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_multi_contract --bm25-only",
+      "return_code": 0,
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL Multi-Contract Evaluation\n========================================================================\nOverall: 18/18 (100.0%)\n- local7_kingsoopers_loveland_meat_2019: 6/6 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 6/6 (100.0%)\n- local7_safeway_pueblo_meat_2022: 6/6 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\multi_contract_v2_results.json\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_cross_contamination --require-multi-contract",
+      "return_code": 0,
+      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Cross-Contamination Evaluation\n========================================================================\nContracts tested: ['local7_kingsoopers_loveland_meat_2019', 'local7_safeway_pueblo_clerks_2022', 'local7_safeway_pueblo_meat_2022']\nPairs tested: 6\nQueries per pair: 4\n[OK] No cross-contract contamination detected.\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contamination_results.json\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_paraphrase --bm25-only",
+      "return_code": 0,
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL Paraphrase Robustness Evaluation\n========================================================================\nFamilies: 15/15 (100.0%)\nVariants: 45/45 (100.0%)\nWorker slang pass rate: 1.0\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\paraphrase_results.json\n",
+      "stderr_tail": "Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.\n"
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.validate_adversarial_dataset",
+      "return_code": 0,
+      "stdout_tail": "========================================================================\nKARL Adversarial Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_test.json\nSchema version: adversarial_precedence_test_v1\nTotal cases: 12\nPrecedence cases: 4\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_adversarial_precedence --bm25-only",
+      "return_code": 0,
+      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Adversarial Formal-Precedence Evaluation\n========================================================================\nPass: 12/12 (100.0%)\nCitation hit rate: 1.0\nKeyword hit rate: 1.0\nPrecedence pass rate: 1.0\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_results.json\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.validate_unanswerable_dataset",
+      "return_code": 0,
+      "stdout_tail": "========================================================================\nKARL Unanswerable Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_multi_contract_test.json\nSchema version: unanswerable_multi_contract_test_v1\nTotal cases: 12\nScenario counts: {'fictional_benefit': 6, 'external_policy': 3, 'cross_contract_reference': 3}\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_unanswerable --bm25-only",
+      "return_code": 0,
+      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Unanswerable Multi-Contract Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nAbstention rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_results.json\n",
+      "stderr_tail": "Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.\n"
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.validate_cross_contract_mentions_dataset",
+      "return_code": 0,
+      "stdout_tail": "========================================================================\nKARL Cross-Contract Mentions Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_test.json\nSchema version: cross_contract_mentions_test_v1\nTotal cases: 9\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 3, 'local7_safeway_pueblo_clerks_2022': 3, 'local7_safeway_pueblo_meat_2022': 3}\n\nValidation status: PASS\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_cross_contract_mentions --bm25-only",
+      "return_code": 0,
+      "stdout_tail": "========================================================================\nKARL Cross-Contract Mention Evaluation\n========================================================================\nOverall: 9/9 (100.0%)\nNo-citation rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 3/3 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 3/3 (100.0%)\n- local7_safeway_pueblo_meat_2022: 3/3 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_results.json\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.validate_false_unavailable_dataset",
+      "return_code": 0,
+      "stdout_tail": "========================================================================\nKARL False-Unavailable Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_test.json\nSchema version: false_unavailable_test_v1\nTotal cases: 15\nExpectation counts: {'recover': 12, 'uncertain': 3}\nBy contract total: {'local7_safeway_pueblo_clerks_2022': 5, 'local7_safeway_pueblo_meat_2022': 5, 'local7_kingsoopers_loveland_meat_2019': 5}\nBy contract recover: {'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4, 'local7_kingsoopers_loveland_meat_2019': 4}\n\nValidation status: PASS\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_false_unavailable --bm25-only",
+      "return_code": 0,
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL False-Unavailable Guard Evaluation\n========================================================================\nOverall: 15/15 (100.0%)\nRecovered (evidence-present): 12/12 (100.0%)\nProper uncertainty (evidence-absent): 3/3 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_results.json\n",
+      "stderr_tail": "Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.\n"
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_needle --bm25-only",
+      "return_code": 0,
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL Needle Retrieval Evaluation\n========================================================================\nPass: 5/5 (100.0%)\nCitation match rate: 1.0\nKeyword pass rate: 1.0\n- bottom: 1/1 (100.0%)\n- middle: 2/2 (100.0%)\n- top: 2/2 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\needle_results.json\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_wage_table_evidence --bm25-only",
+      "return_code": 0,
+      "stdout_tail": "========================================================================\nKARL Wage-Table Evidence Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nSource-method pass rate: 100.0%\nTable evidence presence rate: 100.0%\nTable ID presence rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\wage_table_evidence_results.json\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_entitlement_table_evidence",
+      "return_code": 0,
+      "stdout_tail": "========================================================================\nKARL Entitlement-Table Evidence Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nWeeks-resolution pass rate: 100.0%\nSource-method pass rate: 100.0%\nEvidence presence rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\entitlement_table_evidence_results.json\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_role_catalog_integrity",
+      "return_code": 0,
+      "stdout_tail": "========================================================================\nKARL Role-Catalog Integrity Evaluation\n========================================================================\nOverall: 20/20 (100.0%)\nDataset-case pass rate: 100.0%\nDefault wage-ready rate: 100.0%\nUnresolved-not-default rate: 100.0%\nDefault wage-key-unique rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 6/6 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 8/8 (100.0%)\n- local7_safeway_pueblo_meat_2022: 6/6 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_results.json\n",
+      "stderr_tail": ""
+    }
+  ],
+  "thresholds": {
+    "min_multi_contract_accuracy": 0.8,
+    "min_multi_contract_per_contract": 0.75,
+    "min_paraphrase_family_pass_rate": 0.85,
+    "min_paraphrase_worker_slang_pass_rate": 0.8,
+    "min_paraphrase_formal_rewrite_pass_rate": 0.9,
+    "required_adversarial_dataset_schema_version": "adversarial_precedence_test_v1",
+    "min_adversarial_total_cases": 12,
+    "min_adversarial_cases_per_contract": 3,
+    "min_adversarial_pass_rate": 0.9,
+    "min_adversarial_per_contract": 0.8,
+    "min_adversarial_precedence_pass_rate": 0.9,
+    "required_unanswerable_dataset_schema_version": "unanswerable_multi_contract_test_v1",
+    "min_unanswerable_total_cases": 12,
+    "min_unanswerable_cases_per_contract": 3,
+    "min_unanswerable_pass_rate": 0.9,
+    "min_unanswerable_per_contract": 0.8,
+    "required_cross_contract_mentions_dataset_schema_version": "cross_contract_mentions_test_v1",
+    "min_cross_contract_mentions_total_cases": 9,
+    "min_cross_contract_mentions_cases_per_contract": 3,
+    "min_cross_contract_mentions_pass_rate": 0.9,
+    "min_cross_contract_mentions_per_contract": 0.8,
+    "min_cross_contract_mentions_no_citation_rate": 0.9,
+    "required_false_unavailable_dataset_schema_version": "false_unavailable_test_v1",
+    "min_false_unavailable_total_cases": 12,
+    "min_false_unavailable_recover_cases": 9,
+    "min_false_unavailable_uncertain_cases": 3,
+    "min_false_unavailable_pass_rate": 0.9,
+    "min_false_unavailable_per_contract": 0.8,
+    "min_false_unavailable_recovered_rate": 0.9,
+    "min_false_unavailable_proper_uncertainty_rate": 0.9,
+    "min_needle_pass_rate": 0.8,
+    "min_needle_position_pass_rate": 0.8,
+    "required_wage_table_evidence_dataset_schema_version": "wage_table_evidence_test_v1",
+    "min_wage_table_evidence_total_cases": 12,
+    "min_wage_table_evidence_cases_per_contract": 3,
+    "min_wage_table_evidence_pass_rate": 0.9,
+    "min_wage_table_evidence_per_contract": 0.8,
+    "min_wage_table_evidence_source_method_pass_rate": 0.95,
+    "min_wage_table_evidence_presence_rate": 0.95,
+    "min_wage_table_evidence_table_id_presence_rate": 0.95,
+    "required_entitlement_table_evidence_dataset_schema_version": "entitlement_table_evidence_test_v1",
+    "min_entitlement_table_evidence_total_cases": 12,
+    "min_entitlement_table_evidence_cases_per_contract": 3,
+    "min_entitlement_table_evidence_pass_rate": 0.9,
+    "min_entitlement_table_evidence_per_contract": 0.8,
+    "min_entitlement_table_evidence_weeks_resolution_pass_rate": 0.9,
+    "min_entitlement_table_evidence_source_method_pass_rate": 0.95,
+    "min_entitlement_table_evidence_presence_rate": 0.95,
+    "required_role_catalog_integrity_dataset_schema_version": "role_catalog_integrity_test_v1",
+    "min_role_catalog_integrity_total_cases": 12,
+    "min_role_catalog_integrity_cases_per_contract": 3,
+    "min_role_catalog_integrity_pass_rate": 0.95,
+    "min_role_catalog_integrity_per_contract": 0.9,
+    "min_role_catalog_integrity_dataset_case_pass_rate": 0.95,
+    "min_role_catalog_integrity_default_wage_ready_rate": 1.0,
+    "min_role_catalog_integrity_unresolved_not_default_rate": 1.0,
+    "min_role_catalog_integrity_default_wage_key_unique_rate": 1.0
+  },
+  "components": {
+    "false_unavailable_dataset_validation": {
+      "pass": true,
+      "details": {
+        "command": "C:\\Python313\\python.exe -m backend.validate_false_unavailable_dataset",
+        "return_code": 0,
+        "stdout_tail": "========================================================================\nKARL False-Unavailable Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_test.json\nSchema version: false_unavailable_test_v1\nTotal cases: 15\nExpectation counts: {'recover': 12, 'uncertain': 3}\nBy contract total: {'local7_safeway_pueblo_clerks_2022': 5, 'local7_safeway_pueblo_meat_2022': 5, 'local7_kingsoopers_loveland_meat_2019': 5}\nBy contract recover: {'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4, 'local7_kingsoopers_loveland_meat_2019': 4}\n\nValidation status: PASS\n",
+        "stderr_tail": ""
+      }
+    },
+    "adversarial_dataset_validation": {
+      "pass": true,
+      "details": {
+        "command": "C:\\Python313\\python.exe -m backend.validate_adversarial_dataset",
+        "return_code": 0,
+        "stdout_tail": "========================================================================\nKARL Adversarial Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_test.json\nSchema version: adversarial_precedence_test_v1\nTotal cases: 12\nPrecedence cases: 4\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
+        "stderr_tail": ""
+      }
+    },
+    "unanswerable_dataset_validation": {
+      "pass": true,
+      "details": {
+        "command": "C:\\Python313\\python.exe -m backend.validate_unanswerable_dataset",
+        "return_code": 0,
+        "stdout_tail": "========================================================================\nKARL Unanswerable Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_multi_contract_test.json\nSchema version: unanswerable_multi_contract_test_v1\nTotal cases: 12\nScenario counts: {'fictional_benefit': 6, 'external_policy': 3, 'cross_contract_reference': 3}\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
+        "stderr_tail": ""
+      }
+    },
+    "cross_contract_mentions_dataset_validation": {
+      "pass": true,
+      "details": {
+        "command": "C:\\Python313\\python.exe -m backend.validate_cross_contract_mentions_dataset",
+        "return_code": 0,
+        "stdout_tail": "========================================================================\nKARL Cross-Contract Mentions Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_test.json\nSchema version: cross_contract_mentions_test_v1\nTotal cases: 9\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 3, 'local7_safeway_pueblo_clerks_2022': 3, 'local7_safeway_pueblo_meat_2022': 3}\n\nValidation status: PASS\n",
+        "stderr_tail": ""
+      }
+    },
+    "cross_contamination": {
+      "pass": true,
+      "details": {
+        "skipped": false,
+        "pass": true,
+        "failures_count": 0
+      }
+    },
+    "multi_contract": {
+      "pass": true,
+      "details": {
+        "overall_pass_rate": 1.0,
+        "min_overall": 0.8,
+        "min_per_contract": 0.75,
+        "per_contract": {
+          "local7_kingsoopers_loveland_meat_2019": {
+            "pass_rate": 1.0,
+            "pass": true
+          },
+          "local7_safeway_pueblo_clerks_2022": {
+            "pass_rate": 1.0,
+            "pass": true
+          },
+          "local7_safeway_pueblo_meat_2022": {
+            "pass_rate": 1.0,
+            "pass": true
+          }
+        }
+      }
+    },
+    "paraphrase": {
+      "pass": true,
+      "details": {
+        "family_pass_rate": 1.0,
+        "worker_slang_pass_rate": 1.0,
+        "formal_rewrite_pass_rate": 1.0,
+        "thresholds": {
+          "family": 0.85,
+          "worker_slang": 0.8,
+          "formal_rewrite": 0.9
+        }
+      }
+    },
+    "adversarial_precedence": {
+      "pass": true,
+      "details": {
+        "dataset_schema_version": "adversarial_precedence_test_v1",
+        "overall_pass_rate": 1.0,
+        "precedence_pass_rate": 1.0,
+        "precedence_total": 4,
+        "total_cases": 12,
+        "per_contract": {
+          "local7_kingsoopers_loveland_meat_2019": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          },
+          "local7_safeway_pueblo_clerks_2022": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          },
+          "local7_safeway_pueblo_meat_2022": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          }
+        },
+        "thresholds": {
+          "required_dataset_schema_version": "adversarial_precedence_test_v1",
+          "min_total_cases": 12,
+          "min_cases_per_contract": 3,
+          "min_overall": 0.9,
+          "min_per_contract": 0.8,
+          "min_precedence_rate": 0.9
+        }
+      }
+    },
+    "unanswerable": {
+      "pass": true,
+      "details": {
+        "dataset_schema_version": "unanswerable_multi_contract_test_v1",
+        "overall_pass_rate": 1.0,
+        "abstention_rate": 1.0,
+        "total_cases": 12,
+        "per_contract": {
+          "local7_kingsoopers_loveland_meat_2019": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          },
+          "local7_safeway_pueblo_clerks_2022": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          },
+          "local7_safeway_pueblo_meat_2022": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          }
+        },
+        "thresholds": {
+          "required_dataset_schema_version": "unanswerable_multi_contract_test_v1",
+          "min_total_cases": 12,
+          "min_cases_per_contract": 3,
+          "min_overall": 0.9,
+          "min_per_contract": 0.8
+        }
+      }
+    },
+    "cross_contract_mentions": {
+      "pass": true,
+      "details": {
+        "dataset_schema_version": "cross_contract_mentions_test_v1",
+        "overall_pass_rate": 1.0,
+        "no_citation_rate": 1.0,
+        "total_cases": 9,
+        "per_contract": {
+          "local7_kingsoopers_loveland_meat_2019": {
+            "pass_rate": 1.0,
+            "total": 3,
+            "pass": true
+          },
+          "local7_safeway_pueblo_clerks_2022": {
+            "pass_rate": 1.0,
+            "total": 3,
+            "pass": true
+          },
+          "local7_safeway_pueblo_meat_2022": {
+            "pass_rate": 1.0,
+            "total": 3,
+            "pass": true
+          }
+        },
+        "thresholds": {
+          "required_dataset_schema_version": "cross_contract_mentions_test_v1",
+          "min_total_cases": 9,
+          "min_cases_per_contract": 3,
+          "min_overall": 0.9,
+          "min_per_contract": 0.8,
+          "min_no_citation_rate": 0.9
+        }
+      }
+    },
+    "false_unavailable": {
+      "pass": true,
+      "details": {
+        "dataset_schema_version": "false_unavailable_test_v1",
+        "overall_pass_rate": 1.0,
+        "recovered_rate": 1.0,
+        "proper_uncertainty_rate": 1.0,
+        "total_cases": 15,
+        "recover_cases": 12,
+        "uncertain_cases": 3,
+        "per_contract": {
+          "local7_kingsoopers_loveland_meat_2019": {
+            "pass_rate": 1.0,
+            "pass": true
+          },
+          "local7_safeway_pueblo_clerks_2022": {
+            "pass_rate": 1.0,
+            "pass": true
+          },
+          "local7_safeway_pueblo_meat_2022": {
+            "pass_rate": 1.0,
+            "pass": true
+          }
+        },
+        "thresholds": {
+          "required_dataset_schema_version": "false_unavailable_test_v1",
+          "min_total_cases": 12,
+          "min_recover_cases": 9,
+          "min_uncertain_cases": 3,
+          "min_overall": 0.9,
+          "min_per_contract": 0.8,
+          "min_recovered": 0.9,
+          "min_uncertainty": 0.9
+        }
+      }
+    },
+    "needle": {
+      "pass": true,
+      "details": {
+        "overall_pass_rate": 1.0,
+        "positions": {
+          "top": {
+            "pass_rate": 1.0,
+            "pass": true
+          },
+          "middle": {
+            "pass_rate": 1.0,
+            "pass": true
+          },
+          "bottom": {
+            "pass_rate": 1.0,
+            "pass": true
+          }
+        },
+        "thresholds": {
+          "overall": 0.8,
+          "position": 0.8
+        }
+      }
+    },
+    "wage_table_evidence": {
+      "pass": true,
+      "details": {
+        "dataset_schema_version": "wage_table_evidence_test_v1",
+        "overall_pass_rate": 1.0,
+        "source_method_pass_rate": 1.0,
+        "table_evidence_presence_rate": 1.0,
+        "table_id_presence_rate": 1.0,
+        "total_cases": 12,
+        "per_contract": {
+          "local7_kingsoopers_loveland_meat_2019": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          },
+          "local7_safeway_pueblo_clerks_2022": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          },
+          "local7_safeway_pueblo_meat_2022": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          }
+        },
+        "thresholds": {
+          "required_dataset_schema_version": "wage_table_evidence_test_v1",
+          "min_total_cases": 12,
+          "min_cases_per_contract": 3,
+          "min_overall": 0.9,
+          "min_per_contract": 0.8,
+          "min_source_method_pass_rate": 0.95,
+          "min_table_evidence_presence_rate": 0.95,
+          "min_table_id_presence_rate": 0.95
+        }
+      }
+    },
+    "entitlement_table_evidence": {
+      "pass": true,
+      "details": {
+        "dataset_schema_version": "entitlement_table_evidence_test_v1",
+        "overall_pass_rate": 1.0,
+        "weeks_resolution_pass_rate": 1.0,
+        "source_method_pass_rate": 1.0,
+        "evidence_presence_rate": 1.0,
+        "total_cases": 12,
+        "per_contract": {
+          "local7_kingsoopers_loveland_meat_2019": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          },
+          "local7_safeway_pueblo_clerks_2022": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          },
+          "local7_safeway_pueblo_meat_2022": {
+            "pass_rate": 1.0,
+            "total": 4,
+            "pass": true
+          }
+        },
+        "thresholds": {
+          "required_dataset_schema_version": "entitlement_table_evidence_test_v1",
+          "min_total_cases": 12,
+          "min_cases_per_contract": 3,
+          "min_overall": 0.9,
+          "min_per_contract": 0.8,
+          "min_weeks_resolution_pass_rate": 0.9,
+          "min_source_method_pass_rate": 0.95,
+          "min_evidence_presence_rate": 0.95
+        }
+      }
+    },
+    "role_catalog_integrity": {
+      "pass": true,
+      "details": {
+        "dataset_schema_version": "role_catalog_integrity_test_v1",
+        "overall_pass_rate": 1.0,
+        "dataset_case_pass_rate": 1.0,
+        "default_wage_ready_rate": 1.0,
+        "unresolved_not_default_rate": 1.0,
+        "default_wage_key_unique_rate": 1.0,
+        "total_cases": 20,
+        "per_contract": {
+          "local7_kingsoopers_loveland_meat_2019": {
+            "pass_rate": 1.0,
+            "total": 6,
+            "pass": true
+          },
+          "local7_safeway_pueblo_clerks_2022": {
+            "pass_rate": 1.0,
+            "total": 8,
+            "pass": true
+          },
+          "local7_safeway_pueblo_meat_2022": {
+            "pass_rate": 1.0,
+            "total": 6,
+            "pass": true
+          }
+        },
+        "thresholds": {
+          "required_dataset_schema_version": "role_catalog_integrity_test_v1",
+          "min_total_cases": 12,
+          "min_cases_per_contract": 3,
+          "min_overall": 0.95,
+          "min_per_contract": 0.9,
+          "min_dataset_case_pass_rate": 0.95,
+          "min_default_wage_ready_rate": 1.0,
+          "min_unresolved_not_default_rate": 1.0,
+          "min_default_wage_key_unique_rate": 1.0
+        }
+      }
+    }
+  },
+  "overall": {
+    "components_passed": 15,
+    "components_total": 15,
+    "pass_rate": 1.0,
+    "pass": true
+  }
+}

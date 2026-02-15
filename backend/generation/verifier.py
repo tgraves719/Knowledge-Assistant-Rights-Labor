@@ -312,6 +312,19 @@ def format_response_with_sources(
         wage_citation = str(wage_info.get("citation") or "Appendix A").strip() or "Appendix A"
         if not any(c.lower() == wage_citation.lower() for c in citations):
             citations.append(wage_citation)
+        for row in (wage_info.get("table_evidence") or []):
+            if not isinstance(row, dict):
+                continue
+            table_id = str(row.get("table_id") or "").strip()
+            if not table_id:
+                continue
+            row_index = row.get("row_index")
+            row_suffix = ""
+            if isinstance(row_index, int):
+                row_suffix = f", Row {row_index + 1}"
+            table_citation = f"Appendix A, Table {table_id}{row_suffix}"
+            if not any(c.lower() == table_citation.lower() for c in citations):
+                citations.append(table_citation)
 
     # If a cited article includes matched table content, ensure section-level
     # table-bearing citations are present in the citation list for UI visibility.
@@ -386,6 +399,24 @@ def format_response_with_sources(
                 'citation': wage_citation,
                 'article_title': 'Wage Tables',
                 'doc_type': 'appendix'
+            })
+        for row in (wage_info.get("table_evidence") or []):
+            if not isinstance(row, dict):
+                continue
+            table_id = str(row.get("table_id") or "").strip()
+            if not table_id:
+                continue
+            row_index = row.get("row_index")
+            row_suffix = ""
+            if isinstance(row_index, int):
+                row_suffix = f", Row {row_index + 1}"
+            citation = f"Appendix A, Table {table_id}{row_suffix}"
+            if any((s.get("citation") or "").strip().lower() == citation.lower() for s in sources):
+                continue
+            sources.append({
+                'citation': citation,
+                'article_title': 'Wage Tables',
+                'doc_type': 'appendix',
             })
     
     return {
