@@ -46,6 +46,24 @@ from backend.retrieval.router import (
 )
 from backend.retrieval.vector_store import ContractVectorStore
 from backend.chunk_files import resolve_chunk_file
+from backend.contract_outline import (
+    resolve_contract_outline_file,
+    load_contract_outline,
+    article_titles_from_outline,
+)
+from backend.pdf_nav_files import resolve_pdf_nav_index_file
+from backend.table_nav_files import resolve_table_nav_index_file
+from backend.pdf_nav_index import (
+    build_pdf_nav_index,
+    load_pdf_nav_index,
+    to_runtime_navigation_maps,
+    resolve_contract_pdf_path as resolve_contract_pdf_source_path,
+)
+from backend.table_nav_index import (
+    build_table_nav_index,
+    load_table_nav_index,
+    to_runtime_table_navigation_maps,
+)
 from backend.generation.prompts import build_prompt, SYSTEM_PROMPT
 from backend.generation.verifier import (
     verify_response,
@@ -1064,7 +1082,8 @@ async def query_contract(request: QueryRequest):
 
     # Deterministic guardrail: wage estimates require a classification context.
     if intent.intent_type == "wage" and not effective_classification:
-        retrieval_result = retriever.multi_angle_retrieve(
+        retrieval_result = await asyncio.to_thread(
+            retriever.multi_angle_retrieve,
             query=request.question,
             intent=intent,
             n_results=5,
@@ -1111,7 +1130,8 @@ async def query_contract(request: QueryRequest):
 
     # Retrieve relevant chunks and wage info using multi-angle retrieval
     # This uses deep query interpretation for better semantic matching
-    retrieval_result = retriever.multi_angle_retrieve(
+    retrieval_result = await asyncio.to_thread(
+        retriever.multi_angle_retrieve,
         query=request.question,
         intent=intent,
         n_results=5,
@@ -1168,7 +1188,8 @@ async def query_contract(request: QueryRequest):
         and not escalation_required
     ):
         hire_date_hint = str((user_profile or {}).get("hire_date") or "").strip() or None
-        enriched_entitlement = retriever.lookup_vacation_entitlement(
+        enriched_entitlement = await asyncio.to_thread(
+            retriever.lookup_vacation_entitlement,
             months_employed=months_employed,
             hours_worked=hours_worked,
             hire_date=hire_date_hint,
@@ -1291,7 +1312,8 @@ async def query_contract(request: QueryRequest):
         _has_strong_evidence_for_query(request.question, chunks) or anchor_evidence_present
     )
     if _is_unavailable_answer(answer) and not escalation_required and recovery_evidence_present:
-        retry_result = retriever.multi_angle_retrieve(
+        retry_result = await asyncio.to_thread(
+            retriever.multi_angle_retrieve,
             query=request.question,
             intent=intent,
             n_results=8,
@@ -1484,10 +1506,6 @@ async def lookup_wage(request: WageLookupRequest):
 # CONTRACT VIEWER ENDPOINTS
 # =============================================================================
 
-# Data directory for contract files
-DATA_DIR = Path(__file__).parent.parent / "data"
-
-
 class ManifestResponse(BaseModel):
     """Response model for contract manifest/TOC."""
     contract_id: str
@@ -1522,6 +1540,15 @@ class SectionResponse(BaseModel):
     summary: Optional[str] = None
 
 
+class PdfLocationResponse(BaseModel):
+    """Response model for PDF deep-link location."""
+    contract_id: str
+    pdf_url: Optional[str] = None
+    page_number: Optional[int] = None
+    total_pages: Optional[int] = None
+    matched_by: str = "none"
+
+
 def _resolve_contract_id_for_viewer(contract_id: Optional[str]) -> str:
     """Resolve contract_id for viewer endpoints with single-manifest fallback."""
     if contract_id:
@@ -1552,6 +1579,250 @@ def _viewer_allow_legacy_unscoped_chunks() -> bool:
     return len(list(MANIFESTS_DIR.glob("*.json"))) == 1
 
 
+def _viewer_article_titles_cache_key(contract_id: str) -> tuple[str, str, int, int, str, int, bool]:
+    manifest_file = MANIFESTS_DIR / f"{contract_id}.json"
+    manifest_mtime_ns = manifest_file.stat().st_mtime_ns if manifest_file.exists() else -1
+    outline_file = resolve_contract_outline_file(contract_id=contract_id, allow_shared_fallback=True)
+    outline_path = str(outline_file.resolve()) if outline_file and outline_file.exists() else ""
+    outline_mtime_ns = outline_file.stat().st_mtime_ns if outline_file and outline_file.exists() else -1
+    chunks_file = resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+    chunks_path = str(chunks_file.resolve()) if chunks_file and chunks_file.exists() else ""
+    chunks_mtime_ns = chunks_file.stat().st_mtime_ns if chunks_file and chunks_file.exists() else -1
+    allow_unscoped = _viewer_allow_legacy_unscoped_chunks()
+    return (
+        contract_id,
+        outline_path,
+        outline_mtime_ns,
+        manifest_mtime_ns,
+        chunks_path,
+        chunks_mtime_ns,
+        allow_unscoped,
+    )
+
+
+@lru_cache(maxsize=64)
+def _build_viewer_article_titles_cached(
+    contract_id: str,
+    outline_path: str,
+    outline_mtime_ns: int,
+    manifest_mtime_ns: int,
+    chunks_path: str,
+    chunks_mtime_ns: int,
+    allow_unscoped: bool,
+) -> dict[str, str]:
+    """
+    Build manifest article titles with chunk-backed fallback for missing keys.
+
+    Some manifests can have incomplete `article_titles` even when chunks include
+    additional article numbers. This keeps Contract-tab TOC complete.
+    """
+    _ = outline_mtime_ns, manifest_mtime_ns, chunks_mtime_ns  # cache busting sentinels
+    if outline_path:
+        outline = load_contract_outline(Path(outline_path))
+        outline_titles = article_titles_from_outline(outline)
+        if outline_titles:
+            return dict(sorted(outline_titles.items(), key=lambda kv: int(kv[0])))
+
+    manifest_file = MANIFESTS_DIR / f"{contract_id}.json"
+    manifest_titles: dict[str, str] = {}
+    if manifest_file.exists():
+        with open(manifest_file, "r", encoding="utf-8") as f:
+            manifest = json.load(f)
+        raw_titles = manifest.get("article_titles") or {}
+        if isinstance(raw_titles, dict):
+            for raw_key, raw_title in raw_titles.items():
+                key_str = str(raw_key).strip()
+                if not key_str.isdigit():
+                    continue
+                article_num = int(key_str)
+                if article_num <= 0:
+                    continue
+                title = str(raw_title or "").strip() or f"Article {article_num}"
+                manifest_titles[str(article_num)] = title
+
+    if not chunks_path:
+        return dict(sorted(manifest_titles.items(), key=lambda kv: int(kv[0])))
+
+    try:
+        with open(chunks_path, "r", encoding="utf-8") as f:
+            all_chunks = json.load(f)
+    except Exception:
+        return dict(sorted(manifest_titles.items(), key=lambda kv: int(kv[0])))
+
+    for chunk in all_chunks:
+        chunk_contract_id = chunk.get("contract_id")
+        if not (
+            chunk_contract_id == contract_id
+            or (allow_unscoped and chunk_contract_id in (None, ""))
+        ):
+            continue
+        raw_article = chunk.get("article_num")
+        try:
+            article_num = int(raw_article)
+        except Exception:
+            continue
+        if article_num <= 0:
+            continue
+        key = str(article_num)
+        existing = str(manifest_titles.get(key) or "").strip()
+        chunk_title = str(chunk.get("article_title") or "").strip()
+        if not existing:
+            manifest_titles[key] = chunk_title or f"Article {article_num}"
+
+    return dict(sorted(manifest_titles.items(), key=lambda kv: int(kv[0])))
+
+
+def _build_viewer_article_titles(contract_id: str) -> dict[str, str]:
+    return _build_viewer_article_titles_cached(*_viewer_article_titles_cache_key(contract_id))
+
+
+@lru_cache(maxsize=32)
+def _resolve_contract_pdf_path(contract_id: str) -> Optional[Path]:
+    return resolve_contract_pdf_source_path(contract_id)
+
+
+@lru_cache(maxsize=16)
+def _build_pdf_navigation_index(contract_id: str) -> dict:
+    nav_path = resolve_pdf_nav_index_file(
+        contract_id=contract_id,
+        allow_shared_fallback=True,
+    )
+    if nav_path and nav_path.exists():
+        loaded = load_pdf_nav_index(nav_path)
+        runtime_maps = to_runtime_navigation_maps(loaded)
+        if runtime_maps["article_pages"] or runtime_maps["section_pages"]:
+            return runtime_maps
+
+    generated = build_pdf_nav_index(contract_id=contract_id)
+    return to_runtime_navigation_maps(generated)
+
+
+@lru_cache(maxsize=16)
+def _build_table_navigation_index(contract_id: str) -> dict:
+    nav_path = resolve_table_nav_index_file(
+        contract_id=contract_id,
+        allow_shared_fallback=True,
+    )
+    if nav_path and nav_path.exists():
+        loaded = load_table_nav_index(nav_path)
+        runtime_maps = to_runtime_table_navigation_maps(loaded)
+        if runtime_maps["table_pages"]:
+            return runtime_maps
+
+    generated = build_table_nav_index(contract_id=contract_id)
+    return to_runtime_table_navigation_maps(generated)
+
+
+@app.get("/api/contract-pdf")
+async def get_contract_pdf(contract_id: Optional[str] = None):
+    """Serve the active contract PDF for inline viewing."""
+    effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
+    pdf_path = _resolve_contract_pdf_path(effective_contract_id)
+    if not pdf_path or not pdf_path.exists():
+        raise HTTPException(status_code=404, detail="Contract PDF not found")
+
+    safe_name = pdf_path.name.replace('"', '')
+    return FileResponse(
+        path=pdf_path,
+        media_type="application/pdf",
+        filename=safe_name,
+        headers={"Content-Disposition": f'inline; filename="{safe_name}"'},
+    )
+
+
+@app.get("/api/pdf-location", response_model=PdfLocationResponse)
+async def get_pdf_location(
+    article_num: Optional[int] = None,
+    section_num: Optional[int] = None,
+    subsection: Optional[str] = None,
+    table_id: Optional[str] = None,
+    row_index: Optional[int] = None,
+    contract_id: Optional[str] = None,
+):
+    """
+    Resolve best-effort PDF page for a citation target.
+
+    Supports table-backed citations first, then section/article fallback.
+    Subsection and row_index are accepted for API compatibility.
+    """
+    _ = subsection, row_index  # reserved for future fine-grained mapping
+    effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
+    pdf_path = _resolve_contract_pdf_path(effective_contract_id)
+    if not pdf_path or not pdf_path.exists():
+        return PdfLocationResponse(contract_id=effective_contract_id)
+
+    normalized_article_num: Optional[int] = None
+    try:
+        if article_num is not None:
+            parsed_article = int(article_num)
+            if parsed_article > 0:
+                normalized_article_num = parsed_article
+    except Exception:
+        normalized_article_num = None
+
+    normalized_section_num: Optional[int] = None
+    try:
+        if section_num is not None:
+            parsed_section = int(section_num)
+            if parsed_section > 0:
+                normalized_section_num = parsed_section
+    except Exception:
+        normalized_section_num = None
+
+    normalized_table_id = str(table_id or "").strip()
+    page_number: Optional[int] = None
+    matched_by = "none"
+
+    table_index = _build_table_navigation_index(effective_contract_id)
+    table_pages = table_index.get("table_pages") or {}
+    table_meta = table_index.get("table_meta") or {}
+    if normalized_table_id:
+        page_number = table_pages.get(normalized_table_id)
+        if page_number is None:
+            lowered = normalized_table_id.lower()
+            for key, value in table_pages.items():
+                if str(key).lower() != lowered:
+                    continue
+                normalized_table_id = str(key)
+                page_number = value
+                break
+
+        if normalized_article_num is None:
+            table_ref = table_meta.get(normalized_table_id) or {}
+            candidate_article = table_ref.get("article_num")
+            if isinstance(candidate_article, int) and candidate_article > 0:
+                normalized_article_num = candidate_article
+        if normalized_section_num is None:
+            table_ref = table_meta.get(normalized_table_id) or {}
+            candidate_section = table_ref.get("section_num")
+            if isinstance(candidate_section, int) and candidate_section > 0:
+                normalized_section_num = candidate_section
+
+        if page_number is not None:
+            matched_by = "table_row" if row_index is not None else "table"
+
+    index = _build_pdf_navigation_index(effective_contract_id)
+
+    if page_number is None and normalized_article_num is not None and normalized_section_num is not None:
+        key = f"{normalized_article_num}:{normalized_section_num}"
+        page_number = (index.get("section_pages") or {}).get(key)
+        if page_number is not None:
+            matched_by = "section"
+
+    if page_number is None and normalized_article_num is not None:
+        page_number = (index.get("article_pages") or {}).get(normalized_article_num)
+        if page_number is not None:
+            matched_by = "article"
+
+    return PdfLocationResponse(
+        contract_id=effective_contract_id,
+        pdf_url=f"/api/contract-pdf?contract_id={effective_contract_id}",
+        page_number=page_number,
+        total_pages=index.get("total_pages") or table_index.get("total_pages"),
+        matched_by=matched_by,
+    )
+
+
 @app.get("/api/manifest", response_model=ManifestResponse)
 async def get_manifest(contract_id: Optional[str] = None):
     """
@@ -1561,17 +1832,16 @@ async def get_manifest(contract_id: Optional[str] = None):
     """
     effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
     manifest_file = MANIFESTS_DIR / f"{effective_contract_id}.json"
-
     if not manifest_file.exists():
         raise HTTPException(status_code=404, detail="Contract manifest not found")
-
     with open(manifest_file, 'r', encoding='utf-8') as f:
         manifest = json.load(f)
+    article_titles = _build_viewer_article_titles(effective_contract_id)
 
     return ManifestResponse(
         contract_id=manifest.get("contract_id", "unknown"),
-        article_titles=manifest.get("article_titles", {}),
-        total_articles=len(manifest.get("article_titles", {}))
+        article_titles=article_titles,
+        total_articles=len(article_titles)
     )
 
 
@@ -1736,12 +2006,13 @@ async def generate_response(question: str, system_prompt: str, chunks: list = No
     
     for attempt in range(max_retries):
         try:
-            response = client.models.generate_content(
+            response = await asyncio.to_thread(
+                client.models.generate_content,
                 model=LLM_MODEL,
                 contents=question,
                 config=_genai_sdk.types.GenerateContentConfig(
                     system_instruction=system_prompt,
-                )
+                ),
             )
             return response.text
         
@@ -1815,11 +2086,20 @@ FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
 
 @app.get("/")
 async def serve_frontend():
-    """Serve the frontend HTML page."""
-    index_path = FRONTEND_DIR / "index.html"
+    """Serve the modular frontend HTML page."""
+    index_path = FRONTEND_DIR / "modular" / "index.html"
     if index_path.exists():
         return FileResponse(index_path)
     return {"message": "Frontend not found. API is running at /api/"}
+
+
+@app.get("/modular")
+async def serve_modular_frontend():
+    """Serve the modularized frontend app."""
+    index_path = FRONTEND_DIR / "modular" / "index.html"
+    if index_path.exists():
+        return FileResponse(index_path)
+    raise HTTPException(status_code=404, detail="Modular frontend not found")
 
 
 # Mount static files for any additional frontend assets

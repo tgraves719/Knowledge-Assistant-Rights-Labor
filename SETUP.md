@@ -97,7 +97,7 @@ INFO:     Uvicorn running on http://127.0.0.1:8000
 
 ### 6. Open the Frontend
 
-Open `frontend/index.html` in your web browser, or go to `http://127.0.0.1:8000`.
+Go to `http://127.0.0.1:8000` (primary modular app), or `http://127.0.0.1:8000/modular` (alias).
 
 ## Troubleshooting
 

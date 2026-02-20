@@ -1,0 +1,212 @@
+{
+  "schema_version": "table_nav_index_v1",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "generated_at": "2026-02-19T11:31:36.347950+00:00",
+  "source_json": "safeway_pueblo_clerks_2022.json",
+  "structured_tables": "structured_tables.json",
+  "total_pages": 74,
+  "table_pages": {
+    "tbl_art0_1": 1,
+    "tbl_art0_2": 2,
+    "tbl_art40_1": 37,
+    "tbl_art40_2": 38,
+    "tbl_art40_3": 38,
+    "tbl_art40_4": 39,
+    "tbl_art40_5": 43,
+    "tbl_art40_6": 43,
+    "tbl_art40_7": 44,
+    "tbl_art58_1": 60,
+    "tbl_art58_2": 62,
+    "tbl_art58_3": 63
+  },
+  "table_meta": {
+    "tbl_art0_1": {
+      "article_num": null,
+      "section_num": null,
+      "json_path": "pages[0].items[1]",
+      "heading_path": [
+        "TABLE OF CONTENTS PUEBLO CLERKS"
+      ],
+      "heading_leaf": "TABLE OF CONTENTS PUEBLO CLERKS",
+      "row_count": 44,
+      "is_perfect_table": false
+    },
+    "tbl_art0_2": {
+      "article_num": null,
+      "section_num": null,
+      "json_path": "pages[1].items[1]",
+      "heading_path": [
+        "TABLE OF CONTENTS PUEBLO CLERKS"
+      ],
+      "heading_leaf": "TABLE OF CONTENTS PUEBLO CLERKS",
+      "row_count": 14,
+      "is_perfect_table": false
+    },
+    "tbl_art40_1": {
+      "article_num": 40,
+      "section_num": 116,
+      "json_path": "pages[36].items[18]",
+      "heading_path": [
+        "SENIORITY",
+        "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)"
+      ],
+      "heading_leaf": "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)",
+      "row_count": 0,
+      "is_perfect_table": false
+    },
+    "tbl_art40_2": {
+      "article_num": 40,
+      "section_num": 116,
+      "json_path": "pages[37].items[1]",
+      "heading_path": [
+        "SENIORITY",
+        "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)"
+      ],
+      "heading_leaf": "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)",
+      "row_count": 5,
+      "is_perfect_table": false
+    },
+    "tbl_art40_3": {
+      "article_num": 40,
+      "section_num": 116,
+      "json_path": "pages[37].items[8]",
+      "heading_path": [
+        "SENIORITY",
+        "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)"
+      ],
+      "heading_leaf": "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)",
+      "row_count": 10,
+      "is_perfect_table": true
+    },
+    "tbl_art40_4": {
+      "article_num": 40,
+      "section_num": 116,
+      "json_path": "pages[38].items[1]",
+      "heading_path": [
+        "SENIORITY",
+        "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)"
+      ],
+      "heading_leaf": "(Medical, Surgical, Hospital, Dental, Prescription, Vision and Life Insurance)",
+      "row_count": 1,
+      "is_perfect_table": false
+    },
+    "tbl_art40_5": {
+      "article_num": 40,
+      "section_num": 116,
+      "json_path": "pages[42].items[6]",
+      "heading_path": [
+        "SENIORITY",
+        "Health and Care Management"
+      ],
+      "heading_leaf": "Health and Care Management",
+      "row_count": 3,
+      "is_perfect_table": false
+    },
+    "tbl_art40_6": {
+      "article_num": 40,
+      "section_num": 116,
+      "json_path": "pages[42].items[10]",
+      "heading_path": [
+        "SENIORITY",
+        "Health and Care Management"
+      ],
+      "heading_leaf": "Health and Care Management",
+      "row_count": 3,
+      "is_perfect_table": false
+    },
+    "tbl_art40_7": {
+      "article_num": 40,
+      "section_num": 116,
+      "json_path": "pages[43].items[0]",
+      "heading_path": [
+        "SENIORITY",
+        "Health and Care Management"
+      ],
+      "heading_leaf": "Health and Care Management",
+      "row_count": 3,
+      "is_perfect_table": false
+    },
+    "tbl_art58_1": {
+      "article_num": 58,
+      "section_num": 175,
+      "json_path": "pages[59].items[4]",
+      "heading_path": [
+        "ADDITIONAL PROVISIONS",
+        "SCHEDULE OF BENEFITS - EFFECTIVE JANUARY 1, 2016"
+      ],
+      "heading_leaf": "SCHEDULE OF BENEFITS - EFFECTIVE JANUARY 1, 2016",
+      "row_count": 12,
+      "is_perfect_table": false
+    },
+    "tbl_art58_2": {
+      "article_num": 58,
+      "section_num": 175,
+      "json_path": "pages[61].items[1]",
+      "heading_path": [
+        "ADDITIONAL PROVISIONS",
+        "Basket Hours"
+      ],
+      "heading_leaf": "Basket Hours",
+      "row_count": 32,
+      "is_perfect_table": false
+    },
+    "tbl_art58_3": {
+      "article_num": 58,
+      "section_num": 175,
+      "json_path": "pages[62].items[1]",
+      "heading_path": [
+        "ADDITIONAL PROVISIONS",
+        "Basket Hours"
+      ],
+      "heading_leaf": "Basket Hours",
+      "row_count": 27,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art58_824d8365": {
+      "article_num": 58,
+      "section_num": 175,
+      "json_path": "chunks[261].fallback_html_tables[0]",
+      "heading_path": [
+        "Article 58 (TERM OF AGREEMENT) > Section 175 (In the event of an Act of God or natural disaster (\"Emergency\") having a material and continuing impact upon either the Employer's facilities or the geographic area defined in Arti) > Part 3",
+        "TERM OF AGREEMENT",
+        "Article 58, Section 175, Part 3"
+      ],
+      "heading_leaf": "Article 58, Section 175, Part 3",
+      "row_count": 12,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art58_c1c0ffd7": {
+      "article_num": 58,
+      "section_num": 175,
+      "json_path": "chunks[268].fallback_html_tables[0]",
+      "heading_path": [
+        "Article 58 (TERM OF AGREEMENT) > Section 175 (In the event of an Act of God or natural disaster (\"Emergency\") having a material and continuing impact upon either the Employer's facilities or the geographic area defined in Arti) > Part 10",
+        "TERM OF AGREEMENT",
+        "Article 58, Section 175, Part 10"
+      ],
+      "heading_leaf": "Article 58, Section 175, Part 10",
+      "row_count": 32,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art58_dc31b2ca": {
+      "article_num": 58,
+      "section_num": 175,
+      "json_path": "chunks[270].fallback_html_tables[0]",
+      "heading_path": [
+        "Article 58 (TERM OF AGREEMENT) > Section 175 (In the event of an Act of God or natural disaster (\"Emergency\") having a material and continuing impact upon either the Employer's facilities or the geographic area defined in Arti) > Part 12",
+        "TERM OF AGREEMENT",
+        "Article 58, Section 175, Part 12"
+      ],
+      "heading_leaf": "Article 58, Section 175, Part 12",
+      "row_count": 27,
+      "is_perfect_table": false
+    }
+  },
+  "stats": {
+    "tables_total": 15,
+    "tables_with_page": 12,
+    "tables_with_article": 13,
+    "tables_with_section": 13,
+    "source_pages": 74
+  }
+}

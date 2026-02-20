@@ -16,7 +16,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from backend.config import CHUNKS_DIR, ONTOLOGIES_DIR, MANIFESTS_DIR, ENTITLEMENTS_DIR
+from backend.config import CHUNKS_DIR, ONTOLOGIES_DIR, MANIFESTS_DIR, ENTITLEMENTS_DIR, DATA_DIR
 from backend.chunk_files import resolve_chunk_file
 from backend.contracts import list_contract_catalog
 from backend.ingest.language_lexicon import (
@@ -29,6 +29,14 @@ from backend.ingest.query_routing import (
     merge_query_routing,
 )
 from backend.ingest.extract_entitlements import extract_entitlements, save_entitlements
+from backend.pdf_nav_index import build_pdf_nav_index, save_pdf_nav_index
+from backend.table_nav_index import build_table_nav_index, save_table_nav_index
+from backend.contract_outline import (
+    build_contract_outline,
+    save_contract_outline,
+    package_contract_outline_path,
+    shared_contract_outline_path,
+)
 
 
 def _discover_contract_chunk_inputs(contract_id: str = None, explicit_chunks_file: Path = None) -> list[tuple[str, Path]]:
@@ -186,6 +194,45 @@ def rebuild_index(
         print(
             f"Saved entitlement tables [{cid}]: {entitlement_path} "
             f"(schedules={len(entitlement_artifact.get('vacation_entitlements') or [])})"
+        )
+
+        pdf_nav_index = build_pdf_nav_index(contract_id=cid)
+        pdf_nav_path = ONTOLOGIES_DIR / f"pdf_nav_index_{cid}.json"
+        save_pdf_nav_index(pdf_nav_path, pdf_nav_index)
+        stats = pdf_nav_index.get("stats") or {}
+        print(
+            f"Saved PDF nav index [{cid}]: {pdf_nav_path} "
+            f"(articles={stats.get('articles_mapped', 0)}, sections={stats.get('sections_mapped', 0)})"
+        )
+
+        table_nav_index = build_table_nav_index(contract_id=cid)
+        table_nav_path = ONTOLOGIES_DIR / f"table_nav_index_{cid}.json"
+        save_table_nav_index(table_nav_path, table_nav_index)
+        package_table_nav_path = DATA_DIR / "contracts" / cid / "ontology" / "table_nav_index.json"
+        save_table_nav_index(package_table_nav_path, table_nav_index)
+        table_stats = table_nav_index.get("stats") or {}
+        print(
+            f"Saved table nav index [{cid}]: {table_nav_path} "
+            f"(tables={table_stats.get('tables_total', 0)}, mapped={table_stats.get('tables_with_page', 0)})"
+        )
+
+        contract_outline = build_contract_outline(
+            contract_id=cid,
+            manifest=manifest,
+            chunks=chunks,
+            pdf_nav_index=pdf_nav_index,
+            manifest_path=manifest_path if manifest_path.exists() else None,
+            chunks_path=cpath,
+            pdf_nav_path=pdf_nav_path,
+        )
+        outline_package_path = package_contract_outline_path(cid)
+        outline_shared_path = shared_contract_outline_path(cid)
+        save_contract_outline(outline_package_path, contract_outline)
+        save_contract_outline(outline_shared_path, contract_outline)
+        outline_stats = contract_outline.get("stats") or {}
+        print(
+            f"Saved contract outline [{cid}]: {outline_package_path} "
+            f"(articles={outline_stats.get('article_count', 0)}, sections={outline_stats.get('section_count', 0)})"
         )
 
     # Step 2: Rebuild vector store (optional)

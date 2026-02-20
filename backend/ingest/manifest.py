@@ -225,6 +225,12 @@ class ManifestExtractor:
         """Extract article numbers and titles."""
         titles = {}
 
+        normalized_content = str(self.content or "")
+        # Many OCR->markdown flows wrap headings in lightweight HTML/markdown markup.
+        # Strip common wrappers so heading regexes remain deterministic.
+        normalized_content = re.sub(r"</?(?:u|b|strong|i|em)\b[^>]*>", "", normalized_content, flags=re.IGNORECASE)
+        normalized_content = re.sub(r"\*\*([^*]+)\*\*", r"\1", normalized_content)
+
         def _clean_article_title(raw_title: str) -> str:
             # Remove TOC dot leaders + trailing page numbers, then normalize spaces.
             title = (raw_title or "").replace("\n", " ")
@@ -234,13 +240,13 @@ class ManifestExtractor:
         
         # Pattern: ARTICLE N or ARTICLE N TITLE
         patterns = [
-            r"#{1,3}\s*ARTICLE\s+(\d+)\s*\n#{1,3}\s*([A-Z][A-Z0-9 \t&,/\-()\'\".:]+)",
-            r"#{1,3}\s*ARTICLE\s+(\d+)\s+([A-Z][A-Z0-9 \t&,/\-()\'\".:]+)",
-            r"ARTICLE\s+(\d+)[:\s]+([A-Z][A-Z0-9 \t&,/\-()\'\".:]+)",
+            r"#{1,3}\s*ARTICLE\s+(\d+)\s*\n#{1,3}\s*([A-Z0-9][A-Z0-9 \t&,/\-()\'\".:]+)",
+            r"#{1,3}\s*ARTICLE\s+(\d+)\s+([A-Z0-9][A-Z0-9 \t&,/\-()\'\".:]+)",
+            r"ARTICLE\s+(\d+)[:\s]+([A-Z0-9][A-Z0-9 \t&,/\-()\'\".:]+)",
         ]
         
         for pattern in patterns:
-            for match in re.finditer(pattern, self.content):
+            for match in re.finditer(pattern, normalized_content):
                 article_num = int(match.group(1))
                 title = _clean_article_title(match.group(2))
                 if len(title) <= 1:

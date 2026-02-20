@@ -105,6 +105,35 @@ def _invalid_article_refs(value: Any, valid_articles: set[int]) -> list[str]:
     return sorted(invalid)
 
 
+def _extract_outline_article_numbers(contract_outline: Any) -> set[int]:
+    numbers: set[int] = set()
+    if not isinstance(contract_outline, dict):
+        return numbers
+
+    raw_titles = contract_outline.get("article_titles")
+    if isinstance(raw_titles, dict):
+        for raw_key in raw_titles.keys():
+            try:
+                article_num = int(raw_key)
+            except (TypeError, ValueError):
+                continue
+            if article_num > 0:
+                numbers.add(article_num)
+
+    raw_articles = contract_outline.get("articles")
+    if isinstance(raw_articles, list):
+        for row in raw_articles:
+            if not isinstance(row, dict):
+                continue
+            try:
+                article_num = int(row.get("article_num"))
+            except (TypeError, ValueError):
+                continue
+            if article_num > 0:
+                numbers.add(article_num)
+    return numbers
+
+
 def _resolve_artifacts(package_dir: Path, contract_id: str) -> dict[str, Path]:
     source_dir = package_dir / "source"
     manifests_dir = package_dir / "manifests"
@@ -113,13 +142,16 @@ def _resolve_artifacts(package_dir: Path, contract_id: str) -> dict[str, Path]:
     wages_dir = package_dir / "wages"
     entitlements_dir = package_dir / "entitlements"
     ontology_dir = package_dir / "ontology"
+    outline_dir = package_dir / "outline"
 
     md_candidates = sorted(source_dir.glob("*.md"))
     json_candidates = sorted(source_dir.glob("*.json"))
+    pdf_candidates = sorted(source_dir.glob("*.pdf"))
 
     return {
         "source_md": md_candidates[0] if md_candidates else source_dir / f"{contract_id}.md",
         "source_json": json_candidates[0] if json_candidates else source_dir / f"{contract_id}.json",
+        "source_pdf": pdf_candidates[0] if pdf_candidates else source_dir / f"{contract_id}.pdf",
         "manifest": manifests_dir / f"{contract_id}.json",
         "chunks_enriched": chunks_dir / f"contract_chunks_enriched_{contract_id}.json",
         "chunks_smart": chunks_dir / f"contract_chunks_smart_{contract_id}.json",
@@ -130,6 +162,8 @@ def _resolve_artifacts(package_dir: Path, contract_id: str) -> dict[str, Path]:
         "entitlements": entitlements_dir / f"entitlement_tables_{contract_id}.json",
         "classification_ontology": ontology_dir / "classification_ontology.json",
         "language_lexicon": ontology_dir / "language_lexicon.json",
+        "pdf_nav_index": ontology_dir / "pdf_nav_index.json",
+        "contract_outline": outline_dir / "contract_outline.json",
         "role_catalog": ontology_dir / "role_catalog.json",
         "ingestion_review_queue": ontology_dir / "ingestion_review_queue.json",
         "manual_classification_overrides": ontology_dir / "manual_classification_overrides.json",
@@ -156,6 +190,8 @@ def evaluate_contract_pack(
     entitlements_data = None
     table_registry = []
     classification_ontology = None
+    pdf_nav_index = None
+    contract_outline = None
     role_catalog = None
     ingestion_review_queue = None
 
@@ -193,6 +229,23 @@ def evaluate_contract_pack(
                 "required",
                 f"Manifest JSON load failed: {exc}",
             )
+
+    source_pdf_path = artifacts["source_pdf"]
+    source_pdf_exists = source_pdf_path.exists()
+    source_pdf_size = source_pdf_path.stat().st_size if source_pdf_exists else 0
+    _check(
+        checks,
+        "source_pdf_exists",
+        source_pdf_exists and source_pdf_size > 0,
+        "required",
+        "Source PDF artifact is present and non-empty."
+        if (source_pdf_exists and source_pdf_size > 0)
+        else "Source PDF artifact is missing or empty.",
+        {
+            "path": str(source_pdf_path),
+            "size_bytes": source_pdf_size,
+        },
+    )
 
     if manifest:
         article_titles = manifest.get("article_titles", {}) or {}
@@ -420,15 +473,18 @@ def evaluate_contract_pack(
         expected_articles = set()
         for key in article_titles.keys():
             try:
-                expected_articles.add(int(key))
+                article_num = int(key)
+                if article_num > 0:
+                    expected_articles.add(article_num)
             except (TypeError, ValueError):
                 continue
 
         found_articles = {
             int(c.get("article_num")) for c in chunks
-            if isinstance(c.get("article_num"), int)
+            if isinstance(c.get("article_num"), int) and int(c.get("article_num")) > 0
         }
         missing_articles = sorted(expected_articles - found_articles)
+        unindexed_articles = sorted(found_articles - expected_articles)
         coverage = (
             len(expected_articles & found_articles) / len(expected_articles)
             if expected_articles else 0.0
@@ -446,6 +502,21 @@ def evaluate_contract_pack(
                 "expected_articles": len(expected_articles),
                 "found_articles": len(found_articles),
                 "missing_articles": missing_articles[:30],
+            },
+        )
+        _check(
+            checks,
+            "manifest_article_index_completeness",
+            len(unindexed_articles) == 0,
+            "required",
+            "Manifest indexes all chunked article numbers."
+            if len(unindexed_articles) == 0
+            else "Manifest is missing article numbers that are present in chunks.",
+            {
+                "missing_from_manifest": unindexed_articles[:30],
+                "missing_from_manifest_count": len(unindexed_articles),
+                "found_articles": len(found_articles),
+                "indexed_articles": len(expected_articles),
             },
         )
 
@@ -579,6 +650,148 @@ def evaluate_contract_pack(
                 if region_id
                 else "Language lexicon missing region_id.",
                 {"region_id": region_id},
+            )
+
+    pdf_nav_path = artifacts["pdf_nav_index"]
+    pdf_nav_exists = pdf_nav_path.exists()
+    _check(
+        checks,
+        "pdf_nav_index_exists",
+        pdf_nav_exists,
+        "required",
+        "PDF navigation index artifact is present."
+        if pdf_nav_exists
+        else "PDF navigation index artifact is missing.",
+        {"path": str(pdf_nav_path)},
+    )
+    if pdf_nav_exists:
+        try:
+            pdf_nav_index = _load_json(pdf_nav_path)
+        except Exception as exc:
+            pdf_nav_index = None
+            _check(
+                checks,
+                "pdf_nav_index_json_load",
+                False,
+                "required",
+                f"PDF navigation index JSON load failed: {exc}",
+            )
+
+    if pdf_nav_index:
+        schema_ok = str(pdf_nav_index.get("schema_version") or "") == "pdf_nav_index_v1"
+        contract_ok = str(pdf_nav_index.get("contract_id") or "") == contract_id
+        article_pages = pdf_nav_index.get("article_pages") or {}
+        section_pages = pdf_nav_index.get("section_pages") or {}
+        article_count = len(article_pages) if isinstance(article_pages, dict) else 0
+        section_count = 0
+        if isinstance(section_pages, dict):
+            for raw_val in section_pages.values():
+                if isinstance(raw_val, dict):
+                    section_count += len(raw_val)
+        _check(
+            checks,
+            "pdf_nav_index_schema_valid",
+            schema_ok and contract_ok,
+            "required",
+            "PDF navigation index schema and contract_id are valid."
+            if schema_ok and contract_ok
+            else "PDF navigation index schema_version/contract_id are invalid.",
+            {
+                "schema_version": pdf_nav_index.get("schema_version"),
+                "artifact_contract_id": pdf_nav_index.get("contract_id"),
+            },
+        )
+        _check(
+            checks,
+            "pdf_nav_index_non_empty",
+            article_count > 0,
+            "required",
+            "PDF navigation index includes article page mappings."
+            if article_count > 0
+            else "PDF navigation index has no article page mappings.",
+            {
+                "article_pages": article_count,
+                "section_pages": section_count,
+            },
+        )
+
+    contract_outline_path = artifacts["contract_outline"]
+    contract_outline_exists = contract_outline_path.exists()
+    _check(
+        checks,
+        "contract_outline_exists",
+        contract_outline_exists,
+        "required",
+        "Contract outline artifact is present."
+        if contract_outline_exists
+        else "Contract outline artifact is missing.",
+        {"path": str(contract_outline_path)},
+    )
+    if contract_outline_exists:
+        try:
+            contract_outline = _load_json(contract_outline_path)
+        except Exception as exc:
+            contract_outline = None
+            _check(
+                checks,
+                "contract_outline_json_load",
+                False,
+                "required",
+                f"Contract outline JSON load failed: {exc}",
+            )
+
+    if contract_outline:
+        schema_ok = str(contract_outline.get("schema_version") or "") == "contract_outline_v1"
+        contract_ok = str(contract_outline.get("contract_id") or "") == contract_id
+        outline_article_numbers = _extract_outline_article_numbers(contract_outline)
+        outline_articles = contract_outline.get("articles") or []
+        outline_non_empty = bool(outline_article_numbers) and bool(outline_articles)
+        _check(
+            checks,
+            "contract_outline_schema_valid",
+            schema_ok and contract_ok,
+            "required",
+            "Contract outline schema and contract_id are valid."
+            if schema_ok and contract_ok
+            else "Contract outline schema_version/contract_id are invalid.",
+            {
+                "schema_version": contract_outline.get("schema_version"),
+                "artifact_contract_id": contract_outline.get("contract_id"),
+            },
+        )
+        _check(
+            checks,
+            "contract_outline_non_empty",
+            outline_non_empty,
+            "required",
+            "Contract outline includes article metadata."
+            if outline_non_empty
+            else "Contract outline has no usable article metadata.",
+            {
+                "article_count": len(outline_article_numbers),
+                "raw_articles_count": len(outline_articles) if isinstance(outline_articles, list) else 0,
+            },
+        )
+        if chunks:
+            chunk_articles = {
+                int(c.get("article_num")) for c in chunks
+                if isinstance(c.get("article_num"), int) and int(c.get("article_num")) > 0
+            }
+            missing_from_outline = sorted(chunk_articles - outline_article_numbers)
+            _check(
+                checks,
+                "contract_outline_chunk_coverage",
+                len(missing_from_outline) == 0,
+                "required",
+                "Contract outline indexes all chunked article numbers."
+                if len(missing_from_outline) == 0
+                else "Contract outline is missing chunked article numbers.",
+                {
+                    "missing_from_outline": missing_from_outline[:30],
+                    "missing_from_outline_count": len(missing_from_outline),
+                    "chunk_article_count": len(chunk_articles),
+                    "outline_article_count": len(outline_article_numbers),
+                },
             )
 
     # Wage artifact checks

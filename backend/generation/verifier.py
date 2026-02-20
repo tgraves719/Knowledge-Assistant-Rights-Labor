@@ -379,6 +379,8 @@ def format_response_with_sources(
             # Find matching chunk
             for chunk in chunks:
                 if chunk.get('article_num') == article_num:
+                    table_refs = chunk.get("table_refs") or []
+                    first_table_id = str(table_refs[0]).strip() if table_refs else None
                     sources.append({
                         'citation': citation,
                         'article_title': chunk.get('article_title', ''),
@@ -386,6 +388,7 @@ def format_response_with_sources(
                         'article_num': chunk.get('article_num'),
                         'section_num': chunk.get('section_num'),
                         'subsection': chunk.get('subsection'),
+                        'table_id': first_table_id or None,
                     })
                     break
             continue
@@ -396,6 +399,8 @@ def format_response_with_sources(
             chunk_citation = str(chunk.get("citation") or "").strip()
             if chunk_citation.lower() != citation_key:
                 continue
+            table_refs = chunk.get("table_refs") or []
+            first_table_id = str(table_refs[0]).strip() if table_refs else None
             sources.append({
                 'citation': citation,
                 'article_title': chunk.get('article_title', ''),
@@ -403,6 +408,7 @@ def format_response_with_sources(
                 'article_num': chunk.get('article_num'),
                 'section_num': chunk.get('section_num'),
                 'subsection': chunk.get('subsection'),
+                'table_id': first_table_id or None,
             })
             break
     
@@ -422,6 +428,7 @@ def format_response_with_sources(
                 'article_num': wage_article_num,
                 'section_num': None,
                 'subsection': None,
+                'table_id': (first_table or {}).get("table_id") if isinstance(first_table, dict) else None,
             })
         for row in (wage_info.get("table_evidence") or []):
             if not isinstance(row, dict):

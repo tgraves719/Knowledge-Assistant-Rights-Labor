@@ -1,5 +1,69 @@
 # Karl Update Log
 
+## v0.8.70 - Modular Frontend Promotion + PDF-First Contract UX + 6-Step Member Onboarding (February 19, 2026)
+
+### Overview
+
+Promoted the modular frontend to primary UX and shipped a major end-to-end pass across onboarding, contract reading, citation navigation, and layout stability. Added robust PDF-first contract navigation tied to citations (including table-aware routing) and completed a polished 6-question member onboarding flow with shield progress mapping.
+
+### What Changed
+
+- Frontend architecture and UX direction:
+  - moved active UI work to `frontend/modular/*` and continued feature parity there
+  - established PDF-first contract reading UX with TOC + embedded PDF surface
+  - contract pane and TOC now use independent desktop scrolling with fixed workspace sizing
+
+- Contract PDF and citation navigation:
+  - citation popovers render markdown content correctly
+  - citation -> contract routing supports article/section and table/table-row navigation
+  - improved PDF load reliability when jumping from TOC/citations (including repeated jumps)
+  - reset behavior returns viewer to last pinned citation location
+  - PDF toolbar hidden in embedded iframe, while `Open Tab` now opens full native viewer controls (page nav/tools)
+  - added in-pane `Download` control for PDF
+  - removed redundant TOC `PDF` shortcut buttons
+
+- Backend support for table-aware PDF routing:
+  - added table navigation index generation and loaders
+  - `/api/pdf-location` extended to resolve `table_id` / `row_index`
+  - verifier source metadata now carries table-aware citation context
+
+- Contract outline / article coverage hardening:
+  - investigation and fixes for missing article dropdown coverage caused by outline/artifact mismatch
+  - ingestion/runtime path improved to reduce future drift risk at scale
+
+- Header / layout / interaction polish:
+  - removed pointer-driven gradient behavior; header flow is autonomous and state-modulated
+  - desktop stacking bug fixed where tab bar clipped top content rows
+  - dynamic shell metric syncing added for header/tab offsets after font/layout changes
+  - chat profile bar contrast/readability improvements in dark contexts
+
+- Onboarding system modularization:
+  - split and stabilized steward and member onboarding controllers
+  - onboarding skip logic respects existing saved profile/cache and bypasses modal when complete profile is present
+  - member flow expanded to 6 questions:
+    1. Employer
+    2. Location
+    3. Department
+    4. Classification
+    5. Employment type (Full-Time / Part-Time)
+    6. Hire date
+  - shield progress expanded to 6 segments and synchronized with scene progression
+  - final step animation updated so final form collapses into contract before shield close
+  - next-step transition timing accelerated and synchronized with page-turn motion
+  - skip/back shield controls mapped across all member scenes
+
+- Visual design refinements:
+  - shield segment rendering simplified to clean split fills (no visible idle seams)
+  - idle shield grays adjusted to original look (`#334155` / `#475569`)
+  - onboarding typography rebalanced (Inter + Playfair display cues)
+  - onboarding option labels normalized to readable casing (no forced all-caps store labels)
+
+### Validation
+
+- `node --check frontend/modular/src/app.js` -> PASS
+- `node --check frontend/modular/src/modules/member-onboarding.js` -> PASS
+- Table-aware `/api/pdf-location` routing validated for article/section and table-row paths during implementation.
+
 ## v0.8.69 - Canonical Follow-Up Role Wage Gate (February 2026)
 
 ### Overview
