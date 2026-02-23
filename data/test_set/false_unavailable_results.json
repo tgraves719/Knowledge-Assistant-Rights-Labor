@@ -1,7 +1,7 @@
 {
   "schema_version": "false_unavailable_eval_v2",
   "dataset_schema_version": "false_unavailable_test_v1",
-  "timestamp_utc": "2026-02-15T19:57:38.121506+00:00",
+  "timestamp_utc": "2026-02-22T05:31:39.486025+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_test.json",
   "bm25_only": true,
   "overall": {
@@ -42,10 +42,10 @@
         "Article 58"
       ],
       "retrieved_citations": [
-        "Article 58, Section 173",
         "Article 58, Section 175",
+        "Article 58, Section 173",
         "Article 1",
-        "Article 58, Section 1749"
+        "Article 58, Section 175, Part 10"
       ],
       "contains_unavailable_language": false,
       "citation_hit": true,
@@ -61,8 +61,6 @@
         "Article 25"
       ],
       "retrieved_citations": [
-        "Article 21, Section 57",
-        "Article 25, Section 61",
         "Article 24, Section 60",
         "Article 10, Section 21"
       ],
@@ -81,8 +79,7 @@
       "retrieved_citations": [
         "Article 33, Section 95",
         "Article 33, Section 97",
-        "Article 33, Section 96",
-        "Article 17, Section 44"
+        "Article 33, Section 96"
       ],
       "contains_unavailable_language": false,
       "citation_hit": true,
@@ -97,8 +94,8 @@
         "Article 16"
       ],
       "retrieved_citations": [
-        "Article 35, Section 101",
-        "Article 35, Section 102",
+        "Article 16, Section 35",
+        "Article 16, Section 43",
         "Article 16, Section 36",
         "Article 16, Section 37"
       ],
@@ -116,9 +113,9 @@
       ],
       "retrieved_citations": [
         "Article 57, Section 167",
+        "Article 57, Section 168",
         "Article 57, Section 169",
         "Article 1",
-        "Article 57, Section 168",
         "Article 57, Section 169 (Table: PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH)"
       ],
       "contains_unavailable_language": false,
@@ -134,10 +131,10 @@
         "Article 12"
       ],
       "retrieved_citations": [
-        "Article 5, Section 12",
+        "Article 30, Section 88",
+        "Article 30, Section 89",
         "Article 12, Section 32",
-        "Article 29, Section 87",
-        "Article 30, Section 88"
+        "Article 12, Section 33"
       ],
       "contains_unavailable_language": false,
       "citation_hit": true,
@@ -152,10 +149,9 @@
         "Article 17"
       ],
       "retrieved_citations": [
-        "Article 16, Section 43",
         "Article 17, Section 51",
-        "Article 31, Section 90",
-        "Article 16, Section 41"
+        "Article 17, Section 48",
+        "Article 17, Section 49"
       ],
       "contains_unavailable_language": false,
       "citation_hit": true,
@@ -171,9 +167,9 @@
       ],
       "retrieved_citations": [
         "Article 17, Section 48",
-        "Article 28, Section 77",
-        "Article 32, Section 92",
-        "Article 16, Section 40"
+        "Article 16, Section 38",
+        "Article 16, Section 40",
+        "Article 16, Section 41"
       ],
       "contains_unavailable_language": false,
       "citation_hit": true,
@@ -207,7 +203,10 @@
         "Article 57, Section 127",
         "Article 57, Section 128",
         "Article 57, Section 127, Part 3",
-        "Article 57, Section 128 (Table: MINIMUM WAGE)"
+        "Article 57, Section 128 (Table: Article 57, Section 128, Part 22-0)",
+        "Article 57, Section 128 (Table: MINIMUM WAGE)",
+        "Article 57, Section 128 (Table: DRESS REQUIREMENTS. DATED 3/25/19)",
+        "Article 57, Section 128 (Table: LETTERS OF AGREEMENT)"
       ],
       "contains_unavailable_language": false,
       "citation_hit": true,
@@ -223,11 +222,7 @@
       ],
       "retrieved_citations": [
         "Article 48",
-        "Article 8, Section 22",
-        "Article 17, Section 42",
-        "Article 8, Section 23",
-        "Article 8",
-        "Appendix A"
+        "Article 57, Section 128"
       ],
       "contains_unavailable_language": false,
       "citation_hit": true,
@@ -242,11 +237,11 @@
         "Article 8"
       ],
       "retrieved_citations": [
-        "Article 48",
-        "Article 27, Section 68",
+        "Article 57, Section 128",
         "Article 8, Section 23",
         "Article 8",
-        "Article 17, Section 43"
+        "Article 8, Section 22",
+        "Appendix A"
       ],
       "contains_unavailable_language": false,
       "citation_hit": true,

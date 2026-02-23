@@ -419,6 +419,51 @@ class HybridSearcher:
         )
         return any(s in q for s in signals)
 
+    @staticmethod
+    def _side_letter_query_mode(query: str) -> str:
+        """
+        Classify side-letter intent from lexical cues.
+
+        Returns:
+            - "explicit": direct LOA/LOU/side-letter mention
+            - "followup": agreement follow-up cues (cancel/discontinue/written notice)
+            - "none": no side-letter signals
+        """
+        q = (query or "").lower()
+        explicit_signals = (
+            "letter of agreement",
+            "letters of agreement",
+            "letter of understanding",
+            "letters of understanding",
+            " side letter",
+            "side-letter",
+            " sideletter",
+            " lou ",
+        )
+        if any(sig in f" {q} " for sig in explicit_signals):
+            return "explicit"
+
+        has_agreement_ref = any(
+            sig in q
+            for sig in ("that agreement", "this agreement", "the agreement", "agreement")
+        )
+        has_followup_cue = any(
+            sig in q
+            for sig in (
+                "written notice",
+                "30 days",
+                "cancel",
+                "discontinue",
+                "discontinued",
+                "discontinuing",
+                "either party",
+                "implement this procedure",
+            )
+        )
+        if has_agreement_ref and has_followup_cue:
+            return "followup"
+        return "none"
+
     def get_concept_boost_articles(self, query: str, contract_id: Optional[str] = None) -> List[int]:
         """
         Phase 4: Find articles to boost based on concept index matching.
@@ -586,7 +631,41 @@ class HybridSearcher:
                 boosted_ranking.append((chunk_id, rrf_score))
             rrf_ranking = sorted(boosted_ranking, key=lambda x: x[1], reverse=True)
 
-        # 4.6. Structured-table evidence boost for value-heavy queries
+        # 4.6. Side-letter lexical boost for LOA/LOU prompts and follow-ups
+        side_letter_mode = self._side_letter_query_mode(query)
+        if side_letter_mode != "none":
+            side_letter_boosted = []
+            query_tokens = [
+                t for t in re.findall(r"[a-z0-9]+", (query or "").lower())
+                if len(t) >= 5 and t not in {"letter", "agreement", "understanding", "side"}
+            ]
+            for chunk_id, rrf_score in rrf_ranking:
+                chunk = chunks_by_id.get(chunk_id, {})
+                doc_type = str(chunk.get("doc_type") or "").strip().lower()
+                citation_lower = str(chunk.get("citation") or "").lower()
+                snippet = str(
+                    chunk.get("content_with_tables")
+                    or chunk.get("content")
+                    or ""
+                ).lower()[:1200]
+                blob = f"{citation_lower}\n{snippet}"
+
+                boost = 0.0
+                if doc_type in {"loa", "lou"}:
+                    boost += 0.08 if side_letter_mode == "explicit" else 0.06
+                if "letter of agreement" in blob or "letter of understanding" in blob:
+                    boost += 0.01
+                if query_tokens:
+                    focus_hits = sum(1 for tok in query_tokens if tok in blob)
+                    if focus_hits > 0:
+                        boost += min(0.08, 0.02 * focus_hits)
+                if side_letter_mode == "followup":
+                    if any(sig in blob for sig in ("written notice", "30 days", "either party", "discontinue")):
+                        boost += 0.05
+                side_letter_boosted.append((chunk_id, rrf_score + boost))
+            rrf_ranking = sorted(side_letter_boosted, key=lambda x: x[1], reverse=True)
+
+        # 4.7. Structured-table evidence boost for value-heavy queries
         if self._query_requests_structured_values(query):
             table_boosted_ranking = []
             query_lower = (query or "").lower()
@@ -642,6 +721,12 @@ class HybridSearcher:
                     'hire_date_sensitive': chunk.get('hire_date_sensitive', False),
                     'is_high_stakes': chunk.get('is_high_stakes', False),
                     'table_refs': chunk.get('table_refs', []),
+                    'anchor_id': chunk.get('anchor_id'),
+                    'span_id': chunk.get('span_id'),
+                    'provenance': chunk.get('provenance', []),
+                    'source_type': chunk.get('source_type', ''),
+                    'effective_version_id': chunk.get('effective_version_id'),
+                    'amendments_applied': chunk.get('amendments_applied', []),
                     # Phase 4: Concept-indexed fields
                     'worker_questions': chunk.get('worker_questions', []),
                     'alternative_names': chunk.get('alternative_names', []),

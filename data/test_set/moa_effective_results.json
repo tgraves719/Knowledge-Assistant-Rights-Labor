@@ -1,0 +1,178 @@
+{
+  "schema_version": "moa_effective_eval_v1",
+  "dataset_schema_version": "moa_effective_test_v1",
+  "timestamp_utc": "2026-02-22T05:31:20.279405+00:00",
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_test.json",
+  "n_results": 8,
+  "bm25_only": true,
+  "overall": {
+    "passed": 4,
+    "total": 4,
+    "pass_rate": 1.0,
+    "citation_hit_rate": 1.0,
+    "source_type_match_rate": 1.0,
+    "intent_match_rate": 1.0
+  },
+  "by_contract": {
+    "local7_safeway_pueblo_clerks_2022": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "MOA-CL-TERM-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "What is the expiration date of the current agreement?",
+      "expectation": "present",
+      "expected_citations": [
+        "Article 58, Section 1749"
+      ],
+      "retrieved_citations": [
+        "Article 58, Section 173",
+        "Article 58, Section 175, Part 1",
+        "Article 58, Section 1749",
+        "Article 35, Section 100, Part 2-2",
+        "Article 35, Section 101",
+        "Article 36, Section 110",
+        "Article 36, Section 112",
+        "Article 36, Section 111"
+      ],
+      "expected_rank": 2,
+      "citation_hit": true,
+      "expected_keywords": [
+        "January 16, 2027"
+      ],
+      "min_expected_keyword_hits": 1,
+      "best_expected_keyword_hits": 1,
+      "keywords_ok": true,
+      "forbidden_keywords": [],
+      "forbidden_ok": true,
+      "expected_source_type": "moa",
+      "source_type_observed": "moa",
+      "source_type_ok": true,
+      "expected_intent_type": "contract",
+      "observed_intent_type": "contract",
+      "intent_ok": true,
+      "require_no_wage_info": true,
+      "wage_info_present": false,
+      "wage_info_ok": true,
+      "pass": true
+    },
+    {
+      "id": "MOA-CL-NIGHT-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "All Courtesy Clerks shall receive how much per hour in addition to the hourly rate for all work performed between 12:00 midnight and 6:00 a.m.?",
+      "expectation": "present",
+      "expected_citations": [
+        "Article 15, Section 34"
+      ],
+      "retrieved_citations": [
+        "Article 16, Section 41",
+        "Article 16, Section 42",
+        "Article 2, Section 4",
+        "Article 4, Section 9",
+        "Article 7, Section 14, Subsection h (DRIVE UP AND GO)",
+        "Article 42, Section 118, Part 3",
+        "Article 16, Section 43",
+        "Article 15, Section 34"
+      ],
+      "expected_rank": 7,
+      "citation_hit": true,
+      "expected_keywords": [
+        "fifty cents",
+        "$0.50"
+      ],
+      "min_expected_keyword_hits": 1,
+      "best_expected_keyword_hits": 2,
+      "keywords_ok": true,
+      "forbidden_keywords": [],
+      "forbidden_ok": true,
+      "expected_source_type": null,
+      "source_type_observed": "moa",
+      "source_type_ok": true,
+      "expected_intent_type": "contract",
+      "observed_intent_type": "contract",
+      "intent_ok": true,
+      "require_no_wage_info": true,
+      "wage_info_present": false,
+      "wage_info_ok": true,
+      "pass": true
+    },
+    {
+      "id": "MOA-CL-REMOVED-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "Is it true that the Employer will send the Union a copy of the full time request list?",
+      "expectation": "absent",
+      "expected_citations": [],
+      "retrieved_citations": [
+        "Article 17, Section 52, Part 2",
+        "Article 48, Section 148",
+        "Article 45, Section 132",
+        "Article 24, Section 60",
+        "Article 29, Section 82, Part 2",
+        "Article 44, Section 128",
+        "Article 25, Section 61",
+        "Article 29, Section 82, Part 4"
+      ],
+      "expected_rank": null,
+      "citation_hit": true,
+      "expected_keywords": [],
+      "min_expected_keyword_hits": 1,
+      "best_expected_keyword_hits": 0,
+      "keywords_ok": true,
+      "forbidden_keywords": [
+        "full time request list"
+      ],
+      "forbidden_ok": true,
+      "expected_source_type": null,
+      "source_type_observed": null,
+      "source_type_ok": true,
+      "expected_intent_type": "contract",
+      "observed_intent_type": "contract",
+      "intent_ok": true,
+      "require_no_wage_info": true,
+      "wage_info_present": false,
+      "wage_info_ok": true,
+      "pass": true
+    },
+    {
+      "id": "MOA-CL-REMOVED-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "The Sunday premium shall not be averaged into the employee's straight-time rate for determining overtime. Is that in the current effective agreement?",
+      "expectation": "absent",
+      "expected_citations": [],
+      "retrieved_citations": [
+        "Article 16, Section 35",
+        "Article 16, Section 37",
+        "Article 14, Section 31",
+        "Article 14, Section 32",
+        "Article 14, Section 33",
+        "Article 16, Section 36",
+        "Article 15, Section 34",
+        "Article 13, Section 29"
+      ],
+      "expected_rank": null,
+      "citation_hit": true,
+      "expected_keywords": [],
+      "min_expected_keyword_hits": 1,
+      "best_expected_keyword_hits": 0,
+      "keywords_ok": true,
+      "forbidden_keywords": [
+        "shall not be averaged into the employee's straight-time rate"
+      ],
+      "forbidden_ok": true,
+      "expected_source_type": null,
+      "source_type_observed": null,
+      "source_type_ok": true,
+      "expected_intent_type": "contract",
+      "observed_intent_type": "contract",
+      "intent_ok": true,
+      "require_no_wage_info": true,
+      "wage_info_present": false,
+      "wage_info_ok": true,
+      "pass": true
+    }
+  ]
+}

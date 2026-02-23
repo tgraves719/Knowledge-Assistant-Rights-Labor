@@ -110,9 +110,15 @@ UNIVERSAL_SLANG = {
 
     # Union stuff
     "steward": "union steward union representative",
+    "stewards conference": "annual union stewards conference union stewards work schedules",
     "rep": "union representative steward",
     "dues": "union dues",
     "union meeting": "union business leave",
+    "union meeting night": "regular local union meeting scheduled later than 6:00 p.m.",
+
+    # Contract term phrasing
+    "run through": "term of agreement expiration date end date",
+    "in force through": "term of agreement expiration date end date",
 
     # Misc
     "dress code": "uniform appearance dress",
@@ -272,6 +278,8 @@ _TOPIC_ARTICLE_TITLE_HINTS: dict[str, tuple[str, ...]] = {
     "health_benefits": ("health and welfare", "health benefits", "health benefits plan"),
     "premiums": (
         "premium",
+        "holiday",
+        "holidays",
         "holiday pay",
         "holiday premium",
         "when a holiday is worked",
@@ -302,7 +310,16 @@ _TOPIC_LEXICAL_SIGNALS: dict[str, tuple[str, ...]] = {
     "bereavement": ("bereavement leave", "funeral leave", "death in family", "funeral"),
     "sick_leave": ("sick leave", "sick pay"),
     "term": ("term of agreement", "effective date", "expiration", "start and end"),
+    "overtime": ("overtime", "time and one-half", "time and a half", "ot"),
 }
+
+_ROLE_COMPARISON_TITLE_HINTS: tuple[str, ...] = (
+    "check-off",
+    "new employees, transferred employees, promoted or demoted",
+    "definitions of classifications",
+    "rates of pay",
+    "scheduling and assignment of hours",
+)
 
 
 @lru_cache(maxsize=16)
@@ -343,6 +360,141 @@ def infer_topic_article_map(contract_id: str = CONTRACT_ID) -> dict:
         if article_nums
     }
 
+
+@lru_cache(maxsize=16)
+def infer_role_comparison_articles(contract_id: str = CONTRACT_ID) -> list[int]:
+    """
+    Infer stable fallback anchors for role-comparison questions.
+
+    Used when manifests do not define `classification_to_articles`.
+    """
+    manifest_path = MANIFESTS_DIR / f"{contract_id}.json"
+    if not manifest_path.exists():
+        return []
+
+    try:
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            manifest = json.load(f)
+    except Exception:
+        return []
+
+    article_titles = manifest.get("article_titles", {}) or {}
+    inferred: list[int] = []
+    for article_key, raw_title in article_titles.items():
+        try:
+            article_num = int(article_key)
+        except (TypeError, ValueError):
+            continue
+        title = str(raw_title or "").strip().lower()
+        if not title:
+            continue
+        if any(hint in title for hint in _ROLE_COMPARISON_TITLE_HINTS):
+            inferred.append(article_num)
+    return _normalize_article_list(inferred)
+
+
+def _allow_legacy_unscoped_chunks_for_routing() -> bool:
+    """Allow unscoped chunk fallback only in single-manifest mode."""
+    return len(list(MANIFESTS_DIR.glob("*.json"))) == 1
+
+
+@lru_cache(maxsize=16)
+def infer_side_letter_articles(contract_id: str = CONTRACT_ID) -> list[int]:
+    """
+    Infer side-letter-heavy article anchors from chunk artifacts.
+
+    Uses `doc_type` first (`loa`/`lou`) with lexical fallback for older packs.
+    """
+    chunks_path = resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+    if not chunks_path or not chunks_path.exists():
+        return []
+
+    try:
+        with open(chunks_path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+    except Exception:
+        return []
+
+    if not isinstance(payload, list):
+        return []
+
+    target_region = str(resolve_contract_region_id(contract_id))
+    allow_unscoped = _allow_legacy_unscoped_chunks_for_routing()
+    doc_type_counts: dict[int, int] = {}
+    lexical_counts: dict[int, int] = {}
+
+    for row in payload:
+        if not isinstance(row, dict):
+            continue
+
+        chunk_contract_id = row.get("contract_id")
+        if chunk_contract_id != contract_id:
+            if not (allow_unscoped and chunk_contract_id in (None, "")):
+                continue
+
+        chunk_region = row.get("region_id") or resolve_contract_region_id(str(chunk_contract_id or contract_id))
+        if str(chunk_region) != target_region and not (allow_unscoped and chunk_contract_id in (None, "")):
+            continue
+
+        doc_type = str(row.get("doc_type") or "").strip().lower()
+
+        try:
+            article_num = int(row.get("article_num") or 0)
+        except (TypeError, ValueError):
+            article_num = 0
+        if article_num <= 0:
+            continue
+
+        if doc_type in {"loa", "lou"}:
+            doc_type_counts[article_num] = int(doc_type_counts.get(article_num, 0)) + 1
+            continue
+
+        blob = (
+            str(row.get("citation") or "")
+            + "\n"
+            + str(row.get("content_with_tables") or "")
+            + "\n"
+            + str(row.get("content") or "")
+        ).lower()
+        if ("letter of agreement" in blob) or ("letter of understanding" in blob):
+            lexical_counts[article_num] = int(lexical_counts.get(article_num, 0)) + 1
+
+    counts = doc_type_counts if doc_type_counts else lexical_counts
+    ranked = sorted(counts.items(), key=lambda kv: (-int(kv[1]), int(kv[0])))
+    return [int(article_num) for article_num, _ in ranked]
+
+
+def _is_side_letter_explicit_query(query_text: str) -> bool:
+    q = _normalize_query_text(query_text or "")
+    if not q:
+        return False
+    return bool(
+        re.search(
+            r"\b(letter(?:s)?\s+of\s+(?:agreement|understanding)|side[-\s]?letter|lou|loa)\b",
+            q,
+        )
+    )
+
+
+def _is_side_letter_followup_query(query_text: str) -> bool:
+    q = _normalize_query_text(query_text or "")
+    if not q or _is_side_letter_explicit_query(q):
+        return False
+
+    if re.search(CONTRACT_TERM_CUE_PATTERN, q):
+        return False
+
+    has_reference = bool(
+        re.search(r"\b(this|that|the)\s+agreement\b|\b(this|that|the)\s+letter\b|\bagreement\b", q)
+    )
+    has_followup_cue = bool(
+        re.search(
+            r"\b(written\s+notice|30\s*days|either\s+party|cancel|discontinue|discontinuing|discontinued|implement\s+this\s+procedure)\b",
+            q,
+        )
+    )
+    return has_reference and has_followup_cue
+
 def expand_query(query: str, contract_id: str = CONTRACT_ID) -> Tuple[str, list]:
     """
     Expand query by replacing worker slang with contract terminology.
@@ -378,9 +530,15 @@ def expand_query(query: str, contract_id: str = CONTRACT_ID) -> Tuple[str, list]
         (
             r"(?:\bcontract\b|\bagreement\b|\bcba\b).*(?:\bstart\b|\bbegin\b|\beffective\b).*(?:\bend\b|\bexpir)"
             r"|(?:\bstart\b|\bbegin\b|\beffective\b).*(?:\bend\b|\bexpir).*(?:\bcontract\b|\bagreement\b|\bcba\b)"
-            r"|\bterm\s*of\s*(?:agreement|contract)\b|\beffective\s*date\b|\bexpiration\s*date\b",
+            r"|\bterm\s*of\s*(?:agreement|contract)\b|\beffective\s*date\b|\bexpiration\s*date\b"
+            r"|\brun\s*through\b|\bin\s*force\s*through\b",
             "term of agreement effective date expiration date start date end date",
             "contract term pattern",
+        ),
+        (
+            r"\bstewards?\b.*\b(conference|meeting)\b|\bunion\s*meeting\b.*\bstewards?\b",
+            "annual union stewards conference adjust union stewards work schedules regular local union meeting scheduled later than 6:00 p.m.",
+            "steward schedule pattern",
         ),
         (
             r"\bclose\b.*\bopen\b|\bopen\b.*\bclose\b",
@@ -504,6 +662,37 @@ def _normalize_query_text(text: str) -> str:
     return re.sub(r"\s+", " ", raw).strip()
 
 
+def _classification_alias_candidates(raw: str) -> list[str]:
+    """
+    Produce deterministic lexical variants for contract alias resolution.
+
+    Keep this conservative; semantic remapping belongs in contract data.
+    """
+    pending: list[str] = [_normalize_query_text(raw)]
+    seen: set[str] = set()
+    ordered: list[str] = []
+
+    while pending:
+        candidate = _normalize_query_text(pending.pop(0))
+        if not candidate or candidate in seen:
+            continue
+        seen.add(candidate)
+        ordered.append(candidate)
+
+        derived = [
+            candidate.replace("nonfood", "non food"),
+            candidate.replace("non food", "nonfood"),
+            re.sub(r"\bfoods\b", "food", candidate),
+            re.sub(r"\bfood\b", "foods", candidate),
+        ]
+        for value in derived:
+            value = _normalize_query_text(value)
+            if value and value not in seen:
+                pending.append(value)
+
+    return ordered
+
+
 def normalize_classification_for_contract(
     classification: Optional[str],
     contract_id: str = CONTRACT_ID,
@@ -516,16 +705,19 @@ def normalize_classification_for_contract(
         return None
 
     aliases = _contract_classification_aliases(contract_id)
-    if raw in aliases:
-        return aliases[raw]
+    for candidate in _classification_alias_candidates(raw):
+        if candidate in aliases:
+            return aliases[candidate]
 
-    snake = re.sub(r"[^a-z0-9]+", "_", raw).strip("_")
-    if snake in aliases:
-        return aliases[snake]
+        snake = re.sub(r"[^a-z0-9]+", "_", candidate).strip("_")
+        if snake in aliases:
+            return aliases[snake]
 
-    if raw.replace(" ", "_") in aliases:
-        return aliases[raw.replace(" ", "_")]
-    return snake or raw
+        underscored = candidate.replace(" ", "_")
+        if underscored in aliases:
+            return aliases[underscored]
+
+    return re.sub(r"[^a-z0-9]+", "_", raw).strip("_") or raw
 
 
 @dataclass
@@ -571,6 +763,16 @@ WAGE_EXCLUDE_PATTERNS = [
     "pay stub", "pay period", "pay check"
 ]
 
+# Topics where "rate" language is often legal-calculation text, not wage lookup.
+WAGE_SUPPRESS_TOPICS = {
+    "overtime",
+    "premiums",
+    "breaks",
+    "grievance",
+    "discipline",
+    "term",
+}
+
 # Classification extraction patterns
 CLASSIFICATION_PATTERNS = {
     "courtesy_clerk": r"courtesy\s*clerk|bagger",
@@ -580,12 +782,13 @@ CLASSIFICATION_PATTERNS = {
     "bakery_manager": r"bakery\s*manager",
     "cake_decorator": r"cake\s*decorator",
     "pharmacy_tech": r"pharmacy\s*tech",
-    "non_foods_clerk": r"non.?food|gm\s*clerk|general\s*merchandise",
+    "non_foods_clerk": r"non.?food|gm\s*clerk|general\s*merchandise|non.?food.*gm.*floral|dug\s*shopper|drive\s*up\s*and\s*go|floral",
 }
 
 CONTRACT_TERM_CUE_PATTERN = (
     r"term\s*of|contract\s*term|agreement\s*term|term\s*of\s*(agreement|contract)|"
     r"expir|effective\s*date|"
+    r"run\s*through|in\s*force\s*through|"
     r"(?:contract|agreement|cba).*(?:start|begin|effective).*(?:end|expir)|"
     r"(?:start|begin|effective).*(?:end|expir).*(?:contract|agreement|cba)"
 )
@@ -607,12 +810,14 @@ _UNIVERSAL_TOPIC_PATTERNS = {
     "vacation": r"vacation|time\s*off|holiday|personal day",
     "bereavement": r"bereavement|funeral|death\s*in\s*the\s*family|died",
     "sick_leave": r"sick\s*leave|sick\s*day|illness|call\s*in\s*sick",
-    "discipline": r"disciplin|warning|write\s*up|written up|tardiness|tardy|late|attendance",
+    "discipline": r"disciplin|warning|write\s*up|written up|tardiness|tardy|\blate\b|attendance",
     "grievance": r"grievance|arbitration|file\s*a\s*complaint",
     "breaks": rf"break|lunch|meal\s*period|relief|rest\s*period|{INTER_SHIFT_REST_CUE_PATTERN}",
     "premiums": (
         r"premium|night\s*pay|sunday\s*pay|sunday\s*premium|holiday\s*premium|"
-        r"holiday.*(premium|pay).*worked|worked.*holiday.*(premium|pay)"
+        r"holiday.*(premium|pay).*worked|worked.*holiday.*(premium|pay)|"
+        r"in\s+addition\s+to\s+(their|the)\s+hourly\s+rate|"
+        r"12\s*00\s*midnight.*6\s*00\s*a\s*m"
     ),
     "weingarten": r"weingarten|right\s*to\s*representation|union\s*rep",
     "health_benefits": r"health\s*(benefit|insurance|coverage|care)|medical\s*benefit|eligible.*(health|benefit)|benefit.*eligible",
@@ -661,6 +866,12 @@ VACATION_ENTITLEMENT_QUERY_PATTERN = (
 HOLIDAY_WORK_PREMIUM_QUERY_PATTERN = (
     r"\bholiday\b.*\b(work|worked|working)\b.*\b(premium|pay|rate)\b"
     r"|\b(work|worked|working)\b.*\bholiday\b.*\b(premium|pay|rate)\b"
+)
+
+STEWARD_UNION_MEETING_SCHEDULE_QUERY_PATTERN = (
+    r"\bstewards?\b.*\b(union\s*meeting|meeting\s*nights?)\b"
+    r"|\b(union\s*meeting|meeting\s*nights?)\b.*\bstewards?\b"
+    r"|\bstewards?\b.*\b6\s*00\b"
 )
 
 
@@ -839,6 +1050,19 @@ def _is_role_comparison_query(query: str) -> bool:
     return bool(re.search(_ROLE_COMPARISON_PATTERN, _normalize_query_text(query)))
 
 
+def _is_steward_union_meeting_schedule_query(query_text: str) -> bool:
+    """Detect steward scheduling prompts for regular union meeting nights."""
+    q = _normalize_query_text(query_text or "")
+    if not q:
+        return False
+    if not re.search(STEWARD_UNION_MEETING_SCHEDULE_QUERY_PATTERN, q):
+        return False
+    has_schedule_cue = bool(re.search(r"\b(schedule|scheduled|scheduling|later)\b", q))
+    has_meeting_cue = bool(re.search(r"\bunion\s*meeting|meeting\s*nights?\b", q))
+    has_time_cue = bool(re.search(r"\b6\s*00\b", q))
+    return has_meeting_cue and (has_schedule_cue or has_time_cue)
+
+
 def _required_evidence_slots_for_plan(
     topic: Optional[str],
     comparison_mode: bool,
@@ -893,13 +1117,22 @@ def build_query_plan(
 
     topic_article_map = get_topic_article_map(contract_id)
     class_article_map = get_classification_article_map(contract_id)
-    anchors = list(topic_article_map.get(topic, []) if topic else [])
+    side_letter_query = _is_side_letter_explicit_query(query_text) or _is_side_letter_followup_query(query_text)
+    if side_letter_query:
+        # For explicit/follow-up side-letter questions, prioritize side-letter
+        # anchors over generic topic anchors (for example grievance Article 48).
+        anchors = list(infer_side_letter_articles(contract_id)[:6])
+    else:
+        anchors = list(topic_article_map.get(topic, []) if topic else [])
     query_mentioned_classes = list(mentioned_classes)
-    classes_for_anchors = list(query_mentioned_classes)
-    if primary_class and primary_class not in classes_for_anchors:
-        classes_for_anchors.insert(0, primary_class)
-    for cls in classes_for_anchors:
-        anchors.extend(class_article_map.get(cls, []) or [])
+    if not side_letter_query:
+        classes_for_anchors = list(query_mentioned_classes)
+        if primary_class and primary_class not in classes_for_anchors:
+            classes_for_anchors.insert(0, primary_class)
+        for cls in classes_for_anchors:
+            anchors.extend(class_article_map.get(cls, []) or [])
+    if _is_steward_union_meeting_schedule_query(query_text):
+        anchors.append(45)
 
     explicit_articles: list[int] = []
     for match in re.findall(r"\b(?:article|art\.?)\s*(\d+)\b", query_text.lower()):
@@ -911,6 +1144,8 @@ def build_query_plan(
     anchors = _normalize_article_list(anchors)
 
     comparison_mode = _is_role_comparison_query(query_text) and len(query_mentioned_classes) >= 2
+    if comparison_mode and not anchors:
+        anchors = infer_role_comparison_articles(contract_id)
     required_slots = _required_evidence_slots_for_plan(
         topic=topic,
         comparison_mode=comparison_mode,
@@ -958,7 +1193,9 @@ def is_wage_query(query: str) -> tuple[bool, list]:
         if re.search(pattern, query_lower):
             matched.append(f"pattern:{pattern}")
 
-    if re.search(r"\b(pay|wage|rate|hourly)\b", query_lower) and re.search(r"\b(for|as)\b", query_lower):
+    # Keep this strict: legal prose often contains "rate ... for" but is not
+    # asking for a personal wage lookup.
+    if re.search(r"\b(pay|wage|hourly)\b", query_lower) and re.search(r"\b(for|as)\b", query_lower):
         matched.append("pattern:role_targeted_pay_for")
 
     return len(matched) > 0, matched
@@ -1137,9 +1374,58 @@ def classify_intent(query: str, user_classification: str = None, contract_id: st
             wage_matches = wage_matches + contextual_matches
     if not is_wage and classes_for_routing:
         query_norm = _normalize_query_text(query)
-        if re.search(r"\b(pay|wage|rate|make|earn|paid|hourly)\b", query_norm):
+        has_wage_token = bool(re.search(r"\b(pay|wage|rate|make|earn|paid|hourly)\b", query_norm))
+        has_personal_signal = bool(re.search(r"\b(my|me|i)\b", query_norm))
+        has_role_wage_question = bool(
+            re.search(r"\b(what|how much)\b.*\b(do|does|is|are)\b.*\b(make|earn|paid|pay|wage|rate)\b", query_norm)
+        )
+        legal_clause_cue = bool(
+            re.search(
+                r"\b(shall|section|article|hereof|thereof|for all work performed|in addition to)\b",
+                query_norm,
+            )
+        )
+        if has_wage_token and (has_personal_signal or has_role_wage_question) and not legal_clause_cue:
             is_wage = True
             wage_matches = wage_matches + ["contextual_role_targeted_wage"]
+
+    # Suppress wage routing for legal premium/overtime calculations unless the
+    # user is explicitly asking about their own compensation.
+    if is_wage and topic in WAGE_SUPPRESS_TOPICS:
+        q_norm = _normalize_query_text(query)
+        has_personal_comp_signal = bool(
+            re.search(r"\b(my|me|i)\b", q_norm)
+            and re.search(r"\b(pay|wage|salary|hourly|make|earn|rate)\b", q_norm)
+        )
+        has_explicit_wage_phrase = bool(
+            re.search(
+                r"\b(what (do|am|should) i (make|earn|be making)|what'?s my pay|my pay|my wage|my salary)\b",
+                q_norm,
+            )
+        )
+        if not has_personal_comp_signal and not has_explicit_wage_phrase:
+            is_wage = False
+            wage_matches = []
+
+    # Global suppression for legal-clause quoting with wage-like words.
+    if is_wage:
+        q_norm = _normalize_query_text(query)
+        has_personal_comp_signal = bool(
+            re.search(r"\b(my|me|i)\b", q_norm)
+            and re.search(r"\b(pay|wage|salary|hourly|make|earn|rate)\b", q_norm)
+        )
+        has_role_wage_question = bool(
+            re.search(r"\b(what|how much)\b.*\b(do|does|is|are)\b.*\b(make|earn|paid|pay|wage|rate)\b", q_norm)
+        )
+        legal_clause_cue = bool(
+            re.search(
+                r"\b(shall|section|article|hereof|thereof|for all work performed|in addition to)\b",
+                q_norm,
+            )
+        )
+        if legal_clause_cue and not has_personal_comp_signal and not has_role_wage_question:
+            is_wage = False
+            wage_matches = []
 
     if is_wage and classes_for_routing:
         # Explicit role mention in the user query should override profile role
@@ -1495,6 +1781,366 @@ class HybridRetriever:
         # Combine: original chunks first, then related
         return chunks + related_chunks
 
+    @staticmethod
+    def _side_letter_query_targets(query_text: Optional[str], seed_chunks: Optional[list[dict]] = None) -> dict:
+        """
+        Extract deterministic side-letter targeting hints from the query and
+        nearby retrieved chunks (for CBA -> attached LOU cross-reference prompts).
+        """
+        query_raw = str(query_text or "")
+        q_norm = _normalize_query_text(query_raw)
+
+        explicit_type: Optional[str] = None
+        explicit_number: Optional[int] = None
+        m_lou = re.search(r"\b(?:letter(?:s)?\s+of\s+understanding|lou)\s+(\d{1,3})\b", q_norm)
+        m_loa = re.search(r"\b(?:letter(?:s)?\s+of\s+agreement|loa)\s+(\d{1,3})\b", q_norm)
+        if m_lou:
+            explicit_type = "lou"
+            explicit_number = int(m_lou.group(1))
+        elif m_loa:
+            explicit_type = "loa"
+            explicit_number = int(m_loa.group(1))
+
+        article_mentions: set[int] = set()
+        for m in re.finditer(r"\barticle\s+(\d+)\b", q_norm):
+            try:
+                article_mentions.add(int(m.group(1)))
+            except (TypeError, ValueError):
+                continue
+
+        # Focus terms: coarse lexical hints for picking the right LOU part.
+        stop = {
+            "what", "whats", "does", "the", "this", "that", "about", "with", "for", "from",
+            "into", "your", "have", "tell", "show", "which", "where", "when", "will", "shall",
+            "would", "could", "should", "there", "they", "them", "their", "agreement", "letter",
+            "understanding", "letters", "part", "pursuant", "section", "article", "requirements",
+        }
+        query_terms = [
+            tok for tok in re.findall(r"[a-z0-9]+", query_raw.lower())
+            if len(tok) >= 4 and tok not in stop
+        ]
+        detail_prompt = bool(
+            re.search(r"\b(wear|wearing|shirt|pants|shoes?|color|colours?|grooming|dress\s*code)\b", query_raw, flags=re.IGNORECASE)
+        )
+        existence_prompt = bool(
+            re.search(r"\b(do\s+you\s+have|which\s+letter|what\s+letter|is\s+there)\b", query_raw, flags=re.IGNORECASE)
+        )
+
+        title_phrases: set[str] = set()
+        query_lower = query_raw.lower()
+        if "dress code" in query_lower:
+            title_phrases.add("dress requirements")
+
+        for chunk in list(seed_chunks or [])[:10]:
+            blob = (
+                f"{chunk.get('citation', '')}\n"
+                f"{chunk.get('parent_context', '')}\n"
+                f"{chunk.get('content_with_tables') or chunk.get('content') or ''}"
+            )
+            blob_lower = blob.lower()
+
+            # Article cross-ref pattern: Letter of Understanding, "Dress Requirements,"
+            for m in re.finditer(
+                r'letter\s+of\s+(?:understanding|agreement)\s*,?\s*["“]([^"”]{3,120})["”]',
+                blob,
+                flags=re.IGNORECASE,
+            ):
+                phrase = _normalize_query_text(m.group(1))
+                if len(phrase) >= 3:
+                    title_phrases.add(phrase)
+
+            # Side-letter citation title pattern.
+            for m in re.finditer(
+                r'letter\s+of\s+(?:understanding|agreement)\s+\d+\s*:\s*([^\n,]{3,140})',
+                blob,
+                flags=re.IGNORECASE,
+            ):
+                phrase = _normalize_query_text(m.group(1))
+                if len(phrase) >= 3:
+                    title_phrases.add(phrase)
+
+            # Extract explicit number/type from retrieved side-letter citations if
+            # the query is a generic follow-up and we already have a strong side-letter clue.
+            if explicit_number is None and _is_side_letter_followup_query(query_raw):
+                m_side = re.search(
+                    r"letter of (understanding|agreement)\s+(\d{1,3})",
+                    blob_lower,
+                    flags=re.IGNORECASE,
+                )
+                if m_side:
+                    explicit_type = "lou" if m_side.group(1).lower() == "understanding" else "loa"
+                    try:
+                        explicit_number = int(m_side.group(2))
+                    except (TypeError, ValueError):
+                        explicit_number = None
+
+        return {
+            "explicit_type": explicit_type,
+            "explicit_number": explicit_number,
+            "article_mentions": sorted(article_mentions),
+            "title_phrases": sorted(p for p in title_phrases if len(p) >= 3),
+            "query_terms": query_terms,
+            "explicit_query": _is_side_letter_explicit_query(query_raw),
+            "followup_query": _is_side_letter_followup_query(query_raw),
+            "detail_prompt": detail_prompt,
+            "existence_prompt": existence_prompt,
+        }
+
+    @staticmethod
+    def _side_letter_chunk_score(
+        chunk: dict,
+        *,
+        targets: dict,
+        seed_articles: set[int],
+    ) -> tuple[float, float]:
+        """
+        Return (bonus, lexical_overlap_score) for side-letter-aware ordering.
+        """
+        citation = str(chunk.get("citation") or "")
+        parent = str(chunk.get("parent_context") or "")
+        content = str(chunk.get("content_with_tables") or chunk.get("content") or "")
+        blob = f"{citation}\n{parent}\n{content}"
+        blob_lower = blob.lower()
+        doc_type = str(chunk.get("doc_type") or "").strip().lower()
+        similarity = float(chunk.get("similarity", 0) or 0.0)
+
+        explicit_type = targets.get("explicit_type")
+        explicit_number = targets.get("explicit_number")
+        title_phrases = list(targets.get("title_phrases") or [])
+        query_terms = list(targets.get("query_terms") or [])
+        article_mentions = set(targets.get("article_mentions") or [])
+        explicit_query = bool(targets.get("explicit_query"))
+        followup_query = bool(targets.get("followup_query"))
+        detail_prompt = bool(targets.get("detail_prompt"))
+        existence_prompt = bool(targets.get("existence_prompt"))
+
+        bonus = 0.0
+        lexical = 0.0
+        norm_blob = _normalize_query_text(blob)
+
+        part_num = None
+        m_part = re.search(r"\bpart\s+(\d+)\b", citation, flags=re.IGNORECASE)
+        if m_part:
+            try:
+                part_num = int(m_part.group(1))
+            except (TypeError, ValueError):
+                part_num = None
+        is_headerish = bool(
+            ("##" in str(content or ""))
+            or (len(str(content or "")) <= 260 and any(p in norm_blob for p in title_phrases))
+        )
+
+        if doc_type in {"lou", "loa"}:
+            bonus += 0.35
+            if explicit_query or followup_query:
+                bonus += 0.35
+
+        if explicit_type and doc_type == explicit_type:
+            bonus += 1.2
+
+        if explicit_number is not None:
+            if re.search(
+                rf"\b(?:letter of (?:understanding|agreement)|lou|loa)\s+{int(explicit_number)}\b",
+                blob_lower,
+                flags=re.IGNORECASE,
+            ):
+                bonus += 4.0
+            if re.search(rf"\bitem\s+{int(explicit_number)}\b", blob_lower):
+                bonus += 2.0
+
+        title_hits = sum(1 for phrase in title_phrases if phrase and phrase in norm_blob)
+        if title_hits:
+            if doc_type in {"lou", "loa"}:
+                bonus += 2.0 + min(1.5, 0.5 * title_hits)
+            else:
+                # Preserve CBA cross-reference anchors but below actual side-letter text.
+                bonus += 0.8 + min(0.6, 0.2 * title_hits)
+        if doc_type in {"lou", "loa"} and title_hits and article_mentions and not detail_prompt:
+            if is_headerish:
+                bonus += 1.2
+            if part_num == 1:
+                bonus += 0.8
+
+        if article_mentions:
+            if doc_type in {"lou", "loa"} and any(f"article {a}" in blob_lower for a in article_mentions):
+                bonus += 0.8
+            try:
+                article_num = int(chunk.get("article_num") or 0)
+            except (TypeError, ValueError):
+                article_num = 0
+            if article_num and article_num in article_mentions and "letter of understanding" in blob_lower:
+                bonus += 0.9
+
+        overlap = sum(1 for tok in query_terms if tok in blob_lower)
+        if overlap:
+            lexical = 0.08 * float(overlap)
+            if doc_type in {"lou", "loa"}:
+                lexical += 0.12 * float(overlap)
+
+        # If query is likely asking for side-letter details, prioritize content-rich
+        # side-letter chunks over header/placeholder chunks.
+        if doc_type in {"lou", "loa"} and overlap >= 2:
+            bonus += 0.5
+        if doc_type in {"lou", "loa"} and len(content) >= 300:
+            bonus += 0.1
+        if doc_type in {"lou", "loa"} and detail_prompt:
+            if any(tok in blob_lower for tok in ("wear", "shirt", "pants", "shoe", "shoes", "color", "black", "white")):
+                bonus += 1.4
+            if part_num == 2:
+                bonus += 0.9
+        if doc_type in {"lou", "loa"} and (existence_prompt or (explicit_query and not detail_prompt)):
+            if is_headerish:
+                bonus += 1.5
+            if part_num == 1:
+                bonus += 1.0
+            elif part_num and part_num > 3 and title_hits == 0 and overlap == 0:
+                bonus -= 0.35
+
+        # Keep existing high-confidence ranking signal in the ordering mix.
+        return bonus + (0.15 * similarity), lexical
+
+    def _promote_side_letter_context(
+        self,
+        chunks: list,
+        *,
+        contract_id: str = CONTRACT_ID,
+        query_text: Optional[str] = None,
+        n_results: int = 8,
+        max_additional: int = 3,
+    ) -> list:
+        """
+        Reorder/add side-letter chunks for explicit LOU/LOA prompts and CBA->LOU
+        cross-reference prompts.
+
+        This is deterministic and contract-scoped. It does not replace normal
+        retrieval scoring; it adds a targeted post-pass for side-letter surfacing.
+        """
+        if not chunks:
+            return chunks
+
+        targets = self._side_letter_query_targets(query_text, seed_chunks=chunks)
+        explicit_query = bool(targets.get("explicit_query"))
+        followup_query = bool(targets.get("followup_query"))
+        title_phrases = list(targets.get("title_phrases") or [])
+        explicit_number = targets.get("explicit_number")
+        explicit_type = targets.get("explicit_type")
+
+        top_seed = list(chunks[: max(8, n_results)])
+        has_side_letter_in_seed = any(
+            str((c or {}).get("doc_type") or "").strip().lower() in {"lou", "loa"}
+            for c in top_seed
+        )
+        has_side_letter_reference_in_seed = any(
+            ("letter of understanding" in f"{c.get('citation', '')} {c.get('content_with_tables') or c.get('content') or ''}".lower())
+            or ("letter of agreement" in f"{c.get('citation', '')} {c.get('content_with_tables') or c.get('content') or ''}".lower())
+            for c in top_seed
+        )
+
+        should_engage = (
+            explicit_query
+            or followup_query
+            or bool(title_phrases)
+            or has_side_letter_in_seed
+            or has_side_letter_reference_in_seed
+        )
+        if not should_engage:
+            return chunks
+
+        # Track seed article references for cross-ref anchoring (e.g., Article 52 §158).
+        seed_articles: set[int] = set()
+        for c in top_seed:
+            try:
+                article_int = int(c.get("article_num") or 0)
+            except (TypeError, ValueError):
+                article_int = 0
+            if article_int > 0:
+                seed_articles.add(article_int)
+
+        existing_ids = {c.get("chunk_id", c.get("citation", "")) for c in chunks}
+        enriched_chunks: list[dict] = list(chunks)
+
+        # If we have explicit side-letter targeting or a harvested title phrase,
+        # add a few matching side-letter chunks from the contract corpus when they
+        # are not already present in the retrieved set.
+        if explicit_query or followup_query or title_phrases or explicit_number is not None:
+            contract_chunks = self._load_all_chunks_for_contract(contract_id)
+            additions: list[tuple[float, dict]] = []
+            for c in contract_chunks:
+                cid = c.get("chunk_id", c.get("citation", ""))
+                if cid in existing_ids:
+                    continue
+                doc_type = str(c.get("doc_type") or "").strip().lower()
+                if doc_type not in {"lou", "loa"}:
+                    continue
+
+                bonus, lexical = self._side_letter_chunk_score(
+                    c,
+                    targets=targets,
+                    seed_articles=seed_articles,
+                )
+                blob_lower = (
+                    f"{c.get('citation', '')}\n{c.get('parent_context', '')}\n"
+                    f"{c.get('content_with_tables') or c.get('content') or ''}"
+                ).lower()
+
+                strong_match = False
+                if explicit_number is not None and re.search(
+                    rf"\b(?:letter of (?:understanding|agreement)|lou|loa)\s+{int(explicit_number)}\b",
+                    blob_lower,
+                    flags=re.IGNORECASE,
+                ):
+                    strong_match = True
+                if not strong_match and title_phrases:
+                    norm_blob = _normalize_query_text(blob_lower)
+                    strong_match = any(p in norm_blob for p in title_phrases)
+                if not strong_match and lexical >= 0.4:
+                    strong_match = True
+                if not strong_match:
+                    continue
+
+                score = float(bonus + lexical)
+                additions.append((score, c))
+
+            if additions:
+                additions.sort(
+                    key=lambda x: (
+                        -float(x[0]),
+                        -len(str(x[1].get("content_with_tables") or x[1].get("content") or "")),
+                        str(x[1].get("citation") or ""),
+                    )
+                )
+                for _, c in additions[: max(1, int(max_additional))]:
+                    c_copy = dict(c)
+                    c_copy["similarity"] = max(float(c_copy.get("similarity", 0) or 0.0), 0.74)
+                    c_copy["is_side_letter_seed"] = True
+                    enriched_chunks.append(c_copy)
+                    existing_ids.add(c_copy.get("chunk_id", c_copy.get("citation", "")))
+
+        scored_rows: list[tuple[float, float, float, int, dict]] = []
+        for idx, c in enumerate(enriched_chunks):
+            bonus, lexical = self._side_letter_chunk_score(
+                c,
+                targets=targets,
+                seed_articles=seed_articles,
+            )
+            base_similarity = float(c.get("similarity", 0) or 0.0)
+            total = base_similarity + bonus + lexical
+            c_copy = dict(c)
+            if (bonus + lexical) >= 1.0 and str(c_copy.get("doc_type") or "").strip().lower() in {"lou", "loa"}:
+                c_copy["is_side_letter_seed"] = True
+                c_copy["similarity"] = max(base_similarity, min(0.98, total))
+            scored_rows.append((total, bonus, lexical, idx, c_copy))
+
+        scored_rows.sort(
+            key=lambda row: (
+                -float(row[0]),
+                -float(row[1]),
+                -float(row[2]),
+                row[3],  # stable original order tie-breaker
+            )
+        )
+        return [row[4] for row in scored_rows]
+
     def _ensure_topic_article_coverage(
         self,
         chunks: list,
@@ -1577,10 +2223,16 @@ class HybridRetriever:
         preferred = set(_normalize_article_list(article_numbers))
         if not preferred:
             return chunks
-        signals = _TOPIC_LEXICAL_SIGNALS.get(str(topic or "").strip().lower(), ())
+        topic_key = str(topic or "").strip().lower()
+        signals = _TOPIC_LEXICAL_SIGNALS.get(topic_key, ())
+        title_hints = _TOPIC_ARTICLE_TITLE_HINTS.get(topic_key, ())
         query_lower = (query_text or "").lower()
         # Only apply lexical signal boosts when the query itself indicates the topic.
         apply_signal_boost = bool(signals and any(s in query_lower for s in signals))
+        is_locator_query = bool(
+            re.search(r"\b(where|which)\b", query_lower)
+            and re.search(r"\b(defined|definition|rules?)\b", query_lower)
+        )
 
         def _sort_key(c: dict) -> tuple:
             in_topic = 0 if c.get("article_num") in preferred else 1
@@ -1593,6 +2245,19 @@ class HybridRetriever:
                 ).lower()
                 hits = sum(1 for s in signals if s in text)
                 bonus = min(0.18, 0.06 * hits)
+            title_text = (
+                f"{c.get('article_title', '')} "
+                f"{c.get('citation', '')}"
+            ).lower()
+            title_hits = sum(1 for hint in title_hints if hint in title_text)
+            if title_hits:
+                bonus += min(0.36, 0.12 * title_hits)
+                if is_locator_query:
+                    bonus += 0.25
+            if c.get("is_holiday_premium_seed"):
+                bonus += 0.35
+            if c.get("is_topic_seed"):
+                bonus += 0.12
             eff = base_score + bonus
             return (
                 in_topic,
@@ -1683,7 +2348,7 @@ class HybridRetriever:
             c["is_wage_table_context"] = True
             additions.append(c)
 
-        return chunks + additions
+        return additions + chunks
 
     @staticmethod
     def _is_vacation_entitlement_query(query_text: Optional[str]) -> bool:
@@ -1788,6 +2453,55 @@ class HybridRetriever:
             return False
         return bool(re.search(HOLIDAY_WORK_PREMIUM_QUERY_PATTERN, q))
 
+    @staticmethod
+    def _query_targets_post_2005_holiday_rate(query_text: Optional[str]) -> bool:
+        q = _normalize_query_text(query_text or "")
+        if not q:
+            return False
+        return bool(
+            re.search(
+                r"\b(post|after|on or after)\b.*\b2005\b"
+                r"|\bpost\s*2005\b"
+                r"|\bon or after march\b",
+                q,
+            )
+        )
+
+    @staticmethod
+    def _infer_tenure_from_query(query_text: Optional[str]) -> tuple[int, int]:
+        """
+        Infer hours/months tenure hints embedded directly in the query.
+
+        This is a deterministic fallback only when explicit caller values are
+        missing.
+        """
+        q = _normalize_query_text(query_text or "")
+        if not q:
+            return 0, 0
+
+        hours = 0
+        months = 0
+
+        hour_match = re.search(r"\b(?:after|at|with)\s+(\d{2,6})\s+hours?\b", q)
+        if not hour_match:
+            hour_match = re.search(r"\b(\d{2,6})\s+hours?\b", q)
+        if hour_match:
+            try:
+                hours = int(hour_match.group(1))
+            except (TypeError, ValueError):
+                hours = 0
+
+        month_match = re.search(r"\b(?:after|at|with)\s+(\d{1,3})\s+months?\b", q)
+        if not month_match:
+            month_match = re.search(r"\b(\d{1,3})\s+months?\b", q)
+        if month_match:
+            try:
+                months = int(month_match.group(1))
+            except (TypeError, ValueError):
+                months = 0
+
+        return max(0, hours), max(0, months)
+
     def _ensure_holiday_work_premium_coverage(
         self,
         chunks: list,
@@ -1805,6 +2519,7 @@ class HybridRetriever:
             return chunks
         if not self._is_holiday_work_premium_query(query_text):
             return chunks
+        query_targets_post_2005 = self._query_targets_post_2005_holiday_rate(query_text)
 
         premium_markers = (
             "when a holiday is worked",
@@ -1834,8 +2549,15 @@ class HybridRetriever:
             if "worked" not in text and "work" not in text:
                 continue
             marker_hits = sum(1 for marker in premium_markers if marker in text)
-            if marker_hits >= 2 and any(marker in text for marker in strong_markers):
-                return chunks
+            has_strong = any(marker in text for marker in strong_markers)
+            if marker_hits >= 2 and has_strong:
+                if query_targets_post_2005 and "2005" not in text:
+                    continue
+                promoted = dict(c)
+                promoted["similarity"] = max(0.96, float(promoted.get("similarity", 0) or 0))
+                promoted["is_holiday_premium_seed"] = True
+                remaining = [row for row in chunks if row is not c]
+                return [promoted] + remaining
 
         contract_chunks = self._load_all_chunks_for_contract(contract_id)
         if not contract_chunks:
@@ -1863,9 +2585,17 @@ class HybridRetriever:
                 continue
             if not any(marker in text for marker in strong_markers):
                 continue
+            if query_targets_post_2005 and "2005" not in text:
+                continue
             overlap = sum(1 for tok in query_tokens if tok in text) if query_tokens else 0
+            has_legacy_cutoff = bool(re.search(r"on or after march|march\s+\d+,\s*2005", text))
+            has_rate_amount = bool("$1.00" in text or "one dollar" in text or "1.00" in text)
             section_num = int(c.get("section_num") or 0)
             score = float(marker_hits) + (0.05 * overlap) + (0.2 if section_num > 0 else 0.0)
+            if has_rate_amount:
+                score += 1.25
+            if query_targets_post_2005 and has_legacy_cutoff:
+                score += 2.5
             candidates.append((score, c))
 
         if not candidates:
@@ -1873,9 +2603,9 @@ class HybridRetriever:
 
         candidates.sort(key=lambda x: (x[0], -int(x[1].get("section_num") or 0)), reverse=True)
         seed = dict(candidates[0][1])
-        seed["similarity"] = max(0.52, float(seed.get("similarity", 0) or 0))
+        seed["similarity"] = max(0.96, float(seed.get("similarity", 0) or 0))
         seed["is_holiday_premium_seed"] = True
-        return chunks + [seed]
+        return [seed] + chunks
 
     def _expand_to_full_article(
         self,
@@ -2060,10 +2790,16 @@ class HybridRetriever:
 
         expanded_query, expansions = expand_query(query, contract_id=contract_id)
 
-        # Detect LOU keywords in query
-        lou_keywords = ['letter of understanding', 'lou', 'letters of understanding']
+        # Detect explicit side-letter keywords in query.
+        # Keep this narrow to avoid clashing with generic agreement phrasing.
+        lou_keywords = ['letter of understanding', 'letters of understanding', ' lou ']
+        loa_keywords = ['letter of agreement', 'letters of agreement']
+        side_letter_keywords = ['side letter', 'side-letter', 'sideletter']
         query_lower = query.lower()
-        lou_detected = any(kw in query_lower for kw in lou_keywords)
+        query_padded = f" {query_lower} "
+        lou_detected = any(kw in query_padded for kw in lou_keywords)
+        loa_detected = any(kw in query_padded for kw in loa_keywords)
+        side_letter_detected = any(kw in query_padded for kw in side_letter_keywords)
 
         if intent is None:
             # Use expanded query for intent classification
@@ -2095,7 +2831,11 @@ class HybridRetriever:
 
         # Use hybrid search (vector + BM25 with RRF)
         # Weights configured in config.py (default: equal 1.0/1.0 for balanced fusion)
-        doc_type_filter = "lou" if lou_detected else None
+        doc_type_filter = None
+        if lou_detected and not loa_detected and not side_letter_detected:
+            doc_type_filter = "lou"
+        elif loa_detected and not lou_detected and not side_letter_detected:
+            doc_type_filter = "loa"
 
         if use_hybrid:
             region_id = resolve_contract_region_id(contract_id)
@@ -2180,15 +2920,24 @@ class HybridRetriever:
             topic=intent.topic,
             query_text=query,
         )
+        chunks = self._promote_side_letter_context(
+            chunks,
+            contract_id=contract_id,
+            query_text=query,
+            n_results=n_results,
+        )
 
         result["chunks"] = chunks
+        inferred_hours, inferred_months = self._infer_tenure_from_query(query)
+        resolved_hours = int(hours_worked or 0) if int(hours_worked or 0) > 0 else inferred_hours
+        resolved_months = int(months_employed or 0) if int(months_employed or 0) > 0 else inferred_months
 
         # If wage query and we have classification, also do wage lookup
         if intent.intent_type == "wage" and intent.classification:
             wage_info = self.lookup_wage(
                 classification=intent.classification,
-                hours_worked=hours_worked,
-                months_employed=months_employed,
+                hours_worked=resolved_hours,
+                months_employed=resolved_months,
                 contract_id=contract_id,
             )
             result["wage_info"] = wage_info
@@ -2205,8 +2954,8 @@ class HybridRetriever:
             and self._is_vacation_entitlement_query(query)
         ):
             result["entitlement_info"] = self.lookup_vacation_entitlement(
-                months_employed=months_employed,
-                hours_worked=hours_worked,
+                months_employed=resolved_months,
+                hours_worked=resolved_hours,
                 hire_date=None,
                 contract_id=contract_id,
             )
@@ -2410,6 +3159,12 @@ class HybridRetriever:
             topic=intent.topic,
             query_text=query,
         )
+        final_chunks = self._promote_side_letter_context(
+            final_chunks,
+            contract_id=contract_id,
+            query_text=query,
+            n_results=n_results,
+        )
 
         # Build result
         result = {
@@ -2425,13 +3180,16 @@ class HybridRetriever:
             "explicit_articles_fetched": interpretation.explicit_articles,
             "reranker_result": reranker_result,  # Include reranker metrics
         }
+        inferred_hours, inferred_months = self._infer_tenure_from_query(query)
+        resolved_hours = int(hours_worked or 0) if int(hours_worked or 0) > 0 else inferred_hours
+        resolved_months = int(months_employed or 0) if int(months_employed or 0) > 0 else inferred_months
 
         # If wage query and we have classification, also do wage lookup
         if intent.intent_type == "wage" and intent.classification:
             wage_info = self.lookup_wage(
                 classification=intent.classification,
-                hours_worked=hours_worked,
-                months_employed=months_employed,
+                hours_worked=resolved_hours,
+                months_employed=resolved_months,
                 contract_id=contract_id,
             )
             result["wage_info"] = wage_info
@@ -2448,8 +3206,8 @@ class HybridRetriever:
             and self._is_vacation_entitlement_query(query)
         ):
             result["entitlement_info"] = self.lookup_vacation_entitlement(
-                months_employed=months_employed,
-                hours_worked=hours_worked,
+                months_employed=resolved_months,
+                hours_worked=resolved_hours,
                 hire_date=None,
                 contract_id=contract_id,
             )

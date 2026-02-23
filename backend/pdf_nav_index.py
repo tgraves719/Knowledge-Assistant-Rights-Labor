@@ -52,6 +52,11 @@ def resolve_contract_pdf_path(contract_id: str) -> Optional[Path]:
             candidates.extend(sorted(pack_dir.glob("*.pdf")))
     if not candidates:
         return None
+
+    # Prefer base CBA PDF for article/section navigation index generation.
+    non_moa = [p for p in candidates if "moa" not in p.name.lower()]
+    if non_moa:
+        return non_moa[0]
     return candidates[0]
 
 

@@ -1,9 +1,9 @@
 {
   "metrics": {
     "total_tests": 55,
-    "passed": 51,
-    "pass_rate": 0.9272727272727272,
-    "retrieval_accuracy": 0.9272727272727272,
+    "passed": 49,
+    "pass_rate": 0.8909090909090909,
+    "retrieval_accuracy": 0.8909090909090909,
     "wage_accuracy": 1.0,
     "escalation_accuracy": 1.0,
     "category_breakdown": {
@@ -58,14 +58,14 @@
         "rate": 1.0
       },
       "classification": {
-        "passed": 2,
+        "passed": 1,
         "total": 3,
-        "rate": 0.6666666666666666
+        "rate": 0.3333333333333333
       },
       "union": {
-        "passed": 2,
+        "passed": 1,
         "total": 2,
-        "rate": 1.0
+        "rate": 0.5
       },
       "holiday": {
         "passed": 3,
@@ -112,9 +112,9 @@
       "retrieval_correct": true,
       "expected_citation": "Appendix A",
       "retrieved_citations": [
-        "Article 4, Section 8",
-        "Article 5, Section 10",
-        "Article 5, Section 11"
+        "Appendix A Wage Table - Article 58, Section 175, Part 12",
+        "Appendix A Wage Table - Basket Hours",
+        "Article 8, Section 18"
       ],
       "wage_correct": true,
       "escalation_correct": null,
@@ -129,9 +129,9 @@
       "retrieval_correct": true,
       "expected_citation": "Appendix A",
       "retrieved_citations": [
-        "Article 4, Section 8",
-        "Article 5, Section 11",
-        "Article 5, Section 12"
+        "Appendix A Wage Table - Article 58, Section 175, Part 10",
+        "Appendix A Wage Table - Basket Hours",
+        "Article 8, Section 17"
       ],
       "wage_correct": true,
       "escalation_correct": null,
@@ -146,9 +146,9 @@
       "retrieval_correct": true,
       "expected_citation": "Appendix A",
       "retrieved_citations": [
-        "Article 4, Section 8",
-        "Article 5, Section 10",
-        "Article 5, Section 11"
+        "Appendix A Wage Table - Article 58, Section 175, Part 12",
+        "Appendix A Wage Table - Basket Hours",
+        "Article 8, Section 18"
       ],
       "wage_correct": true,
       "escalation_correct": null,
@@ -197,9 +197,9 @@
       "retrieval_correct": true,
       "expected_citation": "Appendix A",
       "retrieved_citations": [
-        "Article 4, Section 8",
-        "Article 5, Section 10",
-        "Article 5, Section 11"
+        "Appendix A Wage Table - Article 58, Section 175, Part 12",
+        "Appendix A Wage Table - Basket Hours",
+        "Article 8, Section 18"
       ],
       "wage_correct": true,
       "escalation_correct": null,
@@ -214,8 +214,8 @@
       "retrieval_correct": true,
       "expected_citation": "Article 12, Section 28",
       "retrieved_citations": [
-        "Article 5, Section 11",
-        "Article 5, Section 12",
+        "Article 28, Section 76",
+        "Article 12, Section 28",
         "Article 10, Section 21, Part 1"
       ],
       "wage_correct": null,
@@ -231,8 +231,8 @@
       "retrieval_correct": true,
       "expected_citation": "Article 12, Section 28",
       "retrieved_citations": [
-        "Article 5, Section 10",
-        "Article 5, Section 11",
+        "Article 28, Section 76",
+        "Article 12, Section 28",
         "Article 10, Section 21, Part 1"
       ],
       "wage_correct": null,
@@ -248,9 +248,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10, Section 21",
       "retrieved_citations": [
-        "Article 10, Section 21, Part 6",
-        "Article 10, Section 21, Part 3",
-        "Article 10, Section 22"
+        "Article 18, Section 54",
+        "Article 18, Section 53",
+        "Article 28, Section 76"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -265,9 +265,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10, Section 21",
       "retrieved_citations": [
-        "Article 10, Section 21, Part 4",
-        "Article 10, Section 21, Part 6",
-        "Article 10, Section 25, Part 1"
+        "Article 18, Section 54",
+        "Article 18, Section 53",
+        "Article 28, Section 76"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -282,9 +282,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10",
       "retrieved_citations": [
-        "Article 5, Section 10",
-        "Article 5, Section 12",
-        "Article 7, Section 14, Subsection g (COURTESY CLERK DUTIES)"
+        "Article 5, Section 11",
+        "Article 7, Section 14, Subsection h (DRIVE UP AND GO)",
+        "Article 8, Section 19"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -299,9 +299,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10, Section 21",
       "retrieved_citations": [
-        "Article 10, Section 21, Part 2",
-        "Article 10, Section 21, Part 3",
-        "Article 10, Section 25, Part 2"
+        "Article 18, Section 53",
+        "Article 18, Section 54",
+        "Article 28, Section 76"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -316,9 +316,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10, Section 21",
       "retrieved_citations": [
-        "Article 10, Section 21, Part 2",
-        "Article 10, Section 21, Part 6",
-        "Article 10, Section 25, Part 1"
+        "Article 18, Section 53",
+        "Article 18, Section 54",
+        "Article 28, Section 76"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -350,9 +350,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 10",
       "retrieved_citations": [
-        "Article 10, Section 21, Part 1",
-        "Article 10, Section 21, Part 2",
-        "Article 10, Section 25, Part 2"
+        "Article 18, Section 54",
+        "Article 28, Section 76",
+        "Article 10, Section 21, Part 1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -367,9 +367,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 27, Section 63",
       "retrieved_citations": [
-        "Article 3, Section 6",
-        "Article 3, Section 7",
-        "Article 43, Section 122"
+        "Article 27, Section 64",
+        "Article 27, Section 65",
+        "Article 27, Section 71, Part 1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -384,9 +384,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 27, Section 66",
       "retrieved_citations": [
-        "Article 2, Section 3, Part 1",
-        "Article 7, Section 14, Subsection g (COURTESY CLERK DUTIES)",
-        "Article 7, Section 14, Subsection h (DRIVE UP AND GO)"
+        "Article 27, Section 64",
+        "Article 27, Section 65",
+        "Article 27, Section 67"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -401,9 +401,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 29",
       "retrieved_citations": [
-        "Article 2, Section 3, Part 1",
-        "Article 2, Section 3, Part 2",
-        "Article 2, Section 4"
+        "Article 29, Section 77",
+        "Article 29, Section 80",
+        "Article 29, Section 80, Part 1-1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -418,9 +418,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 29",
       "retrieved_citations": [
-        "Article 10, Section 23",
-        "Article 10, Section 24",
-        "Article 10, Section 25, Part 2"
+        "Article 29, Section 77",
+        "Article 29, Section 80",
+        "Article 29, Section 80, Part 1-1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -435,9 +435,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 29",
       "retrieved_citations": [
-        "Article 2, Section 2",
-        "Article 2, Section 3, Part 1",
-        "Article 2, Section 3, Part 2"
+        "Article 17, Section 48",
+        "Article 17, Section 47",
+        "Article 29, Section 77"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -454,7 +454,7 @@
       "retrieved_citations": [
         "Article 17, Section 44, Part 1",
         "Article 17, Section 44, Part 2",
-        "Article 10, Section 25, Part 2"
+        "Article 17, Section 52, Part 1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -486,9 +486,9 @@
       "retrieval_correct": false,
       "expected_citation": "Article 17",
       "retrieved_citations": [
-        "Article 5, Section 10",
-        "Article 5, Section 12",
-        "Article 7, Section 14, Subsection g (COURTESY CLERK DUTIES)"
+        "Article 5, Section 11",
+        "Article 7, Section 14, Subsection h (DRIVE UP AND GO)",
+        "Article 8, Section 19"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -503,9 +503,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 35, Section 100",
       "retrieved_citations": [
-        "Article 17, Section 44, Part 1",
-        "Article 17, Section 44, Part 2",
-        "Article 17, Section 45"
+        "Article 35, Section 100, Part 1-1",
+        "Article 35, Section 100, Part 3-4",
+        "Article 35, Section 100, Part 2-2"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -520,9 +520,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 35, Section 100",
       "retrieved_citations": [
-        "Article 17, Section 44, Part 1",
-        "Article 17, Section 44, Part 2",
-        "Article 17, Section 45"
+        "Article 35, Section 100, Part 1-1",
+        "Article 35, Section 100, Part 2-2",
+        "Article 35, Section 100, Part 7+"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -537,9 +537,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 35",
       "retrieved_citations": [
-        "Article 17, Section 44, Part 1",
-        "Article 17, Section 44, Part 2",
-        "Article 17, Section 45"
+        "Article 35, Section 100, Part 1-1",
+        "Article 35, Section 100, Part 5-5",
+        "Article 35, Section 100, Part 2-2"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -554,9 +554,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 43",
       "retrieved_citations": [
+        "Article 46, Section 138",
         "Article 43, Section 122",
-        "Article 43, Section 123",
-        "Article 43, Section 125"
+        "Article 43, Section 123"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -571,9 +571,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 43",
       "retrieved_citations": [
+        "Article 45, Section 129",
         "Article 43, Section 122",
-        "Article 43, Section 123",
-        "Article 43, Section 124"
+        "Article 43, Section 123"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -588,9 +588,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 26, Section 62",
       "retrieved_citations": [
-        "Article 5, Section 10",
-        "Article 5, Section 11",
-        "Article 5, Section 12"
+        "Article 26, Section 62",
+        "Article 16, Section 36",
+        "Article 16, Section 37"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -605,9 +605,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 46, Section 135",
       "retrieved_citations": [
-        "Article 17, Section 44, Part 2",
-        "Article 17, Section 44, Part 3",
-        "Article 17, Section 45"
+        "Article 46, Section 134",
+        "Article 46, Section 135",
+        "Article 46, Section 141"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -622,9 +622,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 46",
       "retrieved_citations": [
-        "Article 17, Section 44, Part 1",
-        "Article 17, Section 44, Part 2",
-        "Article 17, Section 46"
+        "Article 46, Section 134",
+        "Article 46, Section 135",
+        "Article 46, Section 140, Part 2"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -656,9 +656,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 24",
       "retrieved_citations": [
-        "Article 21, Section 57",
         "Article 24, Section 60",
-        "Article 25, Section 61"
+        "Article 25, Section 61",
+        "Article 32, Section 87"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -673,9 +673,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 24",
       "retrieved_citations": [
-        "Article 2, Section 2",
-        "Article 2, Section 3, Part 1",
-        "Article 2, Section 3, Part 2"
+        "Article 27, Section 69",
+        "Article 27, Section 70",
+        "Article 27, Section 71, Part 1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -690,9 +690,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 7, Section 14(g)",
       "retrieved_citations": [
-        "Article 4, Section 9",
-        "Article 5, Section 11",
-        "Article 5, Section 12"
+        "Article 4, Section 8",
+        "Article 15, Section 34",
+        "Article 55, Section 162"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -704,18 +704,18 @@
       "test_id": 36,
       "category": "classification",
       "question": "What is a Head Clerk?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 7, Section 14(c)",
       "retrieved_citations": [
-        "Article 4, Section 9",
-        "Article 5, Section 11",
-        "Article 5, Section 12"
+        "Article 9, Section 20",
+        "Article 27, Section 68, Part 1",
+        "Article 27, Section 66"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 7, Section 14(c)' not found"
     },
     {
       "test_id": 37,
@@ -724,7 +724,7 @@
       "retrieval_correct": false,
       "expected_citation": "Article 7, Section 15",
       "retrieved_citations": [
-        "Article 10, Section 21, Part 3",
+        "Article 10, Section 21, Part 10",
         "Article 10, Section 25, Part 1",
         "Article 10, Section 21, Part 4"
       ],
@@ -755,18 +755,18 @@
       "test_id": 39,
       "category": "union",
       "question": "Can a union representative visit the store?",
-      "retrieval_correct": true,
+      "retrieval_correct": false,
       "expected_citation": "Article 44, Section 128",
       "retrieved_citations": [
-        "Article 45, Section 130",
-        "Article 45, Section 129",
-        "Article 36, Section 105"
+        "Article 43, Section 122",
+        "Article 43, Section 123",
+        "Article 43, Section 125"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": true,
-      "notes": ""
+      "passed": false,
+      "notes": "Expected 'Article 44, Section 128' not found"
     },
     {
       "test_id": 40,
@@ -792,8 +792,8 @@
       "retrieval_correct": true,
       "expected_citation": "Article 16",
       "retrieved_citations": [
-        "Article 16, Section 38",
         "Article 16, Section 35",
+        "Article 16, Section 38",
         "Article 16, Section 36"
       ],
       "wage_correct": null,
@@ -809,9 +809,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 16",
       "retrieved_citations": [
-        "Article 16, Section 38",
-        "Article 16, Section 39",
-        "Article 16, Section 40"
+        "Article 17, Section 45",
+        "Article 17, Section 46",
+        "Article 17, Section 47"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -826,9 +826,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 39",
       "retrieved_citations": [
-        "Article 40, Section 116, Part 1-1",
-        "Article 39, Section 115",
-        "Article 40, Section 116"
+        "Article 42, Section 118, Part 1",
+        "Article 42, Section 118, Part 2",
+        "Article 42, Section 119"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -843,9 +843,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 40",
       "retrieved_citations": [
-        "Article 17, Section 44, Part 2",
-        "Article 17, Section 44, Part 3",
-        "Article 17, Section 45"
+        "Article 40, Section 116, Part 1-1",
+        "Article 40, Section 116, Part 1-2",
+        "Article 18, Section 53"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -877,9 +877,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 36",
       "retrieved_citations": [
-        "Article 43, Section 122",
-        "Article 43, Section 123",
-        "Article 43, Section 125"
+        "Article 43, Section 124",
+        "Article 45, Section 130",
+        "Article 46, Section 138"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -894,9 +894,9 @@
       "retrieval_correct": false,
       "expected_citation": "Article 37",
       "retrieved_citations": [
-        "Article 43, Section 122",
-        "Article 43, Section 123",
-        "Article 43, Section 124"
+        "Article 43, Section 121",
+        "Article 45, Section 129",
+        "Article 46, Section 134"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -928,9 +928,9 @@
       "retrieval_correct": false,
       "expected_citation": "Article 20",
       "retrieved_citations": [
-        "Article 3, Section 5",
-        "Article 3, Section 7",
-        "Article 43, Section 125"
+        "Article 43, Section 126",
+        "Article 43, Section 123",
+        "Article 43, Section 124"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -945,9 +945,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 45, Section 132",
       "retrieved_citations": [
+        "Article 43, Section 124",
         "Article 43, Section 122",
-        "Article 43, Section 123",
-        "Article 43, Section 125"
+        "Article 43, Section 123"
       ],
       "wage_correct": null,
       "escalation_correct": true,
@@ -962,9 +962,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 43",
       "retrieved_citations": [
+        "Article 46, Section 138",
         "Article 43, Section 122",
-        "Article 43, Section 123",
-        "Article 43, Section 125"
+        "Article 43, Section 123"
       ],
       "wage_correct": null,
       "escalation_correct": true,
@@ -979,9 +979,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 43",
       "retrieved_citations": [
+        "Article 45, Section 131",
         "Article 43, Section 122",
-        "Article 43, Section 123",
-        "Article 43, Section 124"
+        "Article 43, Section 123"
       ],
       "wage_correct": null,
       "escalation_correct": true,
@@ -1013,7 +1013,7 @@
       "retrieval_correct": true,
       "expected_citation": null,
       "retrieved_citations": [
-        "Article 10, Section 21, Part 3",
+        "Article 10, Section 21, Part 10",
         "Article 10, Section 22",
         "Article 7, Section 14, Subsection g (COURTESY CLERK DUTIES)"
       ],
@@ -1030,9 +1030,9 @@
       "retrieval_correct": true,
       "expected_citation": null,
       "retrieved_citations": [
-        "Article 17, Section 44, Part 1",
-        "Article 17, Section 44, Part 2",
-        "Article 17, Section 46"
+        "Article 46, Section 140, Part 2",
+        "Article 46, Section 140, Part 4",
+        "Article 46, Section 141"
       ],
       "wage_correct": null,
       "escalation_correct": null,

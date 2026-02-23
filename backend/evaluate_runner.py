@@ -14,10 +14,21 @@ Tracks:
 - false_unavailable: deterministic guard against false "not available" responses
 - wage_table_evidence: deterministic canonical wage-row table evidence slice
 - entitlement_table_evidence: deterministic canonical entitlement schedule evidence slice
+- moa_effective: deterministic effective-state/MOA retrieval integrity slice
+- moa_deleted_vs_updated: deterministic regression slice for deleted-vs-updated MOA clauses
+- moa_deleted_vs_updated_answer: deterministic end-to-end answer slice for deleted-vs-updated MOA clauses
+- moa_readiness: deterministic MOA gate bundle (materializer + history API + topic routing + moa_effective threshold)
+- moa_deep_suite: deep MOA benchmark bundle across retrieval/integrity/guard tracks
+- artifact_integrity: cross-contract artifact integrity audit (LOU/LOA/table/pdf/effective coverage)
+- artifact_integrity_strict: strict side-letter bucket policy gate over artifact integrity audit
+- side_letter_retrieval: deterministic LOA/LOU retrieval integrity slice across side-letter-heavy contracts
+- side_letter_retrieval_pueblo_clerks: exploratory LOU discovery/cross-reference slice for Safeway Pueblo Clerks (non-gating)
+- contract_text_compare_amended: deterministic amended-section base-vs-effective text compare regression slice
 - role_catalog_integrity: deterministic contract-scoped role integrity slice
 - followup_role_wage: deterministic role-targeted wage follow-up integrity slice
 - needle: needle retrieval integrity slice
-- all: run v1 + v2 + v2_multi_contract + escalation + paraphrase + adversarial + unanswerable + cross_contract_mentions + false_unavailable + wage_table_evidence + entitlement_table_evidence + role_catalog_integrity + followup_role_wage + needle + v3
+- release_090: deterministic v0.9.0 readiness scorecard over canonical artifacts
+- all: run v1 + v2 + v2_multi_contract + escalation + paraphrase + adversarial + unanswerable + cross_contract_mentions + false_unavailable + wage_table_evidence + entitlement_table_evidence + moa_effective + moa_deleted_vs_updated + moa_readiness + side_letter_retrieval + role_catalog_integrity + followup_role_wage + needle + v3
 
 This runner records deterministic run metadata for auditability:
 - timestamp, command, cwd
@@ -192,12 +203,43 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
         return [[py, "-m", "backend.evaluate_wage_table_evidence", "--bm25-only"]]
     if track == "entitlement_table_evidence":
         return [[py, "-m", "backend.evaluate_entitlement_table_evidence"]]
+    if track == "moa_effective":
+        return [[py, "-m", "backend.evaluate_moa_effective", "--bm25-only"]]
+    if track == "moa_deleted_vs_updated":
+        return [[py, "-m", "backend.evaluate_moa_deleted_vs_updated", "--bm25-only"]]
+    if track == "moa_deleted_vs_updated_answer":
+        return [[py, "-m", "backend.evaluate_moa_deleted_vs_updated_answer", "--bm25-only"]]
+    if track == "moa_readiness":
+        return [[py, "-m", "backend.evaluate_moa_readiness"]]
+    if track == "moa_deep_suite":
+        return [[py, "-m", "backend.evaluate_moa_deep_suite"]]
+    if track == "artifact_integrity":
+        return [[py, "-m", "backend.evaluate_contract_artifact_integrity"]]
+    if track == "artifact_integrity_strict":
+        return [[py, "-m", "backend.evaluate_contract_artifact_integrity", "--strict-side-letter-buckets"]]
+    if track == "side_letter_retrieval":
+        return [[py, "-m", "backend.evaluate_side_letter_retrieval", "--bm25-only"]]
+    if track == "side_letter_retrieval_pueblo_clerks":
+        return [[
+            py,
+            "-m",
+            "backend.evaluate_side_letter_retrieval",
+            "--bm25-only",
+            "--input",
+            str(config.DATA_DIR / "test_set" / "side_letter_retrieval_pueblo_clerks_test.json"),
+            "--output",
+            str(config.DATA_DIR / "test_set" / "side_letter_retrieval_pueblo_clerks_results.json"),
+        ]]
+    if track == "contract_text_compare_amended":
+        return [[py, "-m", "backend.evaluate_contract_text_compare_amended"]]
     if track == "role_catalog_integrity":
         return [[py, "-m", "backend.evaluate_role_catalog_integrity"]]
     if track == "followup_role_wage":
         return [[py, "-m", "backend.evaluate_followup_role_wage", "--bm25-only"]]
     if track == "needle":
         return [[py, "-m", "backend.evaluate_needle", "--bm25-only"]]
+    if track == "release_090":
+        return [[py, "-m", "backend.evaluate_release_090"]]
     if track == "all":
         return (
             _build_commands("v1", ablation_mode, bucket_filter, seed)
@@ -211,6 +253,13 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
             + _build_commands("false_unavailable", ablation_mode, bucket_filter, seed)
             + _build_commands("wage_table_evidence", ablation_mode, bucket_filter, seed)
             + _build_commands("entitlement_table_evidence", ablation_mode, bucket_filter, seed)
+            + _build_commands("moa_effective", ablation_mode, bucket_filter, seed)
+            + _build_commands("moa_deleted_vs_updated", ablation_mode, bucket_filter, seed)
+            + _build_commands("moa_deleted_vs_updated_answer", ablation_mode, bucket_filter, seed)
+            + _build_commands("moa_readiness", ablation_mode, bucket_filter, seed)
+            + _build_commands("side_letter_retrieval", ablation_mode, bucket_filter, seed)
+            + _build_commands("moa_deep_suite", ablation_mode, bucket_filter, seed)
+            + _build_commands("artifact_integrity", ablation_mode, bucket_filter, seed)
             + _build_commands("role_catalog_integrity", ablation_mode, bucket_filter, seed)
             + _build_commands("followup_role_wage", ablation_mode, bucket_filter, seed)
             + _build_commands("needle", ablation_mode, bucket_filter, seed)
@@ -219,7 +268,14 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
     raise ValueError(f"Unsupported track: {track}")
 
 
-def run(track: str, ablation_mode: str, bucket_filter: str | None, seed: int, dry_run: bool) -> dict:
+def run(
+    track: str,
+    ablation_mode: str,
+    bucket_filter: str | None,
+    seed: int,
+    dry_run: bool,
+    skip_manifest_validation: bool = False,
+) -> dict:
     ts = datetime.now(timezone.utc).isoformat()
     commands = _build_commands(track, ablation_mode, bucket_filter, seed)
 
@@ -238,8 +294,9 @@ def run(track: str, ablation_mode: str, bucket_filter: str | None, seed: int, dr
     }
 
     if not dry_run:
-        manifest_rc = validate_manifests_main()
+        manifest_rc = 0 if skip_manifest_validation else validate_manifests_main()
         report["manifest_validation_return_code"] = manifest_rc
+        report["skip_manifest_validation"] = bool(skip_manifest_validation)
         if manifest_rc != 0:
             report["results"].append(
                 {
@@ -276,13 +333,14 @@ def main():
     parser = argparse.ArgumentParser(description="Canonical KARL evaluation runner with metadata capture.")
     parser.add_argument(
         "--track",
-        choices=["v1", "v2", "v2_multi_contract", "v3", "escalation", "paraphrase", "adversarial", "unanswerable", "cross_contract_mentions", "false_unavailable", "wage_table_evidence", "entitlement_table_evidence", "role_catalog_integrity", "followup_role_wage", "needle", "all"],
+        choices=["v1", "v2", "v2_multi_contract", "v3", "escalation", "paraphrase", "adversarial", "unanswerable", "cross_contract_mentions", "false_unavailable", "wage_table_evidence", "entitlement_table_evidence", "moa_effective", "moa_deleted_vs_updated", "moa_deleted_vs_updated_answer", "moa_readiness", "moa_deep_suite", "artifact_integrity", "artifact_integrity_strict", "side_letter_retrieval", "side_letter_retrieval_pueblo_clerks", "contract_text_compare_amended", "role_catalog_integrity", "followup_role_wage", "needle", "release_090", "all"],
         default="v2",
     )
     parser.add_argument("--ablation-mode", default="normal")
     parser.add_argument("--bucket-filter", default=None)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--skip-manifest-validation", action="store_true")
     args = parser.parse_args()
 
     report = run(
@@ -291,6 +349,7 @@ def main():
         bucket_filter=args.bucket_filter,
         seed=args.seed,
         dry_run=args.dry_run,
+        skip_manifest_validation=bool(args.skip_manifest_validation),
     )
     out_path = _write_report(report)
 

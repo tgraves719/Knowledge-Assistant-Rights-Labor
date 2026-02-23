@@ -1,0 +1,85 @@
+{
+  "coverage": {
+    "approved_replace_section_ops_covered": 2,
+    "approved_replace_section_ops_total": 2,
+    "contract_coverage_rate": 1.0,
+    "covered_contracts": [
+      "local7_safeway_pueblo_clerks_2022"
+    ],
+    "dataset_contracts": [
+      "local7_safeway_pueblo_clerks_2022"
+    ],
+    "failing_cases_count": 0,
+    "failing_cases_sample": [],
+    "inventory_summary": {
+      "approved_replace_section_ops": 2,
+      "contracts_with_approved_replace_section_ops": 1
+    },
+    "missing_targets_count": 0,
+    "missing_targets_sample": [],
+    "operation_coverage_rate": 1.0,
+    "uncovered_contracts": []
+  },
+  "dataset_schema_version": "contract_text_compare_amended_targets_test_v1",
+  "overall": {
+    "pass": true,
+    "pass_rate": 1.0,
+    "passed": 2,
+    "total": 2
+  },
+  "results": [
+    {
+      "article_num": 15,
+      "base_chunk_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched.json",
+      "base_found": true,
+      "base_hash": "1dc06abfd68db3f58cf0baaa6a66d38d7a8531ec7e55309451c3f85748f8f201",
+      "base_len": 468,
+      "base_preview": "Section 34. A premium of **two** dollars (**$2.00**) per hour shall be paid for all work performed between the hours of 12:00 midnight and 6:00 a.m. to all employees (excluding Courtesy Clerks).\n\nAll Courtesy Clerks shal",
+      "base_snippet_ok": true,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "description": "Courtesy Clerk night premium section amended by July 5 2025 MOA; base and effective text should differ.",
+      "diff_expectation_ok": true,
+      "effective_chunk_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+      "effective_found": true,
+      "effective_hash": "05c31fa44efbebe88caeb6b7dadc21b376a80ab5baf3f73ece8c9386dd20e849",
+      "effective_len": 463,
+      "effective_preview": "Section 34. A premium of **two** dollars (**$2.00**) per hour shall be paid for all work performed between the hours of 12:00 midnight and 6:00 a.m. to all employees (excluding Courtesy Clerks).\n\nAll Courtesy Clerks shal",
+      "effective_snippet_ok": true,
+      "expect_difference": true,
+      "id": "pueblo_clerks_moa_2025_article15_section34_night_premium",
+      "pass": true,
+      "section_num": 34,
+      "texts_differ": true
+    },
+    {
+      "article_num": 58,
+      "base_chunk_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched.json",
+      "base_found": true,
+      "base_hash": "1d9ff92a03614028f438e28e3d83b7e8b834684a94686dd306f5f51a6c90b7a7",
+      "base_len": 697,
+      "base_preview": "Section 1749. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **January 23, 2022** and shall remain in full force and effect until midnight on **January 18, 2025** and shall be automatically r",
+      "base_snippet_ok": true,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "description": "Term/effective date section amended by July 5 2025 MOA; base and effective text should differ.",
+      "diff_expectation_ok": true,
+      "effective_chunk_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+      "effective_found": true,
+      "effective_hash": "91390c97d0c8f81d4b16981a8423c2d65328f1579a07db21d521397f7bfef785",
+      "effective_len": 697,
+      "effective_preview": "Section 1749. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **January 23, 2022** and shall remain in full force and effect until midnight on **January 16, 2027** and shall be automatically r",
+      "effective_snippet_ok": true,
+      "expect_difference": true,
+      "id": "pueblo_clerks_moa_2025_article58_section1749_term_dates",
+      "pass": true,
+      "section_num": 1749,
+      "texts_differ": true
+    }
+  ],
+  "schema_version": "contract_text_compare_amended_eval_v1",
+  "summary": {
+    "diff_expectation_failures": 0,
+    "missing_base_count": 0,
+    "missing_effective_count": 0
+  },
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\contract_text_compare_amended_targets_test.json"
+}

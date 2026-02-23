@@ -1,0 +1,36 @@
+{
+  "schema_version": "contract_text_compare_amended_targets_test_v1",
+  "description": "Known amended section targets that should differ between immutable base chunks and effective snapshot chunks.",
+  "seed_metadata": {
+    "mode": "merge",
+    "prune_unselected": false,
+    "per_contract": 2,
+    "include_contract_ids": [],
+    "inventory_summary": {
+      "contracts_with_approved_replace_section_ops": 1,
+      "approved_replace_section_ops": 2
+    },
+    "selected_targets": 2,
+    "reused_cases": 2,
+    "added_cases": 0,
+    "preserved_unselected_existing_cases": 0
+  },
+  "test_cases": [
+    {
+      "id": "pueblo_clerks_moa_2025_article15_section34_night_premium",
+      "description": "Courtesy Clerk night premium section amended by July 5 2025 MOA; base and effective text should differ.",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "article_num": 15,
+      "section_num": 34,
+      "expect_difference": true
+    },
+    {
+      "id": "pueblo_clerks_moa_2025_article58_section1749_term_dates",
+      "description": "Term/effective date section amended by July 5 2025 MOA; base and effective text should differ.",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "article_num": 58,
+      "section_num": 1749,
+      "expect_difference": true
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "bm25_only": true,
+  "by_bucket": {
+    "deleted": {
+      "pass_rate": 1.0,
+      "passed": 2,
+      "total": 2
+    },
+    "updated": {
+      "pass_rate": 1.0,
+      "passed": 2,
+      "total": 2
+    }
+  },
+  "by_contract": {
+    "local7_safeway_pueblo_clerks_2022": {
+      "pass_rate": 1.0,
+      "passed": 4,
+      "total": 4
+    }
+  },
+  "dataset_schema_version": "moa_deleted_vs_updated_test_v1",
+  "gate": {
+    "checks": {
+      "deleted_pass_rate": true,
+      "overall_pass_rate": true,
+      "source_type_match_rate": true,
+      "updated_pass_rate": true
+    },
+    "pass": true
+  },
+  "overall": {
+    "citation_hit_rate": 1.0,
+    "pass_rate": 1.0,
+    "passed": 4,
+    "source_type_match_rate": 1.0,
+    "total": 4,
+    "unavailable_rate": 0.5
+  },
+  "results": [
+    {
+      "absent_citation_ok": null,
+      "amendments_applied": [
+        "local7_safeway_moa_2025_07_05"
+      ],
+      "answer_excerpt": "I found the following relevant sections from your contract:\n\n**Article 58, Section 1749**:\nSection 1749. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **January 23, 2022** and shall remain in full force and effect until midnight on **January 16, 2027** and shall be automatically renewed from year to year thereafter, unless either party desires change or termination at the expiration of said Agreement. In such event, the party desiring such change or termination shall notify the other party in writing sixty (60) days prior to the expiration date, specifyin...\n\n**Article 58, Section 173**:\nSection 173. The parties acknowledge that during the negotiations which resulted in this Agreement, each had the unlimited right and opportunity to make demands and proposals ",
+      "answer_expected_keyword_hits": 1,
+      "answer_forbidden_ok": true,
+      "answer_keywords_ok": true,
+      "case_class": "updated",
+      "citation_count": 5,
+      "citation_hit": true,
+      "citations": [
+        "Article 58, Section 1749",
+        "Article 58, Section 173",
+        "Article 58, Section 175",
+        "Article 1",
+        "Article 3, Section 5"
+      ],
+      "contains_unavailable_language": false,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+      "expectation": "present",
+      "expected_citations": [
+        "Article 58, Section 1749"
+      ],
+      "expected_intent_type": "contract",
+      "expected_keywords": [
+        "January 16, 2027"
+      ],
+      "expected_source_type": "moa",
+      "forbidden_keywords": [],
+      "id": "MOA-DELUPD-UPDATED-TERM-01",
+      "intent_ok": true,
+      "max_citations_for_absent": null,
+      "min_expected_keyword_hits": 1,
+      "observed_intent_type": "contract",
+      "pass": true,
+      "question": "What is the expiration date of the current agreement?",
+      "require_no_wage_info": true,
+      "source_type_observed": "moa",
+      "source_type_ok": true,
+      "wage_info_ok": true,
+      "wage_info_present": false
+    },
+    {
+      "absent_citation_ok": null,
+      "amendments_applied": [
+        "local7_safeway_moa_2025_07_05"
+      ],
+      "answer_excerpt": "I found the following relevant sections from your contract:\n\n**Article 15, Section 34**:\nSection 34. A premium of **two** dollars (**$2.00**) per hour shall be paid for all work performed between the hours of 12:00 midnight and 6:00 a.m. to all employees (excluding Courtesy Clerks).\n\nAll Courtesy Clerks shall receive fifty cents ($0.50) per hour in addition to the hourly rate for all work performed between the hours of 12:00 midnight and 6:00 a.m.\n\nNight premium shall not apply where the employee is working at overtime or on Sunday or on a holiday.\n\n**Article 2, Section 4**:\nSection 4. Work Jurisdiction. Except for sanitation and floor maintenance, the Employer agrees not to subcontract operations existing within the stores. The Employer agrees that no employee classified as a Sanitation C",
+      "answer_expected_keyword_hits": 2,
+      "answer_forbidden_ok": true,
+      "answer_keywords_ok": true,
+      "case_class": "updated",
+      "citation_count": 4,
+      "citation_hit": true,
+      "citations": [
+        "Article 15, Section 34",
+        "Article 2, Section 4",
+        "Article 16, Section 43",
+        "Article 7, Section 14"
+      ],
+      "contains_unavailable_language": false,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+      "expectation": "present",
+      "expected_citations": [
+        "Article 15, Section 34"
+      ],
+      "expected_intent_type": "contract",
+      "expected_keywords": [
+        "fifty cents",
+        "$0.50"
+      ],
+      "expected_source_type": "moa",
+      "forbidden_keywords": [],
+      "id": "MOA-DELUPD-UPDATED-NIGHT-01",
+      "intent_ok": true,
+      "max_citations_for_absent": null,
+      "min_expected_keyword_hits": 1,
+      "observed_intent_type": "contract",
+      "pass": true,
+      "question": "All Courtesy Clerks shall receive how much per hour in addition to the hourly rate for all work performed between 12:00 midnight and 6:00 a.m.?",
+      "require_no_wage_info": true,
+      "source_type_observed": "moa",
+      "source_type_ok": true,
+      "wage_info_ok": true,
+      "wage_info_present": false
+    },
+    {
+      "absent_citation_ok": true,
+      "amendments_applied": [
+        "local7_safeway_moa_2025_07_05"
+      ],
+      "answer_excerpt": "I cannot find that specific information in your contract.",
+      "answer_expected_keyword_hits": 0,
+      "answer_forbidden_ok": true,
+      "answer_keywords_ok": true,
+      "case_class": "deleted",
+      "citation_count": 0,
+      "citation_hit": true,
+      "citations": [],
+      "contains_unavailable_language": true,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+      "expectation": "absent",
+      "expected_citations": [],
+      "expected_intent_type": "contract",
+      "expected_keywords": [],
+      "expected_source_type": null,
+      "forbidden_keywords": [
+        "full time request list"
+      ],
+      "id": "MOA-DELUPD-DELETED-FTREQ-01",
+      "intent_ok": true,
+      "max_citations_for_absent": 0,
+      "min_expected_keyword_hits": 1,
+      "observed_intent_type": "contract",
+      "pass": true,
+      "question": "Is it true that the Employer will send the Union a copy of the full time request list?",
+      "require_no_wage_info": true,
+      "source_type_observed": null,
+      "source_type_ok": true,
+      "wage_info_ok": true,
+      "wage_info_present": false
+    },
+    {
+      "absent_citation_ok": true,
+      "amendments_applied": [
+        "local7_safeway_moa_2025_07_05"
+      ],
+      "answer_excerpt": "I cannot find that specific information in your contract.",
+      "answer_expected_keyword_hits": 0,
+      "answer_forbidden_ok": true,
+      "answer_keywords_ok": true,
+      "case_class": "deleted",
+      "citation_count": 0,
+      "citation_hit": true,
+      "citations": [],
+      "contains_unavailable_language": true,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+      "expectation": "absent",
+      "expected_citations": [],
+      "expected_intent_type": "contract",
+      "expected_keywords": [],
+      "expected_source_type": null,
+      "forbidden_keywords": [
+        "shall not be averaged into the employee's straight-time rate"
+      ],
+      "id": "MOA-DELUPD-DELETED-SUNPREM-01",
+      "intent_ok": true,
+      "max_citations_for_absent": 0,
+      "min_expected_keyword_hits": 1,
+      "observed_intent_type": "contract",
+      "pass": true,
+      "question": "The Sunday premium shall not be averaged into the employee's straight-time rate for determining overtime. Is that in the current effective agreement?",
+      "require_no_wage_info": true,
+      "source_type_observed": null,
+      "source_type_ok": true,
+      "wage_info_ok": true,
+      "wage_info_present": false
+    }
+  ],
+  "schema_version": "moa_deleted_vs_updated_answer_eval_v1",
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_test.json",
+  "thresholds": {
+    "min_deleted_pass_rate": 1.0,
+    "min_overall_pass_rate": 1.0,
+    "min_source_type_match_rate": 1.0,
+    "min_updated_pass_rate": 1.0
+  },
+  "timestamp_utc": "2026-02-22T05:33:27.255585+00:00"
+}

@@ -61,6 +61,12 @@ jobs:
       - name: Run false-unavailable guard slice (canonical runner)
         run: python -m backend.evaluate_runner --track false_unavailable
 
+      - name: Run MOA deleted-vs-updated regression slice (canonical runner)
+        run: python -m backend.evaluate_runner --track moa_deleted_vs_updated
+
+      - name: Run MOA deleted-vs-updated answer regression slice (canonical runner)
+        run: python -m backend.evaluate_runner --track moa_deleted_vs_updated_answer
+
       - name: Run needle slice (canonical runner)
         run: python -m backend.evaluate_runner --track needle
 
@@ -79,6 +85,9 @@ jobs:
       - name: Run canonical v3 suite summary (from artifacts)
         run: python -m backend.evaluate_v3 --from-artifacts --bm25-only
 
+      - name: Run v0.9.0 readiness scorecard (artifact mode)
+        run: python -m backend.evaluate_release_090 --skip-track-all-metadata
+
       - name: Enforce release-gate thresholds
         run: |
           python -m backend.evaluate_gate_check \
@@ -90,6 +99,7 @@ jobs:
             --unanswerable-results data/test_set/unanswerable_results.json \
             --cross-contract-mentions-results data/test_set/cross_contract_mentions_results.json \
             --followup-role-wage-results data/test_set/followup_role_wage_results.json \
+            --moa-deleted-vs-updated-results data/test_set/moa_deleted_vs_updated_results.json \
             --min-v2-accuracy 0.80 \
             --min-escalation-precision 0.90 \
             --min-escalation-recall 0.70 \
@@ -139,6 +149,12 @@ jobs:
             --min-followup-role-wage-no-unavailable-rate 0.95 \
             --min-followup-role-wage-explicit-override-rate 0.90 \
             --min-followup-role-wage-profile-fallback-rate 0.90 \
+            --required-moa-deleted-vs-updated-schema-version moa_deleted_vs_updated_eval_v1 \
+            --required-moa-deleted-vs-updated-dataset-schema-version moa_deleted_vs_updated_test_v1 \
+            --min-moa-deleted-vs-updated-overall-pass-rate 1.00 \
+            --min-moa-deleted-vs-updated-updated-pass-rate 1.00 \
+            --min-moa-deleted-vs-updated-deleted-pass-rate 1.00 \
+            --min-moa-deleted-vs-updated-updated-moa-source-type-match-rate 1.00 \
             --min-needle-pass-rate 0.80 \
             --min-needle-position-pass-rate 0.80
 
@@ -159,6 +175,49 @@ jobs:
             data/test_set/false_unavailable_results.json
             data/test_set/needle_results.json
             data/test_set/followup_role_wage_results.json
+            data/test_set/moa_effective_results.json
+            data/test_set/moa_deleted_vs_updated_results.json
+            data/test_set/moa_deleted_vs_updated_answer_results.json
+            data/test_set/moa_effective_deep_results.json
+            data/test_set/moa_readiness_results.json
+            data/test_set/moa_deep_eval_suite_results.json
+            data/test_set/moa_deep_eval_summary.md
+            data/test_set/release_0_9_0_scorecard.json
+            data/test_set/eval_run_metadata*.json
+
+  pr-moa-release-gate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate contract manifests
+        run: python -m backend.validate_manifests
+
+      - name: Run MOA deep release gate (canonical runner)
+        run: python -m backend.evaluate_runner --track moa_deep_suite
+
+      - name: Upload MOA gate artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-moa-gate-artifacts
+          path: |
+            data/test_set/moa_effective_results.json
+            data/test_set/moa_deleted_vs_updated_results.json
+            data/test_set/moa_deleted_vs_updated_answer_results.json
+            data/test_set/moa_effective_deep_results.json
+            data/test_set/moa_readiness_results.json
+            data/test_set/moa_deep_eval_suite_results.json
+            data/test_set/moa_deep_eval_summary.md
             data/test_set/eval_run_metadata*.json
 
   main-full-v2-suite:
@@ -234,14 +293,19 @@ jobs:
           python -m backend.validate_cross_contract_mentions_dataset
           python -m backend.validate_false_unavailable_dataset
           python -m backend.evaluate_runner --track false_unavailable
+          python -m backend.evaluate_runner --track moa_deleted_vs_updated_answer
           python -m backend.evaluate_runner --track needle
           python -m backend.evaluate_runner --track followup_role_wage
+          python -m backend.evaluate_runner --track moa_deep_suite
 
       - name: Run cross-contamination evaluator
         run: python -m backend.evaluate_cross_contamination
 
       - name: Run canonical v3 suite summary (from artifacts)
         run: python -m backend.evaluate_v3 --from-artifacts --bm25-only
+
+      - name: Run v0.9.0 readiness scorecard (artifact mode)
+        run: python -m backend.evaluate_release_090 --skip-track-all-metadata
 
       - name: Run deterministic topic routing checks
         run: python backend/test_topic_routing.py
@@ -257,6 +321,7 @@ jobs:
             --unanswerable-results data/test_set/unanswerable_results.json \
             --cross-contract-mentions-results data/test_set/cross_contract_mentions_results.json \
             --followup-role-wage-results data/test_set/followup_role_wage_results.json \
+            --moa-deleted-vs-updated-results data/test_set/moa_deleted_vs_updated_results.json \
             --min-v2-accuracy 0.80 \
             --min-escalation-precision 0.90 \
             --min-escalation-recall 0.70 \
@@ -306,6 +371,12 @@ jobs:
             --min-followup-role-wage-no-unavailable-rate 0.95 \
             --min-followup-role-wage-explicit-override-rate 0.90 \
             --min-followup-role-wage-profile-fallback-rate 0.90 \
+            --required-moa-deleted-vs-updated-schema-version moa_deleted_vs_updated_eval_v1 \
+            --required-moa-deleted-vs-updated-dataset-schema-version moa_deleted_vs_updated_test_v1 \
+            --min-moa-deleted-vs-updated-overall-pass-rate 1.00 \
+            --min-moa-deleted-vs-updated-updated-pass-rate 1.00 \
+            --min-moa-deleted-vs-updated-deleted-pass-rate 1.00 \
+            --min-moa-deleted-vs-updated-updated-moa-source-type-match-rate 1.00 \
             --min-needle-pass-rate 0.80 \
             --min-needle-position-pass-rate 0.80
 
@@ -326,4 +397,12 @@ jobs:
             data/test_set/false_unavailable_results.json
             data/test_set/needle_results.json
             data/test_set/followup_role_wage_results.json
+            data/test_set/moa_effective_results.json
+            data/test_set/moa_deleted_vs_updated_results.json
+            data/test_set/moa_deleted_vs_updated_answer_results.json
+            data/test_set/moa_effective_deep_results.json
+            data/test_set/moa_readiness_results.json
+            data/test_set/moa_deep_eval_suite_results.json
+            data/test_set/moa_deep_eval_summary.md
+            data/test_set/release_0_9_0_scorecard.json
             data/test_set/eval_run_metadata*.json

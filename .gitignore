@@ -65,3 +65,4 @@ data/test_set/comprehensive_results_*.json
 old/
 NUL
 pytest-cache-files-*/
+tmp_test_work/

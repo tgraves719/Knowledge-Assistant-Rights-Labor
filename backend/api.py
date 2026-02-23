@@ -17,6 +17,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 from contextlib import asynccontextmanager
+from urllib.parse import urlencode
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,6 +29,8 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from backend.config import (
+    CHUNKS_DIR,
+    DATA_DIR,
     GEMINI_API_KEY,
     LLM_MODEL,
     MANIFESTS_DIR,
@@ -56,14 +59,21 @@ from backend.table_nav_files import resolve_table_nav_index_file
 from backend.pdf_nav_index import (
     build_pdf_nav_index,
     load_pdf_nav_index,
+    resolve_contract_source_json_path,
     to_runtime_navigation_maps,
-    resolve_contract_pdf_path as resolve_contract_pdf_source_path,
 )
 from backend.table_nav_index import (
     build_table_nav_index,
     load_table_nav_index,
     to_runtime_table_navigation_maps,
 )
+from backend.effective_contracts import (
+    load_effective_contract,
+    resolve_contract_source_pdf_path,
+    resolve_latest_effective_content_hash,
+    resolve_latest_effective_version_id,
+)
+from backend.source_docs import resolve_source_doc_pdf_name, source_doc_applies_to_contract
 from backend.generation.prompts import build_prompt, SYSTEM_PROMPT
 from backend.generation.verifier import (
     verify_response,
@@ -116,6 +126,7 @@ _TOPIC_RECOVERY_SIGNALS = {
     "term": ("term", "start", "end", "expiration", "effective", "agreement"),
     "breaks": ("break", "lunch", "meal", "rest", "between shifts"),
     "bereavement": ("bereavement", "funeral", "death"),
+    "premiums": ("premium", "premiums", "night premium", "sunday premium", "holiday premium"),
 }
 
 _FOREIGN_CONTRACT_UNAVAILABLE_ANSWER = (
@@ -231,6 +242,28 @@ def _question_terms(question: str) -> set[str]:
     return {t for t in tokens if len(t) >= 3 and t not in _QUERY_EVIDENCE_STOPWORDS}
 
 
+def _is_definition_locator_query(question: str) -> bool:
+    q = str(question or "").lower()
+    return bool(
+        re.search(r"\b(where|which)\b", q)
+        and re.search(r"\b(defined|definition|rules?)\b", q)
+    )
+
+
+def _primary_topic_signal(question: str) -> tuple[Optional[str], tuple[str, ...]]:
+    q = str(question or "").lower()
+    best_topic: Optional[str] = None
+    best_signals: tuple[str, ...] = ()
+    best_score = 0
+    for topic, signals in _TOPIC_RECOVERY_SIGNALS.items():
+        hits = sum(1 for signal in signals if signal and signal in q)
+        if hits > best_score:
+            best_score = hits
+            best_topic = topic
+            best_signals = tuple(signals)
+    return best_topic, best_signals
+
+
 def _has_strong_evidence_for_query(question: str, chunks: list[dict], min_token_hits: int = 3) -> bool:
     """
     Determine whether retrieved chunks likely contain actionable evidence.
@@ -245,7 +278,7 @@ def _has_strong_evidence_for_query(question: str, chunks: list[dict], min_token_
     if not query_terms:
         return False
 
-    for chunk in chunks[:8]:
+    for chunk in chunks[:12]:
         citation = str(chunk.get("citation") or "")
         if not re.search(r"article\s+\d+", citation, re.IGNORECASE):
             continue
@@ -260,6 +293,209 @@ def _has_strong_evidence_for_query(question: str, chunks: list[dict], min_token_
             return True
 
     return False
+
+
+def _is_clause_phrase_query(question: str) -> bool:
+    q = _normalize_text_token_space(question)
+    if not q:
+        return False
+    tokens = q.split()
+    if len(tokens) < 8:
+        return False
+    return (" shall " in f" {q} ") or (" will " in f" {q} ")
+
+
+def _is_clause_presence_probe_query(question: str) -> bool:
+    q = str(question or "").lower()
+    if not q:
+        return False
+    return bool(
+        re.search(r"\bis it true\b", q)
+        or re.search(r"\bis that in (?:the )?(?:current )?(?:effective )?agreement\b", q)
+        or re.search(r"\bis (?:this|that) in (?:the )?contract\b", q)
+        or re.search(r"\bin the current effective agreement\b", q)
+    )
+
+
+def _has_contiguous_clause_phrase_evidence(question: str, chunks: list[dict]) -> bool:
+    """
+    Require a contiguous query phrase for clause-like prompts.
+
+    This prevents false-unavailable recovery from synthesizing an answer from
+    merely adjacent-topic chunks when the user is effectively testing whether a
+    specific clause sentence exists in the current agreement.
+    """
+    if not chunks:
+        return False
+    q = _normalize_text_token_space(question)
+    q_tokens = q.split()
+    if len(q_tokens) < 4:
+        return False
+
+    # Try larger windows first. Ignore windows that are mostly stopwords.
+    for window_size in (6, 5):
+        if len(q_tokens) < window_size:
+            continue
+        for i in range(0, len(q_tokens) - window_size + 1):
+            window = q_tokens[i:i + window_size]
+            content_terms = [t for t in window if t not in _QUERY_EVIDENCE_STOPWORDS]
+            # Require a denser phrase to avoid generic legal-language overlaps
+            # (e.g. "the employee straight time") from triggering recovery.
+            if len(content_terms) < 4:
+                continue
+            phrase = " ".join(window)
+            for chunk in chunks[:12]:
+                citation = str(chunk.get("citation") or "")
+                if not re.search(r"article\s+\d+", citation, re.IGNORECASE):
+                    continue
+                text = _normalize_text_token_space(
+                    f"{citation} {chunk.get('article_title', '')} {chunk.get('content_with_tables') or chunk.get('content') or ''}"
+                )
+                if phrase and phrase in text:
+                    return True
+    return False
+
+
+def _has_strict_clause_phrase_evidence(question: str, chunks: list[dict]) -> bool:
+    """
+    Stronger near-quote requirement for explicit clause-presence probes.
+
+    This reduces false fallback synthesis when the user is effectively asking
+    whether a specific sentence still exists after an MOA.
+    """
+    if not chunks:
+        return False
+    q = _normalize_text_token_space(question)
+    q_tokens = q.split()
+    if len(q_tokens) < 6:
+        return False
+
+    for window_size in (7, 6):
+        if len(q_tokens) < window_size:
+            continue
+        for i in range(0, len(q_tokens) - window_size + 1):
+            window = q_tokens[i:i + window_size]
+            content_terms = [t for t in window if t not in _QUERY_EVIDENCE_STOPWORDS]
+            if len(content_terms) < 5:
+                continue
+            phrase = " ".join(window)
+            for chunk in chunks[:12]:
+                citation = str(chunk.get("citation") or "")
+                if not re.search(r"article\s+\d+", citation, re.IGNORECASE):
+                    continue
+                text = _normalize_text_token_space(
+                    f"{citation} {chunk.get('article_title', '')} {chunk.get('content_with_tables') or chunk.get('content') or ''}"
+                )
+                if phrase and phrase in text:
+                    return True
+    return False
+
+
+def _has_recovery_evidence_for_query(
+    *,
+    question: str,
+    chunks: list[dict],
+    anchor_articles: list[int],
+    topic: Optional[str],
+    foreign_contract_reference: bool,
+) -> bool:
+    if foreign_contract_reference:
+        return False
+    clause_query = _is_clause_phrase_query(question)
+    clause_presence_probe = _is_clause_presence_probe_query(question)
+    anchor_evidence_present = (
+        _has_article_anchor_evidence(anchor_articles, chunks, min_article_hits=2)
+        and _query_supports_topic_recovery(topic, question)
+    )
+    lexical_evidence_present = _has_strong_evidence_for_query(question, chunks)
+    if clause_query:
+        lexical_evidence_present = lexical_evidence_present and _has_contiguous_clause_phrase_evidence(question, chunks)
+    if clause_query and clause_presence_probe:
+        lexical_evidence_present = lexical_evidence_present and _has_strict_clause_phrase_evidence(question, chunks)
+        # For explicit clause-presence probes, article/topic anchors alone are
+        # too noisy; require near-quote lexical evidence to avoid false claims.
+        anchor_evidence_present = False
+    return lexical_evidence_present or anchor_evidence_present
+
+
+def _has_retry_candidate_evidence_for_query(
+    *,
+    question: str,
+    chunks: list[dict],
+    anchor_articles: list[int],
+    topic: Optional[str],
+    foreign_contract_reference: bool,
+) -> bool:
+    if foreign_contract_reference:
+        return False
+    anchor_evidence_present = (
+        _has_article_anchor_evidence(anchor_articles, chunks, min_article_hits=2)
+        and _query_supports_topic_recovery(topic, question)
+    )
+    return _has_strong_evidence_for_query(question, chunks) or anchor_evidence_present
+
+
+def _fallback_relevant_chunks(
+    question: str,
+    chunks: list[dict],
+    min_token_hits: int = 2,
+    preferred_articles: Optional[list[int]] = None,
+) -> list[dict]:
+    """
+    Keep fallback snippets scoped to query-relevant chunks.
+
+    Prevents confusing fallback dumps when retrieval is noisy or the query is
+    genuinely absent from the contract.
+    """
+    if not chunks:
+        return []
+    query_terms = _question_terms(question)
+    if not query_terms:
+        return []
+    locator_query = _is_definition_locator_query(question)
+    _topic, topic_signals = _primary_topic_signal(question)
+    preferred_article_set: set[int] = set()
+    for raw in preferred_articles or []:
+        try:
+            num = int(raw)
+        except (TypeError, ValueError):
+            continue
+        if num > 0:
+            preferred_article_set.add(num)
+
+    scored: list[tuple[float, int, dict]] = []
+    for chunk in chunks[:10]:
+        citation = str(chunk.get("citation") or "")
+        if not re.search(r"article\s+\d+", citation, re.IGNORECASE):
+            continue
+        section_num = int(chunk.get("section_num") or 0)
+        title = str(chunk.get("article_title") or "").lower()
+        text = (
+            f"{citation} "
+            f"{title} "
+            f"{chunk.get('content_with_tables') or chunk.get('content') or ''}"
+        ).lower()
+        hits = sum(1 for term in query_terms if term in text)
+        title_signal_hits = sum(1 for signal in topic_signals if signal and signal in title)
+        article_num = chunk.get("article_num")
+        in_preferred = isinstance(article_num, int) and article_num in preferred_article_set
+        include = hits >= min_token_hits
+        if not include and locator_query and title_signal_hits > 0 and hits >= 1:
+            include = True
+        if not include and in_preferred and hits >= 1:
+            include = True
+        if not include:
+            continue
+
+        score = float(hits) + (0.75 * float(title_signal_hits))
+        if locator_query and title_signal_hits > 0:
+            score += 0.5
+        if in_preferred:
+            score += 0.85
+        scored.append((score, section_num, chunk))
+
+    scored.sort(key=lambda row: (-row[0], row[1]))
+    return [row[2] for row in scored[:4]]
 
 
 def _merge_unique_chunks(primary: list[dict], secondary: list[dict], limit: int = 12) -> list[dict]:
@@ -516,6 +752,9 @@ class QueryResponse(BaseModel):
     union_local_id: Optional[str] = None
     contract_id: str
     contract_version: Optional[str] = None
+    effective_version_id: Optional[str] = None
+    effective_content_hash: Optional[str] = None
+    amendments_applied: list[str] = Field(default_factory=list)
     high_stakes_topic: bool = False
     active_urgent_context: bool = False
     escalation_policy: Optional[str] = None
@@ -671,6 +910,67 @@ def _count_contract_chunks(contract_id: Optional[str]) -> int:
     return count
 
 
+@lru_cache(maxsize=64)
+def _effective_runtime_metadata(contract_id: str) -> tuple[Optional[str], list[str]]:
+    version_id = resolve_latest_effective_version_id(contract_id)
+    if not version_id:
+        return None, []
+    payload = load_effective_contract(contract_id=contract_id, effective_version_id=version_id) or {}
+    amendments = payload.get("amendments_applied") if isinstance(payload, dict) else []
+    if not isinstance(amendments, list):
+        amendments = []
+    normalized = []
+    for patch_id in amendments:
+        value = str(patch_id or "").strip()
+        if value and value not in normalized:
+            normalized.append(value)
+    return version_id, normalized
+
+
+@lru_cache(maxsize=64)
+def _effective_runtime_content_hash(contract_id: str) -> Optional[str]:
+    return resolve_latest_effective_content_hash(contract_id)
+
+
+def _response_effective_metadata(
+    contract_id: str,
+    chunks: Optional[list[dict]] = None,
+    wage_info: Optional[dict] = None,
+) -> tuple[Optional[str], list[str]]:
+    version_id, amendments = _effective_runtime_metadata(contract_id)
+
+    for chunk in chunks or []:
+        candidate_version = str(chunk.get("effective_version_id") or "").strip()
+        if candidate_version:
+            version_id = candidate_version
+            break
+
+    from_chunks: list[str] = []
+    for chunk in chunks or []:
+        for patch_id in (chunk.get("amendments_applied") or []):
+            value = str(patch_id or "").strip()
+            if value and value not in from_chunks:
+                from_chunks.append(value)
+
+    from_wage: list[str] = []
+    if isinstance(wage_info, dict):
+        for patch_id in (wage_info.get("amendments_applied") or []):
+            value = str(patch_id or "").strip()
+            if value and value not in from_wage:
+                from_wage.append(value)
+        if not version_id:
+            candidate_version = str(wage_info.get("effective_version_id") or "").strip()
+            if candidate_version:
+                version_id = candidate_version
+
+    merged = []
+    for collection in (amendments, from_chunks, from_wage):
+        for patch_id in collection:
+            if patch_id not in merged:
+                merged.append(patch_id)
+    return version_id, merged
+
+
 @app.get("/api/health", response_model=HealthResponse)
 async def health_check(contract_id: Optional[str] = None):
     """Check system health."""
@@ -729,6 +1029,9 @@ async def get_classifications(contract_id: Optional[str] = None):
         ensure_contract_manifest(effective_contract_id)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    response_effective_version_id, response_amendments = _response_effective_metadata(
+        effective_contract_id
+    )
 
     options = get_classification_options(contract_id=effective_contract_id)
     return ClassificationsResponse(
@@ -945,6 +1248,13 @@ async def query_contract(request: QueryRequest):
             ),
         )
 
+    response_effective_version_id, response_amendments = _response_effective_metadata(
+        effective_contract_id
+    )
+    response_effective_content_hash = _effective_runtime_content_hash(
+        effective_contract_id
+    )
+
     # Get user profile and conversation context for this session
     conversation_context = ""
     detected_entities = {}
@@ -1019,6 +1329,9 @@ async def query_contract(request: QueryRequest):
             union_local_id=request.union_local_id,
             contract_id=effective_contract_id,
             contract_version=request.contract_version,
+            effective_version_id=response_effective_version_id,
+            effective_content_hash=response_effective_content_hash,
+            amendments_applied=response_amendments,
             high_stakes_topic=intent.high_stakes_topic,
             active_urgent_context=intent.active_urgent_context,
             escalation_policy=intent.escalation_policy,
@@ -1064,6 +1377,9 @@ async def query_contract(request: QueryRequest):
                 union_local_id=request.union_local_id,
                 contract_id=effective_contract_id,
                 contract_version=request.contract_version,
+                effective_version_id=response_effective_version_id,
+                effective_content_hash=response_effective_content_hash,
+                amendments_applied=response_amendments,
                 high_stakes_topic=intent.high_stakes_topic,
                 active_urgent_context=intent.active_urgent_context,
                 escalation_policy=intent.escalation_policy,
@@ -1112,6 +1428,9 @@ async def query_contract(request: QueryRequest):
             union_local_id=request.union_local_id,
             contract_id=effective_contract_id,
             contract_version=request.contract_version,
+            effective_version_id=response_effective_version_id,
+            effective_content_hash=response_effective_content_hash,
+            amendments_applied=response_amendments,
             high_stakes_topic=intent.high_stakes_topic,
             active_urgent_context=intent.active_urgent_context,
             escalation_policy=intent.escalation_policy,
@@ -1145,6 +1464,14 @@ async def query_contract(request: QueryRequest):
     entitlement_info = retrieval_result.get("entitlement_info")
     escalation_required = retrieval_result["escalation_required"]
     query_expansions = retrieval_result.get("query_expansions", [])
+    response_effective_version_id, response_amendments = _response_effective_metadata(
+        effective_contract_id,
+        chunks=chunks,
+        wage_info=wage_info,
+    )
+    response_effective_content_hash = _effective_runtime_content_hash(
+        effective_contract_id
+    )
 
     # Extract CAG (Rosetta Stone) metrics
     hypothesis_result = retrieval_result.get("hypothesis_result")
@@ -1236,6 +1563,9 @@ async def query_contract(request: QueryRequest):
                 union_local_id=request.union_local_id,
                 contract_id=effective_contract_id,
                 contract_version=request.contract_version,
+                effective_version_id=response_effective_version_id,
+                effective_content_hash=response_effective_content_hash,
+                amendments_applied=response_amendments,
                 high_stakes_topic=intent.high_stakes_topic,
                 active_urgent_context=intent.active_urgent_context,
                 escalation_policy=intent.escalation_policy,
@@ -1304,21 +1634,24 @@ async def query_contract(request: QueryRequest):
     # Deterministic evidence-gap recovery:
     # if the model says "not available/cannot find" despite strong evidence,
     # run one broader retrieval pass and regenerate once before returning.
-    anchor_evidence_present = (
-        _has_article_anchor_evidence(anchor_articles, chunks, min_article_hits=2)
-        and _query_supports_topic_recovery(intent.topic, request.question)
+    retry_candidate_evidence_present = _has_retry_candidate_evidence_for_query(
+        question=request.question,
+        chunks=chunks,
+        anchor_articles=anchor_articles,
+        topic=intent.topic,
+        foreign_contract_reference=foreign_contract_reference,
     )
-    recovery_evidence_present = (not foreign_contract_reference) and (
-        _has_strong_evidence_for_query(request.question, chunks) or anchor_evidence_present
-    )
-    if _is_unavailable_answer(answer) and not escalation_required and recovery_evidence_present:
+    if _is_unavailable_answer(answer) and not escalation_required and retry_candidate_evidence_present:
+        # Recovery should be deterministic and stable. Use single-angle retrieval
+        # here to avoid stochastic query-interpretation drift in second-pass rescue.
         retry_result = await asyncio.to_thread(
-            retriever.multi_angle_retrieve,
+            retriever.retrieve,
             query=request.question,
             intent=intent,
             n_results=8,
             hours_worked=hours_worked,
             months_employed=months_employed,
+            use_hybrid=True,
             contract_id=effective_contract_id,
         )
 
@@ -1389,15 +1722,20 @@ async def query_contract(request: QueryRequest):
 
         # Final deterministic guard: if model still refuses but evidence is strong,
         # return chunk-grounded fallback rather than claiming information is absent.
-        anchor_evidence_present = (
-            _has_article_anchor_evidence(anchor_articles, chunks, min_article_hits=2)
-            and _query_supports_topic_recovery(intent.topic, request.question)
-        )
-        recovery_evidence_present = (not foreign_contract_reference) and (
-            _has_strong_evidence_for_query(request.question, chunks) or anchor_evidence_present
+        recovery_evidence_present = _has_recovery_evidence_for_query(
+            question=request.question,
+            chunks=chunks,
+            anchor_articles=anchor_articles,
+            topic=intent.topic,
+            foreign_contract_reference=foreign_contract_reference,
         )
         if _is_unavailable_answer(answer) and recovery_evidence_present:
-            answer = generate_fallback_response(chunks)
+            answer = generate_fallback_response(
+                chunks,
+                question=request.question,
+                preferred_articles=anchor_articles,
+                topic=intent.topic,
+            )
     
     # Verify response
     verification = verify_response(
@@ -1431,6 +1769,9 @@ async def query_contract(request: QueryRequest):
         union_local_id=request.union_local_id,
         contract_id=effective_contract_id,
         contract_version=request.contract_version,
+        effective_version_id=response_effective_version_id,
+        effective_content_hash=response_effective_content_hash,
+        amendments_applied=response_amendments,
         high_stakes_topic=intent.high_stakes_topic,
         active_urgent_context=intent.active_urgent_context,
         escalation_policy=intent.escalation_policy,
@@ -1547,6 +1888,77 @@ class PdfLocationResponse(BaseModel):
     page_number: Optional[int] = None
     total_pages: Optional[int] = None
     matched_by: str = "none"
+    source_candidates: list[dict] = Field(default_factory=list)
+    selected_source_key: Optional[str] = None
+
+
+class ContractHistoryPatchResponse(BaseModel):
+    """Single applied amendment in the effective chain."""
+    patch_id: str
+    effective_date: Optional[str] = None
+    ratified_date: Optional[str] = None
+    source_pdf: Optional[str] = None
+    source_doc_id: Optional[str] = None
+    operation_count: int = 0
+    approved_operation_count: int = 0
+    patch_file_sha256: Optional[str] = None
+    patch_payload_sha256: Optional[str] = None
+
+
+class ContractHistoryResponse(BaseModel):
+    """Contract lineage + source-mode metadata for Contract tab."""
+    contract_id: str
+    effective_version_id: Optional[str] = None
+    effective_content_hash: Optional[str] = None
+    has_effective_snapshot: bool = False
+    source_modes: list[str] = Field(default_factory=list)
+    base_pdf: Optional[str] = None
+    amendment_pdfs: list[str] = Field(default_factory=list)
+    amendment_source_doc_ids: list[str] = Field(default_factory=list)
+    applied_patch_ids: list[str] = Field(default_factory=list)
+    base_chunk_total: int = 0
+    effective_chunk_total: int = 0
+    base_doc_type_counts: dict[str, int] = Field(default_factory=dict)
+    effective_doc_type_counts: dict[str, int] = Field(default_factory=dict)
+    patch_count: int = 0
+    patches: list[ContractHistoryPatchResponse] = Field(default_factory=list)
+
+
+class ContractBrowseItemSummaryResponse(BaseModel):
+    key: str
+    kind: str
+    label: str
+    title: Optional[str] = None
+    article_num: Optional[int] = None
+    doc_type: Optional[str] = None
+    item_count: int = 0
+
+
+class ContractBrowseGroupResponse(BaseModel):
+    key: str
+    label: str
+    items: list[ContractBrowseItemSummaryResponse] = Field(default_factory=list)
+
+
+class ContractBrowseResponse(BaseModel):
+    contract_id: str
+    groups: list[ContractBrowseGroupResponse] = Field(default_factory=list)
+
+
+class ContractBrowseItemSectionResponse(BaseModel):
+    citation: str
+    content: str
+    summary: Optional[str] = None
+
+
+class ContractBrowseItemResponse(BaseModel):
+    contract_id: str
+    key: str
+    kind: str
+    label: str
+    title: Optional[str] = None
+    doc_type: Optional[str] = None
+    sections: list[ContractBrowseItemSectionResponse] = Field(default_factory=list)
 
 
 def _resolve_contract_id_for_viewer(contract_id: Optional[str]) -> str:
@@ -1572,6 +1984,216 @@ def _resolve_contract_id_for_viewer(contract_id: Optional[str]) -> str:
         status_code=400,
         detail="contract_id is required when multiple manifests are present",
     )
+
+
+def _is_moa_pdf_name(name: str) -> bool:
+    return "moa" in str(name or "").lower()
+
+
+def _dedupe_strings(values: list[str]) -> list[str]:
+    deduped: list[str] = []
+    for raw in values or []:
+        value = str(raw or "").strip()
+        if not value or value in deduped:
+            continue
+        deduped.append(value)
+    return deduped
+
+
+def _sorted_unique_strings(values: list[str]) -> list[str]:
+    deduped = _dedupe_strings(values)
+    return sorted(deduped, key=lambda v: v.lower())
+
+
+def _load_patch_chain_payload(contract_id: str, effective_version_id: Optional[str]) -> dict:
+    version_id = str(effective_version_id or "").strip()
+    if not version_id:
+        return {}
+    path = DATA_DIR / "contracts" / contract_id / "effective" / version_id / "patch_chain.json"
+    if not path.exists():
+        return {}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+    except Exception:
+        return {}
+    if isinstance(payload, dict):
+        return payload
+    return {}
+
+
+def _discover_base_chunks_path_for_history(contract_id: str) -> Optional[Path]:
+    contract_root = DATA_DIR / "contracts" / contract_id
+    candidates = [
+        contract_root / "chunks" / f"contract_chunks_enriched_{contract_id}.json",
+        contract_root / "chunks" / "contract_chunks_enriched.json",
+        contract_root / "chunks" / f"contract_chunks_smart_{contract_id}.json",
+        contract_root / "chunks" / "contract_chunks_smart.json",
+        DATA_DIR / "chunks" / f"contract_chunks_enriched_{contract_id}.json",
+        contract_root / "base" / "contract_chunks_enriched.json",
+    ]
+    for path in candidates:
+        if path.exists():
+            return path
+    return None
+
+
+def _load_chunk_doc_type_counts(path: Optional[Path]) -> tuple[int, dict[str, int]]:
+    if path is None or not path.exists():
+        return 0, {}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+    except Exception:
+        return 0, {}
+    if not isinstance(payload, list):
+        return 0, {}
+    counts: dict[str, int] = {}
+    total = 0
+    for row in payload:
+        if not isinstance(row, dict):
+            continue
+        total += 1
+        doc_type = str(row.get("doc_type") or "").strip().lower() or "unknown"
+        counts[doc_type] = int(counts.get(doc_type, 0)) + 1
+    return total, dict(sorted(counts.items()))
+
+
+def _build_contract_history_payload(contract_id: str) -> dict:
+    effective_version_id = resolve_latest_effective_version_id(contract_id)
+    effective_payload = load_effective_contract(contract_id=contract_id, effective_version_id=effective_version_id)
+    effective_payload = effective_payload if isinstance(effective_payload, dict) else {}
+    patch_chain = _load_patch_chain_payload(contract_id=contract_id, effective_version_id=effective_version_id)
+
+    source_documents = effective_payload.get("source_documents")
+    source_documents = source_documents if isinstance(source_documents, dict) else {}
+    source_dir = DATA_DIR / "contracts" / contract_id / "source"
+    source_pdf_names = sorted(
+        [p.name for p in source_dir.glob("*.pdf")] if source_dir.exists() else [],
+        key=lambda name: name.lower(),
+    )
+
+    base_pdf = str(source_documents.get("base_pdf") or "").strip() or None
+    if not base_pdf:
+        for name in source_pdf_names:
+            if not _is_moa_pdf_name(name):
+                base_pdf = name
+                break
+    if not base_pdf and source_pdf_names:
+        base_pdf = source_pdf_names[0]
+
+    amendment_candidates: list[str] = []
+    amendment_source_doc_ids: list[str] = []
+    for value in (source_documents.get("amendment_pdfs") or []):
+        amendment_candidates.append(str(value))
+    for value in (source_documents.get("amendment_source_doc_ids") or []):
+        candidate_id = str(value)
+        if candidate_id and not source_doc_applies_to_contract(candidate_id, contract_id):
+            continue
+        amendment_source_doc_ids.append(candidate_id)
+    for row in (patch_chain.get("patches") or []):
+        if not isinstance(row, dict):
+            continue
+        amendment_candidates.append(str(row.get("source_pdf") or ""))
+        patch_source_doc_id = str(row.get("source_doc_id") or "")
+        if patch_source_doc_id and not source_doc_applies_to_contract(patch_source_doc_id, contract_id):
+            continue
+        amendment_source_doc_ids.append(patch_source_doc_id)
+    for name in source_pdf_names:
+        if _is_moa_pdf_name(name):
+            amendment_candidates.append(name)
+    amendment_source_doc_ids = _sorted_unique_strings(amendment_source_doc_ids)
+    for source_doc_id in amendment_source_doc_ids:
+        pdf_name = str(resolve_source_doc_pdf_name(source_doc_id) or "").strip()
+        if pdf_name:
+            amendment_candidates.append(pdf_name)
+    amendment_pdfs = _sorted_unique_strings(amendment_candidates)
+
+    applied_patch_ids = _dedupe_strings(
+        [str(v) for v in (patch_chain.get("applied_patch_ids") or [])]
+        or [str(v) for v in (effective_payload.get("amendments_applied") or [])]
+    )
+
+    patches: list[dict] = []
+    patch_rows = patch_chain.get("patches")
+    if isinstance(patch_rows, list):
+        for row in patch_rows:
+            if not isinstance(row, dict):
+                continue
+            patch_source_doc_id = str(row.get("source_doc_id") or "") or None
+            if patch_source_doc_id and not source_doc_applies_to_contract(patch_source_doc_id, contract_id):
+                continue
+            patches.append(
+                {
+                    "patch_id": str(row.get("patch_id") or ""),
+                    "effective_date": str(row.get("effective_date") or "") or None,
+                    "ratified_date": str(row.get("ratified_date") or "") or None,
+                    "source_pdf": str(row.get("source_pdf") or "") or None,
+                    "source_doc_id": patch_source_doc_id,
+                    "operation_count": int(row.get("operation_count") or 0),
+                    "approved_operation_count": int(row.get("approved_operation_count") or 0),
+                    "patch_file_sha256": str(row.get("patch_file_sha256") or "") or None,
+                    "patch_payload_sha256": str(row.get("patch_payload_sha256") or "") or None,
+                }
+            )
+    if not patches:
+        for patch_id in applied_patch_ids:
+            patches.append(
+                {
+                    "patch_id": patch_id,
+                    "effective_date": None,
+                    "ratified_date": None,
+                    "source_pdf": None,
+                    "source_doc_id": None,
+                    "operation_count": 0,
+                    "approved_operation_count": 0,
+                    "patch_file_sha256": None,
+                    "patch_payload_sha256": None,
+                }
+            )
+
+    modes = ["effective", "base"]
+    if amendment_pdfs or amendment_source_doc_ids:
+        modes.append("moa")
+
+    effective_content_hash = (
+        str(resolve_latest_effective_content_hash(contract_id) or "").strip()
+        or str(patch_chain.get("effective_content_hash") or "").strip()
+        or str(effective_payload.get("effective_content_hash") or "").strip()
+        or None
+    )
+    base_chunks_path = _discover_base_chunks_path_for_history(contract_id)
+    effective_chunks_path = (
+        DATA_DIR
+        / "contracts"
+        / contract_id
+        / "effective"
+        / str(effective_version_id or "")
+        / "index_inputs"
+        / f"contract_chunks_enriched_{contract_id}.json"
+    )
+    base_chunk_total, base_doc_type_counts = _load_chunk_doc_type_counts(base_chunks_path)
+    effective_chunk_total, effective_doc_type_counts = _load_chunk_doc_type_counts(
+        effective_chunks_path if effective_version_id else None
+    )
+
+    return {
+        "contract_id": contract_id,
+        "effective_version_id": str(effective_version_id or "").strip() or None,
+        "effective_content_hash": effective_content_hash,
+        "has_effective_snapshot": bool(effective_version_id),
+        "source_modes": modes,
+        "base_pdf": base_pdf,
+        "amendment_pdfs": amendment_pdfs,
+        "amendment_source_doc_ids": amendment_source_doc_ids,
+        "applied_patch_ids": applied_patch_ids,
+        "base_chunk_total": base_chunk_total,
+        "effective_chunk_total": effective_chunk_total,
+        "base_doc_type_counts": base_doc_type_counts,
+        "effective_doc_type_counts": effective_doc_type_counts,
+        "patch_count": len(patches),
+        "patches": patches,
+    }
 
 
 def _viewer_allow_legacy_unscoped_chunks() -> bool:
@@ -1676,9 +2298,371 @@ def _build_viewer_article_titles(contract_id: str) -> dict[str, str]:
     return _build_viewer_article_titles_cached(*_viewer_article_titles_cache_key(contract_id))
 
 
+def _normalize_text_source_view(source_view: Optional[str]) -> str:
+    value = str(source_view or "").strip().lower()
+    if value in {"base", "previous", "prev"}:
+        return "base"
+    return "effective"
+
+
+def _resolve_base_chunk_file(contract_id: str) -> Optional[Path]:
+    candidates: list[Path] = []
+    contract_chunk_dir = DATA_DIR / "contracts" / str(contract_id or "") / "chunks"
+    if contract_chunk_dir.exists():
+        candidates.extend(
+            contract_chunk_dir / name for name in (
+                "contract_chunks_enriched.json",
+                "contract_chunks_smart.json",
+                "contract_chunks.json",
+            )
+        )
+        candidates.extend(
+            contract_chunk_dir / name for name in (
+                f"contract_chunks_enriched_{contract_id}.json",
+                f"contract_chunks_smart_{contract_id}.json",
+                f"contract_chunks_{contract_id}.json",
+            )
+        )
+    # Fallback to per-contract chunk artifacts under data/chunks (but not effective index inputs).
+    candidates.extend(
+        CHUNKS_DIR / name for name in (
+            f"contract_chunks_enriched_{contract_id}.json",
+            f"contract_chunks_smart_{contract_id}.json",
+            f"contract_chunks_{contract_id}.json",
+            f"{contract_id}_contract_chunks_enriched.json",
+            f"{contract_id}_contract_chunks_smart.json",
+            f"{contract_id}_contract_chunks.json",
+        )
+    )
+    for path in candidates:
+        if path.exists():
+            return path
+    return None
+
+
+def _resolve_viewer_chunk_file_for_view(contract_id: str, source_view: Optional[str] = None) -> Optional[Path]:
+    normalized = _normalize_text_source_view(source_view)
+    if normalized == "base":
+        base_chunks = _resolve_base_chunk_file(contract_id)
+        if base_chunks:
+            return base_chunks
+    return resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+
+
+def _load_viewer_chunks_for_contract(contract_id: str, source_view: Optional[str] = None) -> list[dict]:
+    chunks_file = _resolve_viewer_chunk_file_for_view(contract_id=contract_id, source_view=source_view)
+    if not chunks_file or not chunks_file.exists():
+        raise HTTPException(status_code=404, detail="Contract chunks not found")
+    try:
+        with open(chunks_file, "r", encoding="utf-8") as f:
+            all_chunks = json.load(f)
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to load contract chunks")
+    allow_unscoped = _viewer_allow_legacy_unscoped_chunks()
+    scoped_chunks = [
+        c for c in all_chunks
+        if isinstance(c, dict)
+        and (
+            c.get("contract_id") == contract_id
+            or (allow_unscoped and c.get("contract_id") in (None, ""))
+        )
+    ]
+    return scoped_chunks
+
+
+def _normalize_browse_text(value: str) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip()
+
+
+def _parse_side_letter_citation(citation: str) -> Optional[dict]:
+    text = _normalize_browse_text(citation)
+    if not text:
+        return None
+    match = re.match(
+        r"^Letter of (Understanding|Agreement)\s+(\d+)\s*:\s*(.+?)(?:,\s*Part\s+([A-Za-z0-9\-]+))?$",
+        text,
+        re.IGNORECASE,
+    )
+    if not match:
+        return None
+    letter_kind = str(match.group(1) or "").strip().lower()
+    number = int(match.group(2))
+    title = str(match.group(3) or "").strip()
+    part = str(match.group(4) or "").strip() or None
+    kind = "lou" if letter_kind == "understanding" else "loa"
+    short_prefix = "LOU" if kind == "lou" else "LOA"
+    return {
+        "kind": kind,
+        "number": number,
+        "title": title,
+        "part": part,
+        "key": f"{kind}:{number}",
+        "label": f"{short_prefix} {number}",
+    }
+
+
+def _parse_appendix_group(chunk: dict) -> Optional[dict]:
+    citation = _normalize_browse_text(chunk.get("citation") or "")
+    if not citation:
+        return None
+    table_id = _normalize_browse_text(chunk.get("table_id") or "")
+    chunk_id = _normalize_browse_text(chunk.get("chunk_id") or "")
+    key_seed = table_id or chunk_id or citation
+    slug = re.sub(r"[^a-z0-9]+", "_", key_seed.lower()).strip("_") or "appendix"
+    return {
+        "kind": "appendix",
+        "key": f"appendix:{slug}",
+        "label": "Appendix",
+        "title": citation,
+        "part": None,
+    }
+
+
+def _chunk_content_for_browse(chunk: dict) -> str:
+    return str(chunk.get("content_with_tables") or chunk.get("content") or "").strip()
+
+
+def _sort_browse_chunks(chunks: list[dict]) -> list[dict]:
+    def _part_value(chunk: dict) -> tuple[int, str]:
+        citation = _normalize_browse_text(chunk.get("citation") or "")
+        match = re.search(r",\s*Part\s+([A-Za-z0-9\-]+)\s*$", citation, re.IGNORECASE)
+        if match:
+            token = str(match.group(1) or "").strip()
+            if token.isdigit():
+                return (int(token), "")
+            return (999999, token.lower())
+        chunk_id = _normalize_browse_text(chunk.get("chunk_id") or "")
+        match_chunk = re.search(r"_part(\d+)$", chunk_id, re.IGNORECASE)
+        if match_chunk:
+            return (int(match_chunk.group(1)), "")
+        return (999999, chunk_id.lower())
+
+    return sorted(chunks, key=_part_value)
+
+
+def _viewer_contract_browse_cache_key(contract_id: str) -> tuple[str, str, int, bool]:
+    chunks_file = resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+    chunks_path = str(chunks_file.resolve()) if chunks_file and chunks_file.exists() else ""
+    chunks_mtime_ns = chunks_file.stat().st_mtime_ns if chunks_file and chunks_file.exists() else -1
+    allow_unscoped = _viewer_allow_legacy_unscoped_chunks()
+    return (contract_id, chunks_path, chunks_mtime_ns, allow_unscoped)
+
+
 @lru_cache(maxsize=32)
-def _resolve_contract_pdf_path(contract_id: str) -> Optional[Path]:
-    return resolve_contract_pdf_source_path(contract_id)
+def _build_contract_browse_payload_cached(
+    contract_id: str,
+    chunks_path: str,
+    chunks_mtime_ns: int,
+    allow_unscoped: bool,
+) -> dict:
+    _ = chunks_mtime_ns
+    article_titles = _build_viewer_article_titles(contract_id)
+    groups: list[dict] = []
+
+    article_items = [
+        {
+            "key": f"article:{article_num}",
+            "kind": "article",
+            "label": f"Article {article_num}",
+            "title": str(title or "").split("\n")[0].strip() or f"Article {article_num}",
+            "article_num": int(article_num),
+            "doc_type": "cba",
+            "item_count": 1,
+        }
+        for article_num, title in sorted(
+            ((int(k), v) for k, v in article_titles.items() if str(k).isdigit()),
+            key=lambda kv: kv[0]
+        )
+    ]
+    if article_items:
+        groups.append({"key": "articles", "label": "Articles", "items": article_items})
+
+    if not chunks_path:
+        return {"contract_id": contract_id, "groups": groups}
+
+    try:
+        with open(chunks_path, "r", encoding="utf-8") as f:
+            all_chunks = json.load(f)
+    except Exception:
+        return {"contract_id": contract_id, "groups": groups}
+
+    scoped_chunks = [
+        c for c in all_chunks
+        if isinstance(c, dict)
+        and (
+            c.get("contract_id") == contract_id
+            or (allow_unscoped and c.get("contract_id") in (None, ""))
+        )
+    ]
+
+    side_letter_groups: dict[str, dict] = {}
+    appendix_groups: dict[str, dict] = {}
+    for chunk in scoped_chunks:
+        doc_type = str(chunk.get("doc_type") or "").strip().lower()
+        if doc_type in {"lou", "loa"}:
+            parsed = _parse_side_letter_citation(str(chunk.get("citation") or ""))
+            if not parsed:
+                continue
+            key = str(parsed["key"])
+            bucket = side_letter_groups.setdefault(
+                key,
+                {
+                    "key": key,
+                    "kind": parsed["kind"],
+                    "label": str(parsed["label"]),
+                    "title": str(parsed["title"]),
+                    "article_num": None,
+                    "doc_type": doc_type,
+                    "item_count": 0,
+                },
+            )
+            bucket["item_count"] = int(bucket.get("item_count") or 0) + 1
+        elif doc_type == "appendix":
+            parsed = _parse_appendix_group(chunk)
+            if not parsed:
+                continue
+            key = str(parsed["key"])
+            bucket = appendix_groups.setdefault(
+                key,
+                {
+                    "key": key,
+                    "kind": "appendix",
+                    "label": "Appendix",
+                    "title": str(parsed["title"]),
+                    "article_num": None,
+                    "doc_type": "appendix",
+                    "item_count": 0,
+                },
+            )
+            bucket["item_count"] = int(bucket.get("item_count") or 0) + 1
+
+    if side_letter_groups:
+        def _side_letter_sort_key(item: dict) -> tuple[int, str, int, str]:
+            kind = str(item.get("kind") or "")
+            key = str(item.get("key") or "")
+            number = 999999
+            m = re.match(r"^(?:lou|loa):(\d+)$", key, re.IGNORECASE)
+            if m:
+                number = int(m.group(1))
+            kind_rank = 0 if kind == "lou" else 1
+            return (kind_rank, key, number, str(item.get("title") or "").lower())
+
+        items = sorted(side_letter_groups.values(), key=_side_letter_sort_key)
+        groups.append({"key": "side_letters", "label": "Letters of Understanding / Agreement", "items": items})
+
+    if appendix_groups:
+        items = sorted(appendix_groups.values(), key=lambda item: str(item.get("title") or "").lower())
+        groups.append({"key": "appendices", "label": "Appendices", "items": items})
+
+    return {"contract_id": contract_id, "groups": groups}
+
+
+def _build_contract_browse_payload(contract_id: str) -> dict:
+    return _build_contract_browse_payload_cached(*_viewer_contract_browse_cache_key(contract_id))
+
+
+def _build_contract_browse_item_payload(contract_id: str, kind: str, key: str, source_view: Optional[str] = None) -> dict:
+    normalized_kind = str(kind or "").strip().lower()
+    normalized_key = str(key or "").strip()
+    if normalized_kind not in {"lou", "loa", "appendix"}:
+        raise HTTPException(status_code=400, detail="Unsupported browse item kind")
+    if not normalized_key:
+        raise HTTPException(status_code=400, detail="Browse item key is required")
+
+    chunks = _load_viewer_chunks_for_contract(contract_id, source_view=source_view)
+    matched_chunks: list[dict] = []
+    label = ""
+    title = ""
+    doc_type = normalized_kind
+
+    for chunk in chunks:
+        chunk_doc_type = str(chunk.get("doc_type") or "").strip().lower()
+        if chunk_doc_type != normalized_kind and not (normalized_kind == "appendix" and chunk_doc_type == "appendix"):
+            continue
+        if normalized_kind in {"lou", "loa"}:
+            parsed = _parse_side_letter_citation(str(chunk.get("citation") or ""))
+            if not parsed:
+                continue
+            if str(parsed["key"]) != normalized_key:
+                continue
+            label = str(parsed["label"])
+            title = str(parsed["title"])
+            doc_type = chunk_doc_type or normalized_kind
+            matched_chunks.append(chunk)
+        elif normalized_kind == "appendix":
+            parsed = _parse_appendix_group(chunk)
+            if not parsed or str(parsed["key"]) != normalized_key:
+                continue
+            label = "Appendix"
+            title = str(parsed["title"])
+            doc_type = "appendix"
+            matched_chunks.append(chunk)
+
+    if not matched_chunks:
+        raise HTTPException(status_code=404, detail="Browse item not found")
+
+    matched_chunks = _sort_browse_chunks(matched_chunks)
+    sections = []
+    for chunk in matched_chunks:
+        citation = _normalize_browse_text(chunk.get("citation") or "") or title or label or "Contract Item"
+        content = _chunk_content_for_browse(chunk)
+        if not content:
+            continue
+        sections.append(
+            {
+                "citation": citation,
+                "content": content,
+                "summary": str(chunk.get("summary") or "").strip() or None,
+            }
+        )
+    if not sections:
+        raise HTTPException(status_code=404, detail="Browse item content not found")
+
+    return {
+        "contract_id": contract_id,
+        "key": normalized_key,
+        "kind": normalized_kind,
+        "label": label or normalized_kind.upper(),
+        "title": title or None,
+        "doc_type": doc_type or normalized_kind,
+        "sections": sections,
+    }
+
+
+@lru_cache(maxsize=128)
+def _resolve_contract_pdf_path(
+    contract_id: str,
+    source_pdf: Optional[str] = None,
+    source_type: Optional[str] = None,
+    source_doc_id: Optional[str] = None,
+) -> Optional[Path]:
+    source_type_normalized = str(source_type or "").strip().lower()
+    prefer_moa = source_type_normalized in {"moa", "amendment", "amended"}
+    return resolve_contract_source_pdf_path(
+        contract_id=contract_id,
+        source_pdf=source_pdf,
+        prefer_moa=prefer_moa,
+        source_doc_id=source_doc_id,
+    )
+
+
+def _contract_pdf_url(
+    contract_id: str,
+    source_pdf: Optional[str] = None,
+    source_type: Optional[str] = None,
+    source_doc_id: Optional[str] = None,
+) -> str:
+    params = {"contract_id": contract_id}
+    source_pdf_value = str(source_pdf or "").strip()
+    if source_pdf_value:
+        params["source_pdf"] = source_pdf_value
+    source_type_value = str(source_type or "").strip()
+    if source_type_value:
+        params["source_type"] = source_type_value
+    source_doc_id_value = str(source_doc_id or "").strip()
+    if source_doc_id_value:
+        params["source_doc_id"] = source_doc_id_value
+    return f"/api/contract-pdf?{urlencode(params)}"
 
 
 @lru_cache(maxsize=16)
@@ -1713,11 +2697,371 @@ def _build_table_navigation_index(contract_id: str) -> dict:
     return to_runtime_table_navigation_maps(generated)
 
 
+def _normalize_search_text(value: str) -> str:
+    text = str(value or "").lower()
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = text.replace("&nbsp;", " ")
+    text = re.sub(r"[^a-z0-9]+", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _viewer_source_pages_cache_key(contract_id: str) -> tuple[str, str, int]:
+    source_json_path = resolve_contract_source_json_path(contract_id)
+    path_str = str(source_json_path.resolve()) if source_json_path and source_json_path.exists() else ""
+    mtime_ns = source_json_path.stat().st_mtime_ns if source_json_path and source_json_path.exists() else -1
+    return (contract_id, path_str, mtime_ns)
+
+
+@lru_cache(maxsize=16)
+def _load_viewer_source_pages_cached(contract_id: str, source_json_path_str: str, source_json_mtime_ns: int) -> list[dict]:
+    _ = source_json_mtime_ns
+    if not source_json_path_str:
+        return []
+    path = Path(source_json_path_str)
+    if not path.exists():
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+    except Exception:
+        return []
+    pages = payload.get("pages") if isinstance(payload, dict) else None
+    if not isinstance(pages, list):
+        return []
+
+    out: list[dict] = []
+    for idx, page in enumerate(pages):
+        if not isinstance(page, dict):
+            continue
+        page_number = idx + 1
+        raw_page_number = page.get("page_number")
+        try:
+            parsed_page = int(raw_page_number)
+            if parsed_page > 0:
+                page_number = parsed_page
+        except Exception:
+            pass
+        items = page.get("items") or []
+        raw_parts: list[str] = []
+        if isinstance(items, list):
+            for item in items:
+                if not isinstance(item, dict):
+                    continue
+                raw = str(item.get("value") or item.get("md") or "")
+                if raw:
+                    raw_parts.append(raw)
+        raw_text = re.sub(r"\s+", " ", " ".join(raw_parts)).strip()
+        norm_text = _normalize_search_text(raw_text)
+        out.append({
+            "page_number": page_number,
+            "raw_text": raw_text,
+            "norm_text": norm_text,
+        })
+    return out
+
+
+def _load_viewer_source_pages(contract_id: str) -> list[dict]:
+    return _load_viewer_source_pages_cached(*_viewer_source_pages_cache_key(contract_id))
+
+
+def _lookup_non_article_pdf_page(contract_id: str, browse_kind: str, browse_key: str) -> Optional[int]:
+    kind = str(browse_kind or "").strip().lower()
+    key = str(browse_key or "").strip().lower()
+    if kind not in {"lou", "loa", "appendix"} or not key:
+        return None
+
+    try:
+        item = _build_contract_browse_item_payload(contract_id=contract_id, kind=kind, key=key)
+    except HTTPException:
+        return None
+
+    pages = _load_viewer_source_pages(contract_id)
+    if not pages:
+        return None
+
+    title = _normalize_search_text(item.get("title") or "")
+    label = _normalize_search_text(item.get("label") or "")
+    number = None
+    if kind in {"lou", "loa"}:
+        m = re.match(r"^(?:lou|loa):(\d+)$", key)
+        if m:
+            number = int(m.group(1))
+
+    best_page: Optional[int] = None
+    best_score = -1
+    for page in pages:
+        text = str(page.get("norm_text") or "")
+        raw_text = str(page.get("raw_text") or "")
+        if not text:
+            continue
+        score = 0
+
+        # Penalize list pages so body content wins when available.
+        if "carry forward the specific letters of understanding as listed below" in text:
+            score -= 40
+
+        if kind in {"lou", "loa"} and number is not None:
+            if f" {number} " in f" {text} ":
+                score += 5
+            if f"{number}" in text and "dress requirements" in title and "dress requirements" in text:
+                score += 35
+            if "letters of understanding" in text or "letters of agreement" in text:
+                score += 8
+            if title and title in text:
+                score += 50
+            # Stronger anchor for numbered side-letter heading on page.
+            title_words = [w for w in title.split() if len(w) >= 3][:5]
+            if title_words:
+                anchored = str(number) in text and all(w in text for w in title_words[: min(3, len(title_words))])
+                if anchored:
+                    score += 40
+        elif kind == "appendix":
+            if title and title in text:
+                score += 60
+            if "appendix" in text:
+                score += 15
+            # Common appendix labels like "appendix a" should anchor strongly.
+            title_match = re.search(r"\bappendix\s+([a-z])\b", title)
+            if title_match and f"appendix {title_match.group(1)}" in text:
+                score += 30
+            if label and label in text:
+                score += 10
+
+        if score > best_score and score > 0:
+            best_score = score
+            best_page = int(page.get("page_number") or 0) or None
+
+    return best_page
+
+
+def _lookup_effective_provenance_page(
+    contract_id: str,
+    article_num: Optional[int],
+    section_num: Optional[int],
+    source_type: Optional[str],
+    source_pdf: Optional[str],
+    source_doc_id: Optional[str] = None,
+) -> Optional[int]:
+    if article_num is None and section_num is None:
+        return None
+    payload = load_effective_contract(contract_id=contract_id)
+    if not isinstance(payload, dict):
+        return None
+    source_type_norm = str(source_type or "").strip().lower()
+    source_pdf_norm = str(source_pdf or "").strip().lower()
+    source_doc_id_norm = str(source_doc_id or "").strip().lower()
+    for section in payload.get("sections") or []:
+        if not isinstance(section, dict):
+            continue
+        if article_num is not None and section.get("article_num") != article_num:
+            continue
+        if section_num is not None and section.get("section_num") != section_num:
+            continue
+        for ref in section.get("provenance") or []:
+            if not isinstance(ref, dict):
+                continue
+            ref_source_type = str(ref.get("source_type") or "").strip().lower()
+            ref_pdf = str(ref.get("pdf") or "").strip().lower()
+            ref_source_doc_id = str(ref.get("source_doc_id") or "").strip().lower()
+            if source_type_norm and source_type_norm not in ref_source_type:
+                continue
+            if source_pdf_norm and source_pdf_norm not in ref_pdf:
+                continue
+            if source_doc_id_norm and source_doc_id_norm != ref_source_doc_id:
+                continue
+            page = ref.get("pdf_page")
+            try:
+                parsed_page = int(page)
+            except (TypeError, ValueError):
+                continue
+            if parsed_page > 0:
+                return parsed_page
+    return None
+
+
+def _lookup_effective_provenance_refs(
+    contract_id: str,
+    article_num: Optional[int],
+    section_num: Optional[int],
+) -> list[dict]:
+    """
+    Return provenance refs for the best matching effective section.
+
+    Preference order:
+    1. exact article+section match
+    2. first section in article (lowest section_num) when section is omitted
+    """
+    if article_num is None:
+        return []
+    payload = load_effective_contract(contract_id=contract_id)
+    if not isinstance(payload, dict):
+        return []
+
+    candidates: list[dict] = []
+    for section in payload.get("sections") or []:
+        if not isinstance(section, dict):
+            continue
+        if section.get("article_num") != article_num:
+            continue
+        if section_num is not None and section.get("section_num") != section_num:
+            continue
+        candidates.append(section)
+
+    if not candidates and section_num is None:
+        # Fallback to article-only lookup: all sections in the article.
+        for section in payload.get("sections") or []:
+            if not isinstance(section, dict):
+                continue
+            if section.get("article_num") == article_num:
+                candidates.append(section)
+
+    if not candidates:
+        return []
+
+    def _section_sort_key(section: dict) -> tuple[int, str]:
+        raw_section = section.get("section_num")
+        try:
+            sec = int(raw_section) if raw_section is not None else 0
+        except (TypeError, ValueError):
+            sec = 0
+        subsection = str(section.get("subsection") or "")
+        return (sec if sec > 0 else 999999, subsection)
+
+    chosen = sorted(candidates, key=_section_sort_key)[0]
+    refs = chosen.get("provenance") or []
+    if not isinstance(refs, list):
+        return []
+    return [ref for ref in refs if isinstance(ref, dict)]
+
+
+def _build_pdf_source_candidates_from_provenance(
+    *,
+    contract_id: str,
+    provenance_refs: list[dict],
+) -> tuple[list[dict], Optional[dict]]:
+    """
+    Build deterministic source candidates for UI navigation.
+
+    Returns (candidates, preferred_candidate_for_auto_mode).
+    """
+    candidates: list[dict] = []
+    seen: set[tuple[str, str, str, int]] = set()
+
+    def _append_candidate(*, key: str, label: str, source_type: Optional[str], source_pdf: Optional[str],
+                          source_doc_id: Optional[str], page_number: Optional[int], is_previous: bool = False) -> None:
+        page_num = None
+        try:
+            if page_number is not None:
+                parsed = int(page_number)
+                if parsed > 0:
+                    page_num = parsed
+        except Exception:
+            page_num = None
+        dedupe_key = (
+            str(source_type or "").strip().lower(),
+            str(source_pdf or "").strip().lower(),
+            str(source_doc_id or "").strip().lower(),
+            int(page_num or 0),
+        )
+        if dedupe_key in seen:
+            return
+        seen.add(dedupe_key)
+        candidates.append(
+            {
+                "key": key,
+                "label": label,
+                "source_type": str(source_type or "").strip() or None,
+                "source_pdf": str(source_pdf or "").strip() or None,
+                "source_doc_id": str(source_doc_id or "").strip() or None,
+                "page_number": page_num,
+                "is_previous": bool(is_previous),
+            }
+        )
+
+    # Effective auto mode is always available.
+    _append_candidate(
+        key="effective_auto",
+        label="Current Effective (Auto)",
+        source_type=None,
+        source_pdf=None,
+        source_doc_id=None,
+        page_number=None,
+        is_previous=False,
+    )
+
+    for idx, ref in enumerate(provenance_refs or []):
+        source_type = str(ref.get("source_type") or "").strip().lower() or None
+        source_pdf = str(ref.get("pdf") or "").strip() or None
+        source_doc_id = str(ref.get("source_doc_id") or "").strip() or None
+        page_num = ref.get("pdf_page")
+        label_kind = "Source"
+        if source_type and ("moa" in source_type or "amend" in source_type):
+            label_kind = "MOA"
+            normalized_type = "moa"
+        elif source_type and ("base" in source_type or "cba" in source_type or "contract" in source_type):
+            label_kind = "Base"
+            normalized_type = "base"
+        elif source_pdf and _is_moa_pdf_name(source_pdf):
+            label_kind = "MOA"
+            normalized_type = "moa"
+        else:
+            label_kind = "Base" if source_pdf else "Source"
+            normalized_type = "base" if source_pdf else (source_type or None)
+
+        page_suffix = ""
+        try:
+            if page_num is not None and int(page_num) > 0:
+                page_suffix = f" p.{int(page_num)}"
+        except Exception:
+            page_suffix = ""
+
+        pdf_suffix = f" ({source_pdf})" if source_pdf else ""
+        label = f"{label_kind}{page_suffix}{pdf_suffix}"
+        key = f"prov_{idx}_{normalized_type or 'src'}"
+        _append_candidate(
+            key=key,
+            label=label,
+            source_type=normalized_type or source_type,
+            source_pdf=source_pdf,
+            source_doc_id=source_doc_id,
+            page_number=page_num if isinstance(page_num, int) else page_num,
+            is_previous=(normalized_type == "base"),
+        )
+
+    # Add a stable alias for "previous" when we have a base provenance source.
+    base_candidate = next((c for c in candidates if str(c.get("source_type") or "").lower() == "base"), None)
+    if base_candidate:
+        _append_candidate(
+            key="previous_base",
+            label="Previous (Base)",
+            source_type=base_candidate.get("source_type"),
+            source_pdf=base_candidate.get("source_pdf"),
+            source_doc_id=base_candidate.get("source_doc_id"),
+            page_number=base_candidate.get("page_number"),
+            is_previous=True,
+        )
+
+    preferred = next((c for c in candidates if str(c.get("source_type") or "").lower() == "moa"), None)
+    if preferred is None:
+        preferred = next((c for c in candidates if str(c.get("source_type") or "").lower() == "base"), None)
+    return candidates, preferred
+
+
 @app.get("/api/contract-pdf")
-async def get_contract_pdf(contract_id: Optional[str] = None):
+async def get_contract_pdf(
+    contract_id: Optional[str] = None,
+    source_pdf: Optional[str] = None,
+    source_type: Optional[str] = None,
+    source_doc_id: Optional[str] = None,
+):
     """Serve the active contract PDF for inline viewing."""
     effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
-    pdf_path = _resolve_contract_pdf_path(effective_contract_id)
+    pdf_path = _resolve_contract_pdf_path(
+        effective_contract_id,
+        source_pdf=source_pdf,
+        source_type=source_type,
+        source_doc_id=source_doc_id,
+    )
     if not pdf_path or not pdf_path.exists():
         raise HTTPException(status_code=404, detail="Contract PDF not found")
 
@@ -1737,7 +3081,13 @@ async def get_pdf_location(
     subsection: Optional[str] = None,
     table_id: Optional[str] = None,
     row_index: Optional[int] = None,
+    browse_kind: Optional[str] = None,
+    browse_key: Optional[str] = None,
     contract_id: Optional[str] = None,
+    source_pdf: Optional[str] = None,
+    source_page: Optional[int] = None,
+    source_type: Optional[str] = None,
+    source_doc_id: Optional[str] = None,
 ):
     """
     Resolve best-effort PDF page for a citation target.
@@ -1747,9 +3097,39 @@ async def get_pdf_location(
     """
     _ = subsection, row_index  # reserved for future fine-grained mapping
     effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
-    pdf_path = _resolve_contract_pdf_path(effective_contract_id)
+    pdf_path = _resolve_contract_pdf_path(
+        effective_contract_id,
+        source_pdf=source_pdf,
+        source_type=source_type,
+        source_doc_id=source_doc_id,
+    )
     if not pdf_path or not pdf_path.exists():
         return PdfLocationResponse(contract_id=effective_contract_id)
+    explicit_source_pdf = str(source_pdf or "").strip() or None
+    url_source_pdf = explicit_source_pdf or (None if source_doc_id else pdf_path.name)
+
+    source_page_value: Optional[int] = None
+    try:
+        if source_page is not None:
+            parsed_source_page = int(source_page)
+            if parsed_source_page > 0:
+                source_page_value = parsed_source_page
+    except Exception:
+        source_page_value = None
+
+    if source_page_value is not None:
+        return PdfLocationResponse(
+            contract_id=effective_contract_id,
+            pdf_url=_contract_pdf_url(
+                effective_contract_id,
+                source_pdf=url_source_pdf,
+                source_type=source_type,
+                source_doc_id=source_doc_id,
+            ),
+            page_number=source_page_value,
+            total_pages=None,
+            matched_by="provenance",
+        )
 
     normalized_article_num: Optional[int] = None
     try:
@@ -1769,7 +3149,119 @@ async def get_pdf_location(
     except Exception:
         normalized_section_num = None
 
+    provenance_refs = _lookup_effective_provenance_refs(
+        contract_id=effective_contract_id,
+        article_num=normalized_article_num,
+        section_num=normalized_section_num,
+    )
+    source_candidates, auto_preferred_candidate = _build_pdf_source_candidates_from_provenance(
+        contract_id=effective_contract_id,
+        provenance_refs=provenance_refs,
+    )
+    selected_source_key: Optional[str] = None
+    if source_candidates:
+        if source_type or source_pdf or source_doc_id:
+            requested_type = str(source_type or "").strip().lower()
+            requested_pdf = str(explicit_source_pdf or "").strip().lower()
+            requested_doc_id = str(source_doc_id or "").strip().lower()
+            for candidate in source_candidates:
+                c_type = str(candidate.get("source_type") or "").strip().lower()
+                c_pdf = str(candidate.get("source_pdf") or "").strip().lower()
+                c_doc = str(candidate.get("source_doc_id") or "").strip().lower()
+                type_ok = (not requested_type) or (requested_type == c_type)
+                pdf_ok = (not requested_pdf) or (requested_pdf == c_pdf)
+                doc_ok = (not requested_doc_id) or (requested_doc_id == c_doc)
+                if type_ok and pdf_ok and doc_ok:
+                    selected_source_key = str(candidate.get("key") or "") or None
+                    break
+        elif auto_preferred_candidate:
+            selected_source_key = str(auto_preferred_candidate.get("key") or "") or None
+
+    provenance_page = _lookup_effective_provenance_page(
+        contract_id=effective_contract_id,
+        article_num=normalized_article_num,
+        section_num=normalized_section_num,
+        source_type=source_type,
+        source_pdf=explicit_source_pdf,
+        source_doc_id=source_doc_id,
+    )
+    if provenance_page is not None and (source_type or source_pdf or source_doc_id):
+        return PdfLocationResponse(
+            contract_id=effective_contract_id,
+            pdf_url=_contract_pdf_url(
+                effective_contract_id,
+                source_pdf=url_source_pdf,
+                source_type=source_type,
+                source_doc_id=source_doc_id,
+            ),
+            page_number=provenance_page,
+            total_pages=None,
+            matched_by="provenance_section",
+            source_candidates=source_candidates,
+            selected_source_key=selected_source_key,
+        )
+
+    # Auto-select effective provenance source (MOA/base) when no explicit source
+    # is requested. This improves TOC/citation navigation for amended sections.
+    if provenance_refs and not (source_type or source_pdf or source_doc_id or source_page_value):
+        chosen = auto_preferred_candidate
+        chosen_page = None
+        chosen_type = None
+        chosen_pdf = None
+        chosen_doc_id = None
+        if chosen and chosen.get("page_number"):
+            try:
+                chosen_page = int(chosen.get("page_number"))
+            except Exception:
+                chosen_page = None
+            chosen_type = str(chosen.get("source_type") or "").strip() or None
+            chosen_pdf = str(chosen.get("source_pdf") or "").strip() or None
+            chosen_doc_id = str(chosen.get("source_doc_id") or "").strip() or None
+        if chosen_page and chosen_page > 0:
+            return PdfLocationResponse(
+                contract_id=effective_contract_id,
+                pdf_url=_contract_pdf_url(
+                    effective_contract_id,
+                    source_pdf=chosen_pdf,
+                    source_type=chosen_type,
+                    source_doc_id=chosen_doc_id,
+                ),
+                page_number=chosen_page,
+                total_pages=None,
+                matched_by="effective_provenance_auto",
+                source_candidates=source_candidates,
+                selected_source_key=selected_source_key,
+            )
+
+    source_type_norm = str(source_type or "").strip().lower()
+    resolved_source_doc_pdf_name = str(resolve_source_doc_pdf_name(str(source_doc_id or "").strip()) or "").strip()
+    source_pdf_name = str(explicit_source_pdf or resolved_source_doc_pdf_name or pdf_path.name or "").strip()
+    targeting_moa_source = (
+        source_type_norm in {"moa", "amendment", "amended"}
+        or _is_moa_pdf_name(source_pdf_name)
+        or _is_moa_pdf_name(resolved_source_doc_pdf_name)
+    )
+    if targeting_moa_source and (source_type or source_pdf or source_doc_id):
+        # Avoid base-index fallback pages when explicitly targeting MOA docs but
+        # no MOA page provenance exists for this citation.
+        return PdfLocationResponse(
+            contract_id=effective_contract_id,
+            pdf_url=_contract_pdf_url(
+                effective_contract_id,
+                source_pdf=url_source_pdf,
+                source_type=source_type,
+                source_doc_id=source_doc_id,
+            ),
+            page_number=None,
+            total_pages=None,
+            matched_by="provenance_missing",
+            source_candidates=source_candidates,
+            selected_source_key=selected_source_key,
+        )
+
     normalized_table_id = str(table_id or "").strip()
+    normalized_browse_kind = str(browse_kind or "").strip().lower() or None
+    normalized_browse_key = str(browse_key or "").strip() or None
     page_number: Optional[int] = None
     matched_by = "none"
 
@@ -1803,6 +3295,19 @@ async def get_pdf_location(
 
     index = _build_pdf_navigation_index(effective_contract_id)
 
+    if (
+        page_number is None
+        and normalized_browse_kind in {"lou", "loa", "appendix"}
+        and normalized_browse_key
+    ):
+        page_number = _lookup_non_article_pdf_page(
+            effective_contract_id,
+            normalized_browse_kind,
+            normalized_browse_key,
+        )
+        if page_number is not None:
+            matched_by = "browse_item"
+
     if page_number is None and normalized_article_num is not None and normalized_section_num is not None:
         key = f"{normalized_article_num}:{normalized_section_num}"
         page_number = (index.get("section_pages") or {}).get(key)
@@ -1816,10 +3321,17 @@ async def get_pdf_location(
 
     return PdfLocationResponse(
         contract_id=effective_contract_id,
-        pdf_url=f"/api/contract-pdf?contract_id={effective_contract_id}",
+        pdf_url=_contract_pdf_url(
+            effective_contract_id,
+            source_pdf=url_source_pdf,
+            source_type=source_type,
+            source_doc_id=source_doc_id,
+        ),
         page_number=page_number,
         total_pages=index.get("total_pages") or table_index.get("total_pages"),
         matched_by=matched_by,
+        source_candidates=source_candidates,
+        selected_source_key=selected_source_key,
     )
 
 
@@ -1845,15 +3357,56 @@ async def get_manifest(contract_id: Optional[str] = None):
     )
 
 
+@app.get("/api/contract-history", response_model=ContractHistoryResponse)
+async def get_contract_history(contract_id: Optional[str] = None):
+    """Return effective lineage + source-mode metadata for Contract tab."""
+    effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
+    payload = _build_contract_history_payload(effective_contract_id)
+    return ContractHistoryResponse(**payload)
+
+
+@app.get("/api/contract-browse", response_model=ContractBrowseResponse)
+async def get_contract_browse(contract_id: Optional[str] = None):
+    """Return grouped Contract-tab browse items (articles, LOU/LOA, appendices)."""
+    effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
+    payload = _build_contract_browse_payload(effective_contract_id)
+    return ContractBrowseResponse(**payload)
+
+
+@app.get("/api/contract-browse-item", response_model=ContractBrowseItemResponse)
+async def get_contract_browse_item(
+    kind: str,
+    key: str,
+    source_view: Optional[str] = None,
+    contract_id: Optional[str] = None,
+):
+    """Return aggregated content for a non-article Contract-tab browse item."""
+    effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
+    payload = _build_contract_browse_item_payload(
+        contract_id=effective_contract_id,
+        kind=kind,
+        key=key,
+        source_view=source_view,
+    )
+    return ContractBrowseItemResponse(**payload)
+
+
 @app.get("/api/article/{article_num}", response_model=ArticleResponse)
-async def get_article(article_num: int, contract_id: Optional[str] = None):
+async def get_article(
+    article_num: int,
+    contract_id: Optional[str] = None,
+    source_view: Optional[str] = None,
+):
     """
     Get all sections for a specific article.
 
     Returns the article title and all sections with their content.
     """
     effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
-    chunks_file = resolve_chunk_file(contract_id=effective_contract_id, allow_shared_fallback=True)
+    chunks_file = _resolve_viewer_chunk_file_for_view(
+        contract_id=effective_contract_id,
+        source_view=source_view,
+    )
 
     if not chunks_file or not chunks_file.exists():
         raise HTTPException(status_code=404, detail="Contract chunks not found")
@@ -1904,6 +3457,7 @@ async def get_section(
     article_num: int,
     section_num: int,
     subsection: str = None,
+    source_view: Optional[str] = None,
     contract_id: Optional[str] = None,
 ):
     """
@@ -1917,7 +3471,10 @@ async def get_section(
         subsection: Optional subsection (e.g., 'a', 'b', 'c') for filtering
     """
     effective_contract_id = _resolve_contract_id_for_viewer(contract_id)
-    chunks_file = resolve_chunk_file(contract_id=effective_contract_id, allow_shared_fallback=True)
+    chunks_file = _resolve_viewer_chunk_file_for_view(
+        contract_id=effective_contract_id,
+        source_view=source_view,
+    )
 
     if not chunks_file or not chunks_file.exists():
         raise HTTPException(status_code=404, detail="Contract chunks not found")
@@ -1992,13 +3549,13 @@ async def generate_response(question: str, system_prompt: str, chunks: list = No
     client = get_genai_client()
 
     if not client:
-        return generate_fallback_response(chunks)
+        return generate_fallback_response(chunks, question=question)
     
     # Check if we're in a rate limit cooldown
     if time.time() < _rate_limit_until:
         wait_time = int(_rate_limit_until - time.time())
         print(f"Rate limited, waiting {wait_time}s before retry")
-        return generate_fallback_response(chunks)
+        return generate_fallback_response(chunks, question=question)
     
     # Retry with exponential backoff
     max_retries = 3
@@ -2037,10 +3594,15 @@ async def generate_response(question: str, system_prompt: str, chunks: list = No
                     await asyncio.sleep(base_delay)
     
     # All retries failed, use fallback
-    return generate_fallback_response(chunks)
+    return generate_fallback_response(chunks, question=question)
 
 
-def generate_fallback_response(chunks: list = None) -> str:
+def generate_fallback_response(
+    chunks: list = None,
+    question: str = "",
+    preferred_articles: Optional[list[int]] = None,
+    topic: Optional[str] = None,
+) -> str:
     """
     Generate a helpful fallback response showing retrieved chunks.
     
@@ -2052,12 +3614,24 @@ def generate_fallback_response(chunks: list = None) -> str:
             "Please try again in a moment, or contact your steward directly."
         )
     
-    # Build a response from the raw chunks
+    relevant_chunks = _fallback_relevant_chunks(
+        question=question,
+        chunks=chunks,
+        min_token_hits=2,
+        preferred_articles=preferred_articles,
+    )
+    if not relevant_chunks:
+        return (
+            "I can't find matching language for that in the current effective agreement. "
+            "If this was changed or removed by an MOA, ask your steward to confirm the exact amendment text."
+        )
+
+    # Build a response from query-relevant chunks only.
     response_parts = [
         "I found the following relevant sections from your contract:\n"
     ]
     
-    for i, chunk in enumerate(chunks[:4], 1):  # Show top 4 chunks
+    for i, chunk in enumerate(relevant_chunks, 1):
         citation = chunk.get('citation', 'Unknown section')
         content = chunk.get('content', '')[:500]  # Limit content length
         

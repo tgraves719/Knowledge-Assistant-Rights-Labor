@@ -1,0 +1,21 @@
+{
+  "contract_ids": [
+    "local7_safeway_pueblo_clerks_2022",
+    "local7_safeway_pueblo_meat_2022"
+  ],
+  "doc_type": "moa",
+  "document_date": "2025-07-05",
+  "extracted_json_sha256": "394ec29d17fecb6e601f5e2197dfbd6219a928b591cc6e4bda6b4f06199ca305",
+  "extracted_md_sha256": "1a6b92b3d70e7e6e09a5f74497fcd23b64f5abf4ed8b1778bdfc454d461da3d1",
+  "parties": [
+    "Albertsons",
+    "Safeway",
+    "UFCW Local 7"
+  ],
+  "ratified_date": "2025-07-05",
+  "schema_version": "source_doc_v0_9_0",
+  "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+  "source_pdf_filename": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+  "source_pdf_sha256": "952aa398d3119a65a6f1e504259e617f9809bb762e50d20eca52333ccd6ba17b",
+  "title": "Signed MOA - July 5, 2025 (Safeway/Albertsons)"
+}

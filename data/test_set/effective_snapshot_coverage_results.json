@@ -1,0 +1,32 @@
+{
+  "overall": {
+    "pass_rate": 1.0,
+    "passed": 1,
+    "total": 1
+  },
+  "results": [
+    {
+      "base_chunk_total": 315,
+      "base_doc_type_counts": {
+        "appendix": 4,
+        "cba": 274,
+        "lou": 37
+      },
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "effective_chunk_total": 315,
+      "effective_doc_type_counts": {
+        "appendix": 4,
+        "cba": 274,
+        "lou": 37
+      },
+      "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+      "increased_doc_types": [],
+      "missing_doc_types": [],
+      "missing_files": [],
+      "pass": true,
+      "reduced_doc_types": []
+    }
+  ],
+  "schema_version": "effective_snapshot_coverage_v1",
+  "timestamp_utc": "2026-02-22T05:45:02.786905+00:00"
+}

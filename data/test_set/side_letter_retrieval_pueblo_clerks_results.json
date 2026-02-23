@@ -1,0 +1,472 @@
+{
+  "bm25_only": true,
+  "by_contract": {
+    "local7_safeway_pueblo_clerks_2022": {
+      "combined_pass_rate": 1.0,
+      "combined_passed": 6,
+      "depth_pass_rate": 1.0,
+      "depth_passed": 6,
+      "topk_pass_rate": 1.0,
+      "topk_passed": 6,
+      "total": 6
+    }
+  },
+  "dataset_schema_version": "side_letter_retrieval_pueblo_clerks_test_v1",
+  "depth_n_results": 20,
+  "gate": {
+    "depth_pass_threshold": 0.95,
+    "pass": true,
+    "rule": "fail_only_if_topk_and_depth_degrade",
+    "topk_pass_threshold": 0.8
+  },
+  "n_results": 8,
+  "overall": {
+    "both_fail_case_count": 0,
+    "combined_pass_rate": 1.0,
+    "combined_passed": 6,
+    "depth_citation_hit_rate": 1.0,
+    "depth_doc_type_match_rate": 1.0,
+    "depth_keyword_match_rate": 1.0,
+    "depth_pass_rate": 1.0,
+    "depth_passed": 6,
+    "pass_rate": 1.0,
+    "passed": 6,
+    "topk_citation_hit_rate": 1.0,
+    "topk_doc_type_match_rate": 1.0,
+    "topk_keyword_match_rate": 1.0,
+    "topk_pass_rate": 1.0,
+    "topk_passed": 6,
+    "total": 6
+  },
+  "results": [
+    {
+      "best_expected_keyword_hits_depth": 1,
+      "best_expected_keyword_hits_topk": 1,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Dress Requirements"
+      ],
+      "expected_rank_depth": 0,
+      "expected_rank_topk": 0,
+      "id": "SL-SWPCL-LOU8-01",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "Do you have Letter of Understanding 8 about dress requirements?",
+      "retrieved_citations_depth": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 1",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 9",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 7",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 11",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 5",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2",
+        "Letter of Understanding 15: Beverage Stewards, Part 1",
+        "Letter of Understanding 4: Estes Park Store SW 920 (Retail Clerks Contract), Part 3",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 8",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 7",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 9",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 10",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 11",
+        "Letter of Understanding 15: Beverage Stewards, Part 4"
+      ],
+      "retrieved_citations_topk": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 1",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 9",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 3,
+      "best_expected_keyword_hits_topk": 3,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "White oxford",
+        "black dress type pants",
+        "Open toe or open heel shoes are not permitted"
+      ],
+      "expected_rank_depth": 0,
+      "expected_rank_topk": 0,
+      "id": "SL-SWPCL-LOU8-02",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "What does Letter of Understanding 8 say employees should wear for dress requirements?",
+      "retrieved_citations_depth": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 9",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 7",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 11",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 5",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 1",
+        "Letter of Understanding 14: Schedule Posting Violations",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 2",
+        "Letter of Understanding 15: Beverage Stewards, Part 2",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 8",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 3",
+        "Letter of Understanding 4: Estes Park Store SW 920 (Retail Clerks Contract), Part 4",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 6",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 13"
+      ],
+      "retrieved_citations_topk": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 9",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 7",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Dress Requirements",
+        "Article 52"
+      ],
+      "expected_rank_depth": 0,
+      "expected_rank_topk": 0,
+      "id": "SL-SWPCL-LOU8-03",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "What are the dress requirements in the letter pursuant to Article 52?",
+      "retrieved_citations_depth": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 1",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 11",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 9",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 5",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 7",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2",
+        "Article 52, Section 158",
+        "Article 36, Section 108",
+        "Letter of Understanding 14: Schedule Posting Violations",
+        "Article 10, Section 21, Part 1",
+        "Article 10, Section 22",
+        "Article 17, Section 51",
+        "Article 17, Section 52, Part 1",
+        "Article 36, Section 109, Part 1"
+      ],
+      "retrieved_citations_topk": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 1",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 11",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Dress Requirements",
+        "Article 52"
+      ],
+      "expected_rank_depth": 0,
+      "expected_rank_topk": 0,
+      "id": "SL-SWPCL-XREF-01",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "Article 52 Section 158 says dress requirements are in a Letter of Understanding. Which letter is that?",
+      "retrieved_citations_depth": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 1",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 11",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 9",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 5",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 7",
+        "Letter of Understanding 14: Schedule Posting Violations",
+        "Article 52, Section 158",
+        "Letter of Understanding 4: Estes Park Store SW 920 (Retail Clerks Contract), Part 2",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 3",
+        "Letter of Understanding 15: Beverage Stewards, Part 4",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 7",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 12",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 10"
+      ],
+      "retrieved_citations_topk": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 1",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 11",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "White oxford",
+        "black dress type pants"
+      ],
+      "expected_rank_depth": 0,
+      "expected_rank_topk": 0,
+      "id": "SL-SWPCL-GEN-01",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "whats the dress code",
+      "retrieved_citations_depth": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 9",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 11",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 5",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 7",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 1",
+        "Article 52, Section 158",
+        "Article 4, Section 9",
+        "Article 3, Section 6",
+        "Article 3, Section 5",
+        "Article 2, Section 3, Part 1",
+        "Article 2, Section 2",
+        "Article 7, Section 14, Subsection h (DRIVE UP AND GO)",
+        "Article 6, Section 13"
+      ],
+      "retrieved_citations_topk": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 9",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 11"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "White oxford",
+        "Black dress type pants"
+      ],
+      "expected_rank_depth": 0,
+      "expected_rank_topk": 0,
+      "id": "SL-SWPCL-GEN-02",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "what color shirt and pants are required for the dress requirements",
+      "retrieved_citations_depth": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 9",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 11",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 7",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 5",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 1",
+        "Letter of Understanding 14: Schedule Posting Violations",
+        "Article 52, Section 158",
+        "Article 36, Section 108",
+        "Article 36, Section 109, Part 1",
+        "Article 10, Section 21, Part 1",
+        "Article 10, Section 22",
+        "Article 48, Section 145, Part 1",
+        "Article 48, Section 146"
+      ],
+      "retrieved_citations_topk": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 9",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 11",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 10",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 6",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 12",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 8",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    }
+  ],
+  "schema_version": "side_letter_retrieval_eval_v2",
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\side_letter_retrieval_pueblo_clerks_test.json",
+  "timestamp_utc": "2026-02-22T06:20:00.404609+00:00"
+}

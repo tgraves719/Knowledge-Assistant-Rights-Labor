@@ -1113,14 +1113,22 @@
                 </div>
                 <div id="popover-text" class="hidden"></div>
             </div>
-            <div class="border-t border-slate-200 px-4 py-3 bg-slate-50 flex justify-between items-center">
-                <p id="popover-summary" class="text-xs text-slate-500 italic truncate max-w-[60%]"></p>
-                <button onclick="expandToContract()" class="text-sm font-medium text-ufcw-blue hover:text-blue-700 flex items-center gap-1">
-                    Open In Contract PDF
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                    </svg>
-                </button>
+            <div class="border-t border-slate-200 px-4 py-3 bg-slate-50 space-y-2">
+                <div id="popover-source-controls" class="hidden">
+                    <label for="popover-source-select" class="text-[11px] font-medium text-slate-600 mr-2">Source View</label>
+                    <select id="popover-source-select" onchange="handlePopoverSourceChoiceChange(event)" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white text-slate-700 max-w-full">
+                        <option value="effective_auto">Current Effective (Auto)</option>
+                    </select>
+                </div>
+                <div class="flex justify-between items-center gap-3">
+                    <p id="popover-summary" class="text-xs text-slate-500 italic truncate max-w-[60%]"></p>
+                    <button onclick="expandToContract()" class="text-sm font-medium text-ufcw-blue hover:text-blue-700 flex items-center gap-1 shrink-0">
+                        Open In Contract PDF
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1595,7 +1603,7 @@
                 <!-- TOC Header - Fixed below Karl header on mobile, entire bar is tappable -->
                 <div id="toc-header-mobile" class="md:hidden fixed top-14 left-0 right-0 z-30 bg-slate-100 border-b border-slate-200 shadow-sm">
                     <button onclick="toggleTOC()" class="w-full max-w-4xl mx-auto px-3 py-2.5 flex items-center justify-between cursor-pointer hover:bg-slate-200/50 transition-colors">
-                        <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Articles</h2>
+                        <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Contract Contents</h2>
                         <div class="text-slate-500 p-1 -mr-1">
                             <svg id="toc-chevron" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -1613,7 +1621,7 @@
                 <!-- TOC Sidebar - Desktop only -->
                 <aside id="contract-toc" class="hidden md:flex md:w-52 lg:w-56 border-r border-slate-200 bg-slate-50 flex-shrink-0 flex-col h-full">
                     <div class="p-3 border-b border-slate-200 bg-slate-100">
-                        <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Articles</h2>
+                        <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Contract Contents</h2>
                     </div>
                     <div id="toc-list-container" class="overflow-y-auto flex-1">
                         <ul id="article-list" class="p-3 space-y-px">
@@ -1629,8 +1637,30 @@
                             <div class="min-w-0">
                                 <p class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Contract PDF</p>
                                 <p id="contract-pdf-location-label" class="text-xs text-slate-700 dark:text-slate-200 truncate">Loading PDF location...</p>
+                                <div class="mt-1 flex flex-wrap items-center gap-1.5">
+                                    <select id="contract-source-mode-select" onchange="handleContractSourceModeChange(this.value)" class="text-[10px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">
+                                        <option value="effective">Effective (Auto)</option>
+                                        <option value="base">Base PDF</option>
+                                        <option value="moa">MOA PDF</option>
+                                    </select>
+                                    <select id="contract-source-doc-select" onchange="handleContractSourceDocChange(this.value)" class="text-[10px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 max-w-[220px]">
+                                        <option value="">Auto by citation provenance</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
+                                <div id="contract-target-source-controls" class="hidden flex flex-col items-end">
+                                    <label for="contract-target-source-select" class="text-[10px] text-slate-400 dark:text-slate-500">Current Target Source</label>
+                                    <select id="contract-target-source-select" onchange="handleCurrentTargetSourceChange(this.value)" class="mt-1 text-[10px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 max-w-[230px]">
+                                        <option value="effective_auto">Current Effective (Auto)</option>
+                                    </select>
+                                </div>
+                                <div class="flex flex-col items-end">
+                                    <button id="contract-view-previous-btn" type="button" onclick="openPreviousForCurrentSelection()" class="text-xs px-2 py-1 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                        View Previous
+                                    </button>
+                                    <p id="contract-view-previous-hint" class="mt-1 text-[10px] text-slate-400 dark:text-slate-500"></p>
+                                </div>
                                 <button type="button" onclick="resetContractPdfView()" class="text-xs px-2 py-1 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
                                     Reset
                                 </button>
@@ -1642,9 +1672,47 @@
                                 </button>
                             </div>
                         </div>
+                        <div id="contract-history-banner" class="hidden px-3 md:px-4 py-2 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60">
+                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                <p id="contract-history-version" class="text-[10px] text-slate-700 dark:text-slate-200 font-medium">Effective Snapshot: --</p>
+                                <p id="contract-history-hash" class="text-[10px] text-slate-500 dark:text-slate-400">Content Hash: --</p>
+                                <p id="contract-history-amendments" class="text-[10px] text-slate-500 dark:text-slate-400">No applied amendments</p>
+                                <p id="contract-history-coverage" class="text-[10px] text-slate-500 dark:text-slate-400">Chunk coverage: --</p>
+                            </div>
+                            <div id="contract-history-timeline" class="mt-1 flex flex-wrap items-center gap-1"></div>
+                            <div id="contract-history-patches" class="mt-1 flex flex-wrap gap-1"></div>
+                        </div>
                         <iframe id="contract-pdf-frame" class="w-full flex-1 border-0 bg-white" title="Contract PDF" loading="lazy"></iframe>
                     </div>
                 </section>
+                <aside id="contract-text-panel" class="hidden lg:flex lg:w-[40%] xl:w-[38%] border-l border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-900 flex-col">
+                    <div class="px-3 py-2 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-gray-900/90 flex items-center justify-between gap-2">
+                        <div class="min-w-0">
+                            <p class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Contract Text</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 truncate">Current target content (effective or previous/base)</p>
+                            <p id="contract-text-provenance" class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 truncate">Text Source: Materialized Effective Text</p>
+                        </div>
+                        <div class="flex flex-col items-end gap-1">
+                            <div class="flex items-center gap-2">
+                                <label for="contract-text-source-mode-select" class="text-[10px] text-slate-500 dark:text-slate-400">Text Source</label>
+                                <select id="contract-text-source-mode-select" onchange="handleContractTextSourceModeChange(this.value)" class="text-[10px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">
+                                    <option value="effective">Effective</option>
+                                    <option value="base">Previous/Base</option>
+                                </select>
+                                <button id="contract-text-compare-btn" type="button" onclick="toggleContractTextCompare()" class="text-[10px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                    Compare to Base
+                                </button>
+                            </div>
+                            <p id="contract-text-compare-hint" class="text-[10px] text-slate-400 dark:text-slate-500"></p>
+                        </div>
+                    </div>
+                    <div id="contract-text-compare-panel" class="hidden border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-3 py-2">
+                        <div id="contract-text-compare-body"></div>
+                    </div>
+                    <div id="article-detail" class="flex-1 overflow-y-auto p-4 text-sm text-slate-700 dark:text-slate-200">
+                        <div class="text-xs text-slate-500 dark:text-slate-400">Select an article, LOU/LOA, or appendix item to load text.</div>
+                    </div>
+                </aside>
                 </div>
             </div>
 

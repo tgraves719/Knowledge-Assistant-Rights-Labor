@@ -1199,6 +1199,9 @@ def _lookup_wage_from_canonical_rows(
                 "row_type": str(row.get("row_type") or ""),
                 "source_method": str(row.get("source_method") or "canonical_rows"),
                 "confidence": float(row.get("confidence", 0.0) or 0.0),
+                "provenance": row.get("provenance") if isinstance(row.get("provenance"), list) else [],
+                "effective_version_id": str(row.get("effective_version_id") or "").strip() or None,
+                "amendments_applied": list(row.get("amendments_applied") or []),
             }
         )
 
@@ -1216,6 +1219,8 @@ def _lookup_wage_from_canonical_rows(
         "citation": "Appendix A",
         "source_method": "canonical_rows",
         "table_evidence": evidence_rows,
+        "effective_version_id": str(wages_data.get("effective_version_id") or "").strip() or None,
+        "amendments_applied": list(wages_data.get("amendments_applied") or []),
     }
 
 

@@ -5,6 +5,7 @@
   "bargaining_unit": "Clerks",
   "term_start": "April 15, 2019",
   "term_end": "February 19, 2022",
+  "contract_version": "April 15, 2019__February 19, 2022",
   "article_titles": {
     "1": "Recognition And Exclusions",
     "2": "Service In Meat Departments, Plants",
@@ -100,5 +101,34 @@
     "safety",
     "pension",
     "leaves"
-  ]
+  ],
+  "query_routing": {
+    "slang_to_contract": {
+      "401k": "401K plan",
+      "bagger": "courtesy clerk"
+    },
+    "topic_to_articles": {
+      "health_benefits": [40],
+      "retirement_savings": [42],
+      "vacation": [17],
+      "sick_leave": [38],
+      "overtime": [12],
+      "scheduling": [18, 29],
+      "seniority": [27],
+      "layoff": [32],
+      "discipline": [44, 48],
+      "grievance": [48],
+      "breaks": [24, 25],
+      "premiums": [13, 14, 15],
+      "probation": [26],
+      "term": [57]
+    },
+    "topic_patterns": {
+      "retirement_savings": "401k|401\\(k\\)|retirement\\s*savings|retirement\\s*plan"
+    },
+    "classification_to_articles": {
+      "head_clerk": [7, 8, 27],
+      "meat_cutter": [7, 8]
+    }
+  }
 }

@@ -5,6 +5,7 @@
   "bargaining_unit": "PUEBLO CLERKS",
   "term_start": "January 23, 2022",
   "term_end": "January 18, 2025",
+  "contract_version": "January 23, 2022__January 18, 2025",
   "article_titles": {
     "1": "Recognition And Exclusions",
     "2": "Bargaining Unit Work Jurisdiction",
@@ -121,5 +122,49 @@
     "safety",
     "pension",
     "leaves"
-  ]
+  ],
+  "query_routing": {
+    "slang_to_contract": {
+      "401k": "401K plan",
+      "dug": "Drive Up & Go",
+      "bagger": "courtesy clerk",
+      "clicklist": "Drive Up & Go",
+      "personal shopper": "Drive Up & Go courtesy clerk"
+    },
+    "topic_to_articles": {
+      "health_benefits": [40, 18],
+      "retirement_savings": [39, 42],
+      "vacation": [17],
+      "personal_holiday": [16],
+      "sick_leave": [35],
+      "overtime": [12],
+      "scheduling": [10],
+      "seniority": [27],
+      "layoff": [29],
+      "discipline": [43, 46],
+      "grievance": [46],
+      "breaks": [24, 25],
+      "premiums": [13, 14, 15],
+      "weingarten": [43, 45],
+      "promotion": [8, 9],
+      "drive_up_go": [7, 55],
+      "probation": [26],
+      "term": [58]
+    },
+    "topic_patterns": {
+      "retirement_savings": "401k|401\\(k\\)|retirement\\s*savings|retirement\\s*plan",
+      "drive_up_go": "drive\\s*up|dug|personal\\s*shopper|clicklist"
+    },
+    "classification_to_articles": {
+      "courtesy_clerk": [2, 4, 7, 15, 42, 55],
+      "drive_up_and_go": [4, 7, 55],
+      "dug_shopper": [4, 7, 55],
+      "all_purpose_clerk": [4, 7, 8],
+      "head_clerk": [9, 27],
+      "cake_decorator": [29],
+      "pharmacy_tech": [8],
+      "produce_manager": [9],
+      "bakery_manager": [9]
+    }
+  }
 }

@@ -1,0 +1,275 @@
+{
+  "schema_version": "moa_effective_test_v2_deep",
+  "description": "Deep effective-state and MOA retrieval checks for amended, removed, and untouched clauses.",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "test_cases": [
+    {
+      "id": "MOA-CL-TERM-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "What is the expiration date of the current agreement?",
+      "expected_citations": [
+        "Article 58, Section 1749"
+      ],
+      "expected_keywords": [
+        "January 16, 2027"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "moa",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-TERM-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "What date does this agreement run through now?",
+      "expected_citations": [
+        "Article 58, Section 1749"
+      ],
+      "expected_keywords": [
+        "January 16, 2027"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "moa",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-TERM-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "absent",
+      "question": "Is the current effective agreement in force through January 8, 2028 for Pueblo clerks?",
+      "forbidden_keywords": [
+        "January 8, 2028"
+      ],
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-NIGHT-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "All Courtesy Clerks shall receive how much per hour in addition to the hourly rate for all work performed between 12:00 midnight and 6:00 a.m.?",
+      "expected_citations": [
+        "Article 15, Section 34"
+      ],
+      "expected_keywords": [
+        "fifty cents",
+        "$0.50"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "moa",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-NIGHT-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "What is the overnight premium for courtesy clerks from midnight to 6 a.m.?",
+      "expected_citations": [
+        "Article 15, Section 34"
+      ],
+      "expected_keywords": [
+        "fifty cents",
+        "$0.50"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "moa",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-NIGHT-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "What premium do non-courtesy-clerk employees receive between midnight and 6 a.m.?",
+      "expected_citations": [
+        "Article 15, Section 34"
+      ],
+      "expected_keywords": [
+        "$2.00",
+        "two dollars"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "moa",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-NIGHT-04",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "absent",
+      "question": "Is the courtesy clerk night premium twenty-five cents?",
+      "forbidden_keywords": [
+        "twenty-five",
+        "$0.25"
+      ],
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-REMOVED-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "absent",
+      "question": "Is it true that the Employer will send the Union a copy of the full time request list?",
+      "forbidden_keywords": [
+        "full time request list"
+      ],
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-REMOVED-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "absent",
+      "question": "The Sunday premium shall not be averaged into the employee's straight-time rate for determining overtime. Is that in the current effective agreement?",
+      "forbidden_keywords": [
+        "shall not be averaged into the employee's straight-time rate"
+      ],
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-REMOVED-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "absent",
+      "question": "Does section 30 still say sunday premium is averaged into overtime calculations?",
+      "forbidden_keywords": [
+        "averaged into"
+      ],
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-BASE-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "Can appointed stewards be scheduled later than 6:00 p.m. on regular union meeting nights?",
+      "expected_citations": [
+        "Article 45, Section 130"
+      ],
+      "expected_keywords": [
+        "6:00 p.m.",
+        "regular Local Union Meeting"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "base",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-BASE-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "Does the company adjust steward schedules so they can attend the annual stewards conference?",
+      "expected_citations": [
+        "Article 45, Section 131"
+      ],
+      "expected_keywords": [
+        "adjust the Union Stewards' work schedules",
+        "annual Union Stewards' conference"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "base",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-BASE-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "What does Article 29 Section 81 cover?",
+      "expected_citations": [
+        "Article 29, Section 81"
+      ],
+      "expected_keywords": [
+        "Employees Accepting a Lower Classification",
+        "recalled"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "base",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-LOU-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "What does Letter of Understanding 1 say about employees reinstated under the Alcoholic Rehabilitation Program?",
+      "expected_citations": [
+        "Letter of Understanding 1"
+      ],
+      "expected_keywords": [
+        "Alcoholic Rehabilitation Program",
+        "reinstated"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "base",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-WAGE-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "How much should I be making after 520 hours as non-food gm floral?",
+      "expected_keywords": [
+        "17.50",
+        "After 520 hours"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_intent_type": "wage",
+      "require_no_wage_info": false
+    },
+    {
+      "id": "MOA-CL-WAGE-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "What is the courtesy clerk start rate effective January 21, 2024?",
+      "expected_keywords": [
+        "17.50",
+        "courtesy"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_intent_type": "wage",
+      "require_no_wage_info": false
+    },
+    {
+      "id": "MOA-CL-GUARD-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "What does section 1749 say about contract term and notice?",
+      "expected_citations": [
+        "Article 58, Section 1749"
+      ],
+      "expected_keywords": [
+        "sixty (60) days",
+        "January 16, 2027"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "moa",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    },
+    {
+      "id": "MOA-CL-GUARD-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "expectation": "present",
+      "question": "For night premium in section 34, does the premium apply when already working overtime or Sunday?",
+      "expected_citations": [
+        "Article 15, Section 34"
+      ],
+      "expected_keywords": [
+        "Night premium shall not apply",
+        "overtime",
+        "Sunday"
+      ],
+      "min_expected_keyword_hits": 1,
+      "expected_source_type": "moa",
+      "expected_intent_type": "contract",
+      "require_no_wage_info": true
+    }
+  ]
+}

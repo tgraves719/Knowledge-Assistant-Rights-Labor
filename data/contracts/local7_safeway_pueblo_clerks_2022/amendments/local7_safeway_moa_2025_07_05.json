@@ -1,0 +1,72 @@
+{
+  "schema_version": "moa_patch_v0_9_0",
+  "patch_id": "local7_safeway_moa_2025_07_05",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "source_pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+  "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+  "effective_date": "2025-07-05",
+  "ratified_date": "2025-07-05",
+  "parent_effective_version_id": "base_snapshot_v0_9_0",
+  "operations": [
+    {
+      "op": "replace_section",
+      "target": {
+        "anchor_id": "a58_s1749",
+        "article_num": 58,
+        "section_num": 1749
+      },
+      "expected_prev_hash": "1d9ff92a03614028f438e28e3d83b7e8b834684a94686dd306f5f51a6c90b7a7",
+      "new_text_markdown": "Section 1749. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **January 23, 2022** and shall remain in full force and effect until midnight on **January 16, 2027** and shall be automatically renewed from year to year thereafter, unless either party desires change or termination at the expiration of said Agreement. In such event, the party desiring such change or termination shall notify the other party in writing sixty (60) days prior to the expiration date, specifying the changes desired. Changes in the Agreement shall be limited to those outlined in writing by either party and the negotiations shall begin within fifteen (15) days after receipt of such notice.",
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 7
+        }
+      ],
+      "confidence": 0.94,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "courtesy_clerk|hours:0|2024-01-21"
+      },
+      "expected_prev_hash": "dd89359be7c5da2e2c13c6aa303326836f8eacc3d12eca5e3a1ed4b6bb4fe428",
+      "new_row": {
+        "rate": 17.5
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 12
+        }
+      ],
+      "confidence": 0.89,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_section",
+      "target": {
+        "anchor_id": "a15_s34",
+        "article_num": 15,
+        "section_num": 34
+      },
+      "expected_prev_hash": "479c8240646a3507274a77ba5cc6a1629ed7c7c967a41dfcc024f9da2b04b832",
+      "new_text_markdown": "Section 34. A premium of **two** dollars (**$2.00**) per hour shall be paid for all work performed between the hours of 12:00 midnight and 6:00 a.m. to all employees (excluding Courtesy Clerks).\n\nAll Courtesy Clerks shall receive fifty cents ($0.50) per hour in addition to the hourly rate for all work performed between the hours of 12:00 midnight and 6:00 a.m.\n\nNight premium shall not apply where the employee is working at overtime or on Sunday or on a holiday.",
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05"
+        }
+      ],
+      "confidence": 0.86,
+      "review_status": "approved"
+    }
+  ]
+}

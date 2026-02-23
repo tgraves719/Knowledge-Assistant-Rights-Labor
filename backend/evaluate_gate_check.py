@@ -446,6 +446,199 @@ def _check_v3(results: dict, min_components_pass_rate: float) -> list[tuple[bool
     return checks
 
 
+def _check_release_090(
+    results: dict,
+    required_schema_version: str,
+    min_components_pass_rate: float,
+) -> list[tuple[bool, str]]:
+    checks: list[tuple[bool, str]] = []
+    schema_version = str(results.get("schema_version") or "")
+    overall = results.get("overall", {}) or {}
+    pass_rate = overall.get("pass_rate")
+    passed = overall.get("pass")
+
+    if not schema_version:
+        checks.append((False, "release_090 schema_version missing"))
+    else:
+        checks.append(
+            (
+                schema_version == required_schema_version,
+                f"release_090 schema_version={schema_version} expected={required_schema_version}",
+            )
+        )
+
+    if pass_rate is None:
+        checks.append((False, "release_090 overall.pass_rate missing"))
+    else:
+        checks.append(
+            (
+                pass_rate >= min_components_pass_rate,
+                f"release_090 components pass_rate={pass_rate:.3f} threshold>={min_components_pass_rate:.3f}",
+            )
+        )
+
+    if passed is None:
+        checks.append((False, "release_090 overall.pass missing"))
+    else:
+        checks.append((bool(passed), f"release_090 overall.pass={bool(passed)} expected=True"))
+
+    return checks
+
+
+def _release_090_advisory_messages(results: dict) -> list[tuple[bool, str]]:
+    advisories = results.get("advisories") or {}
+    if not isinstance(advisories, dict) or not advisories:
+        return [(True, "release_090 advisories missing or empty (non-blocking)")]
+
+    messages: list[tuple[bool, str]] = []
+    for key in sorted(advisories.keys()):
+        row = advisories.get(key) or {}
+        if not isinstance(row, dict):
+            messages.append((True, f"release_090 advisory {key}: malformed entry (non-blocking)"))
+            continue
+        status = str(row.get("status") or "")
+        warning = bool(row.get("warning"))
+        path = str(row.get("path") or "")
+        schema_version = str(row.get("schema_version") or "")
+
+        if key == "contract_text_compare_amended":
+            coverage = row.get("coverage") or {}
+            overall = row.get("overall") or {}
+            op_cov = coverage.get("operation_coverage_rate")
+            contract_cov = coverage.get("contract_coverage_rate")
+            total = overall.get("total")
+            passed = overall.get("passed")
+            detail = (
+                "release_090 advisory contract_text_compare_amended "
+                f"status={status} warning={warning} "
+                f"coverage(contract={contract_cov}, ops={op_cov}) "
+                f"overall={passed}/{total} schema={schema_version}"
+            )
+            if path:
+                detail += f" path={path}"
+            messages.append((warning, detail))
+            continue
+
+        if key == "base_chunk_lineage":
+            summary = row.get("summary") or {}
+            detail = (
+                "release_090 advisory base_chunk_lineage "
+                f"status={status} warning={warning} "
+                f"high={summary.get('high_risk')} medium={summary.get('medium_risk')} "
+                f"missing_base={summary.get('missing_base_chunk')} schema={schema_version}"
+            )
+            if path:
+                detail += f" path={path}"
+            messages.append((warning, detail))
+            continue
+
+        detail = f"release_090 advisory {key} status={status} warning={warning} schema={schema_version}"
+        if path:
+            detail += f" path={path}"
+        messages.append((warning, detail))
+
+    return messages
+
+
+def _check_moa_deleted_vs_updated(
+    results: dict,
+    required_schema_version: str,
+    required_dataset_schema_version: str,
+    min_overall_pass_rate: float,
+    min_updated_pass_rate: float,
+    min_deleted_pass_rate: float,
+    min_updated_moa_source_type_match_rate: float,
+) -> list[tuple[bool, str]]:
+    checks: list[tuple[bool, str]] = []
+    schema_version = str(results.get("schema_version") or "")
+    dataset_schema_version = str(results.get("dataset_schema_version") or "")
+    overall = results.get("overall", {}) or {}
+    buckets = results.get("buckets", {}) or {}
+    gate = results.get("gate", {}) or {}
+    updated = buckets.get("updated", {}) or {}
+    deleted = buckets.get("deleted", {}) or {}
+
+    if not schema_version:
+        checks.append((False, "moa_deleted_vs_updated schema_version missing"))
+    else:
+        checks.append(
+            (
+                schema_version == required_schema_version,
+                f"moa_deleted_vs_updated schema_version={schema_version} expected={required_schema_version}",
+            )
+        )
+
+    if not dataset_schema_version:
+        checks.append((False, "moa_deleted_vs_updated dataset_schema_version missing"))
+    else:
+        checks.append(
+            (
+                dataset_schema_version == required_dataset_schema_version,
+                "moa_deleted_vs_updated dataset_schema_version="
+                f"{dataset_schema_version} expected={required_dataset_schema_version}",
+            )
+        )
+
+    gate_pass = gate.get("pass")
+    if gate_pass is None:
+        checks.append((False, "moa_deleted_vs_updated gate.pass missing"))
+    else:
+        checks.append((bool(gate_pass), f"moa_deleted_vs_updated gate.pass={bool(gate_pass)} expected=True"))
+
+    overall_pass_rate = overall.get("pass_rate")
+    if overall_pass_rate is None:
+        checks.append((False, "moa_deleted_vs_updated overall.pass_rate missing"))
+    else:
+        checks.append(
+            (
+                float(overall_pass_rate) >= min_overall_pass_rate,
+                "moa_deleted_vs_updated overall.pass_rate="
+                f"{float(overall_pass_rate):.3f} threshold>={min_overall_pass_rate:.3f}",
+            )
+        )
+
+    updated_rate = updated.get("pass_rate")
+    if updated_rate is None:
+        checks.append((False, "moa_deleted_vs_updated updated.pass_rate missing"))
+    else:
+        checks.append(
+            (
+                float(updated_rate) >= min_updated_pass_rate,
+                "moa_deleted_vs_updated updated.pass_rate="
+                f"{float(updated_rate):.3f} threshold>={min_updated_pass_rate:.3f}",
+            )
+        )
+
+    deleted_rate = deleted.get("pass_rate")
+    if deleted_rate is None:
+        checks.append((False, "moa_deleted_vs_updated deleted.pass_rate missing"))
+    else:
+        checks.append(
+            (
+                float(deleted_rate) >= min_deleted_pass_rate,
+                "moa_deleted_vs_updated deleted.pass_rate="
+                f"{float(deleted_rate):.3f} threshold>={min_deleted_pass_rate:.3f}",
+            )
+        )
+
+    source_cases = int(updated.get("source_type_cases") or 0)
+    source_rate = updated.get("moa_source_type_match_rate")
+    if source_cases == 0:
+        checks.append((True, "moa_deleted_vs_updated updated.moa_source_type_match_rate skipped (0 cases)"))
+    elif source_rate is None:
+        checks.append((False, "moa_deleted_vs_updated updated.moa_source_type_match_rate missing"))
+    else:
+        checks.append(
+            (
+                float(source_rate) >= min_updated_moa_source_type_match_rate,
+                "moa_deleted_vs_updated updated.moa_source_type_match_rate="
+                f"{float(source_rate):.3f} threshold>={min_updated_moa_source_type_match_rate:.3f}",
+            )
+        )
+
+    return checks
+
+
 def _check_needle(
     results: dict,
     min_pass_rate: float,
@@ -1156,6 +1349,8 @@ def main():
     parser.add_argument("--entitlement-table-evidence-results", default="data/test_set/entitlement_table_evidence_results.json")
     parser.add_argument("--role-catalog-integrity-results", default="data/test_set/role_catalog_integrity_results.json")
     parser.add_argument("--followup-role-wage-results", default="data/test_set/followup_role_wage_results.json")
+    parser.add_argument("--moa-deleted-vs-updated-results", default="data/test_set/moa_deleted_vs_updated_results.json")
+    parser.add_argument("--release-090-results", default="data/test_set/release_0_9_0_scorecard.json")
 
     parser.add_argument("--min-v2-accuracy", type=float, default=0.80)
     parser.add_argument("--min-escalation-precision", type=float, default=0.90)
@@ -1234,6 +1429,14 @@ def main():
     parser.add_argument("--min-followup-role-wage-no-unavailable-rate", type=float, default=0.95)
     parser.add_argument("--min-followup-role-wage-explicit-override-rate", type=float, default=0.90)
     parser.add_argument("--min-followup-role-wage-profile-fallback-rate", type=float, default=0.90)
+    parser.add_argument("--required-moa-deleted-vs-updated-schema-version", default="moa_deleted_vs_updated_eval_v1")
+    parser.add_argument("--required-moa-deleted-vs-updated-dataset-schema-version", default="moa_deleted_vs_updated_test_v1")
+    parser.add_argument("--min-moa-deleted-vs-updated-overall-pass-rate", type=float, default=1.0)
+    parser.add_argument("--min-moa-deleted-vs-updated-updated-pass-rate", type=float, default=1.0)
+    parser.add_argument("--min-moa-deleted-vs-updated-deleted-pass-rate", type=float, default=1.0)
+    parser.add_argument("--min-moa-deleted-vs-updated-updated-moa-source-type-match-rate", type=float, default=1.0)
+    parser.add_argument("--required-release-090-schema-version", default="release_090_scorecard_v1")
+    parser.add_argument("--min-release-090-components-pass-rate", type=float, default=1.0)
     parser.add_argument(
         "--allow-missing-cross-contamination",
         action="store_true",
@@ -1298,6 +1501,16 @@ def main():
         "--allow-missing-followup-role-wage",
         action="store_true",
         help="Allow missing followup-role-wage artifact (non-release debugging only).",
+    )
+    parser.add_argument(
+        "--allow-missing-moa-deleted-vs-updated",
+        action="store_true",
+        help="Allow missing moa_deleted_vs_updated artifact (non-release debugging only).",
+    )
+    parser.add_argument(
+        "--allow-missing-release-090",
+        action="store_true",
+        help="Allow missing release_090 scorecard artifact (non-release debugging only).",
     )
     args = parser.parse_args()
 
@@ -1877,6 +2090,60 @@ def main():
     else:
         msg = f"followup-role-wage artifact missing: {args.followup_role_wage_results}"
         if args.allow_missing_followup_role_wage:
+            print(f"[--] {msg}")
+        else:
+            print(f"[XX] {msg}")
+            failures.append(msg)
+
+    moa_delupd_path = Path(args.moa_deleted_vs_updated_results)
+    if moa_delupd_path.exists():
+        try:
+            moa_delupd = _load_json(args.moa_deleted_vs_updated_results)
+            for ok, msg in _check_moa_deleted_vs_updated(
+                moa_delupd,
+                required_schema_version=args.required_moa_deleted_vs_updated_schema_version,
+                required_dataset_schema_version=args.required_moa_deleted_vs_updated_dataset_schema_version,
+                min_overall_pass_rate=args.min_moa_deleted_vs_updated_overall_pass_rate,
+                min_updated_pass_rate=args.min_moa_deleted_vs_updated_updated_pass_rate,
+                min_deleted_pass_rate=args.min_moa_deleted_vs_updated_deleted_pass_rate,
+                min_updated_moa_source_type_match_rate=args.min_moa_deleted_vs_updated_updated_moa_source_type_match_rate,
+            ):
+                print(f"[{'OK' if ok else 'XX'}] {msg}")
+                if not ok:
+                    failures.append(msg)
+        except Exception as e:
+            msg = f"moa_deleted_vs_updated check error: {e}"
+            print(f"[XX] {msg}")
+            failures.append(msg)
+    else:
+        msg = f"moa_deleted_vs_updated artifact missing: {args.moa_deleted_vs_updated_results}"
+        if args.allow_missing_moa_deleted_vs_updated:
+            print(f"[--] {msg}")
+        else:
+            print(f"[XX] {msg}")
+            failures.append(msg)
+
+    release_090_path = Path(args.release_090_results)
+    if release_090_path.exists():
+        try:
+            release_090 = _load_json(args.release_090_results)
+            for ok, msg in _check_release_090(
+                release_090,
+                required_schema_version=args.required_release_090_schema_version,
+                min_components_pass_rate=args.min_release_090_components_pass_rate,
+            ):
+                print(f"[{'OK' if ok else 'XX'}] {msg}")
+                if not ok:
+                    failures.append(msg)
+            for warn, msg in _release_090_advisory_messages(release_090):
+                print(f"[{'!!' if warn else 'OK'}] {msg}")
+        except Exception as e:
+            msg = f"release_090 check error: {e}"
+            print(f"[XX] {msg}")
+            failures.append(msg)
+    else:
+        msg = f"release_090 artifact missing: {args.release_090_results}"
+        if args.allow_missing_release_090:
             print(f"[--] {msg}")
         else:
             print(f"[XX] {msg}")

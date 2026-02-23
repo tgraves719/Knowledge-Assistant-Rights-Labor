@@ -144,8 +144,8 @@
       "require_specific_precedence": false,
       "expected_keywords": [
         "excluding courtesy clerks",
-        "twenty-five cents",
-        "$.25"
+        "fifty cents",
+        "$0.50"
       ],
       "min_expected_keyword_hits": 2
     },

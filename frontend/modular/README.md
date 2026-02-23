@@ -28,3 +28,10 @@ This folder is now the primary frontend app with JS externalized.
 ## Rule for migration
 
 Each slice must keep behavior parity and pass manual smoke checks before moving to the next slice.
+
+## Contract Tab Source Modes
+
+- Contract tab now loads `/api/contract-history` for the active contract.
+- PDF source selector supports `Effective (Auto)`, `Base PDF`, and `MOA PDF` when amendment PDFs exist.
+- Citation clicks forward provenance hints (`source_type`, `source_pdf`, `source_page`) to `/api/pdf-location` so amended language can open directly in MOA pages while preserving base navigation mode.
+- Citation badges now show provenance tags (`MOA`, `Base`, `MOA+Base`) so users can quickly tell whether language is amended or inherited.

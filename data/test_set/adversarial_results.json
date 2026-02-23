@@ -1,7 +1,7 @@
 {
   "schema_version": "adversarial_precedence_eval_v1",
   "dataset_schema_version": "adversarial_precedence_test_v1",
-  "timestamp_utc": "2026-02-15T19:57:26.138129+00:00",
+  "timestamp_utc": "2026-02-22T05:31:46.639976+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_test.json",
   "n_results": 8,
   "bm25_only": true,
@@ -44,12 +44,12 @@
       "retrieved_citations": [
         "Article 17, Section 42",
         "Article 17, Section 45, Part 1",
+        "Article 17, Section 43",
+        "Article 17, Section 45, Part 3",
+        "Article 38, Section 93, Part 1",
+        "Article 2, Section 3",
         "Article 27, Section 62, Part 1",
-        "Article 27, Section 70, Part 1",
-        "Article 31, Section 76, Part 2",
-        "Article 16, Section 39",
-        "Article 27, Section 70, Part 7",
-        "Article 17, Section 43"
+        "Article 27, Section 70, Part 1"
       ],
       "expected_rank": 0,
       "competing_rank": null,
@@ -79,15 +79,15 @@
       "competing_citations": [],
       "retrieved_citations": [
         "Article 17, Section 45, Part 2",
-        "Article 16, Section 37",
-        "Article 27, Section 59",
-        "Article 27, Section 61",
-        "Article 31, Section 76, Part 2",
-        "Article 16, Section 38",
         "Article 17, Section 42",
-        "Article 17, Section 44"
+        "Article 17, Section 44",
+        "Article 17, Section 43",
+        "Article 17, Section 45, Part 1",
+        "Article 17, Section 45, Part 3",
+        "Article 27, Section 59",
+        "Article 27, Section 61"
       ],
-      "expected_rank": 6,
+      "expected_rank": 1,
       "competing_rank": null,
       "citation_hit": true,
       "expected_keywords": [
@@ -114,16 +114,16 @@
       ],
       "competing_citations": [],
       "retrieved_citations": [
+        "Article 16, Section 35",
+        "Article 16, Section 37",
+        "Article 14",
+        "Article 15",
         "Article 16, Section 41",
-        "Article 27, Section 60",
         "Article 16, Section 40",
         "Article 16, Section 34",
-        "Article 27, Section 62, Part 2",
-        "Article 16, Section 36",
-        "Article 16, Section 37",
-        "Article 15"
+        "Article 16, Section 36"
       ],
-      "expected_rank": 2,
+      "expected_rank": 5,
       "competing_rank": null,
       "citation_hit": true,
       "expected_keywords": [
@@ -151,13 +151,13 @@
       "competing_citations": [],
       "retrieved_citations": [
         "Article 16, Section 40",
+        "Article 16, Section 35",
+        "Article 16, Section 38",
+        "Article 14",
+        "Article 15",
         "Article 16, Section 34",
-        "Article 16, Section 37",
-        "Article 16, Section 39",
-        "Article 16, Section 36",
-        "Article 16, Section 41",
-        "Article 27, Section 60",
-        "Article 16, Section 38"
+        "Article 13",
+        "Article 16, Section 37"
       ],
       "expected_rank": 0,
       "competing_rank": null,
@@ -190,15 +190,15 @@
       "retrieved_citations": [
         "Article 17, Section 44, Part 3",
         "Article 17, Section 45",
+        "Article 17, Section 44, Part 2",
+        "Article 17, Section 44, Part 1",
+        "Article 27, Section 68, Part 3",
         "Article 10, Section 21, Part 1",
         "Article 10, Section 25, Part 3",
-        "Article 16, Section 35",
-        "Article 19, Section 55",
-        "Article 17, Section 44, Part 2",
-        "Article 17, Section 44, Part 1"
+        "Article 27, Section 67"
       ],
-      "expected_rank": 7,
-      "competing_rank": 6,
+      "expected_rank": 3,
+      "competing_rank": 2,
       "citation_hit": true,
       "expected_keywords": [
         "on or before march 26, 2005",
@@ -228,15 +228,15 @@
       "retrieved_citations": [
         "Article 17, Section 46",
         "Article 17, Section 44, Part 3",
-        "Article 10, Section 21, Part 1",
-        "Article 10, Section 25, Part 3",
-        "Article 16, Section 35",
-        "Article 19, Section 55",
         "Article 17, Section 44, Part 2",
-        "Article 17, Section 44, Part 1"
+        "Article 17, Section 44, Part 1",
+        "Article 17, Section 45",
+        "Article 27, Section 68, Part 3",
+        "Article 10, Section 21, Part 1",
+        "Article 10, Section 25, Part 3"
       ],
-      "expected_rank": 6,
-      "competing_rank": 7,
+      "expected_rank": 2,
+      "competing_rank": 3,
       "citation_hit": true,
       "expected_keywords": [
         "on or after march 27, 2005",
@@ -262,22 +262,22 @@
       ],
       "competing_citations": [],
       "retrieved_citations": [
-        "Article 4, Section 9",
-        "Article 16, Section 41",
         "Article 16, Section 42",
+        "Article 2, Section 4",
         "Article 4, Section 8",
-        "Article 5, Section 11",
         "Article 7, Section 14, Subsection h (DRIVE UP AND GO)",
-        "Article 15, Section 34",
-        "Article 16, Section 43"
+        "Article 42, Section 118, Part 1",
+        "Article 42, Section 120",
+        "Article 16, Section 43",
+        "Article 15, Section 34"
       ],
-      "expected_rank": 6,
+      "expected_rank": 7,
       "competing_rank": null,
       "citation_hit": true,
       "expected_keywords": [
         "excluding courtesy clerks",
-        "twenty-five cents",
-        "$.25"
+        "fifty cents",
+        "$0.50"
       ],
       "min_expected_keyword_hits": 2,
       "best_expected_keyword_hits": 3,
@@ -299,13 +299,13 @@
       "competing_citations": [],
       "retrieved_citations": [
         "Article 25, Section 61",
-        "Article 21, Section 57",
         "Article 24, Section 60",
-        "Article 10, Section 21, Part 2",
+        "Article 10, Section 21, Part 10",
         "Article 10, Section 25, Part 3",
         "Article 58, Section 173",
         "Article 58, Section 175, Part 1",
-        "Article 10, Section 21, Part 1"
+        "Article 10, Section 21, Part 1",
+        "Article 10, Section 21, Part 7"
       ],
       "expected_rank": 0,
       "competing_rank": null,
@@ -338,15 +338,15 @@
       "retrieved_citations": [
         "Article 17, Section 48, Part 4",
         "Article 17, Section 49",
-        "Article 27, Section 67, Part 3",
-        "Article 27, Section 69, Part 1",
-        "Article 31, Section 91, Part 1",
-        "Article 16, Section 38",
         "Article 17, Section 48, Part 2",
-        "Article 17, Section 48, Part 1"
+        "Article 17, Section 48, Part 1",
+        "Article 17, Section 49, Part 1-5",
+        "Article 17, Section 48, Part 3",
+        "Article 38, Section 112",
+        "Article 27, Section 67, Part 3"
       ],
-      "expected_rank": 7,
-      "competing_rank": 6,
+      "expected_rank": 3,
+      "competing_rank": 2,
       "citation_hit": true,
       "expected_keywords": [
         "on or before march 26, 2005",
@@ -376,15 +376,15 @@
       "retrieved_citations": [
         "Article 17, Section 48, Part 4",
         "Article 17, Section 49",
-        "Article 27, Section 64",
-        "Article 27, Section 67, Part 1",
-        "Article 31, Section 91, Part 1",
-        "Article 16, Section 38",
         "Article 17, Section 48, Part 2",
-        "Article 17, Section 48, Part 1"
+        "Article 17, Section 48, Part 1",
+        "Article 17, Section 49, Part 1-5",
+        "Article 17, Section 51, Part 3",
+        "Article 17, Section 48, Part 3",
+        "Article 27, Section 64"
       ],
-      "expected_rank": 6,
-      "competing_rank": 7,
+      "expected_rank": 2,
+      "competing_rank": 3,
       "citation_hit": true,
       "expected_keywords": [
         "on or after march 27, 2005",
@@ -410,16 +410,16 @@
       ],
       "competing_citations": [],
       "retrieved_citations": [
+        "Article 16, Section 46",
         "Article 16, Section 40",
         "Article 16, Section 45",
-        "Article 16, Section 46",
+        "Article 14, Section 36",
         "Article 16, Section 38",
-        "Article 15, Section 37",
         "Article 16, Section 39",
-        "Article 13, Section 35",
-        "Article 13, Section 34"
+        "Article 15, Section 37",
+        "Article 13, Section 35"
       ],
-      "expected_rank": 2,
+      "expected_rank": 0,
       "competing_rank": null,
       "citation_hit": true,
       "expected_keywords": [
@@ -448,16 +448,16 @@
       ],
       "competing_citations": [],
       "retrieved_citations": [
+        "Article 30, Section 88",
         "Article 12, Section 33",
         "Article 30, Section 89",
-        "Article 5, Section 12",
-        "Article 29, Section 87",
-        "Article 30, Section 88",
         "Article 12, Section 32",
         "Article 38, Section 110, Part 3-4",
+        "Article 38, Section 111",
+        "Article 50, Section 156, Part 1",
         "Article 38, Section 110, Part 1-2"
       ],
-      "expected_rank": 5,
+      "expected_rank": 3,
       "competing_rank": null,
       "citation_hit": true,
       "expected_keywords": [

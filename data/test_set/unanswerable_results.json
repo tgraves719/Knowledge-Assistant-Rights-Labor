@@ -1,7 +1,7 @@
 {
   "schema_version": "unanswerable_eval_v1",
   "dataset_schema_version": "unanswerable_multi_contract_test_v1",
-  "timestamp_utc": "2026-02-15T19:57:30.493272+00:00",
+  "timestamp_utc": "2026-02-22T05:31:43.771778+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_multi_contract_test.json",
   "bm25_only": true,
   "overall": {

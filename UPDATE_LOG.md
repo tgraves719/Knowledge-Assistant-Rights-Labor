@@ -1,5 +1,887 @@
 # Karl Update Log
 
+## v0.8.92 - Gate Check Surfaces release_090 Advisories (Non-Blocking) (February 23, 2026)
+
+### Overview
+
+Extended `backend.evaluate_gate_check` to print advisory status from the `release_090` scorecard so CI/local gate runs show release-hardening warnings in one place.
+
+This is **non-blocking** by design:
+
+- advisories are visible
+- gate pass/fail still depends only on blocking checks
+
+### What Changed
+
+- `backend/evaluate_gate_check.py`
+  - added `release_090` advisory summary printer for:
+    - `base_chunk_lineage`
+    - `contract_text_compare_amended`
+    - generic future advisory keys
+  - prints advisory rows as:
+    - `[OK] ...` when `warning=false`
+    - `[!!] ...` when `warning=true`
+  - does not append advisory messages to blocking failures
+
+### Validation
+
+- `python -m py_compile backend/evaluate_gate_check.py` -> PASS
+- `python -m backend.evaluate_gate_check` -> PASS
+
+### Current Observed Output
+
+- `release_090 advisory base_chunk_lineage` -> `status=ok`
+- `release_090 advisory contract_text_compare_amended` -> `status=ok`
+
+## v0.8.91 - Release Scorecard Advisory for Amended Text Compare Coverage (February 23, 2026)
+
+### Overview
+
+Wired the amended-section `effective vs base` compare regression eval into the `release_090` scorecard as a **non-gating advisory** (same model as the base lineage audit).
+
+This keeps the release scorecard focused on hard gates while surfacing whether the Contract-tab compare prerequisites are:
+
+- passing on known amended targets
+- fully covering currently ingested approved `replace_section` MOA ops
+
+### What Changed
+
+- `backend/evaluate_release_090.py`
+  - added advisory input path:
+    - `--contract-text-compare-amended-results`
+  - added `advisories.contract_text_compare_amended` with:
+    - evaluator schema + dataset schema
+    - overall pass/pass_rate
+    - coverage summary (`contract_coverage_rate`, `operation_coverage_rate`)
+    - uncovered contracts / missing target count
+  - advisory is **non-gating** (does not change `components_passed/components_total`)
+
+- `backend/test_release_090_eval.py`
+  - added advisory coverage for:
+    - `ok` compare advisory
+    - `warn` compare advisory (partial coverage / non-pass)
+    - missing compare artifact as non-gating warning
+
+- `data/test_set/release_0_9_0_scorecard.json`
+  - refreshed to include `advisories.contract_text_compare_amended`
+
+### Validation
+
+- `python -m py_compile backend/evaluate_release_090.py backend/test_release_090_eval.py` -> PASS
+- `python -m backend.test_release_090_eval` -> PASS
+- `python -m backend.evaluate_release_090 --skip-manifest-validation --skip-track-all-metadata` -> PASS (`9/9`)
+
+### Current Advisory Status
+
+- `contract_text_compare_amended`: `ok`
+  - coverage: `1/1 amended contracts`, `2/2 approved replace_section ops`
+  - overall compare regression: `2/2` pass
+
+## v0.8.90 - Amended Compare Eval Coverage Inventory + Deterministic Dataset Seeder (February 23, 2026)
+
+### Overview
+
+Expanded the amended-section text-compare regression infrastructure so it can scale with newly ingested MOAs without manual curation drift.
+
+This adds:
+
+- automatic inventory discovery of approved non-draft `replace_section` patch ops
+- coverage reporting (which amended contracts / targets are represented in the compare dataset)
+- a deterministic dataset seeder to merge or expand targets from currently ingested approved patches
+
+### What Changed
+
+- `backend/evaluate_contract_text_compare_amended.py`
+  - added `discover_approved_replace_section_inventory(...)`
+  - report now includes `coverage`:
+    - contract coverage rate
+    - operation coverage rate
+    - uncovered contracts
+    - missing target sample
+    - failing case sample
+
+- `backend/seed_contract_text_compare_amended_targets.py` (new)
+  - deterministic seeder for `data/test_set/contract_text_compare_amended_targets_test.json`
+  - selects approved `replace_section` targets per contract (`--per-contract`, default `2`)
+  - supports merge/replace behavior and optional contract filtering
+  - preserves existing curated case IDs/descriptions when target keys already exist
+
+- `backend/test_contract_text_compare_amended_eval.py`
+  - now asserts coverage fields exist and reports full coverage for the current ingested amended corpus
+
+- `data/test_set/contract_text_compare_amended_targets_test.json`
+  - now includes `seed_metadata` documenting inventory totals and selection behavior
+
+- `data/test_set/contract_text_compare_amended_results.json`
+  - now includes `coverage` summary
+
+### Validation / Findings
+
+- `python -m py_compile backend/evaluate_contract_text_compare_amended.py backend/seed_contract_text_compare_amended_targets.py backend/test_contract_text_compare_amended_eval.py` -> PASS
+- `python -m backend.seed_contract_text_compare_amended_targets` -> PASS
+- `python -m backend.test_contract_text_compare_amended_eval` -> PASS
+- `python -m backend.evaluate_contract_text_compare_amended` -> PASS (`2/2`)
+
+Current ingested approved-MOA compare coverage:
+
+- amended contracts with approved `replace_section` ops: `1`
+- approved `replace_section` ops discovered: `2`
+- compare dataset coverage: `1/1 contracts`, `2/2 ops` (`100%`)
+
+### Why This Matters
+
+- Converts the compare regression from a hand-maintained one-off into a scalable, auditable dataset workflow.
+- Makes it easy to expand coverage immediately as additional approved MOA patches are ingested for other contracts.
+
+## v0.8.89 - Release Scorecard Lineage Advisory + Amended-Section Compare Regression Eval (February 23, 2026)
+
+### Overview
+
+Added two release-hardening pieces:
+
+- a **non-gating base chunk lineage advisory** in the `release_090` scorecard (to surface `source_view=base` lineage risk without blocking release)
+- a **targeted amended-section compare regression eval** to validate that known MOA-amended sections differ between `base` and `effective` chunk artifacts (protects the Contract-tab effective/base compare UX)
+
+### What Changed
+
+- `backend/evaluate_release_090.py`
+  - added advisory-only ingestion of `data/test_set/base_chunk_lineage_report.json`
+  - emits `advisories.base_chunk_lineage` with `status` (`ok` / `warn` / `missing`) and summary fields
+  - does **not** affect component pass/fail counts (non-gating by design)
+  - new CLI arg: `--base-chunk-lineage-results`
+
+- `backend/test_release_090_eval.py`
+  - added coverage for:
+    - advisory `ok` path
+    - advisory `warn` path
+    - missing lineage artifact as **non-gating warning**
+
+- `backend/evaluate_contract_text_compare_amended.py` (new)
+  - deterministic artifact-level eval for known amended section targets
+  - verifies `base` vs `effective` chunk text differs for specified article/section targets
+  - emits `data/test_set/contract_text_compare_amended_results.json`
+
+- `data/test_set/contract_text_compare_amended_targets_test.json` (new)
+  - initial Pueblo Clerks amended targets:
+    - `Article 15, Section 34`
+    - `Article 58, Section 1749`
+
+- `backend/test_contract_text_compare_amended_eval.py` (new)
+  - deterministic regression test for the new evaluator
+
+- `backend/evaluate_runner.py`
+  - new track: `contract_text_compare_amended`
+
+### Validation
+
+- `python -m py_compile backend/evaluate_release_090.py backend/evaluate_contract_text_compare_amended.py` -> PASS
+- `python -m backend.test_release_090_eval` -> PASS
+- `python -m backend.test_contract_text_compare_amended_eval` -> PASS
+- `python -m backend.evaluate_contract_text_compare_amended` -> PASS (`2/2`)
+- `python -m backend.evaluate_release_090 --skip-manifest-validation --skip-track-all-metadata` -> PASS (`9/9`)
+- `python -m backend.evaluate_runner --track contract_text_compare_amended --skip-manifest-validation` -> PASS
+
+### Why This Matters
+
+- The release scorecard now surfaces lineage risk explicitly without conflating advisory issues with hard gates.
+- We now have a repeatable regression check that the Contract-tab compare feature has real `base` vs `effective` text deltas to render on known amended provisions.
+
+## v0.8.88 - Base Chunk Lineage Audit (Path + Patched-Section Content Checks) (February 22, 2026)
+
+### Overview
+
+Added a backend audit report to evaluate whether Contract-tab `source_view=base` text is likely trustworthy for each contract by checking:
+
+- path-level lineage (base chunk path vs effective chunk path)
+- effective-snapshot path contamination risk
+- content-level checks on approved `replace_section` patch targets (base vs effective chunk text equality)
+
+### What Changed
+
+- `backend/evaluate_base_chunk_lineage.py` (new)
+  - emits `data/test_set/base_chunk_lineage_report.json`
+  - reports per contract:
+    - base/effective chunk paths
+    - whether paths point into effective snapshots
+    - path equality risk
+    - patched `replace_section` target content comparisons (`equal` vs `different`)
+    - risk level + findings
+
+### Validation / Findings
+
+- `python -m py_compile backend/evaluate_base_chunk_lineage.py` -> PASS
+- `python -m backend.evaluate_base_chunk_lineage` -> PASS
+- Current report: `data/test_set/base_chunk_lineage_report.json`
+  - Pueblo Clerks (`local7_safeway_pueblo_clerks_2022`) patched section content check shows `different_content_count=2` on approved `replace_section` ops (good signal that base/effective text artifacts are distinct for patched sections)
+
+### Why This Matters
+
+- Gives us an objective way to validate (or challenge) the reliability of `Previous/Base` text mode instead of relying on anecdotal spot checks.
+- Supports release hardening for the dual-view Contract tab.
+
+## v0.8.87 - Contract Text Compare: Phrase-Level Highlights on Changed Lines (February 22, 2026)
+
+### Overview
+
+Upgraded the Contract text compare diff so paired changed lines now include inline token/phrase-level highlights (not just line-level add/remove coloring).
+
+### What Changed
+
+- `frontend/modular/src/app.js`
+  - added inline token diff helpers:
+    - `_inlineDiffTokenLcs(...)`
+    - `_renderInlineTokenDiffPair(...)`
+  - paired adjacent changed rows in the line diff renderer and displays inline highlighted replacements with `~` marker
+  - added truncation guardrails for long changed lines
+
+### Validation
+
+- `node --check frontend/modular/src/app.js` -> PASS
+
+### Why This Matters
+
+- Makes MOA-driven wording changes much faster to inspect in the Contract text pane.
+- Reduces reviewer effort when verifying exactly what changed within a provision.
+
+## v0.8.86 - Contract Text Compare: Line-Diff Renderer (Effective vs Base) (February 22, 2026)
+
+### Overview
+
+Replaced the Contract text pane's basic compare preview with a line-diff style compare renderer for the current target (`effective` vs `previous/base`).
+
+### What Changed
+
+- `frontend/modular/src/app.js`
+  - added bounded line-diff helpers for contract text compare:
+    - `_buildContractTextLineDiffRows(...)`
+    - `_renderContractTextLineDiff(...)`
+  - compare panel now shows:
+    - effective-only line count
+    - base-only line count
+    - unchanged line count
+    - side-by-side effective/base line diff preview with added/removed highlights
+  - includes truncation guardrails for UI performance on long targets
+
+### Validation
+
+- `node --check frontend/modular/src/app.js` -> PASS
+
+### Why This Matters
+
+- Moves the compare UX from “two text previews” to a real inspection tool that helps users see what changed in the current target.
+- This is a better fit for MOA workflows and reduces reviewer effort when checking amended provisions.
+
+## v0.8.85 - Contract Text Pane Provenance + Effective/Base Compare Preview (February 22, 2026)
+
+### Overview
+
+Completed the first visible UX layer of the dual-view Contract tab by adding:
+
+- text-pane provenance metadata (current text source + target + effective snapshot/amendment context)
+- target-level compare preview (`effective` vs `previous/base`) in the Contract text pane
+
+### What Changed
+
+- `frontend/modular/src/app.js`
+  - added contract text pane state/cache:
+    - current target text payloads by source (`effective`, `base`)
+    - compare panel open/close state
+  - added provenance header + compare UI renderers:
+    - `updateContractTextPanelChrome(...)`
+    - `renderContractTextComparePanel(...)`
+  - added text compare workflow:
+    - `ensureContractTextPayloadForMode(...)`
+    - `toggleContractTextCompare(...)`
+  - refactored article / non-article text fetches to store payloads by source mode for compare
+- `frontend/modular/index.html`
+  - added text-pane provenance line
+  - added `Compare` button + hint
+  - added compare preview panel under the text-pane toolbar
+
+### Validation
+
+- `node --check frontend/modular/src/app.js` -> PASS
+
+### Why This Matters
+
+- Makes the materialized effective text explicit (users can now see what source mode they are reading).
+- Gives stewards and reviewers a concrete `effective vs base` text comparison workflow in the same Contract tab while keeping PDFs available for provenance verification.
+
+## v0.8.84 - Contract Tab Dual-View Foundation (Effective vs Base Text Source) (February 22, 2026)
+
+### Overview
+
+Implemented the first pass of the dual-view Contract tab model:
+
+- **Text pane**: source-selectable contract text (`Effective` vs `Previous/Base`)
+- **PDF pane**: provenance/source navigation (`Effective/MOA/Base/Previous`) from the current target
+
+This is the foundation for showing a materialized effective contract in markdown/text while still allowing legal verification in source PDFs.
+
+### What Changed
+
+- `backend/api.py`
+  - added `source_view` support (`effective` default, `base` optional) to text endpoints:
+    - `GET /api/article/{article_num}`
+    - `GET /api/section/{article_num}/{section_num}`
+    - `GET /api/contract-browse-item`
+  - added base-chunk resolution path for viewer text fetches (without disturbing retrieval/effective defaults)
+- `frontend/modular/index.html`
+  - added a desktop Contract tab text panel (`Contract Text`)
+  - added `Text Source` selector (`Effective` / `Previous/Base`)
+- `frontend/modular/src/app.js`
+  - article and non-article Contract tab text loaders now request `source_view` based on the text selector
+  - selecting a TOC item now loads both:
+    - text pane content (effective/base)
+    - PDF pane location (effective/MOA/base/previous via provenance)
+  - added `handleContractTextSourceModeChange(...)` and current-target text refresh behavior
+- `backend/test_contract_history_api.py`
+  - added regression test coverage for `source_view='base'` vs `source_view='effective'` on:
+    - article endpoint
+    - contract-browse-item endpoint
+
+### Validation
+
+- `python -m py_compile backend/api.py` -> PASS
+- `python -m backend.test_contract_history_api` -> PASS
+- `node --check frontend/modular/src/app.js` -> PASS
+
+### Notes / Current Limitation
+
+- The dual-view behavior is implemented, but on some real contracts the preserved base chunk artifact may already reflect amended/effective text (artifact lineage issue), so `Base` text may not always differ yet.
+- This reinforces the need for immutable base chunk snapshots as part of the 0.9.0 artifact discipline.
+
+## v0.8.83 - Contract Tab Per-Target Source Selector (Effective / MOA / Base / Previous) (February 22, 2026)
+## v0.8.83 - Contract Tab Per-Target Source Selector (Effective / MOA / Base / Previous) (February 22, 2026)
+
+### Overview
+
+Generalized the Contract-tab `View Previous` workflow into a per-target source selector driven by `/api/pdf-location` `source_candidates`, allowing users to switch the currently selected target between effective/MOA/base sources directly in the PDF toolbar.
+
+### What Changed
+
+- `frontend/modular/src/app.js`
+  - added current-target source selector rendering + handlers:
+    - `renderCurrentTargetSourceControls(...)`
+    - `openSourceChoiceForCurrentSelection(...)`
+    - `handleCurrentTargetSourceChange(...)`
+  - re-used `lastPdfNavigationContext` (`target + sourceCandidates`) to drive both:
+    - `View Previous`
+    - direct source switching for the current target
+  - exported `handleCurrentTargetSourceChange` for inline toolbar UI wiring
+- `frontend/modular/index.html`
+  - added `Current Target Source` selector in Contract PDF toolbar
+
+### Validation
+
+- `node --check frontend/modular/src/app.js` -> PASS
+
+### Why This Matters
+
+- This is the PDF-side control layer for a dual-view design:
+  - text pane can stay on current effective contract text
+  - PDF pane can switch among effective/base/MOA provenance sources for the same target
+- Reduces reliance on global source mode toggles for citation-driven investigation workflows.
+
+## v0.8.82 - Contract Tab "View Previous" (Base-Provenance Jump for Current Target) (February 22, 2026)
+
+### Overview
+
+Added a Contract-tab toolbar action to jump to the previous/base source for the currently selected article/section target using the same provenance-backed `source_candidates` model returned by `/api/pdf-location`.
+
+### What Changed
+
+- `frontend/modular/src/app.js`
+  - added `lastPdfNavigationContext` state to remember the current PDF target + source candidates returned by `/api/pdf-location`
+  - added provenance-aware previous-source selection helpers:
+    - `_findPreviousPdfSourceCandidate(...)`
+    - `_rememberPdfNavigationContext(...)`
+    - `_clearPdfNavigationContext(...)`
+    - `openPreviousForCurrentSelection(...)`
+  - `openContractInPdf(...)` now records source candidates on successful target resolution and clears stale state on root/failure paths
+  - exported inline handlers required by module-scope UI actions:
+    - `openPreviousForCurrentSelection`
+    - `loadContractBrowseItem`
+    - `handlePopoverSourceChoiceChange`
+- `frontend/modular/index.html`
+  - added `View Previous` button + status hint in Contract PDF toolbar
+
+### Validation
+
+- `node --check frontend/modular/src/app.js` -> PASS
+
+### Why This Matters
+
+- Provides a practical "current vs previous" workflow in the Contract tab for amended article/section navigation without introducing a separate provenance system.
+- Reuses the same source-selection model as chat citations, which keeps the UI behavior consistent and scalable.
+
+## v0.8.81 - Non-Article PDF Deep-Linking for Contract Tab (LOU/LOA/Appendix) (February 22, 2026)
+
+### Overview
+
+Implemented exact PDF page lookup for Contract-tab non-article items (`LOU/LOA/Appendix`) so clicking those grouped TOC entries can deep-link into the contract PDF instead of opening the PDF at the top.
+
+### What Changed
+
+- `backend/api.py`
+  - extended `/api/pdf-location` to accept:
+    - `browse_kind`
+    - `browse_key`
+  - added cached source-page loader over parsed source JSON (`pages[]`) for viewer navigation
+  - added deterministic non-article page resolver:
+    - side-letter (`lou` / `loa`) page detection using browse item metadata + source-page text scoring
+    - appendix page detection using appendix title matching
+  - returns `matched_by="browse_item"` when a non-article page match is found
+- `frontend/modular/src/app.js`
+  - `loadContractBrowseItem(...)` now routes through `openContractInPdf(...)` with `browseKind/browseKey`
+  - `openContractInPdf(...)` now supports non-article browse targets and labels matches as `browse item match`
+- `backend/test_contract_history_api.py`
+  - added regression coverage for `/api/pdf-location` with `browse_kind='lou'`, `browse_key='lou:8'`
+
+### Validation
+
+- `python -m py_compile backend/api.py` -> PASS
+- `node --check frontend/modular/src/app.js` -> PASS
+- `python -m backend.test_contract_history_api` -> PASS
+- Real-contract smoke:
+  - `get_pdf_location(contract_id='local7_safeway_pueblo_clerks_2022', browse_kind='lou', browse_key='lou:8')`
+  - result: `page_number=70`, `matched_by='browse_item'`
+
+### Why This Matters
+
+- Contract-tab LOU/LOA browsing is now operational, not just readable text in the left pane.
+- Closes the biggest UX gap for side-letter navigation before implementing `View Previous` and richer source-history switching.
+
+## v0.8.80 - Contract Tab Browse Groups + History Timeline (LOU/LOA/Appendix First-Class) (February 22, 2026)
+
+### Overview
+
+Extended the Contract tab from an article-only TOC into a grouped contract browser that includes `Articles`, `Letters of Understanding / Agreement`, and `Appendices`, plus added a visible base->MOA->effective timeline strip in the history banner.
+
+### What Changed
+
+- `backend/api.py`
+  - added grouped browse endpoints for Contract tab:
+    - `GET /api/contract-browse`
+    - `GET /api/contract-browse-item`
+  - added cached browse payload builder over chunk artifacts:
+    - groups CBA articles from manifest/article-title sources
+    - groups `lou` / `loa` chunks into stable keys (e.g., `lou:8`)
+    - groups appendix chunks for contract-tab browsing
+  - added aggregated non-article content payloads so LOU/LOA/appendix items can render in the contract text pane
+- `frontend/modular/src/app.js`
+  - added grouped TOC rendering (articles + side letters + appendices)
+  - generalized TOC active selection state (`article` and non-article items)
+  - added `loadContractBrowseItem(...)` for LOU/LOA/appendix content
+  - added `renderNonArticleContent(...)` to display grouped chunk content in the Contract tab reader pane
+  - added history timeline rendering (`Base -> MOA(s) -> Effective snapshot`) in `renderContractHistoryPanel()`
+- `frontend/modular/index.html`
+  - TOC header renamed to `Contract Contents`
+  - added `contract-history-timeline` banner strip
+- `backend/test_contract_history_api.py`
+  - added regression coverage for `contract-browse` and `contract-browse-item` endpoints
+
+### Validation
+
+- `python -m py_compile backend/api.py` -> PASS
+- `node --check frontend/modular/src/app.js` -> PASS
+- `python -m backend.test_contract_history_api` -> PASS
+
+### Why This Matters
+
+- Contract-tab navigation now reflects how the contract is actually used (CBA + LOU/LOA + appendices), not just numbered articles.
+- Creates the right UI foundation for later `View Previous` and source-aware contract navigation without treating side letters as invisible retrieval-only artifacts.
+
+## v0.8.79 - Version-Aware Citation PDF Navigation (Popover Source Chooser) (February 22, 2026)
+
+### Overview
+
+Implemented the first frontend/backend pass of version-aware citation navigation so amended citations can open the correct source PDF (MOA vs base) and users can explicitly switch source view from the citation popover instead of always landing in the base contract PDF.
+
+### What Changed
+
+- `backend/api.py`
+  - extended `/api/pdf-location` response model with:
+    - `source_candidates[]`
+    - `selected_source_key`
+  - added effective-provenance lookup and deterministic source-candidate builder for citation targets
+    - prefers MOA provenance for effective navigation when present
+    - includes stable `Previous (Base)` alias when base provenance exists
+  - auto-selects effective provenance source for navigation when no explicit `source_type/source_pdf/source_doc_id` is requested
+- `frontend/modular/src/app.js`
+  - added citation source registry plumbing so chat citation badges can carry full provenance metadata into popovers
+  - extended citation click handling to preserve `source_doc_id` and citation provenance registry keys
+  - added popover source-choice model (`Current Effective (Auto)`, `MOA`, `Base`, `Previous (Base)` when available)
+  - `Open In Contract PDF` now respects the selected popover source choice
+- `frontend/modular/index.html`
+  - added `Source View` selector in citation popover footer for explicit PDF source switching
+
+### Validation
+
+- `python -m py_compile backend/api.py` -> PASS
+- `node --check frontend/modular/src/app.js` -> PASS
+- `python -m backend.test_contract_history_api` -> PASS
+
+### Why This Matters
+
+- Fixes the current UX mismatch where the answer is based on effective/MOA content but citation navigation defaults to base PDF.
+- Provides a scalable UI pattern for future `View Previous` and contract-history timeline features without changing citation semantics again.
+
+## v0.8.78 - Side-Letter Retrieval Promotion (Pueblo Clerks LOU8 Surfacing) (February 22, 2026)
+
+### Overview
+
+Implemented a deterministic side-letter promotion pass in retrieval to improve top-k surfacing of LOU/LOA chunks (especially `Letter of Understanding 8: Dress Requirements` in Pueblo Clerks) without hardcoding a one-off patch.
+
+### What Changed
+
+- `backend/retrieval/router.py`
+  - added side-letter targeting + promotion infrastructure in `HybridRetriever`:
+    - `_side_letter_query_targets(...)`
+      - parses explicit `LOU/LOA` references (e.g., `LOU 8`)
+      - extracts title phrases from query and retrieved CBA cross-references (e.g., `Letter of Understanding, "Dress Requirements"`)
+      - identifies detail vs discovery/xref prompt modes
+    - `_side_letter_chunk_score(...)`
+      - deterministic scoring for side-letter-aware reordering using:
+        - explicit type/number matches
+        - title phrase matches
+        - article cross-reference cues
+        - lexical detail overlap
+        - header/title (`Part 1`) vs detail-content (`Part 2`) heuristics
+    - `_promote_side_letter_context(...)`
+      - contract-scoped post-retrieval reorder/add step for side-letter chunks
+      - applied in both `retrieve(...)` and `multi_angle_retrieve(...)`
+- `backend/evaluate_runner.py`
+  - (from v0.8.77) retained exploratory `side_letter_retrieval_pueblo_clerks` track used to validate this change
+
+### Validation / Outcomes
+
+- Existing side-letter release benchmark remained stable:
+  - `python -m backend.evaluate_side_letter_retrieval --bm25-only` -> PASS (`16/16`, no regressions)
+- Exploratory Pueblo Clerks LOU benchmark improved substantially:
+  - before fix: Top-8 `2/6`, Depth-20 `6/6`
+  - after fix: Top-8 `6/6`, Depth-20 `6/6`
+  - `python -m backend.evaluate_runner --track side_letter_retrieval_pueblo_clerks --skip-manifest-validation` -> PASS (exploratory baseline now green)
+
+### Why This Matters
+
+- Confirms the `LOU 8` dress-code issue is a ranking/surfacing problem, not missing artifacts.
+- Gives a reusable side-letter retrieval mechanism that should scale better than prompt-specific patches.
+
+## v0.8.77 - Pueblo Clerks LOU Discovery Benchmark Baseline (February 22, 2026)
+
+### Overview
+
+Added a non-gating exploratory side-letter/LOU benchmark slice for `local7_safeway_pueblo_clerks_2022` focused on `Letter of Understanding 8 (Dress Requirements)` discovery and cross-reference prompts (`Article 52, Section 158` -> LOU 8).
+
+### What Changed
+
+- `data/test_set/side_letter_retrieval_pueblo_clerks_test.json`
+  - new exploratory dataset (6 cases):
+    - direct `LOU 8` lookup
+    - dress-requirements content retrieval
+    - `Article 52` cross-reference phrasing
+    - generic `what's the dress code` phrasing
+- `backend/evaluate_runner.py`
+  - added `side_letter_retrieval_pueblo_clerks` track
+  - runs `backend.evaluate_side_letter_retrieval` with custom input/output:
+    - input: `side_letter_retrieval_pueblo_clerks_test.json`
+    - output: `side_letter_retrieval_pueblo_clerks_results.json`
+
+### Baseline Findings (Useful)
+
+- Data is present (not missing):
+  - Pueblo Clerks chunks = `315`
+  - `doc_type=lou` chunks = `37`
+  - effective snapshot coverage preserves `lou` bucket counts
+- Exploratory benchmark results (`BM25-only`):
+  - Top-8 pass: `2/6` (33.3%)
+  - Depth-20 pass: `6/6` (100%)
+  - Combined pass: `6/6`
+- Interpretation:
+  - LOU content exists and is retrievable, but top-k ranking/surfacing is weak for real-world phrasing (`dress code`, Article 52 cross-ref) and often returns the wrong LOU 8 parts ahead of the actual dress-detail part.
+
+### Validation
+
+- `python -m backend.evaluate_effective_coverage` -> PASS (`local7_safeway_pueblo_clerks_2022` base=315, effective=315, no missing doc types)
+- `python -m backend.evaluate_contract_artifact_integrity` -> PASS (`lou_bucket=37` for Pueblo Clerks)
+- `python -m backend.evaluate_runner --track side_letter_retrieval_pueblo_clerks --skip-manifest-validation` -> PASS (exploratory run completed; baseline artifact written)
+
+## v0.8.76 - MOA End-to-End Answer Regression Gate + False-Unavailable Hardening (February 22, 2026)
+
+### Overview
+
+Closed the gap between retrieval-level MOA correctness and actual answer behavior by adding an end-to-end `deleted_vs_updated_moa` answer regression slice (API/query path) and tightening false-unavailable fallback recovery for clause-presence probes.
+
+### What Changed
+
+- `backend/api.py`
+  - hardened deterministic false-unavailable recovery:
+    - expanded lexical evidence scan from top 8 to top 12 chunks (fixes missed MOA chunk in answer fallback)
+    - strengthened contiguous clause-phrase evidence (requires denser phrase windows)
+    - added explicit clause-presence probe detection (`is it true ...`, `is that in the current effective agreement ...`)
+    - added strict near-quote evidence requirement for clause-presence probes
+    - disabled anchor-only fallback recovery for clause-presence probes to prevent false synthesized answers on deleted clauses
+- `backend/evaluate_moa_deleted_vs_updated_answer.py`
+  - now emits deterministic `gate` + `thresholds` in artifact
+  - tightened defaults to strict release-grade thresholds (`1.0`)
+- MOA release-path integration:
+  - `backend/evaluate_moa_readiness.py`
+    - runs and gates `moa_deleted_vs_updated_answer`
+    - emits `moa_deleted_vs_updated_answer_gate` + summary block
+  - `backend/evaluate_moa_deep_suite.py`
+    - includes `moa_deleted_vs_updated_answer` command/artifact in deep MOA suite
+  - `backend/evaluate_release_090.py`
+    - adds `moa_deleted_vs_updated_answer_regression` scorecard component
+    - `moa_readiness` scorecard check now respects `moa_deleted_vs_updated_answer_gate` when present
+- `backend/test_release_090_eval.py`
+  - updated fixture coverage for new answer-level MOA scorecard component
+- CI/docs:
+  - `.github/workflows/eval-ci.yml`
+    - runs `moa_deleted_vs_updated_answer` in core/main deterministic slices
+    - uploads `moa_deleted_vs_updated_answer_results.json`
+  - `README.md`
+    - added runner + direct command docs for answer regression slice
+    - CI behavior docs now list `moa_deleted_vs_updated_answer`
+
+### Validation
+
+- `python -m backend.test_false_unavailable_fallback` -> PASS
+- `python -m backend.evaluate_moa_deleted_vs_updated_answer --bm25-only` -> PASS (`4/4`, updated `2/2`, deleted `2/2`, source-type `1.0`)
+- `python -m backend.test_moa_deleted_vs_updated_answer_eval` -> PASS
+- `python -m backend.test_release_090_eval` -> PASS
+- `python -m backend.evaluate_moa_readiness` -> PASS (includes `moa_deleted_vs_updated_answer_gate`)
+- `python -m backend.evaluate_moa_deep_suite` -> PASS (`18/18`)
+- `python -m backend.evaluate_release_090 --skip-manifest-validation --skip-track-all-metadata` -> PASS (`9/9`)
+
+## v0.8.75 - Shared MOA Source-Doc Applicability Registry Enforcement (February 22, 2026)
+
+### Overview
+
+Added contract applicability enforcement for shared source documents (especially multi-contract MOAs) so Contract-tab/PDF resolution cannot resolve a foreign `source_doc_id` for the wrong contract.
+
+### What Changed
+
+- `backend/source_docs.py`
+  - added applicability helpers:
+    - `source_doc_applicable_contract_ids(...)`
+    - `source_doc_applies_to_contract(...)`
+  - `resolve_source_doc_pdf_by_name(...)` now supports contract-filtered lookup
+  - `register_source_doc(...)` now writes canonical `applies_to_contract_ids` while retaining backward-compatible `contract_ids`
+- `backend/ingest/register_source_doc.py`
+  - added `--applies-to-contract-id` (repeatable)
+- `backend/effective_contracts.py`
+  - blocks `source_doc_id` PDF resolution when the source doc metadata declares a different contract scope
+  - filters source-doc name fallback lookup by contract
+- `backend/api.py`
+  - contract history payload filters inapplicable amendment source-doc ids / patch rows
+  - prevents cross-contract MOA leakage in Contract tab metadata and PDF navigation targeting
+- `backend/ingest/generate_patch_drafts.py`
+  - target-contract discovery now recognizes canonical `applies_to_contract_ids`
+- Tests:
+  - `backend/test_contract_history_api.py`
+    - added foreign source-doc scope guard test (`/api/contract-pdf` returns 404 for inapplicable `source_doc_id`)
+  - `backend/test_moa_patch_draft_generator.py`
+    - added `applies_to_contract_ids` metadata coverage
+
+### Validation
+
+- `python -m backend.test_contract_history_api` -> PASS
+- `python -m backend.test_moa_patch_draft_generator` -> PASS
+- `python -m backend.evaluate_moa_readiness` -> PASS
+- `python -m backend.evaluate_gate_check` -> PASS
+
+## v0.8.74 - MOA Deleted-vs-Updated Regression Gate (February 22, 2026)
+
+### Overview
+
+Added a focused MOA regression slice for the exact failure mode we observed in practice: deleted clauses should be absent from effective retrieval while updated clauses must resolve to MOA-backed effective language with provenance.
+
+### What Changed
+
+- New dataset + evaluator:
+  - `data/test_set/moa_deleted_vs_updated_test.json`
+  - `backend/evaluate_moa_deleted_vs_updated.py`
+    - wraps `backend.evaluate_moa_effective`
+    - emits bucket metrics for `updated` vs `deleted`
+    - enforces deterministic gate checks:
+      - overall pass rate
+      - updated-clause pass rate
+      - deleted-clause pass rate
+      - updated-clause MOA source-type match rate
+- New deterministic evaluator test:
+  - `backend/test_moa_deleted_vs_updated_eval.py`
+- Canonical runner integration:
+  - `backend/evaluate_runner.py`
+    - added `moa_deleted_vs_updated` track
+    - included in `all` track
+- MOA gate bundles:
+  - `backend/evaluate_moa_readiness.py`
+    - now runs and gates `moa_deleted_vs_updated`
+  - `backend/evaluate_moa_deep_suite.py`
+    - now includes `moa_deleted_vs_updated` in deep MOA suite
+- Canonical release/eval integration:
+  - `backend/evaluate_v3.py`
+    - added `moa_deleted_vs_updated` component to v3 artifact checks
+    - schema bumped to `v3_eval_v6`
+  - `backend/evaluate_release_090.py`
+    - added `moa_deleted_vs_updated_regression` component
+    - `moa_readiness` check now also respects `moa_deleted_vs_updated_gate` when present
+  - `backend/evaluate_gate_check.py`
+    - added direct artifact enforcement for `moa_deleted_vs_updated`
+    - schema + dataset schema + gate + strict thresholds are all checked
+- CI/docs:
+  - `.github/workflows/eval-ci.yml`
+    - PR core eval runs the new slice
+    - gate-check command enforces the new artifact
+    - artifact uploads include `moa_deleted_vs_updated_results.json`
+  - `README.md`
+    - added runner command, direct evaluator command, and gate-check flags for the new slice
+
+### Validation
+
+- `python -m backend.test_moa_deleted_vs_updated_eval` -> PASS
+- `python -m backend.evaluate_moa_deleted_vs_updated --bm25-only` -> PASS (`4/4`, updated `2/2`, deleted `2/2`)
+- `python -m backend.evaluate_moa_readiness` -> PASS (includes `moa_deleted_vs_updated_gate`)
+- `python -m backend.evaluate_moa_deep_suite` -> PASS (`17/17`)
+- `python -m backend.evaluate_v3 --from-artifacts --bm25-only` -> PASS (`17/17`, `v3_eval_v6`)
+- `python -m backend.test_release_090_eval` -> PASS
+- `python -m backend.evaluate_release_090 --skip-manifest-validation --skip-track-all-metadata` -> PASS (`8/8`)
+- `python -m backend.evaluate_gate_check` -> PASS
+- `python -m backend.evaluate_runner --track moa_deleted_vs_updated --skip-manifest-validation` -> PASS
+- Metadata: `data/test_set/eval_run_metadata_moa_deleted_vs_updated_20260222T044941Z.json`
+
+## v0.8.73 - Gate-Check Enforcement for v0.9.0 Scorecard (February 22, 2026)
+
+### Overview
+
+Promoted the new `release_090` scorecard from informational artifact to enforced release-gate input by integrating it into `backend.evaluate_gate_check`.
+
+### What Changed
+
+- `backend/evaluate_gate_check.py`
+  - added `_check_release_090(...)` validation:
+    - schema version check
+    - components pass-rate threshold
+    - overall pass flag
+  - added CLI args:
+    - `--release-090-results`
+    - `--required-release-090-schema-version`
+    - `--min-release-090-components-pass-rate`
+    - `--allow-missing-release-090`
+  - gate now blocks when release_090 artifact is missing/invalid (unless explicit non-release bypass is used).
+- `README.md`
+  - release-gate command example now includes `release_090` artifact + thresholds.
+
+### Validation
+
+- `python -m backend.evaluate_gate_check` -> PASS
+- `python -m backend.evaluate_release_090` -> PASS (`7/7`)
+
+## v0.8.72 - v0.9.0 Readiness Scorecard Evaluator + Runner Track (February 22, 2026)
+
+### Overview
+
+Implemented a deterministic v0.9.0 readiness scorecard that aggregates must-have release gates from canonical artifacts, added a dedicated runner track, and documented execution commands.
+
+### What Changed
+
+- New evaluator:
+  - `backend/evaluate_release_090.py`
+    - computes aggregated pass/fail across:
+      - manifest validation
+      - latest `evaluate_runner --track all` metadata health
+      - v3 suite pass
+      - MOA deep suite pass
+      - MOA readiness gate pass
+      - MOA citation provenance source-type match rate
+      - API/runtime payload surface checks for `effective_version_id`, `amendments_applied`, and `sources`
+    - outputs:
+      - `data/test_set/release_0_9_0_scorecard.json`
+    - supports CI artifact-mode runs without `track all` metadata requirement:
+      - `--skip-track-all-metadata`
+- Runner integration:
+  - `backend/evaluate_runner.py`
+    - added `release_090` track:
+      - `python -m backend.evaluate_runner --track release_090`
+- Deterministic tests:
+  - `backend/test_release_090_eval.py`
+    - pass-case fixture for fully valid artifacts
+    - fail-case fixture for low MOA source-type provenance rate
+- Docs update:
+  - `README.md`
+    - added canonical command + artifact location for v0.9.0 readiness scorecard
+- CI integration:
+  - `.github/workflows/eval-ci.yml`
+    - PR core and main escalation jobs now generate `release_0_9_0_scorecard.json`
+    - artifacts uploaded with other canonical evaluation outputs
+
+### Validation
+
+- `python -m backend.test_release_090_eval` -> PASS
+- `python -m backend.evaluate_release_090 --skip-manifest-validation` -> PASS
+- `python -m backend.evaluate_release_090 --skip-manifest-validation --skip-track-all-metadata` -> PASS
+- `python -m backend.evaluate_release_090` -> PASS
+- `python -m backend.evaluate_runner --track release_090 --skip-manifest-validation` -> PASS
+- `python -m backend.evaluate_runner --track release_090` -> PASS
+
+## v0.8.71 - MOA/Side-Letter Retrieval Hardening + Manifest Schema Closure + v3.1/0.9.0 Planning (February 22, 2026)
+
+### Overview
+
+Closed manifest schema debt, hardened side-letter routing behavior, restored full canonical eval health without manifest bypasses, and documented an execution plan toward v3.1 scaling and v0.9.0 readiness.
+
+### What Changed
+
+- Side-letter retrieval hardening:
+  - `backend/retrieval/router.py`
+    - improved side-letter anchor inference to prioritize `doc_type` (`loa`/`lou`) and use lexical fallback only when needed.
+    - added explicit/follow-up side-letter query detectors and routing hooks.
+  - `backend/retrieval/hybrid_search.py`
+    - reduced noisy generic side-letter phrase boosts and increased term-overlap weighting.
+  - `backend/test_topic_routing.py`
+    - added deterministic side-letter anchor discovery and follow-up routing tests.
+
+- Manifest schema closure (strict validation compatibility):
+  - `data/manifests/local7_kingsoopers_loveland_meat_2019.json`
+    - added `contract_version`
+    - added schema-valid `query_routing` object
+  - `data/manifests/local7_safeway_pueblo_clerks_2022.json`
+    - added `contract_version`
+    - added schema-valid `query_routing` object
+    - expanded `classification_to_articles` anchors for role-comparison coverage (`courtesy_clerk`, `drive_up_and_go`, `dug_shopper`, `all_purpose_clerk`)
+  - `data/manifests/local7_safeway_pueblo_meat_2022.json`
+    - added `contract_version`
+    - added schema-valid `query_routing` object
+
+- Planning/docs:
+  - added `V3_1_EXECUTION_PLAN.md`
+    - captures current verified baseline, gap vs `Evaluation_Plan_v3.md`, v3.1 workstreams, and explicit v0.9.0 must-have/should-have/stretch gates.
+  - added `RELEASE_0_9_0_READINESS.md`
+    - explicit current-vs-target scorecard for v0.9.0 with must-have gates, remaining gaps, and next eval wants.
+
+### Validation
+
+- `python -m backend.validate_manifests` -> PASS (`4/4`)
+- `python -m backend.test_topic_routing` -> PASS
+- `python -m backend.evaluate_side_letter_retrieval --bm25-only` -> PASS (`top-8 16/16`, `depth-20 16/16`)
+- `python -m backend.evaluate_moa_readiness` -> PASS (gate true)
+- `python -m backend.evaluate_moa_deep_suite` -> PASS (`16/16`)
+- `python -m backend.evaluate_runner --track all` -> PASS (`20/20`)
+  - metadata: `data/test_set/eval_run_metadata_all_20260222T011614Z.json`
+- `python -m backend.evaluate_v3 --bm25-only` -> PASS (`16/16`)
+  - artifact: `data/test_set/v3_results.json`
+
+### Release Positioning
+
+- Current position:
+  - canonical deterministic eval stack is green across active contracts.
+  - MOA readiness and deep MOA suite are green.
+- Remaining strategic gap to full v3 scaling vision:
+  - universal schema extraction and synthetic benchmark factory are not yet implemented.
+- v0.9.0 direction:
+  - shift from "feature-complete slices" to "release scorecard with enforced must-have gates," as laid out in `V3_1_EXECUTION_PLAN.md`.
+
 ## v0.8.70 - Modular Frontend Promotion + PDF-First Contract UX + 6-Step Member Onboarding (February 19, 2026)
 
 ### Overview

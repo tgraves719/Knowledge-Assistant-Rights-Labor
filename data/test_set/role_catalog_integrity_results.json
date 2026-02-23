@@ -1,7 +1,7 @@
 {
   "schema_version": "role_catalog_integrity_eval_v1",
   "dataset_schema_version": "role_catalog_integrity_test_v1",
-  "timestamp_utc": "2026-02-15T19:57:45.788817+00:00",
+  "timestamp_utc": "2026-02-22T05:31:54.920557+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_test.json",
   "overall": {
     "passed": 20,

@@ -1,20 +1,20 @@
 {
   "schema_version": "paraphrase_eval_v1",
-  "timestamp_utc": "2026-02-15T19:57:23.203773+00:00",
+  "timestamp_utc": "2026-02-22T01:15:46.957339+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\paraphrase_test.json",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "n_results": 5,
   "bm25_only": true,
   "overall": {
-    "families_passed": 15,
+    "families_passed": 14,
     "families_total": 15,
-    "family_pass_rate": 1.0,
-    "family_consistency_rate": 1.0,
-    "variants_passed": 45,
+    "family_pass_rate": 0.9333,
+    "family_consistency_rate": 0.9333,
+    "variants_passed": 44,
     "variants_total": 45,
-    "variant_pass_rate": 1.0,
-    "retrieval_recall_at_k": 1.0,
-    "worker_slang_pass_rate": 1.0,
+    "variant_pass_rate": 0.9778,
+    "retrieval_recall_at_k": 0.9778,
+    "worker_slang_pass_rate": 0.9286,
     "formal_rewrite_pass_rate": 1.0
   },
   "by_variant_type": {
@@ -39,9 +39,9 @@
       "pass_rate": 1.0
     },
     "worker_slang": {
-      "passed": 14,
+      "passed": 13,
       "total": 14,
-      "pass_rate": 1.0
+      "pass_rate": 0.9286
     }
   },
   "by_bucket": {
@@ -51,9 +51,9 @@
       "pass_rate": 1.0
     },
     "exact_numeric": {
-      "passed": 6,
+      "passed": 5,
       "total": 6,
-      "pass_rate": 1.0
+      "pass_rate": 0.8333
     }
   },
   "results": [
@@ -120,7 +120,6 @@
       "shared_retrieved_articles": [
         "Appendix A",
         "Article 4",
-        "Article 5",
         "Article 58",
         "Article 7",
         "Article 8",
@@ -132,13 +131,12 @@
           "variant_type": "original",
           "question": "What is the starting hourly rate for an All Purpose Clerk as of January 21, 2024?",
           "retrieved_articles": [
-            "Article 4",
-            "Article 5",
-            "Article 7",
-            "Article 8",
-            "Article 9",
+            "Article 58",
             "Appendix A",
-            "Article 58"
+            "Article 8",
+            "Article 4",
+            "Article 7",
+            "Article 9"
           ],
           "pass": true
         },
@@ -147,13 +145,12 @@
           "variant_type": "informal",
           "question": "How much does a new All Purpose Clerk make per hour starting 1/21/2024?",
           "retrieved_articles": [
-            "Article 4",
-            "Article 5",
-            "Article 7",
-            "Article 8",
-            "Article 9",
-            "Appendix A",
             "Article 58",
+            "Appendix A",
+            "Article 8",
+            "Article 4",
+            "Article 9",
+            "Article 7",
             "Article 42"
           ],
           "pass": true
@@ -163,15 +160,14 @@
           "variant_type": "worker_slang",
           "question": "I just got hired as an All Purpose Clerk. What's my pay rate gonna be? Today is January 21, 2024.",
           "retrieved_articles": [
-            "Article 4",
-            "Article 5",
-            "Article 7",
-            "Article 8",
-            "Article 9",
-            "Article 10",
-            "Article 12",
+            "Article 58",
             "Appendix A",
-            "Article 58"
+            "Article 8",
+            "Article 4",
+            "Article 7",
+            "Article 9",
+            "Article 12",
+            "Article 28"
           ],
           "pass": true
         }
@@ -189,8 +185,7 @@
       "family_pass": true,
       "shared_retrieved_articles": [
         "Article 26",
-        "Article 27",
-        "Article 5"
+        "Article 27"
       ],
       "variants": [
         {
@@ -198,7 +193,6 @@
           "variant_type": "original",
           "question": "How many hours constitute the probationary period for new employees?",
           "retrieved_articles": [
-            "Article 5",
             "Article 26",
             "Article 10",
             "Article 27"
@@ -212,7 +206,9 @@
           "retrieved_articles": [
             "Article 26",
             "Article 5",
-            "Article 27"
+            "Article 27",
+            "Article 36",
+            "Article 24"
           ],
           "pass": true
         },
@@ -221,7 +217,6 @@
           "variant_type": "worker_slang",
           "question": "I'm new, when am I done with my trial period? Is it based on hours or days?",
           "retrieved_articles": [
-            "Article 5",
             "Article 26",
             "Article 10",
             "Article 27"
@@ -238,10 +233,9 @@
         "Article 13"
       ],
       "variants_total": 3,
-      "variants_passed": 3,
-      "family_pass": true,
+      "variants_passed": 2,
+      "family_pass": false,
       "shared_retrieved_articles": [
-        "Article 13",
         "Article 15",
         "Article 16"
       ],
@@ -251,11 +245,10 @@
           "variant_type": "original",
           "question": "What is the Sunday premium pay rate for employees hired before March 27, 2005?",
           "retrieved_articles": [
-            "Article 8",
-            "Article 13",
             "Article 16",
-            "Article 9",
+            "Article 13",
             "Article 15",
+            "Article 14",
             "Article 17"
           ],
           "pass": true
@@ -266,12 +259,13 @@
           "question": "Do I get extra pay for working Sundays if I was hired in 2003?",
           "retrieved_articles": [
             "Article 8",
-            "Article 13",
-            "Article 16",
             "Article 9",
-            "Article 15"
+            "Article 16",
+            "Article 42",
+            "Article 15",
+            "Article 12"
           ],
-          "pass": true
+          "pass": false
         },
         {
           "id": "PF-04-c",
@@ -279,6 +273,7 @@
           "question": "What Sunday premium applies to grandfathered employees hired prior to 3/27/2005?",
           "retrieved_articles": [
             "Article 16",
+            "Article 14",
             "Article 13",
             "Article 15"
           ],
@@ -305,10 +300,7 @@
           "variant_type": "original",
           "question": "Calculate the severance pay for a full-time employee with 7 years and 4 months of continuous service whose store closes.",
           "retrieved_articles": [
-            "Article 3",
             "Article 8",
-            "Article 43",
-            "Article 6",
             "Article 9",
             "Article 48"
           ],
@@ -331,9 +323,6 @@
           "variant_type": "formal_rewrite",
           "question": "Under the store closure severance provisions, what would a full-time employee with 7 years 4 months seniority receive?",
           "retrieved_articles": [
-            "Article 2",
-            "Article 7",
-            "Article 10",
             "Article 27",
             "Article 48"
           ],
@@ -354,8 +343,7 @@
       "shared_retrieved_articles": [
         "Article 10",
         "Article 12",
-        "Article 28",
-        "Article 5"
+        "Article 28"
       ],
       "variants": [
         {
@@ -363,10 +351,10 @@
           "variant_type": "original",
           "question": "An employee works 9 hours on Monday, 8 hours Tuesday-Thursday, and 6 hours on Friday. How many overtime hours are owed?",
           "retrieved_articles": [
-            "Article 5",
-            "Article 10",
+            "Article 28",
             "Article 12",
-            "Article 28"
+            "Article 10",
+            "Article 35"
           ],
           "pass": true
         },
@@ -375,10 +363,9 @@
           "variant_type": "worker_slang",
           "question": "I worked 9 hrs Monday, 8 each from Tuesday to Thursday, and 6 on Friday. Do I get any OT?",
           "retrieved_articles": [
-            "Article 5",
-            "Article 10",
             "Article 28",
             "Article 12",
+            "Article 10",
             "Article 17"
           ],
           "pass": true
@@ -389,9 +376,8 @@
           "question": "For a weekly schedule of Mon=9h, Tue-Thu=8h each, Fri=6h, what is the total overtime liability per Article 12?",
           "retrieved_articles": [
             "Article 12",
-            "Article 5",
-            "Article 10",
             "Article 28",
+            "Article 10",
             "Article 17"
           ],
           "pass": true
@@ -410,10 +396,8 @@
       "variants_passed": 3,
       "family_pass": true,
       "shared_retrieved_articles": [
-        "Article 10",
-        "Article 2",
-        "Article 29",
-        "Article 31"
+        "Article 27",
+        "Article 29"
       ],
       "variants": [
         {
@@ -421,10 +405,8 @@
           "variant_type": "original",
           "question": "An employee hired in 2010 is laid off. How long do they retain recall rights?",
           "retrieved_articles": [
-            "Article 2",
-            "Article 29",
-            "Article 10",
-            "Article 31"
+            "Article 27",
+            "Article 29"
           ],
           "pass": true
         },
@@ -433,11 +415,10 @@
           "variant_type": "worker_slang",
           "question": "I got laid off and I've been working here since 2010. How long can they call me back?",
           "retrieved_articles": [
-            "Article 2",
-            "Article 29",
-            "Article 10",
-            "Article 31",
+            "Article 28",
+            "Article 12",
             "Article 17",
+            "Article 29",
             "Article 27"
           ],
           "pass": true
@@ -447,10 +428,9 @@
           "variant_type": "formal_rewrite",
           "question": "What is the duration of recall rights for a laid-off employee with hire date in 2010?",
           "retrieved_articles": [
-            "Article 2",
-            "Article 10",
+            "Article 17",
             "Article 29",
-            "Article 31"
+            "Article 27"
           ],
           "pass": true
         }
@@ -467,8 +447,7 @@
       "variants_passed": 3,
       "family_pass": true,
       "shared_retrieved_articles": [
-        "Article 16",
-        "Article 35"
+        "Article 16"
       ],
       "variants": [
         {
@@ -476,8 +455,8 @@
           "variant_type": "original",
           "question": "How many personal holidays are employees hired after March 27, 2005 entitled to after four years of service?",
           "retrieved_articles": [
-            "Article 35",
             "Article 16",
+            "Article 35",
             "Article 17"
           ],
           "pass": true
@@ -498,10 +477,9 @@
           "variant_type": "terse",
           "question": "Personal holiday entitlement after 4 years for post-March 2005 hires?",
           "retrieved_articles": [
-            "Article 35",
             "Article 16",
-            "Article 27",
-            "Article 17"
+            "Article 17",
+            "Article 27"
           ],
           "pass": true
         }
@@ -567,13 +545,7 @@
       "variants_passed": 3,
       "family_pass": true,
       "shared_retrieved_articles": [
-        "Article 10",
-        "Article 2",
-        "Article 29",
-        "Article 4",
-        "Article 5",
-        "Article 7",
-        "Article 8"
+        "Article 29"
       ],
       "variants": [
         {
@@ -581,14 +553,7 @@
           "variant_type": "original",
           "question": "A 'specially trained' Cake Decorator is subject to layoff. Another employee with more seniority has only 4 months experience as a Cake Decorator. Can they displace the Cake Decorator?",
           "retrieved_articles": [
-            "Article 7",
-            "Article 29",
-            "Article 2",
-            "Article 4",
-            "Article 5",
-            "Article 8",
-            "Article 10",
-            "Article 31"
+            "Article 29"
           ],
           "pass": true
         },
@@ -597,13 +562,8 @@
           "variant_type": "worker_slang",
           "question": "I'm a cake decorator about to get laid off. Can someone with more seniority but only 4 months decorating experience bump me?",
           "retrieved_articles": [
-            "Article 2",
-            "Article 29",
-            "Article 4",
-            "Article 5",
-            "Article 7",
-            "Article 8",
-            "Article 10"
+            "Article 27",
+            "Article 29"
           ],
           "pass": true
         },
@@ -612,13 +572,7 @@
           "variant_type": "formal_rewrite",
           "question": "Under layoff bumping provisions, can a senior employee with fewer than 6 months of Cake Decorator experience within the past 3 years displace a specially-trained Cake Decorator?",
           "retrieved_articles": [
-            "Article 2",
-            "Article 29",
-            "Article 4",
-            "Article 5",
-            "Article 7",
-            "Article 8",
-            "Article 10"
+            "Article 29"
           ],
           "pass": true
         }
@@ -644,10 +598,8 @@
           "variant_type": "original",
           "question": "An employee is enrolled in Plan B health coverage. Their spouse becomes eligible for coverage through their own employer. What fee applies?",
           "retrieved_articles": [
-            "Article 17",
-            "Article 32",
             "Article 40",
-            "Article 35"
+            "Article 18"
           ],
           "pass": true
         },
@@ -656,10 +608,9 @@
           "variant_type": "worker_slang",
           "question": "My husband just got a job with health insurance. I have Plan B through the union. Do we have to pay extra now?",
           "retrieved_articles": [
-            "Article 17",
-            "Article 32",
             "Article 40",
-            "Article 35"
+            "Article 18",
+            "Article 48"
           ],
           "pass": true
         },
@@ -668,10 +619,8 @@
           "variant_type": "formal_rewrite",
           "question": "What is the spousal surcharge or working spouse fee under Plan B when a dependent spouse has access to other employer-sponsored coverage?",
           "retrieved_articles": [
-            "Article 5",
-            "Article 10",
-            "Article 12",
             "Article 28",
+            "Article 12",
             "Article 40",
             "Letter of Understanding"
           ],
@@ -699,6 +648,7 @@
           "question": "What is the night premium for employees?",
           "retrieved_articles": [
             "Article 16",
+            "Article 14",
             "Article 15",
             "Article 13",
             "Article 58"
@@ -710,10 +660,10 @@
           "variant_type": "worker_slang",
           "question": "Do I get extra money for working the graveyard shift?",
           "retrieved_articles": [
-            "Article 13",
-            "Article 16",
-            "Article 15",
-            "Article 10"
+            "Article 18",
+            "Article 28",
+            "Article 10",
+            "Article 15"
           ],
           "pass": true
         },
@@ -723,12 +673,9 @@
           "question": "What is the hourly differential for night shift work per Article 15?",
           "retrieved_articles": [
             "Article 15",
-            "Article 8",
-            "Article 10",
             "Article 18",
-            "Article 9",
-            "Article 21",
             "Article 28",
+            "Article 10",
             "Article 58"
           ],
           "pass": true
@@ -782,10 +729,10 @@
           "question": "Under Article 51, what protections exist for employees who decline to submit to a lie detector examination?",
           "retrieved_articles": [
             "Article 51",
-            "Article 5",
-            "Article 10",
             "Article 28",
             "Article 12",
+            "Article 16",
+            "Article 10",
             "Article 35"
           ],
           "pass": true
@@ -813,12 +760,9 @@
           "variant_type": "original",
           "question": "What is the grievance filing deadline for a discharge?",
           "retrieved_articles": [
-            "Article 43",
             "Article 46",
-            "Article 9",
-            "Article 17",
             "Article 45",
-            "Article 26"
+            "Article 43"
           ],
           "pass": true
         },
@@ -827,13 +771,11 @@
           "variant_type": "worker_slang",
           "question": "I got fired. How long do I have to file a grievance?",
           "retrieved_articles": [
-            "Article 5",
-            "Article 10",
-            "Article 46",
-            "Article 12",
             "Article 28",
-            "Article 43",
-            "Article 45"
+            "Article 12",
+            "Article 45",
+            "Article 46",
+            "Article 43"
           ],
           "pass": true
         },
@@ -843,11 +785,8 @@
           "question": "What is the time limit to initiate the grievance procedure following a termination under Article 46?",
           "retrieved_articles": [
             "Article 46",
-            "Article 17",
-            "Article 9",
-            "Article 26",
-            "Article 43",
-            "Article 45"
+            "Article 45",
+            "Article 43"
           ],
           "pass": true
         }
@@ -866,7 +805,7 @@
       "family_pass": true,
       "shared_retrieved_articles": [
         "Article 10",
-        "Article 21",
+        "Article 24",
         "Article 25"
       ],
       "variants": [
@@ -877,7 +816,6 @@
           "retrieved_articles": [
             "Article 25",
             "Article 24",
-            "Article 21",
             "Article 10"
           ],
           "pass": true
@@ -887,11 +825,11 @@
           "variant_type": "worker_slang",
           "question": "My boss scheduled me to close at 11pm and open at 5am the next day. Is that allowed?",
           "retrieved_articles": [
-            "Article 10",
             "Article 18",
             "Article 28",
-            "Article 21",
-            "Article 25"
+            "Article 10",
+            "Article 25",
+            "Article 24"
           ],
           "pass": true
         },
@@ -900,7 +838,6 @@
           "variant_type": "formal_rewrite",
           "question": "What are the contractual requirements for minimum hours between the end of one shift and the start of the next?",
           "retrieved_articles": [
-            "Article 21",
             "Article 25",
             "Article 24",
             "Article 10"

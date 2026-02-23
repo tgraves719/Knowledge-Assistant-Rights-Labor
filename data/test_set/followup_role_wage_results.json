@@ -1,7 +1,7 @@
 {
   "schema_version": "followup_role_wage_eval_v1",
   "dataset_schema_version": "followup_role_wage_test_v1",
-  "timestamp_utc": "2026-02-15T19:57:49.894811+00:00",
+  "timestamp_utc": "2026-02-22T05:31:59.106873+00:00",
   "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\followup_role_wage_test.json",
   "bm25_only": true,
   "overall": {

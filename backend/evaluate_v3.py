@@ -637,6 +637,55 @@ def _check_followup_role_wage(
     }
 
 
+def _check_moa_deleted_vs_updated(
+    results: dict | None,
+    required_dataset_schema_version: str,
+    min_overall: float,
+    min_updated: float,
+    min_deleted: float,
+    min_updated_moa_source_type: float,
+) -> tuple[bool, dict]:
+    if not results:
+        return False, {"reason": "artifact missing"}
+    dataset_schema = str(results.get("dataset_schema_version") or "")
+    overall = results.get("overall") or {}
+    buckets = results.get("buckets") or {}
+    gate = results.get("gate") or {}
+    updated = buckets.get("updated") or {}
+    deleted = buckets.get("deleted") or {}
+    overall_rate = float(overall.get("pass_rate") or 0.0)
+    updated_rate = float(updated.get("pass_rate") or 0.0)
+    deleted_rate = float(deleted.get("pass_rate") or 0.0)
+    source_total = int(updated.get("source_type_cases") or 0)
+    source_rate_raw = updated.get("moa_source_type_match_rate")
+    source_rate = float(source_rate_raw) if source_rate_raw is not None else None
+    source_ok = (source_total == 0) or ((source_rate or 0.0) >= min_updated_moa_source_type)
+    ok = (
+        dataset_schema == required_dataset_schema_version
+        and bool(gate.get("pass"))
+        and overall_rate >= min_overall
+        and updated_rate >= min_updated
+        and deleted_rate >= min_deleted
+        and source_ok
+    )
+    return ok, {
+        "dataset_schema_version": dataset_schema,
+        "gate_pass": bool(gate.get("pass")),
+        "overall_pass_rate": overall_rate,
+        "updated_clause_pass_rate": updated_rate,
+        "deleted_clause_pass_rate": deleted_rate,
+        "updated_moa_source_type_match_rate": source_rate,
+        "updated_moa_source_type_cases": source_total,
+        "thresholds": {
+            "required_dataset_schema_version": required_dataset_schema_version,
+            "min_overall": min_overall,
+            "min_updated": min_updated,
+            "min_deleted": min_deleted,
+            "min_updated_moa_source_type": min_updated_moa_source_type,
+        },
+    }
+
+
 def _evaluate_from_artifacts(args) -> dict:
     components = {}
     pass_count = 0
@@ -802,6 +851,17 @@ def _evaluate_from_artifacts(args) -> dict:
     components["followup_role_wage"] = {"pass": followup_role_wage_ok, "details": followup_role_wage_details}
     pass_count += int(followup_role_wage_ok)
 
+    moa_delupd_ok, moa_delupd_details = _check_moa_deleted_vs_updated(
+        _load_json(DATA_DIR / "test_set" / "moa_deleted_vs_updated_results.json"),
+        required_dataset_schema_version=args.required_moa_deleted_vs_updated_dataset_schema_version,
+        min_overall=args.min_moa_deleted_vs_updated_pass_rate,
+        min_updated=args.min_moa_deleted_vs_updated_updated_pass_rate,
+        min_deleted=args.min_moa_deleted_vs_updated_deleted_pass_rate,
+        min_updated_moa_source_type=args.min_moa_deleted_vs_updated_updated_moa_source_type_match_rate,
+    )
+    components["moa_deleted_vs_updated"] = {"pass": moa_delupd_ok, "details": moa_delupd_details}
+    pass_count += int(moa_delupd_ok)
+
     total_components = len(components)
     overall_pass = pass_count == total_components
     return {
@@ -835,6 +895,7 @@ def run(args) -> dict:
             [sys.executable, "-m", "backend.evaluate_entitlement_table_evidence"],
             [sys.executable, "-m", "backend.evaluate_role_catalog_integrity"],
             [sys.executable, "-m", "backend.evaluate_followup_role_wage", "--bm25-only"],
+            [sys.executable, "-m", "backend.evaluate_moa_deleted_vs_updated", "--bm25-only"],
         ]
         for cmd in run_list:
             result = _run_cmd(cmd)
@@ -844,7 +905,7 @@ def run(args) -> dict:
 
     artifact_eval = _evaluate_from_artifacts(args)
     report = {
-        "schema_version": "v3_eval_v5",
+        "schema_version": "v3_eval_v6",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "mode": "from_artifacts" if args.from_artifacts else "full",
         "active_contract_ids": _active_contract_ids(),
@@ -919,6 +980,11 @@ def run(args) -> dict:
             "min_followup_role_wage_no_unavailable_rate": args.min_followup_role_wage_no_unavailable_rate,
             "min_followup_role_wage_explicit_override_rate": args.min_followup_role_wage_explicit_override_rate,
             "min_followup_role_wage_profile_fallback_rate": args.min_followup_role_wage_profile_fallback_rate,
+            "required_moa_deleted_vs_updated_dataset_schema_version": args.required_moa_deleted_vs_updated_dataset_schema_version,
+            "min_moa_deleted_vs_updated_pass_rate": args.min_moa_deleted_vs_updated_pass_rate,
+            "min_moa_deleted_vs_updated_updated_pass_rate": args.min_moa_deleted_vs_updated_updated_pass_rate,
+            "min_moa_deleted_vs_updated_deleted_pass_rate": args.min_moa_deleted_vs_updated_deleted_pass_rate,
+            "min_moa_deleted_vs_updated_updated_moa_source_type_match_rate": args.min_moa_deleted_vs_updated_updated_moa_source_type_match_rate,
         },
         "components": artifact_eval["components"],
         "overall": artifact_eval["overall"],
@@ -1006,6 +1072,11 @@ def main() -> int:
     parser.add_argument("--min-followup-role-wage-no-unavailable-rate", type=float, default=0.95)
     parser.add_argument("--min-followup-role-wage-explicit-override-rate", type=float, default=0.90)
     parser.add_argument("--min-followup-role-wage-profile-fallback-rate", type=float, default=0.90)
+    parser.add_argument("--required-moa-deleted-vs-updated-dataset-schema-version", default="moa_deleted_vs_updated_test_v1")
+    parser.add_argument("--min-moa-deleted-vs-updated-pass-rate", type=float, default=1.0)
+    parser.add_argument("--min-moa-deleted-vs-updated-updated-pass-rate", type=float, default=1.0)
+    parser.add_argument("--min-moa-deleted-vs-updated-deleted-pass-rate", type=float, default=1.0)
+    parser.add_argument("--min-moa-deleted-vs-updated-updated-moa-source-type-match-rate", type=float, default=1.0)
     args = parser.parse_args()
 
     report = run(args)

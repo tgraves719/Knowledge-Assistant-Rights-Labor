@@ -307,6 +307,12 @@ python backend/test_topic_routing.py
 # False-unavailable guard slice (forced unavailable first pass + deterministic recovery)
 python -m backend.evaluate_runner --track false_unavailable
 
+# MOA deleted-vs-updated regression slice (deleted clauses absent; updated MOA clauses retrievable)
+python -m backend.evaluate_runner --track moa_deleted_vs_updated
+
+# MOA deleted-vs-updated end-to-end answer regression slice
+python -m backend.evaluate_runner --track moa_deleted_vs_updated_answer
+
 # False-unavailable dataset integrity preflight
 python -m backend.validate_false_unavailable_dataset
 
@@ -324,6 +330,9 @@ python -m backend.evaluate_runner --track role_catalog_integrity
 
 # Follow-up role-targeted wage integrity slice
 python -m backend.evaluate_runner --track followup_role_wage
+
+# v0.9.0 readiness scorecard (aggregated must-have gates)
+python -m backend.evaluate_runner --track release_090
 ```
 
 False-unavailable evaluation now includes both:
@@ -402,6 +411,33 @@ python -m backend.evaluate_followup_role_wage --bm25-only
 `backend.evaluate_gate_check` treats followup-role-wage thresholds as blocking when
 `data/test_set/followup_role_wage_results.json` is missing or below floor.
 
+### MOA deleted-vs-updated regression slice
+
+```bash
+python -m backend.evaluate_moa_deleted_vs_updated --bm25-only
+```
+
+Writes:
+- `data/test_set/moa_deleted_vs_updated_results.json`
+
+### MOA deleted-vs-updated answer regression slice
+
+```bash
+python -m backend.evaluate_moa_deleted_vs_updated_answer --bm25-only
+```
+
+Writes:
+- `data/test_set/moa_deleted_vs_updated_answer_results.json`
+
+### v0.9.0 readiness scorecard
+
+```bash
+python -m backend.evaluate_release_090
+```
+
+Writes deterministic release scorecard artifact:
+- `data/test_set/release_0_9_0_scorecard.json`
+
 ### Release-gate check from artifacts
 
 ```bash
@@ -419,6 +455,8 @@ python -m backend.evaluate_gate_check \
   --entitlement-table-evidence-results data/test_set/entitlement_table_evidence_results.json \
   --role-catalog-integrity-results data/test_set/role_catalog_integrity_results.json \
   --followup-role-wage-results data/test_set/followup_role_wage_results.json \
+  --moa-deleted-vs-updated-results data/test_set/moa_deleted_vs_updated_results.json \
+  --release-090-results data/test_set/release_0_9_0_scorecard.json \
   --min-v3-components-pass-rate 1.00 \
   --min-paraphrase-formal-rewrite-pass-rate 0.90 \
   --required-adversarial-dataset-schema-version adversarial_precedence_test_v1 \
@@ -459,6 +497,14 @@ python -m backend.evaluate_gate_check \
   --min-followup-role-wage-no-unavailable-rate 0.95 \
   --min-followup-role-wage-explicit-override-rate 0.90 \
   --min-followup-role-wage-profile-fallback-rate 0.90 \
+  --required-moa-deleted-vs-updated-schema-version moa_deleted_vs_updated_eval_v1 \
+  --required-moa-deleted-vs-updated-dataset-schema-version moa_deleted_vs_updated_test_v1 \
+  --min-moa-deleted-vs-updated-overall-pass-rate 1.00 \
+  --min-moa-deleted-vs-updated-updated-pass-rate 1.00 \
+  --min-moa-deleted-vs-updated-deleted-pass-rate 1.00 \
+  --min-moa-deleted-vs-updated-updated-moa-source-type-match-rate 1.00 \
+  --required-release-090-schema-version release_090_scorecard_v1 \
+  --min-release-090-components-pass-rate 1.00 \
   --required-wage-table-evidence-dataset-schema-version wage_table_evidence_test_v1 \
   --min-wage-table-evidence-total-cases 12 \
   --min-wage-table-evidence-cases-per-contract 3 \
@@ -495,10 +541,23 @@ python -m backend.validate_manifests
 
 ### CI behavior
 
-- Pull requests: manifest validation + canonical slices (`v2`, `escalation`, `v2_multi_contract`, `paraphrase`, `adversarial`, `unanswerable`, `cross_contract_mentions`, `false_unavailable`, `needle`, `wage_table_evidence`, `entitlement_table_evidence`, `role_catalog_integrity`, `followup_role_wage`, `v3`) + isolation/cross-contamination/topic-routing checks + gate-check thresholds
-- Push to `main`: manifest validation + full v2 ablation suite + deterministic release slices + cross-contamination/topic-routing + gate-check job
+- Pull requests:
+  - `pr-core-eval`: manifest validation + canonical slices (`v2`, `escalation`, `v2_multi_contract`, `paraphrase`, `adversarial`, `unanswerable`, `cross_contract_mentions`, `false_unavailable`, `moa_deleted_vs_updated`, `moa_deleted_vs_updated_answer`, `needle`, `wage_table_evidence`, `entitlement_table_evidence`, `role_catalog_integrity`, `followup_role_wage`, `v3`, `release_090`) + isolation/cross-contamination/topic-routing checks + gate-check thresholds
+  - `pr-moa-release-gate`: dedicated MOA release gate (`moa_deep_suite`)
+- Push to `main`: manifest validation + full v2 ablation suite + deterministic release slices (`v3`, `release_090`) + cross-contamination/topic-routing + gate-check job
 
 `backend.evaluate_cross_contamination` skips automatically when only one manifest is present.
+
+### Branch protection baseline (GitHub)
+
+For branch `main`, set a protection rule with:
+
+- Require pull request before merging
+- Require branches to be up to date before merging
+- Require status checks to pass before merging:
+  - `KARL Evaluation CI / pr-core-eval`
+  - `KARL Evaluation CI / pr-moa-release-gate`
+- Include administrators (recommended)
 
 ### Contract isolation check
 

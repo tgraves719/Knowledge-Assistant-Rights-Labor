@@ -5,6 +5,7 @@
   "bargaining_unit": "from the retail clerks",
   "term_start": "February 27, 2022",
   "term_end": "February 22, 2025",
+  "contract_version": "February 27, 2022__February 22, 2025",
   "article_titles": {
     "1": "Recognition And Exclusions",
     "2": "Service In Meat-Delicatessen Departments, Plants",
@@ -109,5 +110,40 @@
     "safety",
     "pension",
     "leaves"
-  ]
+  ],
+  "query_routing": {
+    "slang_to_contract": {
+      "401k": "401K plan",
+      "bagger": "courtesy clerk"
+    },
+    "topic_to_articles": {
+      "health_benefits": [43],
+      "retirement_savings": [42, 45],
+      "vacation": [17],
+      "personal_holiday": [16],
+      "sick_leave": [38],
+      "overtime": [12, 30],
+      "scheduling": [18, 29],
+      "seniority": [27],
+      "layoff": [32],
+      "discipline": [47, 50],
+      "grievance": [50],
+      "breaks": [24, 25],
+      "premiums": [13, 14, 15],
+      "weingarten": [47, 49],
+      "promotion": [8, 9],
+      "probation": [26],
+      "term": [57]
+    },
+    "topic_patterns": {
+      "retirement_savings": "401k|401\\(k\\)|retirement\\s*savings|retirement\\s*plan"
+    },
+    "classification_to_articles": {
+      "meat_cutter": [2, 7, 8],
+      "deli_clerk": [2, 7, 8],
+      "courtesy_clerk": [7, 15],
+      "cake_decorator": [7, 8],
+      "pharmacy_tech": [7, 8]
+    }
+  }
 }
