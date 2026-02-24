@@ -1,0 +1,2 @@
+# KARL ingestion/materialization profile (currently same as base runtime)
+-r base.txt

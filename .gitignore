@@ -66,3 +66,4 @@ old/
 NUL
 pytest-cache-files-*/
 tmp_test_work/
+tmp_karl_smoke_server*.log

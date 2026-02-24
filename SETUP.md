@@ -2,9 +2,37 @@
 
 Complete setup instructions for getting Karl running on your machine.
 
+## Recommended (Windows Fast Path)
+
+If you are on Windows, use the scripted bootstrap + smoke path first:
+
+```powershell
+python scripts/karl.py setup --profile backend
+python scripts/karl.py smoke
+```
+
+Detailed Windows setup / troubleshooting:
+- `docs/LOCAL_SETUP_WINDOWS.md`
+
+## Preferred Engineering Path (Containerized)
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+Optional dependency profile for image build:
+
+```bash
+# Linux/Mac
+KARL_REQ_PROFILE=base docker compose -f docker-compose.dev.yml up --build
+
+# Windows PowerShell
+$env:KARL_REQ_PROFILE="base"; docker compose -f docker-compose.dev.yml up --build
+```
+
 ## Prerequisites
 
-- Python 3.8 or higher
+- Python 3.10-3.13 (recommended: 3.11)
 - pip (Python package manager)
 
 ## Step-by-Step Setup
@@ -18,6 +46,25 @@ cd Knowledge-Assistant-Rights-Labor
 ```
 
 ### 2. Install Python Dependencies
+
+Prefer profile installs for faster setup:
+
+```bash
+pip install -r requirements/base.txt
+```
+
+Run preflight checks before/after setup:
+
+```bash
+python scripts/karl.py doctor --profile backend
+```
+
+Profiles:
+
+- `requirements/base.txt` (runtime/API)
+- `requirements/ingest.txt` (ingestion/materialization)
+- `requirements/eval.txt` (base + eval)
+- `requirements/full.txt` (full local engineering stack)
 
 ```bash
 pip install -r requirements.txt

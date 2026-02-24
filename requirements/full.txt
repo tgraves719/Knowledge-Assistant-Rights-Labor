@@ -1,0 +1,2 @@
+# KARL full local engineering profile (backend + eval tooling)
+-r eval.txt

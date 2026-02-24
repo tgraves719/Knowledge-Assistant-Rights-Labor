@@ -93,7 +93,46 @@ karl/
 
 ## Quick Start
 
+Preferred engineering path (containerized):
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+VS Code devcontainer is also available via `.devcontainer/devcontainer.json`.
+
+Prefer the scripted local setup path on Windows:
+
+```powershell
+python scripts/karl.py setup --profile backend
+```
+
+Then validate runtime/API + Contract-tab endpoints:
+
+```powershell
+python scripts/karl.py smoke
+```
+
+Detailed Windows setup + troubleshooting:
+- `docs/LOCAL_SETUP_WINDOWS.md`
+
 ### 1. Install dependencies
+
+For faster local installs, prefer dependency profiles instead of the full default:
+
+```bash
+# Runtime/API
+pip install -r requirements/base.txt
+
+# Eval tooling
+pip install -r requirements/eval.txt
+```
+
+Preflight checks (recommended before/after setup):
+
+```bash
+python scripts/karl.py doctor --profile backend
+```
 
 ```bash
 pip install -r requirements.txt

@@ -1,5 +1,206 @@
 # Karl Update Log
 
+## v0.8.95 - `karl` Wrapper CLI + Setup Tooling CI (Linux/Windows) (February 24, 2026)
+
+### Overview
+
+Added a stable local developer entrypoint (`python scripts/karl.py`) and CI coverage for setup tooling so the new bootstrap/preflight/smoke workflow does not drift.
+
+This moves setup toward a simpler long-term shape:
+
+- `karl doctor`
+- `karl setup`
+- `karl smoke`
+
+(implemented as `python scripts/karl.py <command>` for now)
+
+### What Changed
+
+- `scripts/karl.py` (new)
+  - thin wrapper CLI for:
+    - `doctor` -> `scripts/dev_preflight.py`
+    - `setup` -> `scripts/bootstrap_windows.ps1`
+    - `smoke` -> `scripts/smoke_local.ps1`
+  - standardizes the user-facing setup commands while keeping implementations modular
+
+- `.github/workflows/eval-ci.yml`
+  - added `setup-tooling-linux` job:
+    - installs `requirements/base.txt`
+    - compiles helper scripts
+    - runs `python scripts/karl.py doctor --check-imports --strict`
+    - emits JSON preflight report artifact
+    - validates `docker compose -f docker-compose.dev.yml config`
+  - added `setup-tooling-windows` job:
+    - compiles helper scripts
+    - runs wrapper `doctor`
+    - parses PowerShell setup/smoke scripts
+    - runs wrapper `setup --profile ui-only --skip-preflight`
+    - emits JSON preflight report artifact
+
+- `docs/LOCAL_SETUP_WINDOWS.md`
+  - promoted `python scripts/karl.py ...` as the primary command surface
+  - retains raw script references as implementation detail/explanation
+
+- `README.md`, `SETUP.md`
+  - now reference wrapper commands for Windows local setup
+  - setup doc prerequisites updated to validated Python range (`3.10-3.13`, recommended `3.11`)
+
+### Validation
+
+- `python -m py_compile scripts/karl.py` -> PASS
+- `python scripts/karl.py --help` -> PASS
+- `python scripts/karl.py doctor --profile backend --strict` -> PASS
+- `python scripts/karl.py setup --profile ui-only --skip-preflight` -> PASS
+- `python scripts/karl.py smoke --help` -> PASS
+- PowerShell parse checks for setup/smoke scripts -> PASS
+
+### Why This Matters
+
+- Gives developers one command surface to learn while we continue improving the underlying setup implementations.
+- Adds CI coverage for setup workflows, which is the key to preventing "works on one machine only" regressions.
+- Supports long-term scale by treating local setup as productized developer infrastructure, not ad hoc documentation.
+
+## v0.8.94 - Containerized Dev Path + Profile-Based Dependency Sets (February 24, 2026)
+
+### Overview
+
+Extended the local developer-platform work to make native Windows setup optional for ongoing engineering:
+
+- added a containerized dev runtime path (`docker-compose.dev.yml`)
+- added a VS Code devcontainer config
+- split Python dependencies into install profiles (`base`, `ingest`, `eval`, `full`) to reduce local install time and dependency churn
+
+### What Changed
+
+- `requirements/base.txt` (new)
+  - API/runtime/retrieval dependencies
+
+- `requirements/ingest.txt` (new)
+  - ingestion/materialization profile (currently extends `base`)
+
+- `requirements/eval.txt` (new)
+  - base + evaluation dependencies (`ragas`, `datasets`)
+
+- `requirements/full.txt` (new)
+  - full local engineering profile (extends `eval`)
+
+- `requirements.txt`
+  - now delegates to `requirements/full.txt` for backward compatibility
+
+- `scripts/bootstrap_windows.ps1`
+  - added `ingest` bootstrap profile
+  - installs profile-specific dependency set instead of always using `requirements.txt`
+  - prints selected dependency profile file
+
+- `Dockerfile.dev` (new)
+  - Python 3.11 dev image
+  - installs profile-selected dependencies via `KARL_REQ_PROFILE`
+  - includes Node/NPM for frontend/client tooling work
+
+- `docker-compose.dev.yml` (new)
+  - local backend dev runtime with source mount, pip/HF caches, and reload
+
+- `.devcontainer/devcontainer.json` (new)
+  - VS Code devcontainer wired to `docker-compose.dev.yml`
+
+- `.dockerignore` (new)
+  - reduces Docker build context size and avoids shipping local junk/cache into image builds
+
+- `.gitignore`
+  - ignores smoke-script temporary server logs (`tmp_karl_smoke_server*.log`)
+
+- `docs/LOCAL_SETUP_WINDOWS.md`
+  - now documents containerized path first (Compose + devcontainer)
+  - documents dependency profiles for manual installs
+
+- `README.md`, `SETUP.md`
+  - added containerized setup path and dependency-profile guidance
+
+### Validation
+
+- `python -m py_compile scripts/dev_preflight.py` -> PASS
+- PowerShell parse checks for `scripts/bootstrap_windows.ps1`, `scripts/smoke_local.ps1` -> PASS
+- `python scripts/dev_preflight.py --profile backend` -> PASS
+
+### Why This Matters
+
+- Reduces native Windows onboarding pain by giving engineers a reproducible container path.
+- Cuts install time and setup friction by letting local users install only what they need (`base` vs `eval` vs `full`).
+- Moves KARL closer to a scalable developer platform while the product architecture remains API-first for web/iOS/Android clients.
+
+## v0.8.93 - Windows Dev Bootstrap, Doctor, and Smoke Tooling (February 24, 2026)
+
+### Overview
+
+Added a reproducible local developer setup path for Windows to reduce "dependency roulette" and long failed installs.
+
+This introduces:
+
+- a preflight checker (`doctor`) for Python/toolchain/data/runtime prerequisites
+- a Windows bootstrap script for deterministic local setup
+- a local smoke test script that validates API + Contract-tab backend endpoints
+- a Windows setup guide that documents the supported native path and common failure modes (including PowerShell execution policy and VC++ runtime issues)
+
+### What Changed
+
+- `scripts/dev_preflight.py` (new)
+  - `karl doctor`-style local checks:
+    - repo structure
+    - Python version/interpreter + pip
+    - optional import checks
+    - data artifact presence (manifests/chunks/effective pointers)
+    - `.env` presence (without printing secrets)
+    - local port probe
+    - Windows VC++ runtime DLL hints
+  - supports human-readable and JSON output
+
+- `scripts/bootstrap_windows.ps1` (new)
+  - profile-based Windows bootstrap (`backend`, `full`, `eval`, `demo`, `ui-only`)
+  - creates/reuses `.venv`
+  - upgrades pip tooling
+  - installs `requirements.txt` with `--prefer-binary`
+  - runs strict post-install `doctor` checks
+  - optional smoke execution
+
+- `scripts/smoke_local.ps1` (new)
+  - validates:
+    - `/api/contracts`
+    - `/api/health`
+    - `/api/contract-history`
+    - `/api/contract-browse`
+    - `/api/contract-browse-item` or `/api/article`
+    - `/api/pdf-location`
+  - optional `/api/query` smoke
+  - improved 404 messaging for stale server processes (restart required)
+
+- `docs/LOCAL_SETUP_WINDOWS.md` (new)
+  - scripted fast path
+  - execution-policy bypass usage
+  - VC++ runtime explanation (why Windows asks for MSVC-related dependencies)
+  - troubleshooting and scaling direction (API-first + thin clients)
+
+- `README.md`
+  - added Windows scripted setup/smoke pointers
+
+- `SETUP.md`
+  - added Windows fast-path pointer to bootstrap + smoke
+
+### Validation
+
+- `python -m py_compile scripts/dev_preflight.py` -> PASS
+- `python scripts/dev_preflight.py --profile backend` -> PASS
+- `python scripts/dev_preflight.py --profile backend --check-imports` -> PASS
+- PowerShell parse check for `scripts/bootstrap_windows.ps1` and `scripts/smoke_local.ps1` -> PASS
+- `powershell -ExecutionPolicy Bypass -File scripts/bootstrap_windows.ps1 -Profile ui-only -SkipPreflight` -> PASS
+- `powershell -ExecutionPolicy Bypass -File scripts/smoke_local.ps1` -> FAIL (expected on stale running server)
+  - failure now clearly indicates missing Contract-tab endpoints and instructs to restart API from the current branch/build
+
+### Why This Matters
+
+- Converts setup from a long, manual sequence into a repeatable workflow with early, actionable failures.
+- Creates the foundation for a future unified `karl doctor / karl setup / karl smoke` developer CLI.
+- Reduces machine-to-machine onboarding pain as KARL expands toward web/iOS/Android client development on a shared backend.
+
 ## v0.8.92 - Gate Check Surfaces release_090 Advisories (Non-Blocking) (February 23, 2026)
 
 ### Overview
