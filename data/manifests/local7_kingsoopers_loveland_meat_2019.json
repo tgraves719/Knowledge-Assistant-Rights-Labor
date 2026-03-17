@@ -5,7 +5,6 @@
   "bargaining_unit": "Clerks",
   "term_start": "April 15, 2019",
   "term_end": "February 19, 2022",
-  "contract_version": "April 15, 2019__February 19, 2022",
   "article_titles": {
     "1": "Recognition And Exclusions",
     "2": "Service In Meat Departments, Plants",
@@ -102,33 +101,266 @@
     "pension",
     "leaves"
   ],
+  "contract_version": "April 15, 2019__February 19, 2022",
   "query_routing": {
     "slang_to_contract": {
-      "401k": "401K plan",
-      "bagger": "courtesy clerk"
+      "arbitration procedure": "grievance and arbitration procedure",
+      "benefits plan": "health benefits plan",
+      "break between shifts": "relief periods",
+      "call in sick": "sick leave",
+      "close and open": "relief periods",
+      "contract term": "term of agreement",
+      "daily schedule": "reporting pay minimum daily schedule",
+      "days off for funeral": "bereavement leave",
+      "death in family": "bereavement leave",
+      "definitions classifications": "definitions of classifications",
+      "departments plants": "service in meat departments plants",
+      "duplication benefits": "non duplication of benefits",
+      "effective date": "term of agreement",
+      "end date": "term of agreement",
+      "expiration date": "term of agreement",
+      "extra money at night": "night premium",
+      "extra pay sunday": "sunday premium",
+      "float day": "personal holiday",
+      "float days": "personal holiday",
+      "funeral leave": "bereavement leave",
+      "graveyard pay": "night premium",
+      "graveyard shift": "night premium",
+      "grievance arbitration": "grievance and arbitration procedure",
+      "grievance arbitration procedure": "grievance and arbitration procedure",
+      "health and welfare": "health benefits",
+      "health welfare": "health and welfare or pension delinquencies",
+      "health welfare pension": "health and welfare or pension delinquencies",
+      "hours between shifts": "relief periods",
+      "injury job": "injury on the job",
+      "joint labor": "joint labor management committees",
+      "joint labor management": "joint labor management committees",
+      "labor management": "joint labor management committees",
+      "labor management committees": "joint labor management committees",
+      "leaves absence": "leaves of absence",
+      "management committees": "joint labor management committees",
+      "master safety": "master safety committee",
+      "meat departments": "service in meat departments plants",
+      "meat departments plants": "service in meat departments plants",
+      "minimum daily": "reporting pay minimum daily schedule",
+      "minimum daily schedule": "reporting pay minimum daily schedule",
+      "minimum weekly": "minimum weekly schedule",
+      "new store": "new store opening",
+      "new transferred": "new employees transferred employees promoted or demoted",
+      "new transferred promoted": "new employees transferred employees promoted or demoted",
+      "night differential": "night premium",
+      "night shift pay": "night premium",
+      "non duplication": "non duplication of benefits",
+      "non duplication benefits": "non duplication of benefits",
+      "pay minimum": "reporting pay minimum daily schedule",
+      "pay minimum daily": "reporting pay minimum daily schedule",
+      "pension delinquencies": "health and welfare or pension delinquencies",
+      "personal holidays": "personal holiday",
+      "plant closing": "store or plant closing",
+      "promoted demoted": "new employees transferred employees promoted or demoted",
+      "rates pay": "rates of pay",
+      "recognition exclusions": "recognition and exclusions",
+      "reduction hours": "reduction of hours",
+      "reduction pay": "no reduction in pay",
+      "reporting pay": "reporting pay minimum daily schedule",
+      "reporting pay minimum": "reporting pay minimum daily schedule",
+      "representative visitation": "union representative visitation",
+      "rights management": "rights of management",
+      "safety committee": "master safety committee",
+      "scheduling shifts": "scheduling of shifts",
+      "security conditions": "union security and conditions",
+      "service meat": "service in meat departments plants",
+      "service meat departments": "service in meat departments plants",
+      "sick day": "sick leave",
+      "sick pay": "sick leave",
+      "start and end": "term of agreement",
+      "start date": "term of agreement",
+      "store card": "union store card",
+      "store opening": "new store opening",
+      "store plant": "store or plant closing",
+      "store plant closing": "store or plant closing",
+      "store store": "transfer from store to store",
+      "strike lockout": "no strike no lockout",
+      "sunday differential": "sunday premium",
+      "sunday pay": "sunday premium",
+      "transfer store": "transfer from store to store",
+      "transfer store store": "transfer from store to store",
+      "transferred promoted": "new employees transferred employees promoted or demoted",
+      "transferred promoted demoted": "new employees transferred employees promoted or demoted",
+      "turnaround shift": "relief periods",
+      "weekly schedule": "minimum weekly schedule",
+      "welfare pension": "health and welfare or pension delinquencies",
+      "welfare pension delinquencies": "health and welfare or pension delinquencies",
+      "when does this contract end": "term of agreement",
+      "working sundays": "sunday premium",
+      "extra hours": "overtime",
+      "hourly rate": "wages",
+      "laid off": "layoff",
+      "lunch break": "breaks",
+      "meal period": "breaks",
+      "pay rate": "wages",
+      "rate of pay": "wages",
+      "relief period": "breaks",
+      "rest break": "breaks",
+      "service time": "seniority",
+      "time and a half": "overtime",
+      "time off": "vacation",
+      "vacation pay": "vacation",
+      "vacation time": "vacation",
+      "write up": "discipline",
+      "written up": "discipline",
+      "years of service": "seniority",
+      "insurance": "health benefits",
+      "clopen": "relief periods",
+      "floater": "personal holiday",
+      "funeral": "bereavement leave",
+      "medical": "health benefits",
+      "sundays": "sunday premium",
+      "accident": "safety",
+      "arbitration": "grievance",
+      "discharge": "discipline",
+      "displacement": "layoff",
+      "retirement": "pension",
+      "schedule": "scheduling",
+      "termination": "discipline",
+      "appeal": "grievance",
+      "break": "breaks",
+      "bumping": "layoff",
+      "dispute": "grievance",
+      "fired": "discipline",
+      "hours": "scheduling",
+      "injury": "safety",
+      "posting": "scheduling",
+      "shift": "scheduling",
+      "unsafe": "safety",
+      "warning": "discipline"
     },
     "topic_to_articles": {
-      "health_benefits": [40],
-      "retirement_savings": [42],
-      "vacation": [17],
-      "sick_leave": [38],
-      "overtime": [12],
-      "scheduling": [18, 29],
-      "seniority": [27],
-      "layoff": [32],
-      "discipline": [44, 48],
-      "grievance": [48],
-      "breaks": [24, 25],
-      "premiums": [13, 14, 15],
-      "probation": [26],
-      "term": [57]
+      "bereavement": [
+        36
+      ],
+      "breaks": [
+        24,
+        25,
+        57
+      ],
+      "discipline": [
+        3,
+        21,
+        27,
+        44
+      ],
+      "grievance": [
+        8,
+        17,
+        27,
+        48
+      ],
+      "health_benefits": [
+        14,
+        35,
+        40,
+        43
+      ],
+      "layoff": [
+        2,
+        27,
+        31,
+        32
+      ],
+      "overtime": [
+        5,
+        11,
+        12,
+        30
+      ],
+      "personal_holiday": [
+        16,
+        38,
+        57
+      ],
+      "premiums": [
+        13,
+        15
+      ],
+      "probation": [
+        5,
+        26
+      ],
+      "promotion": [
+        5
+      ],
+      "scheduling": [
+        18,
+        20,
+        29,
+        30
+      ],
+      "seniority": [
+        2,
+        7,
+        16,
+        27
+      ],
+      "sick_leave": [
+        11,
+        16,
+        17,
+        38
+      ],
+      "term": [
+        57
+      ],
+      "vacation": [
+        11,
+        16,
+        17,
+        27
+      ],
+      "wages": [
+        2,
+        7,
+        8,
+        9
+      ],
+      "weingarten": [
+        45
+      ]
     },
     "topic_patterns": {
-      "retirement_savings": "401k|401\\(k\\)|retirement\\s*savings|retirement\\s*plan"
+      "bereavement": "\\bbereavement\\b|\\bbereavement\\s*leave\\b|\\bfuneral\\b|\\bfuneral\\s*leave\\b|\\bdeath\\s*in\\s*family\\b|\\bdays\\s*off\\s*for\\s*funeral\\b",
+      "breaks": "\\blunch\\s*break\\b|\\brelief\\s*period\\b|\\bmeal\\s*period\\b|\\brest\\s*period\\b|\\bbetween\\s*shifts\\b|\\blunch\\s*breaks\\b|\\brelief\\s*periods\\b|\\bterm\\s*of\\s*agreement\\b|\\bbreak\\s*between\\s*shifts\\b|\\bbreaks\\b|\\bclopen\\b|\\bclose\\s*and\\s*open\\b|\\bhours\\s*between\\s*shifts\\b|\\brest\\s*break\\b|\\bturnaround\\s*shift\\b",
+      "discipline": "\\bdiscipline\\b|\\bwrite\\s*up\\b|\\bwritten\\s*up\\b|\\bdischarge\\b|\\btermination\\b|\\bunion\\s*security\\s*and\\s*conditions\\b|\\btimekeeping\\b|\\bseniority\\b|\\bno\\s*discrimination\\b|\\bwarning\\b",
+      "grievance": "\\bgrievance\\b|\\barbitration\\b|\\bdispute\\s*procedure\\b|\\bappeal\\b|\\bgrievance\\s*and\\s*arbitration\\s*procedure\\b|\\brates\\s*of\\s*pay\\b|\\bvacations\\b|\\bseniority\\b|\\barbitration\\s*procedure\\b|\\bdispute\\b|\\bgrievance\\s*arbitration\\b|\\bgrievance\\s*arbitration\\s*procedure\\b",
+      "health_benefits": "\\bhealth\\s*benefits\\b|\\bhealth\\s*and\\s*welfare\\b|\\binsurance\\b|\\bmedical\\b|\\bhealth\\s*and\\s*welfare\\s*or\\s*pension\\s*delinquencies\\b|\\bhealth\\s*benefits\\s*plan\\b|\\btravel\\s*pay\\b|\\bleaves\\s*of\\s*absence\\b|\\bbenefits\\s*plan\\b|\\bhealth\\s*welfare\\b|\\bhealth\\s*welfare\\s*pension\\b|\\bpension\\s*delinquencies\\b|\\bwelfare\\s*pension\\b|\\bwelfare\\s*pension\\s*delinquencies\\b",
+      "layoff": "\\blayoff\\b|\\blaid\\s*off\\b|\\bbumping\\b|\\bdisplacement\\b|\\breduction\\s*of\\s*hours\\b|\\blayoffs\\b|\\bservice\\s*in\\s*meat\\s*departments\\s*plants\\b|\\bseniority\\b|\\breduction\\s*hours\\b",
+      "overtime": "\\bovertime\\b|\\btime\\s*and\\s*a\\s*half\\b|\\bunscheduled\\s*overtime\\b|\\bnew\\s*employees\\s*transferred\\s*employees\\s*promoted\\s*or\\s*demoted\\b|\\bworkweek\\b|\\bextra\\s*hours\\b|\\bnew\\s*transferred\\b|\\bnew\\s*transferred\\s*promoted\\b|\\bpromoted\\s*demoted\\b|\\btransferred\\s*promoted\\b|\\btransferred\\s*promoted\\s*demoted\\b",
+      "personal_holiday": "\\bpersonal\\s*holiday\\b|\\bpersonal\\s*holidays\\b|\\bfloat\\s*day\\b|\\bfloat\\s*days\\b|\\bfloater\\b|\\bholidays\\b|\\bsick\\s*leave\\b|\\bterm\\s*of\\s*agreement\\b",
+      "premiums": "\\bpremium\\b|\\bsunday\\s*premium\\b|\\bnight\\s*premium\\b|\\bholiday\\s*pay\\b|\\bextra\\s*money\\s*at\\s*night\\b|\\bextra\\s*pay\\s*sunday\\b|\\bgraveyard\\s*pay\\b|\\bgraveyard\\s*shift\\b|\\bnight\\s*differential\\b|\\bnight\\s*shift\\s*pay\\b|\\bsunday\\s*differential\\b|\\bsunday\\s*pay\\b|\\bsundays\\b|\\bworking\\s*sundays\\b",
+      "probation": "\\bprobation\\b|\\bprobationary\\b|\\btrial\\s*period\\b|\\bnew\\s*employee\\b|\\bprobationary\\s*period\\b|\\bnew\\s*employees\\s*transferred\\s*employees\\s*promoted\\s*or\\s*demoted\\b|\\bnew\\s*transferred\\b|\\bnew\\s*transferred\\s*promoted\\b|\\bpromoted\\s*demoted\\b|\\btransferred\\s*promoted\\b|\\btransferred\\s*promoted\\s*demoted\\b",
+      "promotion": "\\bpromotion\\b|\\bpromoted\\b|\\bdemoted\\b|\\btransferred\\b|\\bnew\\s*employees\\s*transferred\\s*employees\\s*promoted\\s*or\\s*demoted\\b|\\bnew\\s*transferred\\b|\\bnew\\s*transferred\\s*promoted\\b|\\bpromoted\\s*demoted\\b|\\btransferred\\s*promoted\\b|\\btransferred\\s*promoted\\s*demoted\\b",
+      "scheduling": "\\bschedule\\b|\\bscheduling\\b|\\bposting\\b|\\bscheduling\\s*posting\\b|\\bscheduling\\s*of\\s*shifts\\b|\\bunscheduled\\s*overtime\\b|\\bminimum\\s*weekly\\s*schedule\\b|\\bavailable\\s*hours\\b|\\bdaily\\s*schedule\\b|\\bminimum\\s*daily\\b|\\bminimum\\s*daily\\s*schedule\\b|\\bminimum\\s*weekly\\b|\\bpay\\s*minimum\\b|\\bpay\\s*minimum\\s*daily\\b|\\breduction\\s*hours\\b|\\breduction\\s*of\\s*hours\\b|\\breporting\\s*pay\\b|\\breporting\\s*pay\\s*minimum\\b",
+      "seniority": "\\bseniority\\b|\\byears\\s*of\\s*service\\b|\\bservice\\s*time\\b|\\bservice\\s*in\\s*meat\\s*departments\\s*plants\\b|\\bdefinitions\\s*of\\s*classifications\\b|\\bholidays\\b",
+      "sick_leave": "\\bsick\\s*leave\\b|\\bsick\\s*pay\\b|\\bsick\\s*day\\b|\\bcall\\s*in\\s*sick\\b|\\bworkweek\\b|\\bholidays\\b|\\bvacations\\b",
+      "term": "\\bterm\\s*of\\s*agreement\\b|\\bcontract\\s*term\\b|\\beffective\\s*date\\b|\\bexpiration\\s*date\\b|\\bstart\\s*and\\s*end\\b|\\bend\\s*date\\b|\\bstart\\s*date\\b|\\bwhen\\s*does\\s*this\\s*contract\\s*end\\b",
+      "vacation": "\\bvacation\\b|\\banniversary\\s*year\\b|\\bpaid\\s*vacation\\b|\\bvacation\\s*roster\\b|\\bvacations\\b|\\bworkweek\\b|\\bholidays\\b|\\bseniority\\b|\\btime\\s*off\\b|\\bvacation\\s*pay\\b|\\bvacation\\s*time\\b",
+      "wages": "\\brate\\s*of\\s*pay\\b|\\bpay\\s*rate\\b|\\bhourly\\s*rate\\b|\\bappendix\\s*a\\b|\\bservice\\s*in\\s*meat\\s*departments\\s*plants\\b|\\bdefinitions\\s*of\\s*classifications\\b|\\brates\\s*of\\s*pay\\b|\\btemporary\\s*assignments\\b",
+      "weingarten": "\\bweingarten\\b|\\bright\\s*to\\s*representation\\b|\\bunion\\s*representative\\b|\\bunion\\s*representative\\s*visitation\\b|\\brepresentative\\s*visitation\\b"
     },
     "classification_to_articles": {
-      "head_clerk": [7, 8, 27],
-      "meat_cutter": [7, 8]
+      "head_clerk": [
+        2,
+        7,
+        8,
+        9
+      ],
+      "meat_cutter": [
+        2,
+        7,
+        8,
+        9
+      ]
     }
-  }
+  },
+  "region_id": "region-loveland"
 }

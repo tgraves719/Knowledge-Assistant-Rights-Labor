@@ -14,6 +14,7 @@ from typing import Any, Optional
 
 from backend.config import DATA_DIR
 from backend.effective_contracts import write_latest_effective_pointer
+from backend.ingest.extract_entitlements import extract_entitlements
 from backend.ingest.moa_schema import (
     APPROVED_REVIEW_STATUS,
     PatchArtifact,
@@ -353,28 +354,91 @@ class ContractMaterializer:
             entry["errors"].append("expected_prev_hash_mismatch")
             return
 
+        # Wage rows often need MOA-effective supersession (new effective date) rather than
+        # overwriting the historical row in-place. Preserve chronology by cloning when the
+        # patch date is newer than the target row date and no explicit historical backfill date
+        # was provided in the patch payload.
+        supersede_mode = False
+        patch_effective_date = str(patch.effective_date or "").strip()
+        current_effective_date = str(columns.get("effective_date") or "").strip()
+        explicit_new_effective_date = str((operation.new_row or {}).get("effective_date") or "").strip()
+        if (
+            table_id == WAGE_TABLE_ID
+            and _is_iso_date(patch_effective_date)
+            and _is_iso_date(current_effective_date)
+            and patch_effective_date > current_effective_date
+            and not explicit_new_effective_date
+        ):
+            supersede_mode = True
+
         merged_columns = dict(columns)
         for k, v in (operation.new_row or {}).items():
             merged_columns[str(k)] = v
-        row["columns"] = merged_columns
-        row["provenance"] = _merge_provenance(
-            existing=row.get("provenance") or [],
-            incoming=entry.get("sources") or [],
-        )
-        amendments = list(row.get("amendments") or [])
-        if patch.patch_id not in amendments:
-            amendments.append(patch.patch_id)
-        row["amendments"] = amendments
+        if supersede_mode:
+            merged_columns["effective_date"] = patch_effective_date
+            new_row_key = _wage_row_key(merged_columns)
+            if any(
+                idx != row_idx and str(existing.get("row_key") or "") == new_row_key
+                for idx, existing in enumerate(rows)
+            ):
+                entry["diagnostics"] = {
+                    **dict(entry.get("diagnostics") or {}),
+                    "target_key": _table_row_target_key(table_id=table_id, row_key=row_key),
+                    "computed_new_row_key": new_row_key,
+                    "patch_effective_date": patch_effective_date,
+                    "current_effective_date": current_effective_date,
+                }
+                entry["errors"].append("supersede_row_key_conflict")
+                return
 
-        rows[row_idx] = row
+            cloned_row = copy.deepcopy(row)
+            cloned_row["row_key"] = new_row_key
+            cloned_row["columns"] = merged_columns
+            cloned_row["provenance"] = _merge_provenance(
+                existing=cloned_row.get("provenance") or [],
+                incoming=entry.get("sources") or [],
+            )
+            amendments = list(cloned_row.get("amendments") or [])
+            if patch.patch_id not in amendments:
+                amendments.append(patch.patch_id)
+            cloned_row["amendments"] = amendments
+            rows.append(cloned_row)
+            entry["diagnostics"] = {
+                **dict(entry.get("diagnostics") or {}),
+                "supersede_mode": True,
+                "historical_row_key": row_key,
+                "new_row_key": new_row_key,
+                "patch_effective_date": patch_effective_date,
+            }
+            entry["after_hash"] = self.hash_row(merged_columns)
+            entry["applied"] = True
+            applied_by_target[_table_row_target_key(table_id=table_id, row_key=new_row_key)] = {
+                "patch_id": patch.patch_id,
+                "op_id": str(entry.get("op_id") or ""),
+            }
+        else:
+            row["columns"] = merged_columns
+            if table_id == WAGE_TABLE_ID and str(merged_columns.get("effective_date") or "").strip() != row_key.rsplit("|", 1)[-1]:
+                row["row_key"] = _wage_row_key(merged_columns)
+            row["provenance"] = _merge_provenance(
+                existing=row.get("provenance") or [],
+                incoming=entry.get("sources") or [],
+            )
+            amendments = list(row.get("amendments") or [])
+            if patch.patch_id not in amendments:
+                amendments.append(patch.patch_id)
+            row["amendments"] = amendments
+
+            rows[row_idx] = row
+            entry["after_hash"] = self.hash_row(merged_columns)
+            entry["applied"] = True
+            applied_by_target[_table_row_target_key(table_id=table_id, row_key=str(row.get("row_key") or row_key))] = {
+                "patch_id": patch.patch_id,
+                "op_id": str(entry.get("op_id") or ""),
+            }
+
         table["rows"] = rows
         state["tables"][table_id] = table
-        entry["after_hash"] = self.hash_row(merged_columns)
-        entry["applied"] = True
-        applied_by_target[_table_row_target_key(table_id=table_id, row_key=row_key)] = {
-            "patch_id": patch.patch_id,
-            "op_id": str(entry.get("op_id") or ""),
-        }
 
 
 def materialize_contract(
@@ -419,6 +483,12 @@ def materialize_contract(
         effective_version_id=effective_version_id,
         amendments_applied=list(effective_state.get("amendments_applied") or []),
     )
+    manifest = _load_contract_manifest(contract_id)
+    entitlements_effective = extract_entitlements(
+        chunks=chunks_effective,
+        contract_id=contract_id,
+        manifest=manifest,
+    )
     markdown_effective = _build_effective_markdown(
         sections=effective_state.get("sections") or [],
         contract_id=contract_id,
@@ -440,9 +510,11 @@ def materialize_contract(
     patch_chain_path = version_dir / "patch_chain.json"
     chunks_path = index_dir / f"contract_chunks_enriched_{contract_id}.json"
     wages_path = index_dir / f"wage_tables_{contract_id}.json"
+    entitlements_path = index_dir / f"entitlement_tables_{contract_id}.json"
 
     chunks_bytes = _dump_json_bytes(chunks_effective)
     wages_bytes = _dump_json_bytes(wages_effective)
+    entitlements_bytes = _dump_json_bytes(entitlements_effective)
     markdown_bytes = markdown_effective.encode("utf-8")
     contract_bytes_for_hash = _dump_json_bytes(effective_contract_out)
     effective_content_hash = _compute_effective_content_hash(
@@ -450,6 +522,7 @@ def materialize_contract(
         markdown_bytes=markdown_bytes,
         chunks_bytes=chunks_bytes,
         wages_bytes=wages_bytes,
+        entitlements_bytes=entitlements_bytes,
     )
     effective_contract_out["effective_content_hash"] = effective_content_hash
     patch_chain_out = _build_patch_chain_manifest(
@@ -472,6 +545,7 @@ def materialize_contract(
         "effective_markdown_sha256": _sha256_bytes(markdown_bytes),
         "index_chunks_sha256": _sha256_bytes(chunks_bytes),
         "index_wages_sha256": _sha256_bytes(wages_bytes),
+        "index_entitlements_sha256": _sha256_bytes(entitlements_bytes),
         "patch_chain_sha256": _sha256_bytes(patch_chain_bytes),
     }
     build_log_bytes = _dump_json_bytes(build_log_out)
@@ -488,6 +562,8 @@ def materialize_contract(
         f.write(chunks_bytes)
     with open(wages_path, "wb") as f:
         f.write(wages_bytes)
+    with open(entitlements_path, "wb") as f:
+        f.write(entitlements_bytes)
 
     if write_latest_pointer:
         write_latest_effective_pointer(
@@ -506,6 +582,7 @@ def materialize_contract(
         "patch_chain_path": str(patch_chain_path),
         "index_chunks_path": str(chunks_path),
         "index_wages_path": str(wages_path),
+        "index_entitlements_path": str(entitlements_path),
         "amendments_applied": list(effective_state.get("amendments_applied") or []),
         "artifact_hashes": build_log_out["artifact_hashes"],
     }
@@ -520,27 +597,24 @@ def ensure_base_snapshot(contract_id: str) -> dict[str, Path]:
     base_wages = base_dir / "wage_tables.json"
     base_meta = base_dir / "base_metadata.json"
 
-    if not base_chunks.exists():
-        source_chunks = _discover_contract_chunk_source(contract_id)
-        if source_chunks is None:
-            raise FileNotFoundError(f"Unable to discover source chunks for contract_id={contract_id}")
-        shutil.copyfile(source_chunks, base_chunks)
+    source_chunks = _discover_contract_chunk_source(contract_id)
+    if source_chunks is None:
+        raise FileNotFoundError(f"Unable to discover source chunks for contract_id={contract_id}")
+    source_wages = _discover_contract_wage_source(contract_id)
+    if source_wages is None:
+        raise FileNotFoundError(f"Unable to discover source wages for contract_id={contract_id}")
 
-    if not base_wages.exists():
-        source_wages = _discover_contract_wage_source(contract_id)
-        if source_wages is None:
-            raise FileNotFoundError(f"Unable to discover source wages for contract_id={contract_id}")
-        shutil.copyfile(source_wages, base_wages)
+    _sync_base_snapshot_artifact(source_path=source_chunks, target_path=base_chunks)
+    _sync_base_snapshot_artifact(source_path=source_wages, target_path=base_wages)
 
-    if not base_meta.exists():
-        meta = {
-            "contract_id": contract_id,
-            "base_version_id": "base_snapshot_v0_9_0",
-            "base_chunks_sha256": _sha256_bytes(base_chunks.read_bytes()),
-            "base_wages_sha256": _sha256_bytes(base_wages.read_bytes()),
-        }
-        with open(base_meta, "wb") as f:
-            f.write(_dump_json_bytes(meta))
+    meta = {
+        "contract_id": contract_id,
+        "base_version_id": "base_snapshot_v0_9_0",
+        "base_chunks_sha256": _sha256_bytes(base_chunks.read_bytes()),
+        "base_wages_sha256": _sha256_bytes(base_wages.read_bytes()),
+    }
+    with open(base_meta, "wb") as f:
+        f.write(_dump_json_bytes(meta))
 
     return {
         "base_dir": base_dir,
@@ -643,6 +717,10 @@ def load_base_contract_state(contract_id: str, base_paths: dict[str, Path]) -> d
             "confidence": canonical.get("confidence"),
             "source_reference": canonical.get("source_reference") if isinstance(canonical.get("source_reference"), dict) else {},
         }
+        if canonical.get("selected_schedule_label") is not None:
+            columns["selected_schedule_label"] = canonical.get("selected_schedule_label")
+        if isinstance(canonical.get("source_rate_schedule"), dict):
+            columns["source_rate_schedule"] = copy.deepcopy(canonical.get("source_rate_schedule") or {})
         source_ref = columns.get("source_reference") or {}
         table_id = str(source_ref.get("table_id") or "").strip()
         page = (table_nav.get("table_pages") or {}).get(table_id) if table_id else None
@@ -680,8 +758,10 @@ def load_base_contract_state(contract_id: str, base_paths: dict[str, Path]) -> d
                     "rate",
                     "row_type",
                     "source_method",
-                    "confidence",
-                    "source_reference",
+                "confidence",
+                "source_reference",
+                "selected_schedule_label",
+                "source_rate_schedule",
                 ],
                 "rows": sorted(rows, key=lambda r: str(r.get("row_key") or "")),
             }
@@ -948,6 +1028,16 @@ def _discover_contract_chunk_source(contract_id: str) -> Optional[Path]:
         if path.exists():
             return path
     return None
+
+
+def _sync_base_snapshot_artifact(source_path: Path, target_path: Path) -> None:
+    if target_path.exists():
+        try:
+            if _sha256_bytes(source_path.read_bytes()) == _sha256_bytes(target_path.read_bytes()):
+                return
+        except Exception:
+            pass
+    shutil.copyfile(source_path, target_path)
 
 
 def _discover_contract_wage_source(contract_id: str) -> Optional[Path]:
@@ -1234,8 +1324,12 @@ def _build_effective_wages_data(
             "row_key": str(row.get("row_key") or _wage_row_key(columns)),
             "provenance": row.get("provenance") or [],
             "effective_version_id": effective_version_id,
-            "amendments_applied": list(amendments_applied),
+            "amendments_applied": list(row.get("amendments") or []),
         }
+        if columns.get("selected_schedule_label") is not None:
+            canonical["selected_schedule_label"] = columns.get("selected_schedule_label")
+        if isinstance(columns.get("source_rate_schedule"), dict):
+            canonical["source_rate_schedule"] = copy.deepcopy(columns.get("source_rate_schedule") or {})
         key = (class_key, step_name, step_type, threshold, effective_date)
         row_map[key] = canonical
 
@@ -1425,6 +1519,11 @@ def _to_int(value: Any) -> Optional[int]:
     return parsed
 
 
+def _is_iso_date(value: Any) -> bool:
+    text = str(value or "").strip()
+    return bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", text))
+
+
 def _dump_json_bytes(payload: Any) -> bytes:
     return (json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
@@ -1462,6 +1561,7 @@ def _compute_effective_content_hash(
     markdown_bytes: bytes,
     chunks_bytes: bytes,
     wages_bytes: bytes,
+    entitlements_bytes: bytes,
 ) -> str:
     digest = hashlib.sha256()
     parts = [
@@ -1469,6 +1569,7 @@ def _compute_effective_content_hash(
         ("effective_markdown", markdown_bytes),
         ("index_chunks", chunks_bytes),
         ("index_wages", wages_bytes),
+        ("index_entitlements", entitlements_bytes),
     ]
     for name, payload in parts:
         digest.update(name.encode("utf-8"))
@@ -1476,3 +1577,19 @@ def _compute_effective_content_hash(
         digest.update(hashlib.sha256(payload).digest())
         digest.update(b"\n")
     return digest.hexdigest()
+
+
+def _load_contract_manifest(contract_id: str) -> Optional[dict[str, Any]]:
+    manifest_path = DATA_DIR / "manifests" / f"{contract_id}.json"
+    if not manifest_path.exists():
+        manifest_path = DATA_DIR / "contracts" / contract_id / "manifests" / f"{contract_id}.json"
+    if not manifest_path.exists():
+        return None
+    try:
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+    except Exception:
+        return None
+    if not isinstance(payload, dict):
+        return None
+    return payload

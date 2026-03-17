@@ -118,6 +118,11 @@ def run(skip_topic_routing_in_readiness: bool = False) -> dict[str, Any]:
             "result_file": DATA_DIR / "test_set" / "effective_snapshot_coverage_results.json",
         },
         {
+            "name": "effective_wage_snapshot_coverage",
+            "cmd": [py, "-m", "backend.evaluate_effective_wage_coverage"],
+            "result_file": DATA_DIR / "test_set" / "effective_wage_snapshot_coverage_results.json",
+        },
+        {
             "name": "false_unavailable_fallback_test",
             "cmd": [py, "-m", "backend.test_false_unavailable_fallback"],
             "result_file": None,

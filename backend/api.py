@@ -43,12 +43,15 @@ from backend.contracts import (
 )
 from backend.retrieval.router import (
     HybridRetriever,
+    build_followup_routing_plan,
     classify_intent,
     ensure_contract_manifest,
+    is_followup_query_text,
     VACATION_ENTITLEMENT_QUERY_PATTERN,
 )
 from backend.retrieval.vector_store import ContractVectorStore
 from backend.chunk_files import resolve_chunk_file
+from backend.wage_files import resolve_wage_file
 from backend.contract_outline import (
     resolve_contract_outline_file,
     load_contract_outline,
@@ -88,8 +91,11 @@ from backend.user.profile import (
     update_user_profile,
     estimate_hours_worked,
     get_classification_options,
+    get_role_clarification,
+    resolve_classification_option,
     resolve_classification_display_name,
 )
+from backend.karl_docs import get_karl_document, get_karl_info
 
 # Global instances
 retriever = None
@@ -128,6 +134,31 @@ _TOPIC_RECOVERY_SIGNALS = {
     "bereavement": ("bereavement", "funeral", "death"),
     "premiums": ("premium", "premiums", "night premium", "sunday premium", "holiday premium"),
 }
+_FOLLOWUP_REFERENCE_TOKENS = {
+    "that", "them", "it", "they", "this", "those", "same", "one",
+}
+_NUMBER_WORDS = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+    "fourteen": 14,
+    "fifteen": 15,
+    "sixteen": 16,
+    "seventeen": 17,
+    "eighteen": 18,
+    "nineteen": 19,
+    "twenty": 20,
+}
 
 _FOREIGN_CONTRACT_UNAVAILABLE_ANSWER = (
     "I cannot find that specific information in your contract. "
@@ -138,6 +169,659 @@ _FOREIGN_CONTRACT_UNAVAILABLE_ANSWER = (
 
 def _normalize_text_token_space(text: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", str(text or "").lower())).strip()
+
+
+def _parse_article_numbers(citations: list[str]) -> list[int]:
+    articles: list[int] = []
+    seen: set[int] = set()
+    for citation in citations or []:
+        for match in re.finditer(r"\barticle\s+(\d+)\b", str(citation or ""), flags=re.IGNORECASE):
+            article = int(match.group(1))
+            if article in seen:
+                continue
+            seen.add(article)
+            articles.append(article)
+    return articles
+
+
+def _is_followup_query(text: str) -> bool:
+    return is_followup_query_text(text)
+
+
+def _build_followup_routing_query(
+    question: str,
+    prior_topic: Optional[str],
+    prior_citations: list[str],
+) -> str:
+    return build_followup_routing_plan(
+        question=question,
+        prior_topic=prior_topic,
+        prior_citations=prior_citations,
+        prior_article_anchors=[],
+    ).routing_query
+
+
+def _parse_number_token(raw: Optional[str]) -> Optional[int]:
+    value = str(raw or "").strip().lower()
+    if not value:
+        return None
+    if value.isdigit():
+        return int(value)
+    return _NUMBER_WORDS.get(value)
+
+
+def _estimate_hours_for_employment_type(months_employed: int, employment_type: str) -> Optional[int]:
+    months_value = int(months_employed or 0)
+    if months_value <= 0:
+        return None
+    normalized = str(employment_type or "").strip().lower()
+    weekly_hours = 36 if normalized == EmploymentType.FULL_TIME.value else 20
+    return int(months_value * 4.33 * weekly_hours)
+
+
+def _vacation_followup_overrides(
+    question: str,
+    months_employed: int,
+    hours_worked: int,
+    user_profile: Optional[dict],
+    used_profile_hour_estimate: bool,
+) -> tuple[int, int, list[str]]:
+    normalized = _normalize_text_token_space(question)
+    base_months = int(months_employed or 0)
+    resolved_months = int(months_employed or 0)
+    resolved_hours = int(hours_worked or 0)
+    notes: list[str] = []
+
+    duration_match = re.search(
+        r"\b(?P<count>\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|"
+        r"thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty)\s+"
+        r"(?P<unit>year|years|yr|yrs|month|months)\b",
+        normalized,
+    )
+    if duration_match:
+        count = _parse_number_token(duration_match.group("count"))
+        unit = str(duration_match.group("unit") or "")
+        if count is not None:
+            resolved_months = count * 12 if unit.startswith("y") else count
+            if unit.startswith("y"):
+                notes.append(f"Using {count} year{'s' if count != 1 else ''} of service for this follow-up.")
+            else:
+                notes.append(f"Using {count} month{'s' if count != 1 else ''} of service for this follow-up.")
+
+    hours_match = re.search(r"\b(\d[\d,]*)\s+hours?\b", normalized)
+    if hours_match:
+        resolved_hours = int(hours_match.group(1).replace(",", ""))
+        notes.append(f"Using {resolved_hours:,} hours for this follow-up.")
+    else:
+        employment_override = None
+        if re.search(r"\bfull\s*time\b", normalized):
+            employment_override = EmploymentType.FULL_TIME.value
+        elif re.search(r"\bpart\s*time\b", normalized):
+            employment_override = EmploymentType.PART_TIME.value
+
+        if employment_override:
+            estimated_hours = _estimate_hours_for_employment_type(resolved_months, employment_override)
+            if estimated_hours is not None:
+                resolved_hours = estimated_hours
+                weekly_hours = 36 if employment_override == EmploymentType.FULL_TIME.value else 20
+                notes.append(
+                    f"Estimated hours using a {employment_override.replace('_', '-') } schedule "
+                    f"(~{weekly_hours} hrs/week average)."
+                )
+        elif (
+            used_profile_hour_estimate
+            and resolved_months > 0
+            and re.search(r"\b(estimate|estimated|approximately|approx|hours|served)\b", normalized)
+        ):
+            profile_type = str((user_profile or {}).get("employment_type") or EmploymentType.PART_TIME.value)
+            estimated_hours = _estimate_hours_for_employment_type(resolved_months, profile_type)
+            if estimated_hours is not None:
+                resolved_hours = estimated_hours
+                weekly_hours = 36 if profile_type == EmploymentType.FULL_TIME.value else 20
+                notes.append(
+                    f"Estimated hours from your current {profile_type.replace('_', '-')} profile "
+                    f"(~{weekly_hours} hrs/week average)."
+                )
+        elif used_profile_hour_estimate and resolved_months > 0 and resolved_months != base_months:
+            profile_type = str((user_profile or {}).get("employment_type") or EmploymentType.PART_TIME.value)
+            estimated_hours = _estimate_hours_for_employment_type(resolved_months, profile_type)
+            if estimated_hours is not None:
+                resolved_hours = estimated_hours
+                weekly_hours = 36 if profile_type == EmploymentType.FULL_TIME.value else 20
+                notes.append(
+                    f"Estimated hours for {resolved_months // 12 if resolved_months % 12 == 0 else resolved_months} "
+                    f"{'years of service' if resolved_months % 12 == 0 else 'months of service'} using your current "
+                    f"{profile_type.replace('_', '-')} profile (~{weekly_hours} hrs/week average)."
+                )
+
+    return resolved_months, resolved_hours, notes
+
+
+def _should_run_vacation_followup_path(question: str, prior_topic: Optional[str]) -> bool:
+    if _is_vacation_entitlement_query(question):
+        return True
+    if str(prior_topic or "").strip().lower() != "vacation":
+        return False
+    normalized = _normalize_text_token_space(question)
+    if not normalized:
+        return False
+    if _is_followup_query(question):
+        return True
+    return bool(
+        re.search(r"\b(year|years|month|months|hour|hours|full time|part time|estimate|estimated|served)\b", normalized)
+    )
+
+
+def _normalize_classification_key(value: Optional[str]) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", str(value or "").strip().lower()).strip("_")
+
+
+def _looks_like_wage_progression_query(question: str) -> bool:
+    normalized = _normalize_text_token_space(question)
+    if not normalized:
+        return False
+    if re.search(r"\b(step|steps|tier|tiers|bracket|brackets|grade|grades|progression|appendix a)\b", normalized):
+        return True
+    if re.search(
+        r"\b(first|1st|second|2nd|third|3rd|fourth|4th|fifth|5th|sixth|6th|seventh|7th|eighth|8th|ninth|9th|tenth|10th)\b",
+        normalized,
+    ):
+        return True
+    question_lower = str(question or "").lower()
+    return bool(
+        re.search(r"\bnext\b.*\b(step|tier|bracket|grade|raise|bump)\b", normalized)
+        or re.search(r"\bhaven'?t\b.*\b(next|made|hit|reached)\b", question_lower)
+    )
+
+
+def _should_suppress_deterministic_wage_path(question: str, topic: Optional[str]) -> bool:
+    normalized = _normalize_text_token_space(question)
+    if not normalized:
+        return False
+    if _looks_like_wage_progression_query(question):
+        return False
+    topic_value = str(topic or "").strip().lower()
+    if topic_value in {"premiums", "overtime"}:
+        return True
+    if re.search(r"\b(night|premium|premiums|overtime|ot|sunday|holiday|midnight)\b", normalized):
+        personal_base_wage_signal = bool(
+            re.search(r"\b(my|me|i)\b", normalized)
+            and re.search(
+                r"\b(my pay|my wage|my hourly|pay rate|wage rate|hourly rate|what do i make|what am i making|what should i be making)\b",
+                normalized,
+            )
+        )
+        return not personal_base_wage_signal
+    return False
+
+
+def _should_run_wage_followup_path(
+    question: str,
+    prior_topic: Optional[str],
+    prior_artifact_type: Optional[str],
+) -> bool:
+    if _should_suppress_deterministic_wage_path(question, prior_topic):
+        return False
+    if _looks_like_wage_progression_query(question):
+        return True
+    prior_topic_value = str(prior_topic or "").strip().lower()
+    prior_artifact_value = str(prior_artifact_type or "").strip().lower()
+    if prior_topic_value not in {"wages", "wage"} and prior_artifact_value != "wage":
+        return False
+    return _is_followup_query(question)
+
+
+def _parse_progression_step_ordinal(question: str) -> Optional[int]:
+    normalized = _normalize_text_token_space(question)
+    if not normalized:
+        return None
+    match = re.search(
+        r"\b(?P<count>\d+|1st|2nd|3rd|4th|5th|6th|7th|8th|9th|10th|"
+        r"first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\b"
+        r"(?:\s+\w+){0,2}\s+\b(step|steps|tier|tiers|bracket|brackets|grade|grades)\b",
+        normalized,
+    )
+    if not match:
+        return None
+    token = str(match.group("count") or "").lower()
+    ordinal_words = {
+        "1st": 1,
+        "first": 1,
+        "2nd": 2,
+        "second": 2,
+        "3rd": 3,
+        "third": 3,
+        "4th": 4,
+        "fourth": 4,
+        "5th": 5,
+        "fifth": 5,
+        "6th": 6,
+        "sixth": 6,
+        "7th": 7,
+        "seventh": 7,
+        "8th": 8,
+        "eighth": 8,
+        "9th": 9,
+        "ninth": 9,
+        "10th": 10,
+        "tenth": 10,
+    }
+    if token.isdigit():
+        return int(token)
+    return ordinal_words.get(token)
+
+
+def _select_effective_wage_date(requested_date: Optional[str], available_dates: list[str]) -> Optional[str]:
+    normalized = sorted({str(date or "").strip() for date in (available_dates or []) if str(date or "").strip()})
+    if not normalized:
+        return None
+    if requested_date:
+        exact = str(requested_date).strip()
+        if exact in normalized:
+            return exact
+        prior_or_equal = [date for date in normalized if date <= exact]
+        if prior_or_equal:
+            return prior_or_equal[-1]
+    return normalized[-1]
+
+
+def _load_wage_progression_rows(
+    contract_id: str,
+    classification_key: str,
+    effective_date: Optional[str] = None,
+) -> list[dict]:
+    wages_path = resolve_wage_file(contract_id=contract_id, allow_shared_fallback=False) or resolve_wage_file(
+        contract_id=contract_id,
+        allow_shared_fallback=True,
+    )
+    if not wages_path or not wages_path.exists():
+        return []
+    try:
+        with open(wages_path, "r", encoding="utf-8") as f:
+            wages_data = json.load(f)
+    except Exception:
+        return []
+
+    normalized_key = _normalize_classification_key(classification_key)
+    canonical_rows = wages_data.get("canonical_wage_rows") or []
+    matched_canonical = [
+        row for row in canonical_rows
+        if _normalize_classification_key(row.get("classification_key")) == normalized_key
+    ]
+    available_dates = [str(row.get("effective_date") or "").strip() for row in matched_canonical if str(row.get("effective_date") or "").strip()]
+    available_dates.extend(str(date or "").strip() for date in (wages_data.get("effective_dates") or []) if str(date or "").strip())
+    selected_date = _select_effective_wage_date(effective_date, available_dates)
+    if matched_canonical and selected_date:
+        seen: set[tuple[str, str]] = set()
+        rows: list[dict] = []
+        for row in matched_canonical:
+            if str(row.get("effective_date") or "").strip() != selected_date:
+                continue
+            provenance = row.get("provenance") if isinstance(row.get("provenance"), list) else []
+            preferred_ref = _preferred_provenance_ref(provenance)
+            step_name = str(row.get("step_name") or "").strip()
+            key = (step_name.lower(), selected_date)
+            if not step_name or key in seen:
+                continue
+            seen.add(key)
+            rows.append(
+                {
+                    "classification": row.get("classification_name") or normalized_key,
+                    "classification_key": normalized_key,
+                    "step_name": step_name,
+                    "rate": row.get("rate"),
+                    "effective_date": selected_date,
+                    "table_id": row.get("table_id"),
+                    "row_index": row.get("row_index"),
+                    "source_method": row.get("source_method") or "wage_artifact",
+                    "threshold_value": row.get("threshold_value"),
+                    "step_type": row.get("step_type"),
+                    "citation": row.get("citation") or "Appendix A",
+                    "provenance": provenance,
+                    "source_type": preferred_ref.get("source_type"),
+                    "source_pdf": preferred_ref.get("pdf"),
+                    "source_page": preferred_ref.get("pdf_page"),
+                    "source_doc_id": preferred_ref.get("source_doc_id"),
+                    "selected_schedule_label": row.get("selected_schedule_label"),
+                    "source_rate_schedule": dict(row.get("source_rate_schedule") or {})
+                    if isinstance(row.get("source_rate_schedule"), dict)
+                    else {},
+                }
+            )
+        rows.sort(key=lambda row: (float(row.get("threshold_value") or 0), str(row.get("step_name") or "").lower()))
+        if rows:
+            return rows
+
+    classes = wages_data.get("classifications") or {}
+    class_data = classes.get(normalized_key) or {}
+    steps = class_data.get("steps") or []
+    if not steps:
+        return []
+    rows = []
+    for idx, step in enumerate(steps):
+        rate_map = step.get("rates") or {}
+        row_effective_date = _select_effective_wage_date(effective_date, list(rate_map.keys())) or effective_date
+        rate = rate_map.get(row_effective_date) if row_effective_date else None
+        if rate is None and rate_map:
+            row_effective_date = sorted(rate_map.keys())[-1]
+            rate = rate_map.get(row_effective_date)
+        rows.append(
+            {
+                "classification": class_data.get("name") or normalized_key,
+                "classification_key": normalized_key,
+                "step_name": step.get("step_name") or f"Step {idx + 1}",
+                "rate": rate,
+                "effective_date": row_effective_date,
+                "table_id": None,
+                "row_index": idx,
+                "source_method": "wage_artifact",
+                "threshold_value": step.get("hours_required") if step.get("hours_required") is not None else step.get("months_required"),
+                "step_type": "hours" if step.get("hours_required") is not None else ("months" if step.get("months_required") is not None else "fixed"),
+                "citation": "Appendix A",
+            }
+        )
+    return rows
+
+
+def _preferred_provenance_ref(provenance: Optional[list[dict]]) -> dict:
+    refs = provenance if isinstance(provenance, list) else []
+    normalized_refs = [ref for ref in refs if isinstance(ref, dict)]
+    if not normalized_refs:
+        return {}
+
+    def _rank(ref: dict) -> tuple[int, int]:
+        source_type = str(ref.get("source_type") or "").strip().lower()
+        pdf_name = str(ref.get("pdf") or "").strip().lower()
+        is_moa = int("moa" in source_type or "amend" in source_type or "moa" in pdf_name)
+        has_page = int(ref.get("pdf_page") not in (None, "", 0))
+        return (is_moa, has_page)
+
+    return sorted(normalized_refs, key=_rank, reverse=True)[0]
+
+
+def _wage_row_source_fields(row: dict) -> dict:
+    preferred_ref = _preferred_provenance_ref(row.get("provenance"))
+    return {
+        "provenance": row.get("provenance") if isinstance(row.get("provenance"), list) else [],
+        "source_type": row.get("source_type") or preferred_ref.get("source_type"),
+        "source_pdf": row.get("source_pdf") or preferred_ref.get("pdf"),
+        "source_page": row.get("source_page") if row.get("source_page") is not None else preferred_ref.get("pdf_page"),
+        "source_doc_id": row.get("source_doc_id") or preferred_ref.get("source_doc_id"),
+        "selected_schedule_label": str(row.get("selected_schedule_label") or "").strip() or None,
+        "source_rate_schedule": dict(row.get("source_rate_schedule") or {})
+        if isinstance(row.get("source_rate_schedule"), dict)
+        else {},
+    }
+
+
+def _wage_context_from_info(wage_info: Optional[dict]) -> Optional[dict]:
+    if not isinstance(wage_info, dict) or not wage_info:
+        return None
+    return {
+        "classification": wage_info.get("classification"),
+        "classification_key": wage_info.get("classification_key"),
+        "step": wage_info.get("step"),
+        "rate": wage_info.get("rate"),
+        "effective_date": wage_info.get("effective_date"),
+        "citation": wage_info.get("citation"),
+        "selected_schedule_label": wage_info.get("selected_schedule_label"),
+        "next_step": wage_info.get("next_step"),
+        "next_rate": wage_info.get("next_rate"),
+        "hours_to_next": wage_info.get("hours_to_next"),
+        "table_evidence": list(wage_info.get("table_evidence") or []),
+    }
+
+
+def _build_wage_progression_followup(
+    question: str,
+    contract_id: str,
+    current_wage_info: dict,
+) -> Optional[dict]:
+    classification_key = _normalize_classification_key(
+        current_wage_info.get("classification_key") or current_wage_info.get("classification")
+    )
+    if not classification_key:
+        return None
+    rows = _load_wage_progression_rows(
+        contract_id=contract_id,
+        classification_key=classification_key,
+        effective_date=str(current_wage_info.get("effective_date") or "").strip() or None,
+    )
+    if not rows:
+        return None
+
+    citation = str(current_wage_info.get("citation") or "Appendix A")
+    classification_label = str(
+        current_wage_info.get("classification")
+        or current_wage_info.get("classification_key")
+        or classification_key
+    )
+    current_step = str(current_wage_info.get("step") or "").strip().lower()
+    current_index = next(
+        (
+            idx for idx, row in enumerate(rows)
+            if str(row.get("step_name") or "").strip().lower() == current_step
+        ),
+        0,
+    )
+
+    ordinal = _parse_progression_step_ordinal(question)
+    if ordinal is not None and 1 <= ordinal <= len(rows):
+        suffix = "th"
+        if ordinal % 10 == 1 and ordinal % 100 != 11:
+            suffix = "st"
+        elif ordinal % 10 == 2 and ordinal % 100 != 12:
+            suffix = "nd"
+        elif ordinal % 10 == 3 and ordinal % 100 != 13:
+            suffix = "rd"
+        target = rows[ordinal - 1]
+        target_rate = float(target.get("rate") or 0.0)
+        target_effective = _format_iso_date(str(target.get("effective_date") or ""))
+        answer = (
+            f"Based on {citation}, the {ordinal}{suffix} progression step for {classification_label} "
+            f"is {target.get('step_name')} at ${target_rate:.2f} per hour"
+        )
+        if target_effective:
+            answer += f", effective {target_effective}"
+        answer += "."
+        synthetic_wage = {
+            "classification": classification_label,
+            "classification_key": classification_key,
+            "step": target.get("step_name"),
+            "rate": target_rate,
+            "effective_date": target.get("effective_date"),
+            "citation": target.get("citation") or citation,
+            "source_method": target.get("source_method") or "wage_artifact",
+            "table_evidence": [target],
+        }
+        return {
+            "answer": answer,
+            "sources": _wage_sources(synthetic_wage),
+            "wage_context": _wage_context_from_info(synthetic_wage),
+        }
+
+    question_lower = str(question or "").lower()
+    if (
+        re.search(r"\bnext\b", question_lower)
+        or re.search(r"\bhaven'?t\b", question_lower)
+        or re.search(r"\bmade the next\b", question_lower)
+        or re.search(r"\bmove up\b", question_lower)
+    ):
+        if current_index >= len(rows) - 1:
+            current_rate = float(current_wage_info.get("rate") or 0.0)
+            answer = (
+                f"Based on {citation}, you are already at the top listed progression step for "
+                f"{classification_label}: {current_wage_info.get('step')} at ${current_rate:.2f} per hour."
+            )
+            return {
+                "answer": answer,
+                "sources": _wage_sources(current_wage_info),
+                "wage_context": _wage_context_from_info(current_wage_info),
+            }
+
+        next_row = rows[current_index + 1]
+        current_rate = float(current_wage_info.get("rate") or 0.0)
+        next_rate = float(next_row.get("rate") or current_wage_info.get("next_rate") or 0.0)
+        answer = (
+            f"Based on {citation}, your current progression step for {classification_label} is "
+            f"{current_wage_info.get('step')} at ${current_rate:.2f} per hour. "
+            f"The next step is {next_row.get('step_name')} at ${next_rate:.2f} per hour"
+        )
+        hours_to_next = current_wage_info.get("hours_to_next")
+        if isinstance(hours_to_next, int) and hours_to_next > 0:
+            answer += f" once you reach about {hours_to_next:,} more worked hours"
+        elif next_row.get("threshold_value") is not None:
+            threshold_label = "hours worked" if str(next_row.get("step_type") or "").lower() == "hours" else "months of service"
+            answer += f" once you reach the {int(next_row.get('threshold_value') or 0):,} {threshold_label} threshold"
+        answer += "."
+        current_rows = list(current_wage_info.get("table_evidence") or [])
+        if not current_rows:
+            current_rows = [rows[current_index]]
+        synthetic_wage = dict(current_wage_info)
+        synthetic_wage["table_evidence"] = current_rows[:1] + [next_row]
+        return {
+            "answer": answer,
+            "sources": _wage_sources(synthetic_wage),
+            "wage_context": _wage_context_from_info(current_wage_info),
+        }
+
+    return None
+
+
+def _build_wage_answer(
+    wage_info: dict,
+    is_estimate: bool = False,
+    hours_worked: int = 0,
+    months_employed: int = 0,
+) -> str:
+    classification = str(wage_info.get("classification") or wage_info.get("classification_key") or "your classification")
+    step = str(wage_info.get("step") or "current step")
+    rate = float(wage_info.get("rate") or 0.0)
+    citation = str(wage_info.get("citation") or "Appendix A")
+    effective_date = _format_iso_date(str(wage_info.get("effective_date") or ""))
+    selected_schedule_label = str(wage_info.get("selected_schedule_label") or "").strip()
+    schedule_note = f" using the {selected_schedule_label} wage schedule" if selected_schedule_label else ""
+    answer = (
+        f"Based on {citation}{schedule_note}, the contractual wage for {classification} at {step} is "
+        f"${rate:.2f} per hour"
+    )
+    if effective_date:
+        answer += f", effective {effective_date}"
+    answer += "."
+    if is_estimate:
+        details: list[str] = []
+        if months_employed > 0:
+            details.append(f"about {months_employed} months employed")
+        if hours_worked > 0:
+            details.append(f"about {hours_worked:,} total hours worked")
+        if details:
+            answer += " This is an estimate based on " + " and ".join(details) + "."
+        else:
+            answer += " This is an estimate based on your profile tenure."
+        answer += " Your exact rate depends on your actual progression hours."
+    return answer
+
+
+def _wage_sources(wage_info: dict) -> list[dict]:
+    sources: list[dict] = []
+    evidence_rows = list(wage_info.get("table_evidence") or [])
+    citation = str(wage_info.get("citation") or "Appendix A")
+    if not evidence_rows:
+        return [
+            {
+                "citation": citation,
+                "article_num": None,
+                "section_num": None,
+                "content": (
+                    f"{wage_info.get('classification') or wage_info.get('classification_key')}: "
+                    f"{wage_info.get('step')} at ${float(wage_info.get('rate') or 0.0):.2f}/hour"
+                ),
+                "source_method": str(wage_info.get("source_method") or "wage_artifact"),
+            }
+        ]
+
+    for row in evidence_rows:
+        source_fields = _wage_row_source_fields(row if isinstance(row, dict) else {})
+        sources.append(
+            {
+                "citation": citation,
+                "article_num": None,
+                "section_num": None,
+                "content": (
+                    f"{wage_info.get('classification') or wage_info.get('classification_key')}: "
+                    f"{row.get('step_name') or wage_info.get('step')} at "
+                    f"${float(row.get('rate') or wage_info.get('rate') or 0.0):.2f}/hour "
+                    f"effective {row.get('effective_date') or wage_info.get('effective_date')}"
+                ),
+                "source_method": str(row.get("source_method") or wage_info.get("source_method") or "wage_artifact"),
+                "table_id": row.get("table_id"),
+                "row_index": row.get("row_index"),
+                "provenance": source_fields.get("provenance") or [],
+                "source_type": source_fields.get("source_type"),
+                "source_pdf": source_fields.get("source_pdf"),
+                "source_page": source_fields.get("source_page"),
+                "source_doc_id": source_fields.get("source_doc_id"),
+            }
+        )
+    return sources
+
+
+def _store_session_turn(
+    session_id: Optional[str],
+    question: str,
+    answer: str,
+    citations: list[str],
+    topic: Optional[str],
+    classification: Optional[str],
+    intent_type: str,
+    anchor_articles: list[int],
+    chunks: list[dict],
+    artifact_type: str,
+    retrieval_strategy: Optional[str] = None,
+    followup_context_used: bool = False,
+    retrieval_anchor_count: int = 0,
+    retrieval_retry_used: bool = False,
+    retrieval_plan: Optional[dict] = None,
+    routing_question: Optional[str] = None,
+    wage_context: Optional[dict] = None,
+) -> None:
+    if not session_id:
+        return
+    ctx = get_session_context(session_id)
+    cited_articles = _parse_article_numbers(citations)
+    if cited_articles:
+        anchor_articles = _normalize_article_anchors(list(anchor_articles or []) + cited_articles)
+    retrieval_context = {
+        "topic": topic,
+        "intent_type": intent_type,
+        "article_anchors": list(anchor_articles or []),
+        "chunk_ids": [
+            str(chunk.get("chunk_id") or chunk.get("citation") or "").strip()
+            for chunk in (chunks or [])[:8]
+            if str(chunk.get("chunk_id") or chunk.get("citation") or "").strip()
+        ],
+        "artifact_type": artifact_type,
+        "retrieval_strategy": str(retrieval_strategy or "global_default"),
+        "followup_context_used": bool(followup_context_used),
+        "retrieval_anchor_count": max(0, int(retrieval_anchor_count or 0)),
+        "retrieval_retry_used": bool(retrieval_retry_used),
+    }
+    if routing_question and routing_question != question:
+        retrieval_context["routing_question"] = str(routing_question).strip()
+    if retrieval_plan:
+        retrieval_context["retrieval_plan"] = dict(retrieval_plan)
+    if wage_context:
+        retrieval_context["wage_context"] = dict(wage_context)
+    ctx.add_turn(
+        question=question,
+        answer=answer,
+        citations=citations,
+        detected_entities={
+            "topic": topic,
+            "classification": classification,
+        },
+        retrieval_context=retrieval_context,
+    )
 
 
 def _contract_aliases(contract_id: str) -> set[str]:
@@ -207,13 +891,16 @@ def _mentions_foreign_contract_context(question: str, active_contract_id: str) -
 
 def _classification_option_for_contract(contract_id: str, classification: Optional[str]) -> Optional[dict]:
     """Resolve a classification option record for contract-scoped guardrails."""
-    value = str(classification or "").strip().lower()
-    if not value:
-        return None
-    for opt in get_classification_options(contract_id=contract_id, include_unmapped=True):
-        if str(opt.get("value") or "").strip().lower() == value:
-            return opt
-    return None
+    return resolve_classification_option(contract_id=contract_id, classification=classification)
+
+
+def _build_role_clarification_answer(role_clarification: Optional[dict]) -> str:
+    """Render a deterministic clarification response for ambiguous role selections."""
+    payload = role_clarification or {}
+    message = str(payload.get("message") or "").strip()
+    if message:
+        return message
+    return "I need your exact classification before I can apply the right contract rules."
 
 
 def get_genai_client():
@@ -616,16 +1303,24 @@ def _build_vacation_entitlement_answer(entitlement_info: dict) -> str:
     years = entitlement_info.get("years_completed")
     weeks = entitlement_info.get("estimated_weeks_per_year")
     citation = str(entitlement_info.get("citation") or selected.get("citation") or "Article 17")
+    assumption_notes = [
+        str(note).strip()
+        for note in (entitlement_info.get("assumption_notes") or [])
+        if str(note).strip()
+    ]
 
     if selected and weeks is not None and years is not None:
         cond_text = _format_vacation_conditions(selected.get("conditions") or {})
         tier_text = _format_vacation_tiers(selected.get("tiers") or [])
-        return (
+        answer = (
             f"Based on {citation}, at {months} months of service ({years} completed years), "
             f"your vacation accrual is {weeks} week{'s' if weeks != 1 else ''} per year "
             f"under the schedule for employees with {cond_text}. "
             f"Vacation ladder: {tier_text}."
         )
+        if assumption_notes:
+            answer += " " + " ".join(assumption_notes)
+        return answer
 
     if considered:
         schedule_lines = []
@@ -635,11 +1330,14 @@ def _build_vacation_entitlement_answer(entitlement_info: dict) -> str:
                 f"{_format_vacation_conditions(s.get('conditions') or {})}; "
                 f"{_format_vacation_tiers(s.get('tiers') or [])}"
             )
-        return (
+        answer = (
             "Your contract includes these vacation accrual schedules. "
             "I need your hire date (and anniversary-year hours if close to thresholds) to pick one schedule exactly:\n"
             + "\n".join(schedule_lines)
         )
+        if assumption_notes:
+            answer += "\n" + "\n".join(f"- {note}" for note in assumption_notes)
+        return answer
 
     return (
         "I found vacation article coverage, but I could not deterministically resolve "
@@ -723,6 +1421,8 @@ class QueryRequest(BaseModel):
     hours_worked: int = Field(0, description="Total hours worked (for wage calculations)")
     months_employed: int = Field(0, description="Months employed (for courtesy clerk wages)")
     session_id: Optional[str] = Field(None, description="Session ID for conversation context")
+    response_tone: Optional[str] = Field(None, description="Optional preferred answer tone")
+    response_verbosity: Optional[str] = Field(None, description="Optional preferred answer verbosity")
 
 
 class WageLookupRequest(BaseModel):
@@ -760,6 +1460,7 @@ class QueryResponse(BaseModel):
     escalation_policy: Optional[str] = None
     wage_info: Optional[dict] = None
     entitlement_info: Optional[dict] = None
+    role_clarification: Optional[dict] = None
     confidence: float
     verification_passed: bool
     # CAG (Context-Aware Generation) metrics
@@ -773,6 +1474,11 @@ class QueryResponse(BaseModel):
     # Interpreter metrics (Phase 4)
     interpretation_latency_ms: Optional[float] = Field(None, description="Latency of query interpretation in ms")
     search_angles_used: Optional[int] = Field(None, description="Number of search angles tried")
+    retrieval_strategy: Optional[str] = Field(None, description="Retrieval policy label used for this answer")
+    followup_context_used: bool = Field(False, description="Whether prior-turn topic or article context was reused")
+    retrieval_anchor_count: Optional[int] = Field(None, description="Number of prior article anchors reused")
+    retrieval_retry_used: bool = Field(False, description="Whether a retrieval retry path ran")
+    retrieval_plan: Optional[dict] = Field(None, description="Router-owned retrieval plan metadata for this answer")
 
 
 class WageResponse(BaseModel):
@@ -813,6 +1519,25 @@ class ContractsResponse(BaseModel):
     default_contract_id: Optional[str] = None
     contracts: list[ContractOption]
 
+
+class KarlDocumentSummaryResponse(BaseModel):
+    id: str
+    title: str
+    path: str
+
+
+class KarlInfoResponse(BaseModel):
+    version: str
+    release_channel: str
+    documents: list[KarlDocumentSummaryResponse]
+
+
+class KarlDocumentResponse(BaseModel):
+    id: str
+    title: str
+    path: str
+    content: str
+
 class OnboardingOptionsResponse(BaseModel):
     """Available options for onboarding form."""
     classifications: list[dict]
@@ -829,6 +1554,12 @@ class ClassificationOption(BaseModel):
     wage_available: bool = True
     wage_key: Optional[str] = None
     source: Optional[str] = None
+    alias_labels: list[str] = Field(default_factory=list)
+    onboarding_default: bool = True
+    manifest_present: Optional[bool] = None
+    role_family: Optional[str] = None
+    role_confidence: Optional[str] = None
+    requires_role_clarification: bool = False
 
 
 class ClassificationsResponse(BaseModel):
@@ -860,6 +1591,7 @@ class ProfileResponse(BaseModel):
     is_grandfathered: Optional[bool] = None
     is_complete: bool = False
     employer: str = ""
+    role_clarification: Optional[dict] = None
 
 
 class WageEstimateResponse(BaseModel):
@@ -998,6 +1730,23 @@ async def get_contracts():
     )
 
 
+@app.get("/api/karl/info", response_model=KarlInfoResponse)
+async def get_karl_runtime_info():
+    """Expose KARL version metadata and allowlisted markdown docs."""
+    return KarlInfoResponse(**get_karl_info())
+
+
+@app.get("/api/karl/doc/{doc_id}", response_model=KarlDocumentResponse)
+async def get_karl_runtime_doc(doc_id: str):
+    """Return an allowlisted KARL markdown document for auditability."""
+    try:
+        return KarlDocumentResponse(**get_karl_document(doc_id))
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=f"Unknown KARL document '{doc_id}'.") from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"KARL document missing: {exc}.") from exc
+
+
 # =============================================================================
 # ONBOARDING & PROFILE ENDPOINTS
 # =============================================================================
@@ -1020,7 +1769,7 @@ async def get_onboarding_options():
 
 
 @app.get("/api/classifications", response_model=ClassificationsResponse)
-async def get_classifications(contract_id: Optional[str] = None):
+async def get_classifications(contract_id: Optional[str] = None, include_unmapped: bool = False):
     """Get contract-scoped job classifications for onboarding/settings UI."""
     effective_contract_id = contract_id or resolve_default_contract_id()
     if not effective_contract_id:
@@ -1033,7 +1782,10 @@ async def get_classifications(contract_id: Optional[str] = None):
         effective_contract_id
     )
 
-    options = get_classification_options(contract_id=effective_contract_id)
+    options = get_classification_options(
+        contract_id=effective_contract_id,
+        include_unmapped=include_unmapped,
+    )
     return ClassificationsResponse(
         contract_id=effective_contract_id,
         classifications=[ClassificationOption(**o) for o in options],
@@ -1061,6 +1813,7 @@ async def get_profile(session_id: str):
         is_grandfathered=profile.is_grandfathered,
         is_complete=profile.is_complete,
         employer=profile.employer,
+        role_clarification=get_role_clarification(profile.contract_id, profile.classification),
     )
 
 
@@ -1068,12 +1821,23 @@ async def get_profile(session_id: str):
 async def update_profile(session_id: str, request: ProfileUpdateRequest):
     """Update user profile."""
     updates = request.model_dump(exclude_none=True)
+    current_profile = get_user_profile(session_id)
     if "contract_id" in updates:
         contract_id = updates["contract_id"]
         try:
             ensure_contract_manifest(contract_id)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
+    effective_contract_id = str(updates.get("contract_id") or current_profile.contract_id or "").strip()
+    role_clarification = None
+    if effective_contract_id and "classification" in updates:
+        role_clarification = get_role_clarification(
+            effective_contract_id,
+            updates.get("classification"),
+        )
+        if role_clarification:
+            updates = {k: v for k, v in updates.items() if k != "classification"}
+
     profile = update_user_profile(session_id, updates)
 
     return ProfileResponse(
@@ -1092,6 +1856,7 @@ async def update_profile(session_id: str, request: ProfileUpdateRequest):
         is_grandfathered=profile.is_grandfathered,
         is_complete=profile.is_complete,
         employer=profile.employer,
+        role_clarification=role_clarification or get_role_clarification(profile.contract_id, profile.classification),
     )
 
 
@@ -1260,6 +2025,24 @@ async def query_contract(request: QueryRequest):
     detected_entities = {}
     user_profile = None
     is_wage_estimate = False
+    used_profile_hour_estimate = False
+    hypothesis_titles = None
+    hypothesis_latency_ms = None
+    full_article_expanded = None
+    winning_article = None
+    reranker_latency_ms = None
+    reranker_position_changes = None
+    interpretation_latency_ms = None
+    search_angles_used = 0
+    retrieval_strategy = "global_default"
+    followup_context_used = False
+    retrieval_anchor_count = 0
+    retrieval_retry_used = False
+    routing_question = request.question
+    followup_topic = None
+    followup_anchor_articles: list[int] = []
+    followup_plan: Optional[dict] = None
+    prior_citations: list[str] = []
 
     if request.session_id:
         # Get user profile
@@ -1275,18 +2058,45 @@ async def query_contract(request: QueryRequest):
         # Get conversation context
         ctx = get_session_context(request.session_id)
         conversation_context = ctx.get_full_context()
+        prior_citations = ctx.get_last_citations()
+        previous_retrieval_context = ctx.get_last_retrieval_context()
+        followup_topic = (
+            str(previous_retrieval_context.get("topic") or "").strip().lower()
+            or str(ctx.get_last_topic() or "").strip().lower()
+            or None
+        )
+        previous_artifact_type = str(previous_retrieval_context.get("artifact_type") or "").strip().lower() or None
+        previous_wage_context = dict(previous_retrieval_context.get("wage_context") or {})
+        followup_anchor_articles = _normalize_article_anchors(
+            list(previous_retrieval_context.get("article_anchors") or [])
+            + _parse_article_numbers(prior_citations)
+        )
 
-        # If this seems like a follow-up question, use context from previous turns
-        followup_indicators = ["them", "that", "it", "they", "this", "those", "the same"]
-        is_followup = any(ind in request.question.lower() for ind in followup_indicators)
+        # Let the router own follow-up routing/query rewriting policy.
+        followup_plan = build_followup_routing_plan(
+            question=request.question,
+            prior_topic=followup_topic,
+            prior_citations=prior_citations,
+            prior_article_anchors=followup_anchor_articles,
+        ).to_dict()
+        followup_anchor_articles = _normalize_article_anchors(list(followup_plan.get("article_anchors") or []))
+        if bool(followup_plan.get("followup_context_used")):
+            detected_entities["topic"] = followup_topic
+            followup_context_used = True
+            retrieval_anchor_count = len(followup_anchor_articles)
+            retrieval_strategy = str(followup_plan.get("strategy") or retrieval_strategy)
+            routing_question = str(followup_plan.get("routing_query") or request.question)
 
-        if is_followup and ctx.get_last_topic():
-            detected_entities["topic"] = ctx.get_last_topic()
+    else:
+        previous_artifact_type = None
+        previous_wage_context = {}
 
     # Use profile classification if not explicitly provided
     effective_classification = request.user_classification
     if not effective_classification and user_profile:
         effective_classification = user_profile.get("classification")
+    if not effective_classification and request.session_id:
+        effective_classification = get_session_context(request.session_id).get_last_classification()
 
     # Use profile hours/months if not explicitly provided
     hours_worked = request.hours_worked
@@ -1295,16 +2105,34 @@ async def query_contract(request: QueryRequest):
     if user_profile and hours_worked == 0:
         hours_worked = user_profile.get("estimated_hours") or 0
         is_wage_estimate = True  # Mark as estimate if using profile data
+        used_profile_hour_estimate = bool(hours_worked)
 
     if user_profile and months_employed == 0:
         months_employed = user_profile.get("months_employed") or 0
 
     # Classify intent with user's classification for role-based boosting
     intent = classify_intent(
-        request.question,
+        routing_question,
         user_classification=effective_classification,
         contract_id=effective_contract_id,
     )
+    if not effective_classification:
+        effective_classification = intent.classification
+    role_clarification = get_role_clarification(
+        effective_contract_id,
+        effective_classification or intent.classification,
+    )
+    if not role_clarification and intent.intent_type == "wage":
+        role_clarification = get_role_clarification(
+            effective_contract_id,
+            request.question,
+        )
+    if followup_topic and not intent.topic:
+        intent.topic = followup_topic
+    if followup_anchor_articles:
+        intent.relevant_articles = _normalize_article_anchors(
+            list(getattr(intent, "relevant_articles", []) or []) + list(followup_anchor_articles)
+        )
     foreign_contract_reference = _mentions_foreign_contract_context(
         request.question,
         effective_contract_id,
@@ -1346,6 +2174,68 @@ async def query_contract(request: QueryRequest):
             reranker_position_changes=None,
             interpretation_latency_ms=None,
             search_angles_used=None,
+            retrieval_strategy=retrieval_strategy,
+            followup_context_used=followup_context_used,
+            retrieval_anchor_count=retrieval_anchor_count,
+            retrieval_retry_used=retrieval_retry_used,
+        )
+
+    if intent.intent_type == "wage" and role_clarification:
+        answer = _build_role_clarification_answer(role_clarification)
+        verification = verify_response(
+            response=answer,
+            chunks=[],
+            requires_escalation=False,
+        )
+        _store_session_turn(
+            session_id=request.session_id,
+            question=request.question,
+            answer=answer,
+            citations=[],
+            topic=intent.topic,
+            classification=effective_classification or intent.classification,
+            intent_type=intent.intent_type,
+            anchor_articles=intent.relevant_articles,
+            chunks=[],
+            artifact_type="clarification",
+            retrieval_strategy=retrieval_strategy,
+            followup_context_used=followup_context_used,
+            retrieval_anchor_count=retrieval_anchor_count,
+            retrieval_retry_used=retrieval_retry_used,
+            routing_question=routing_question,
+        )
+        return QueryResponse(
+            answer=answer,
+            citations=[],
+            sources=[],
+            intent_type=intent.intent_type,
+            escalation_required=False,
+            union_local_id=request.union_local_id,
+            contract_id=effective_contract_id,
+            contract_version=request.contract_version,
+            effective_version_id=response_effective_version_id,
+            effective_content_hash=response_effective_content_hash,
+            amendments_applied=response_amendments,
+            high_stakes_topic=intent.high_stakes_topic,
+            active_urgent_context=intent.active_urgent_context,
+            escalation_policy=intent.escalation_policy,
+            wage_info=None,
+            entitlement_info=None,
+            role_clarification=role_clarification,
+            confidence=verification.confidence,
+            verification_passed=verification.is_valid,
+            hypothesis_titles=hypothesis_titles,
+            hypothesis_latency_ms=hypothesis_latency_ms,
+            full_article_expanded=full_article_expanded,
+            winning_article=winning_article,
+            reranker_latency_ms=reranker_latency_ms,
+            reranker_position_changes=reranker_position_changes,
+            interpretation_latency_ms=interpretation_latency_ms,
+            search_angles_used=search_angles_used,
+            retrieval_strategy=retrieval_strategy,
+            followup_context_used=followup_context_used,
+            retrieval_anchor_count=retrieval_anchor_count,
+            retrieval_retry_used=retrieval_retry_used,
         )
 
     # Deterministic guardrail: when a role is selected but has no Appendix A wage
@@ -1394,13 +2284,17 @@ async def query_contract(request: QueryRequest):
                 reranker_position_changes=None,
                 interpretation_latency_ms=None,
                 search_angles_used=None,
+                retrieval_strategy=retrieval_strategy,
+                followup_context_used=followup_context_used,
+                retrieval_anchor_count=retrieval_anchor_count,
+                retrieval_retry_used=retrieval_retry_used,
             )
 
     # Deterministic guardrail: wage estimates require a classification context.
     if intent.intent_type == "wage" and not effective_classification:
         retrieval_result = await asyncio.to_thread(
             retriever.multi_angle_retrieve,
-            query=request.question,
+            query=routing_question,
             intent=intent,
             n_results=5,
             hours_worked=hours_worked,
@@ -1445,13 +2339,17 @@ async def query_contract(request: QueryRequest):
             reranker_position_changes=None,
             interpretation_latency_ms=None,
             search_angles_used=None,
+            retrieval_strategy=retrieval_strategy,
+            followup_context_used=followup_context_used,
+            retrieval_anchor_count=retrieval_anchor_count,
+            retrieval_retry_used=retrieval_retry_used,
         )
 
     # Retrieve relevant chunks and wage info using multi-angle retrieval
     # This uses deep query interpretation for better semantic matching
     retrieval_result = await asyncio.to_thread(
         retriever.multi_angle_retrieve,
-        query=request.question,
+        query=routing_question,
         intent=intent,
         n_results=5,
         hours_worked=hours_worked,
@@ -1485,9 +2383,22 @@ async def query_contract(request: QueryRequest):
     interpretation = retrieval_result.get("interpretation")
     interpretation_latency_ms = None
     search_angles_used = retrieval_result.get("search_angles_used", 1)
+    retrieval_plan = dict(retrieval_result.get("retrieval_plan") or {})
+    if followup_plan:
+        retrieval_plan["followup"] = dict(followup_plan)
+    retrieval_policy = dict(retrieval_result.get("retrieval_policy") or {})
+    policy_strategy = str(retrieval_policy.get("strategy") or "").strip()
+    if policy_strategy and not followup_context_used:
+        retrieval_strategy = policy_strategy
+    retrieval_anchor_count = max(
+        retrieval_anchor_count,
+        int(retrieval_policy.get("article_anchor_count") or retrieval_plan.get("article_anchor_count") or 0),
+    )
     explicit_articles = retrieval_result.get("explicit_articles_fetched", [])
     anchor_articles = _normalize_article_anchors(
-        list(getattr(intent, "relevant_articles", []) or []) + list(explicit_articles or [])
+        list(getattr(intent, "relevant_articles", []) or [])
+        + list(explicit_articles or [])
+        + list(followup_anchor_articles or [])
     )
     if interpretation and interpretation.success:
         interpretation_latency_ms = interpretation.latency_ms
@@ -1510,20 +2421,29 @@ async def query_contract(request: QueryRequest):
     # Deterministic vacation entitlement path:
     # answer accrual-amount questions from ingestion-owned entitlement artifacts.
     if (
-        str(intent.topic or "").strip().lower() == "vacation"
-        and _is_vacation_entitlement_query(request.question)
+        _should_run_vacation_followup_path(request.question, prior_topic=followup_topic or intent.topic)
         and not escalation_required
     ):
         hire_date_hint = str((user_profile or {}).get("hire_date") or "").strip() or None
-        enriched_entitlement = await asyncio.to_thread(
-            retriever.lookup_vacation_entitlement,
+        resolved_months, resolved_hours, assumption_notes = _vacation_followup_overrides(
+            question=request.question,
             months_employed=months_employed,
             hours_worked=hours_worked,
+            user_profile=user_profile,
+            used_profile_hour_estimate=used_profile_hour_estimate,
+        )
+        enriched_entitlement = await asyncio.to_thread(
+            retriever.lookup_vacation_entitlement,
+            months_employed=resolved_months,
+            hours_worked=resolved_hours,
             hire_date=hire_date_hint,
             contract_id=effective_contract_id,
         )
         if enriched_entitlement:
             entitlement_info = enriched_entitlement
+            if assumption_notes:
+                entitlement_info = dict(entitlement_info)
+                entitlement_info["assumption_notes"] = assumption_notes
         if entitlement_info:
             answer = _build_vacation_entitlement_answer(entitlement_info)
             verification = verify_response(
@@ -1541,18 +2461,24 @@ async def query_contract(request: QueryRequest):
                 citation_text = str(entitlement_info.get("citation") or "").strip()
                 if citation_text:
                     citations = [c.strip() for c in citation_text.split(";") if c.strip()]
-
-            if request.session_id:
-                ctx = get_session_context(request.session_id)
-                ctx.add_turn(
-                    question=request.question,
-                    answer=answer,
-                    citations=citations,
-                    detected_entities={
-                        "topic": intent.topic,
-                        "classification": request.user_classification or intent.classification,
-                    }
-                )
+            _store_session_turn(
+                session_id=request.session_id,
+                question=request.question,
+                answer=answer,
+                citations=citations,
+                topic="vacation",
+                classification=request.user_classification or intent.classification,
+                intent_type=intent.intent_type,
+                anchor_articles=anchor_articles,
+                chunks=chunks,
+                artifact_type="vacation",
+                retrieval_strategy=retrieval_strategy,
+                followup_context_used=followup_context_used,
+                retrieval_anchor_count=retrieval_anchor_count,
+                retrieval_retry_used=retrieval_retry_used,
+                retrieval_plan=retrieval_plan,
+                routing_question=routing_question,
+            )
 
             return QueryResponse(
                 answer=answer,
@@ -1581,8 +2507,109 @@ async def query_contract(request: QueryRequest):
                 reranker_position_changes=reranker_position_changes,
                 interpretation_latency_ms=interpretation_latency_ms,
                 search_angles_used=search_angles_used,
+                retrieval_strategy=retrieval_strategy,
+                followup_context_used=followup_context_used,
+                retrieval_anchor_count=retrieval_anchor_count,
+                retrieval_retry_used=retrieval_retry_used,
+                retrieval_plan=retrieval_plan,
             )
     
+    if (
+        not escalation_required
+        and _should_run_wage_followup_path(
+            request.question,
+            prior_topic=followup_topic or intent.topic,
+            prior_artifact_type=previous_artifact_type,
+        )
+    ):
+        followup_classification = (
+            effective_classification
+            or intent.classification
+            or previous_wage_context.get("classification_key")
+            or previous_wage_context.get("classification")
+        )
+        if followup_classification:
+            wage_followup_wage_info = await asyncio.to_thread(
+                retriever.lookup_wage,
+                classification=followup_classification,
+                hours_worked=hours_worked,
+                months_employed=months_employed,
+                contract_id=effective_contract_id,
+            )
+            if wage_followup_wage_info:
+                progression_followup = _build_wage_progression_followup(
+                    question=request.question,
+                    contract_id=effective_contract_id,
+                    current_wage_info=wage_followup_wage_info,
+                )
+                if progression_followup:
+                    answer = str(progression_followup.get("answer") or "").strip()
+                    sources = list(progression_followup.get("sources") or [])
+                    citations = []
+                    for source in sources:
+                        citation = str(source.get("citation") or "").strip()
+                        if citation and citation not in citations:
+                            citations.append(citation)
+                    verification = verify_response(
+                        response=answer,
+                        chunks=chunks,
+                        requires_escalation=False,
+                    )
+                    resolved_wage_context = progression_followup.get("wage_context") or _wage_context_from_info(wage_followup_wage_info)
+                    _store_session_turn(
+                        session_id=request.session_id,
+                        question=request.question,
+                        answer=answer,
+                        citations=citations,
+                        topic="wages",
+                        classification=resolved_wage_context.get("classification_key") or followup_classification,
+                        intent_type="wage",
+                        anchor_articles=anchor_articles,
+                        chunks=chunks,
+                        artifact_type="wage",
+                        retrieval_strategy=retrieval_strategy,
+                        followup_context_used=followup_context_used,
+                        retrieval_anchor_count=retrieval_anchor_count,
+                        retrieval_retry_used=retrieval_retry_used,
+                        retrieval_plan=retrieval_plan,
+                        routing_question=routing_question,
+                        wage_context=resolved_wage_context,
+                    )
+                    return QueryResponse(
+                        answer=answer,
+                        citations=citations,
+                        sources=sources,
+                        intent_type="wage",
+                        escalation_required=False,
+                        union_local_id=request.union_local_id,
+                        contract_id=effective_contract_id,
+                        contract_version=request.contract_version,
+                        effective_version_id=response_effective_version_id,
+                        effective_content_hash=response_effective_content_hash,
+                        amendments_applied=response_amendments,
+                        high_stakes_topic=intent.high_stakes_topic,
+                        active_urgent_context=intent.active_urgent_context,
+                        escalation_policy=intent.escalation_policy,
+                        wage_info=None,
+                        entitlement_info=entitlement_info,
+                        confidence=verification.confidence,
+                        verification_passed=verification.is_valid,
+                        hypothesis_titles=hypothesis_titles,
+                        hypothesis_latency_ms=hypothesis_latency_ms,
+                        full_article_expanded=full_article_expanded,
+                        winning_article=winning_article,
+                        query_expansions=query_expansions,
+                        reranker_latency_ms=reranker_latency_ms,
+                        reranker_position_changes=reranker_position_changes,
+                        interpretation_latency_ms=interpretation_latency_ms,
+                        search_angles_used=search_angles_used,
+                        retrieval_strategy=retrieval_strategy,
+                        followup_context_used=followup_context_used,
+                        retrieval_anchor_count=retrieval_anchor_count,
+                        retrieval_retry_used=retrieval_retry_used,
+                        retrieval_plan=retrieval_plan,
+                    )
+
     # Only include wage info in prompt if this is actually a wage query
     # This prevents erroneous wage artifacts appearing on unrelated questions
     question_lower = request.question.lower()
@@ -1605,6 +2632,79 @@ async def query_contract(request: QueryRequest):
         intent.intent_type == "wage" or
         (any(wp in question_lower for wp in wage_phrases) and not has_exclude)
     )
+    if _should_suppress_deterministic_wage_path(request.question, intent.topic):
+        is_wage_query = False
+
+    if wage_info and is_wage_query and not escalation_required:
+        answer = _build_wage_answer(
+            wage_info=wage_info,
+            is_estimate=is_wage_estimate,
+            hours_worked=hours_worked,
+            months_employed=months_employed,
+        )
+        verification = verify_response(
+            response=answer,
+            chunks=chunks,
+            requires_escalation=False,
+        )
+        sources = _wage_sources(wage_info)
+        citations = []
+        for source in sources:
+            citation = str(source.get("citation") or "").strip()
+            if citation and citation not in citations:
+                citations.append(citation)
+        _store_session_turn(
+            session_id=request.session_id,
+            question=request.question,
+            answer=answer,
+            citations=citations,
+            topic="wages",
+            classification=wage_info.get("classification_key") or request.user_classification or intent.classification,
+            intent_type=intent.intent_type,
+            anchor_articles=anchor_articles,
+            chunks=chunks,
+            artifact_type="wage",
+            retrieval_strategy=retrieval_strategy,
+            followup_context_used=followup_context_used,
+            retrieval_anchor_count=retrieval_anchor_count,
+            retrieval_retry_used=retrieval_retry_used,
+            retrieval_plan=retrieval_plan,
+            routing_question=routing_question,
+            wage_context=_wage_context_from_info(wage_info),
+        )
+        return QueryResponse(
+            answer=answer,
+            citations=citations,
+            sources=sources,
+            intent_type=intent.intent_type,
+            escalation_required=False,
+            union_local_id=request.union_local_id,
+            contract_id=effective_contract_id,
+            contract_version=request.contract_version,
+            effective_version_id=response_effective_version_id,
+            effective_content_hash=response_effective_content_hash,
+            amendments_applied=response_amendments,
+            high_stakes_topic=intent.high_stakes_topic,
+            active_urgent_context=intent.active_urgent_context,
+            escalation_policy=intent.escalation_policy,
+            wage_info=wage_info,
+            entitlement_info=entitlement_info,
+            confidence=verification.confidence,
+            verification_passed=verification.is_valid,
+            hypothesis_titles=hypothesis_titles,
+            hypothesis_latency_ms=hypothesis_latency_ms,
+            full_article_expanded=full_article_expanded,
+            winning_article=winning_article,
+            reranker_latency_ms=reranker_latency_ms,
+            reranker_position_changes=reranker_position_changes,
+            interpretation_latency_ms=interpretation_latency_ms,
+            search_angles_used=search_angles_used,
+            retrieval_strategy=retrieval_strategy,
+            followup_context_used=followup_context_used,
+            retrieval_anchor_count=retrieval_anchor_count,
+            retrieval_retry_used=retrieval_retry_used,
+            retrieval_plan=retrieval_plan,
+        )
     
     # Build prompt with context, user profile, and verification guidance
     system_prompt = build_prompt(
@@ -1622,7 +2722,9 @@ async def query_contract(request: QueryRequest):
         user_classification=effective_classification,
         conversation_context=conversation_context,
         user_profile=user_profile,
-        is_wage_estimate=is_wage_estimate and is_wage_query
+        is_wage_estimate=is_wage_estimate and is_wage_query,
+        response_tone=request.response_tone,
+        response_verbosity=request.response_verbosity,
     )
     
     # Generate response (pass chunks for fallback)
@@ -1644,9 +2746,10 @@ async def query_contract(request: QueryRequest):
     if _is_unavailable_answer(answer) and not escalation_required and retry_candidate_evidence_present:
         # Recovery should be deterministic and stable. Use single-angle retrieval
         # here to avoid stochastic query-interpretation drift in second-pass rescue.
+        retrieval_retry_used = True
         retry_result = await asyncio.to_thread(
             retriever.retrieve,
-            query=request.question,
+            query=routing_question,
             intent=intent,
             n_results=8,
             hours_worked=hours_worked,
@@ -1699,6 +2802,20 @@ async def query_contract(request: QueryRequest):
             query_expansions = merged_expansions
 
         search_angles_used = max(search_angles_used, int(retry_result.get("search_angles_used", 1) or 1))
+        retry_plan = dict(retry_result.get("retrieval_plan") or {})
+        retry_policy = dict(retry_result.get("retrieval_policy") or {})
+        retrieval_anchor_count = max(
+            retrieval_anchor_count,
+            int(retry_policy.get("article_anchor_count") or retry_plan.get("article_anchor_count") or 0),
+        )
+        if not followup_context_used:
+            retry_strategy = str(retry_policy.get("strategy") or "").strip()
+            if retry_strategy:
+                retrieval_strategy = retry_strategy
+        if retry_plan:
+            retrieval_plan = retry_plan
+            if followup_plan:
+                retrieval_plan["followup"] = dict(followup_plan)
 
         retry_prompt = build_prompt(
             query=request.question,
@@ -1715,7 +2832,9 @@ async def query_contract(request: QueryRequest):
             user_classification=effective_classification,
             conversation_context=conversation_context,
             user_profile=user_profile,
-            is_wage_estimate=is_wage_estimate and is_wage_query
+            is_wage_estimate=is_wage_estimate and is_wage_query,
+            response_tone=request.response_tone,
+            response_verbosity=request.response_verbosity,
         )
         answer = await generate_response(request.question, retry_prompt, chunks)
         answer = add_escalation_if_missing(answer, escalation_required)
@@ -1748,17 +2867,24 @@ async def query_contract(request: QueryRequest):
     formatted = format_response_with_sources(answer, chunks, wage_info if is_wage_query else None)
     
     # Save turn to conversation context
-    if request.session_id:
-        ctx = get_session_context(request.session_id)
-        ctx.add_turn(
-            question=request.question,
-            answer=formatted["response"],
-            citations=formatted["citations"],
-            detected_entities={
-                "topic": intent.topic,
-                "classification": request.user_classification or intent.classification,
-            }
-        )
+    _store_session_turn(
+        session_id=request.session_id,
+        question=request.question,
+        answer=formatted["response"],
+        citations=formatted["citations"],
+        topic=intent.topic,
+        classification=request.user_classification or intent.classification,
+        intent_type=intent.intent_type,
+        anchor_articles=anchor_articles,
+        chunks=chunks,
+        artifact_type="retrieval",
+        retrieval_strategy=retrieval_strategy,
+        followup_context_used=followup_context_used,
+        retrieval_anchor_count=retrieval_anchor_count,
+        retrieval_retry_used=retrieval_retry_used,
+        retrieval_plan=retrieval_plan,
+        routing_question=routing_question,
+    )
     
     return QueryResponse(
         answer=formatted["response"],
@@ -1789,7 +2915,12 @@ async def query_contract(request: QueryRequest):
         reranker_position_changes=reranker_position_changes,
         # Interpreter metrics (Phase 4)
         interpretation_latency_ms=interpretation_latency_ms,
-        search_angles_used=search_angles_used
+        search_angles_used=search_angles_used,
+        retrieval_strategy=retrieval_strategy,
+        followup_context_used=followup_context_used,
+        retrieval_anchor_count=retrieval_anchor_count,
+        retrieval_retry_used=retrieval_retry_used,
+        retrieval_plan=retrieval_plan,
     )
 
 
@@ -1808,6 +2939,15 @@ async def lookup_wage(request: WageLookupRequest):
         contract_id=effective_contract_id,
         classification=request.classification,
     )
+    role_clarification = get_role_clarification(
+        effective_contract_id,
+        request.classification,
+    )
+    if role_clarification:
+        raise HTTPException(
+            status_code=400,
+            detail=role_clarification,
+        )
     if class_opt and class_opt.get("wage_available") is False:
         role_label = str(class_opt.get("label") or request.classification).strip()
         raise HTTPException(
@@ -2889,7 +4029,10 @@ def _lookup_effective_provenance_refs(
 
     Preference order:
     1. exact article+section match
-    2. first section in article (lowest section_num) when section is omitted
+    2. first amended/MOA-backed section with a valid PDF page when section is omitted
+    3. first section with any valid PDF page when section is omitted
+    4. first amended/MOA-backed section in article when section is omitted
+    5. first section in article (lowest section_num) when section is omitted
     """
     if article_num is None:
         return []
@@ -2918,14 +4061,37 @@ def _lookup_effective_provenance_refs(
     if not candidates:
         return []
 
-    def _section_sort_key(section: dict) -> tuple[int, str]:
+    def _section_sort_key(section: dict) -> tuple[int, int, int, str]:
         raw_section = section.get("section_num")
         try:
             sec = int(raw_section) if raw_section is not None else 0
         except (TypeError, ValueError):
             sec = 0
         subsection = str(section.get("subsection") or "")
-        return (sec if sec > 0 else 999999, subsection)
+        refs = section.get("provenance") or []
+        has_moa_with_page = 0
+        has_moa = 0
+        has_any_page = 0
+        if isinstance(refs, list):
+            for ref in refs:
+                if not isinstance(ref, dict):
+                    continue
+                ref_source_type = str(ref.get("source_type") or "").strip().lower()
+                ref_pdf = str(ref.get("pdf") or "").strip().lower()
+                ref_page = ref.get("pdf_page")
+                parsed_page = None
+                try:
+                    parsed_page = int(ref_page)
+                except (TypeError, ValueError):
+                    parsed_page = None
+                if parsed_page and parsed_page > 0:
+                    has_any_page = -1
+                if "moa" in ref_source_type or "amend" in ref_source_type or "moa" in ref_pdf:
+                    has_moa = -1
+                    if parsed_page and parsed_page > 0:
+                        has_moa_with_page = -1
+                    break
+        return (has_moa_with_page, has_any_page, has_moa, sec if sec > 0 else 999999, subsection)
 
     chosen = sorted(candidates, key=_section_sort_key)[0]
     refs = chosen.get("provenance") or []
@@ -2934,10 +4100,66 @@ def _lookup_effective_provenance_refs(
     return [ref for ref in refs if isinstance(ref, dict)]
 
 
+def _summarize_effective_provenance_target(
+    contract_id: str,
+    article_num: Optional[int],
+    section_num: Optional[int],
+) -> dict:
+    summary = {
+        "article_num": article_num,
+        "section_num": section_num,
+        "target_kind": "unknown",
+        "target_is_amended": False,
+        "article_has_amendment": False,
+        "article_section_count": 0,
+        "article_amended_section_count": 0,
+    }
+    if article_num is None:
+        return summary
+    payload = load_effective_contract(contract_id=contract_id)
+    if not isinstance(payload, dict):
+        return summary
+
+    article_sections: list[dict] = []
+    target_sections: list[dict] = []
+    for section in payload.get("sections") or []:
+        if not isinstance(section, dict):
+            continue
+        if section.get("article_num") != article_num:
+            continue
+        article_sections.append(section)
+        if section_num is not None and section.get("section_num") == section_num:
+            target_sections.append(section)
+
+    def _section_has_amendment(section: dict) -> bool:
+        refs = section.get("provenance") or []
+        if not isinstance(refs, list):
+            return False
+        for ref in refs:
+            if not isinstance(ref, dict):
+                continue
+            ref_source_type = str(ref.get("source_type") or "").strip().lower()
+            ref_pdf = str(ref.get("pdf") or "").strip().lower()
+            if "moa" in ref_source_type or "amend" in ref_source_type or "moa" in ref_pdf:
+                return True
+        return False
+
+    article_amended_count = sum(1 for section in article_sections if _section_has_amendment(section))
+    target_is_amended = any(_section_has_amendment(section) for section in target_sections) if target_sections else False
+
+    summary["article_section_count"] = len(article_sections)
+    summary["article_amended_section_count"] = article_amended_count
+    summary["article_has_amendment"] = article_amended_count > 0
+    summary["target_is_amended"] = target_is_amended
+    summary["target_kind"] = "section" if section_num is not None else "article"
+    return summary
+
+
 def _build_pdf_source_candidates_from_provenance(
     *,
     contract_id: str,
     provenance_refs: list[dict],
+    target_summary: Optional[dict] = None,
 ) -> tuple[list[dict], Optional[dict]]:
     """
     Build deterministic source candidates for UI navigation.
@@ -2978,10 +4200,26 @@ def _build_pdf_source_candidates_from_provenance(
             }
         )
 
+    target = target_summary if isinstance(target_summary, dict) else {}
+    target_kind = str(target.get("target_kind") or "unknown").strip().lower()
+    target_is_amended = bool(target.get("target_is_amended"))
+    article_has_amendment = bool(target.get("article_has_amendment"))
+    article_amended_section_count = int(target.get("article_amended_section_count") or 0)
+
+    auto_label = "Current Effective (Auto)"
+    if target_kind == "section":
+        auto_label = "Latest amended section (Auto)" if target_is_amended else "Original / base section (Auto)"
+    elif target_kind == "article":
+        if article_has_amendment:
+            amended_label = "section" if article_amended_section_count == 1 else "sections"
+            auto_label = f"Latest amended article (Auto · {article_amended_section_count} amended {amended_label})"
+        else:
+            auto_label = "Original / base article (Auto)"
+
     # Effective auto mode is always available.
     _append_candidate(
         key="effective_auto",
-        label="Current Effective (Auto)",
+        label=auto_label,
         source_type=None,
         source_pdf=None,
         source_doc_id=None,
@@ -2989,7 +4227,20 @@ def _build_pdf_source_candidates_from_provenance(
         is_previous=False,
     )
 
-    for idx, ref in enumerate(provenance_refs or []):
+    def _ref_sort_key(ref: dict) -> tuple[int, int, str]:
+        source_type = str(ref.get("source_type") or "").strip().lower()
+        source_pdf = str(ref.get("pdf") or "").strip().lower()
+        page_num = ref.get("pdf_page")
+        parsed_page = None
+        try:
+            parsed_page = int(page_num)
+        except Exception:
+            parsed_page = None
+        has_page = -1 if parsed_page and parsed_page > 0 else 0
+        is_moa = -1 if ("moa" in source_type or "amend" in source_type or "moa" in source_pdf) else 0
+        return (has_page, is_moa, source_pdf)
+
+    for idx, ref in enumerate(sorted((provenance_refs or []), key=_ref_sort_key)):
         source_type = str(ref.get("source_type") or "").strip().lower() or None
         source_pdf = str(ref.get("pdf") or "").strip() or None
         source_doc_id = str(ref.get("source_doc_id") or "").strip() or None
@@ -3016,7 +4267,17 @@ def _build_pdf_source_candidates_from_provenance(
             page_suffix = ""
 
         pdf_suffix = f" ({source_pdf})" if source_pdf else ""
-        label = f"{label_kind}{page_suffix}{pdf_suffix}"
+        role_prefix = "Original / base"
+        if normalized_type == "moa":
+            role_prefix = "Latest amended"
+        elif normalized_type not in {"base", "moa"}:
+            role_prefix = "Relevant"
+        scope_suffix = " PDF"
+        if target_kind == "section":
+            scope_suffix = " section PDF"
+        elif target_kind == "article":
+            scope_suffix = " article PDF"
+        label = f"{role_prefix}{scope_suffix}{page_suffix}{pdf_suffix}"
         key = f"prov_{idx}_{normalized_type or 'src'}"
         _append_candidate(
             key=key,
@@ -3033,7 +4294,7 @@ def _build_pdf_source_candidates_from_provenance(
     if base_candidate:
         _append_candidate(
             key="previous_base",
-            label="Previous (Base)",
+            label="Original / base PDF",
             source_type=base_candidate.get("source_type"),
             source_pdf=base_candidate.get("source_pdf"),
             source_doc_id=base_candidate.get("source_doc_id"),
@@ -3154,10 +4415,29 @@ async def get_pdf_location(
         article_num=normalized_article_num,
         section_num=normalized_section_num,
     )
+    target_provenance_summary = _summarize_effective_provenance_target(
+        contract_id=effective_contract_id,
+        article_num=normalized_article_num,
+        section_num=normalized_section_num,
+    )
     source_candidates, auto_preferred_candidate = _build_pdf_source_candidates_from_provenance(
         contract_id=effective_contract_id,
         provenance_refs=provenance_refs,
+        target_summary=target_provenance_summary,
     )
+    auto_navigation_candidate = auto_preferred_candidate
+    if auto_navigation_candidate and not auto_navigation_candidate.get("page_number"):
+        fallback_page_candidate = next(
+            (
+                candidate
+                for candidate in source_candidates
+                if str(candidate.get("key") or "") != "effective_auto"
+                and candidate.get("page_number")
+            ),
+            None,
+        )
+        if fallback_page_candidate:
+            auto_navigation_candidate = fallback_page_candidate
     selected_source_key: Optional[str] = None
     if source_candidates:
         if source_type or source_pdf or source_doc_id:
@@ -3174,8 +4454,8 @@ async def get_pdf_location(
                 if type_ok and pdf_ok and doc_ok:
                     selected_source_key = str(candidate.get("key") or "") or None
                     break
-        elif auto_preferred_candidate:
-            selected_source_key = str(auto_preferred_candidate.get("key") or "") or None
+        elif auto_navigation_candidate:
+            selected_source_key = str(auto_navigation_candidate.get("key") or "") or None
 
     provenance_page = _lookup_effective_provenance_page(
         contract_id=effective_contract_id,
@@ -3204,7 +4484,7 @@ async def get_pdf_location(
     # Auto-select effective provenance source (MOA/base) when no explicit source
     # is requested. This improves TOC/citation navigation for amended sections.
     if provenance_refs and not (source_type or source_pdf or source_doc_id or source_page_value):
-        chosen = auto_preferred_candidate
+        chosen = auto_navigation_candidate
         chosen_page = None
         chosen_type = None
         chosen_pdf = None
@@ -3217,7 +4497,11 @@ async def get_pdf_location(
             chosen_type = str(chosen.get("source_type") or "").strip() or None
             chosen_pdf = str(chosen.get("source_pdf") or "").strip() or None
             chosen_doc_id = str(chosen.get("source_doc_id") or "").strip() or None
-        if chosen_page and chosen_page > 0:
+        elif chosen:
+            chosen_type = str(chosen.get("source_type") or "").strip() or None
+            chosen_pdf = str(chosen.get("source_pdf") or "").strip() or None
+            chosen_doc_id = str(chosen.get("source_doc_id") or "").strip() or None
+        if chosen and (chosen_page and chosen_page > 0 or chosen_type or chosen_pdf or chosen_doc_id):
             return PdfLocationResponse(
                 contract_id=effective_contract_id,
                 pdf_url=_contract_pdf_url(

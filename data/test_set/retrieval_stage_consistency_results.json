@@ -1,0 +1,455 @@
+{
+  "schema_version": "retrieval_stage_consistency_eval_v1",
+  "dataset_schema_version": "retrieval_stage_consistency_test_v1",
+  "timestamp_utc": "2026-03-09T10:33:39.458623+00:00",
+  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\retrieval_stage_consistency_test.json",
+  "bm25_only": true,
+  "overall": {
+    "passed": 5,
+    "total": 5,
+    "pass_rate": 1.0,
+    "followup_plan_total": 1,
+    "followup_plan_pass_rate": 1.0,
+    "planned_strategy_match_rate": 1.0,
+    "policy_strategy_match_rate": 1.0,
+    "followup_strategy_match_rate": 1.0,
+    "required_plan_flag_rate": 1.0,
+    "required_executed_stage_rate": 1.0,
+    "plan_to_execution_alignment_rate": 1.0
+  },
+  "by_contract": {
+    "local7_kingsoopers_loveland_meat_2019": {
+      "passed": 1,
+      "total": 1,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_clerks_2022": {
+      "passed": 2,
+      "total": 2,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_meat_2022": {
+      "passed": 2,
+      "total": 2,
+      "pass_rate": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "RSC-FOLLOWUP-CLERKS-01",
+      "mode": "followup_plan",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "what about 4 years",
+      "expected_followup_strategy": "followup_anchor_seeded",
+      "resolved_followup_strategy": "followup_anchor_seeded",
+      "followup_context_used": true,
+      "article_anchor_count": 1,
+      "strategy_ok": true,
+      "context_ok": true,
+      "anchor_count_ok": true,
+      "routing_query_ok": true,
+      "routing_query_token_checks": {
+        "vacation": true,
+        "article 17": true
+      },
+      "followup_plan": {
+        "question": "what about 4 years",
+        "routing_query": "vacation Article 17 what about 4 years",
+        "strategy": "followup_anchor_seeded",
+        "followup_context_used": true,
+        "topic": "vacation",
+        "article_anchors": [
+          17
+        ],
+        "prior_citations": [
+          "Article 17, Section 42"
+        ]
+      },
+      "pass": true
+    },
+    {
+      "id": "RSC-KS-VAC-01",
+      "mode": "retrieve",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "How much vacation do I get per year?",
+      "intent_type": "contract",
+      "intent_topic": "vacation",
+      "expected_planned_strategy": "topic_anchor_guided",
+      "resolved_planned_strategy": "topic_anchor_guided",
+      "expected_policy_strategy": "topic_article_seeded",
+      "resolved_policy_strategy": "topic_article_seeded",
+      "planned_strategy_ok": true,
+      "policy_strategy_ok": true,
+      "required_plan_flags": [
+        "apply_topic_seed_coverage",
+        "apply_vacation_entitlement_coverage"
+      ],
+      "required_plan_flag_checks": {
+        "apply_topic_seed_coverage": true,
+        "apply_vacation_entitlement_coverage": true
+      },
+      "required_executed_stages": [
+        "topic_seed_coverage",
+        "vacation_entitlement_coverage",
+        "full_article_expansion"
+      ],
+      "required_executed_stage_checks": {
+        "topic_seed_coverage": true,
+        "vacation_entitlement_coverage": true,
+        "full_article_expansion": true
+      },
+      "plan_enabled_stage_expectations": [
+        "article_prioritization",
+        "full_article_expansion",
+        "holiday_premium_coverage",
+        "related_section_expansion",
+        "topic_seed_coverage",
+        "vacation_entitlement_coverage"
+      ],
+      "alignment_missing_stages": [],
+      "alignment_ok": true,
+      "retrieval_plan": {
+        "planned_strategy": "topic_anchor_guided",
+        "search_mode": "single_angle_hybrid",
+        "use_hybrid": true,
+        "use_interpreter": false,
+        "intent_type": "contract",
+        "topic": "vacation",
+        "article_anchors": [
+          11,
+          16,
+          17,
+          27
+        ],
+        "article_anchor_count": 4,
+        "explicit_articles_requested": [],
+        "explicit_article_request_count": 0,
+        "query_expansion_count": 0,
+        "doc_type_filter": null,
+        "side_letter_filter_supported": true,
+        "side_letter_query_detected": false,
+        "apply_topic_seed_coverage": true,
+        "apply_article_prioritization": true,
+        "apply_side_letter_promotion": false,
+        "apply_full_article_expansion": true,
+        "apply_related_section_expansion": true,
+        "apply_vacation_entitlement_coverage": true,
+        "apply_holiday_premium_coverage": true
+      },
+      "retrieval_policy": {
+        "strategy": "topic_article_seeded",
+        "search_mode": "single_angle_hybrid",
+        "article_anchors": [
+          11,
+          16,
+          17,
+          27
+        ],
+        "article_anchor_count": 4,
+        "article_anchor_hits": 4,
+        "topic_seeded": true,
+        "topic_seed_count": 1,
+        "side_letter_seeded": false,
+        "side_letter_seed_count": 0,
+        "explicit_articles_fetched": [],
+        "doc_type_filter": null,
+        "query_expansion_count": 0,
+        "interpreter_used": false,
+        "executed_stages": [
+          "topic_seed_coverage",
+          "full_article_expansion",
+          "related_section_expansion",
+          "vacation_entitlement_coverage",
+          "holiday_premium_coverage",
+          "article_prioritization"
+        ],
+        "executed_stage_count": 6
+      },
+      "pass": true
+    },
+    {
+      "id": "RSC-SWM-SL-01",
+      "mode": "retrieve",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What does the Floater Pool Letter of Understanding say?",
+      "intent_type": "contract",
+      "intent_topic": "personal_holiday",
+      "expected_planned_strategy": "side_letter_query",
+      "resolved_planned_strategy": "side_letter_query",
+      "expected_policy_strategy": "side_letter_promoted",
+      "resolved_policy_strategy": "side_letter_promoted",
+      "planned_strategy_ok": true,
+      "policy_strategy_ok": true,
+      "required_plan_flags": [
+        "apply_side_letter_promotion"
+      ],
+      "required_plan_flag_checks": {
+        "apply_side_letter_promotion": true
+      },
+      "required_executed_stages": [
+        "side_letter_promotion",
+        "full_article_expansion"
+      ],
+      "required_executed_stage_checks": {
+        "side_letter_promotion": true,
+        "full_article_expansion": true
+      },
+      "plan_enabled_stage_expectations": [
+        "article_prioritization",
+        "full_article_expansion",
+        "holiday_premium_coverage",
+        "related_section_expansion",
+        "side_letter_promotion",
+        "topic_seed_coverage"
+      ],
+      "alignment_missing_stages": [],
+      "alignment_ok": true,
+      "retrieval_plan": {
+        "planned_strategy": "side_letter_query",
+        "search_mode": "single_angle_hybrid",
+        "use_hybrid": true,
+        "use_interpreter": false,
+        "intent_type": "contract",
+        "topic": "personal_holiday",
+        "article_anchors": [
+          32,
+          55
+        ],
+        "article_anchor_count": 2,
+        "explicit_articles_requested": [],
+        "explicit_article_request_count": 0,
+        "query_expansion_count": 1,
+        "doc_type_filter": "lou",
+        "side_letter_filter_supported": true,
+        "side_letter_query_detected": true,
+        "apply_topic_seed_coverage": true,
+        "apply_article_prioritization": true,
+        "apply_side_letter_promotion": true,
+        "apply_full_article_expansion": true,
+        "apply_related_section_expansion": true,
+        "apply_vacation_entitlement_coverage": false,
+        "apply_holiday_premium_coverage": true
+      },
+      "retrieval_policy": {
+        "strategy": "side_letter_promoted",
+        "search_mode": "single_angle_hybrid",
+        "article_anchors": [
+          32,
+          55
+        ],
+        "article_anchor_count": 2,
+        "article_anchor_hits": 2,
+        "topic_seeded": true,
+        "topic_seed_count": 1,
+        "side_letter_seeded": true,
+        "side_letter_seed_count": 2,
+        "explicit_articles_fetched": [],
+        "doc_type_filter": "lou",
+        "query_expansion_count": 1,
+        "interpreter_used": false,
+        "executed_stages": [
+          "topic_seed_coverage",
+          "full_article_expansion",
+          "related_section_expansion",
+          "holiday_premium_coverage",
+          "article_prioritization",
+          "side_letter_promotion"
+        ],
+        "executed_stage_count": 6
+      },
+      "pass": true
+    },
+    {
+      "id": "RSC-SWM-SL-02",
+      "mode": "retrieve",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "How much written notice is required if either party wants to discontinue that agreement?",
+      "intent_type": "contract",
+      "intent_topic": "overtime",
+      "expected_planned_strategy": "topic_anchor_guided",
+      "resolved_planned_strategy": "topic_anchor_guided",
+      "expected_policy_strategy": "topic_article_seeded",
+      "resolved_policy_strategy": "topic_article_seeded",
+      "planned_strategy_ok": true,
+      "policy_strategy_ok": true,
+      "required_plan_flags": [
+        "apply_topic_seed_coverage",
+        "apply_article_prioritization"
+      ],
+      "required_plan_flag_checks": {
+        "apply_topic_seed_coverage": true,
+        "apply_article_prioritization": true
+      },
+      "required_executed_stages": [
+        "topic_seed_coverage",
+        "article_prioritization"
+      ],
+      "required_executed_stage_checks": {
+        "topic_seed_coverage": true,
+        "article_prioritization": true
+      },
+      "plan_enabled_stage_expectations": [
+        "article_prioritization",
+        "full_article_expansion",
+        "holiday_premium_coverage",
+        "related_section_expansion",
+        "topic_seed_coverage"
+      ],
+      "alignment_missing_stages": [],
+      "alignment_ok": true,
+      "retrieval_plan": {
+        "planned_strategy": "topic_anchor_guided",
+        "search_mode": "single_angle_hybrid",
+        "use_hybrid": true,
+        "use_interpreter": false,
+        "intent_type": "contract",
+        "topic": "overtime",
+        "article_anchors": [
+          32,
+          55
+        ],
+        "article_anchor_count": 2,
+        "explicit_articles_requested": [],
+        "explicit_article_request_count": 0,
+        "query_expansion_count": 0,
+        "doc_type_filter": null,
+        "side_letter_filter_supported": true,
+        "side_letter_query_detected": false,
+        "apply_topic_seed_coverage": true,
+        "apply_article_prioritization": true,
+        "apply_side_letter_promotion": false,
+        "apply_full_article_expansion": true,
+        "apply_related_section_expansion": true,
+        "apply_vacation_entitlement_coverage": false,
+        "apply_holiday_premium_coverage": true
+      },
+      "retrieval_policy": {
+        "strategy": "topic_article_seeded",
+        "search_mode": "single_angle_hybrid",
+        "article_anchors": [
+          32,
+          55
+        ],
+        "article_anchor_count": 2,
+        "article_anchor_hits": 2,
+        "topic_seeded": true,
+        "topic_seed_count": 1,
+        "side_letter_seeded": false,
+        "side_letter_seed_count": 0,
+        "explicit_articles_fetched": [],
+        "doc_type_filter": null,
+        "query_expansion_count": 0,
+        "interpreter_used": false,
+        "executed_stages": [
+          "topic_seed_coverage",
+          "full_article_expansion",
+          "related_section_expansion",
+          "holiday_premium_coverage",
+          "article_prioritization"
+        ],
+        "executed_stage_count": 5
+      },
+      "pass": true
+    },
+    {
+      "id": "RSC-SWC-WAGE-01",
+      "mode": "retrieve",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "what does dug make per hour",
+      "intent_type": "wage",
+      "intent_topic": "wages",
+      "expected_planned_strategy": "topic_anchor_guided",
+      "resolved_planned_strategy": "topic_anchor_guided",
+      "expected_policy_strategy": "topic_article_seeded",
+      "resolved_policy_strategy": "topic_article_seeded",
+      "planned_strategy_ok": true,
+      "policy_strategy_ok": true,
+      "required_plan_flags": [
+        "apply_topic_seed_coverage",
+        "apply_article_prioritization"
+      ],
+      "required_plan_flag_checks": {
+        "apply_topic_seed_coverage": true,
+        "apply_article_prioritization": true
+      },
+      "required_executed_stages": [
+        "topic_seed_coverage",
+        "article_prioritization",
+        "full_article_expansion"
+      ],
+      "required_executed_stage_checks": {
+        "topic_seed_coverage": true,
+        "article_prioritization": true,
+        "full_article_expansion": true
+      },
+      "plan_enabled_stage_expectations": [
+        "article_prioritization",
+        "full_article_expansion",
+        "holiday_premium_coverage",
+        "related_section_expansion",
+        "topic_seed_coverage"
+      ],
+      "alignment_missing_stages": [],
+      "alignment_ok": true,
+      "retrieval_plan": {
+        "planned_strategy": "topic_anchor_guided",
+        "search_mode": "single_angle_hybrid",
+        "use_hybrid": true,
+        "use_interpreter": false,
+        "intent_type": "wage",
+        "topic": "wages",
+        "article_anchors": [
+          4,
+          5,
+          7,
+          8,
+          9
+        ],
+        "article_anchor_count": 5,
+        "explicit_articles_requested": [],
+        "explicit_article_request_count": 0,
+        "query_expansion_count": 0,
+        "doc_type_filter": null,
+        "side_letter_filter_supported": true,
+        "side_letter_query_detected": false,
+        "apply_topic_seed_coverage": true,
+        "apply_article_prioritization": true,
+        "apply_side_letter_promotion": false,
+        "apply_full_article_expansion": true,
+        "apply_related_section_expansion": true,
+        "apply_vacation_entitlement_coverage": false,
+        "apply_holiday_premium_coverage": true
+      },
+      "retrieval_policy": {
+        "strategy": "topic_article_seeded",
+        "search_mode": "single_angle_hybrid",
+        "article_anchors": [
+          4,
+          5,
+          7,
+          8,
+          9
+        ],
+        "article_anchor_count": 5,
+        "article_anchor_hits": 5,
+        "topic_seeded": true,
+        "topic_seed_count": 3,
+        "side_letter_seeded": false,
+        "side_letter_seed_count": 0,
+        "explicit_articles_fetched": [],
+        "doc_type_filter": null,
+        "query_expansion_count": 0,
+        "interpreter_used": false,
+        "executed_stages": [
+          "topic_seed_coverage",
+          "full_article_expansion",
+          "related_section_expansion",
+          "holiday_premium_coverage",
+          "article_prioritization"
+        ],
+        "executed_stage_count": 5
+      },
+      "pass": true
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "effective_date": "2025-07-05",
   "operations": [
     {
-      "confidence": 0.75,
+      "confidence": 0.85,
       "expected_prev_hash": "3c4543f3039ca578c68583557c65a1c1da7b262e463431ac11ce9fd849e47b81",
       "new_text_markdown": "Section 16. New Classifications. When a new job is created by the Employer, the Union shall be notified immediately, and shall meet within thirty (30) days to determine a wage rate for such job, unless otherwise extended by mutual agreement of the parties or as a result of an Act of God.",
       "op": "replace_section",
@@ -11,6 +11,7 @@
       "source_refs": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 4,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }
@@ -22,7 +23,7 @@
       }
     },
     {
-      "confidence": 0.75,
+      "confidence": 0.85,
       "expected_prev_hash": "20e3f530e5ccd0b7b3e1c41efae876b7f792b8f5a59d7df0350bbc4f4376968d",
       "new_text_markdown": "Section 22. Department Bidding. The Company shall allow during the first fifteen (15) days of February, to be effective the first workweek in March, and the first fifteen (15) days in August, to be effective the first workweek in September, non-management employees to bid store to another retail bargaining unit department. Management retains the right to determine the number of full-time and part-time positions in each department. If a senior employee from a department bids into another department, the least senior non-courtesy clerk employee in the department and status affected shall be moved to the department vacated by the bidder. Employees may not unless the bidding employee has been previously classified as, trained for and worked, for six (6) months or longer within the last two (2) years, such position. All non-management clerks, except courtesy clerks, shall be deemed eligible to bid into any non-pharmacy retail position, except as provided in the sentence above. The Employer agrees to provide training to qualify an employee who is granted a bid into another department\n\n(TA 1/4/25) *(Applies only to Meat contracts)*",
       "op": "replace_section",
@@ -30,6 +31,7 @@
       "source_refs": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 6,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }
@@ -41,7 +43,7 @@
       }
     },
     {
-      "confidence": 0.75,
+      "confidence": 0.85,
       "expected_prev_hash": "36be781732264e157fac2e838c3d24ed1a10f6dc11d2d353e2490068bdc13419",
       "new_text_markdown": "Section 28. Overtime compensation at the rate of time and one half (1 1/2X) the employee's base hourly rate of pay shall be paid under the following conditions:\n\na. For all time worked in excess of eight (8) hours in any one (1) day.\n\nb. For all time worked in excess of forty (40) hours in any one (1) workweek as described above.\n\nc. For hours worked prior to an employee's scheduled starting time when less than eight (8) hours has elapsed since his last previously scheduled quitting time. (There will be at least eight (8) hours between each employee's scheduled quitting time and his next scheduled starting time.)\n\nd. For all hours scheduled and worked on the sixth and seventh day in a workweek by part-time employees who work less than forty (40) hours in that workweek. No employee shall be permitted to claim additional hours or schedules which would provide a six (6) or seven (7) day schedule during a workweek.\n\nFor purposes of this Section, \"regular hourly rate of pay\" shall mean the hourly rate actually paid to employees for a standard, non-overtime workweek (including shift differentials, premiums, and incentive pays; excluding business expenses, bona fide gifts, discretionary bonuses, pay for non-work hours, or other exclusions) as more fully defined pursuant to 7 Colo. Code Regs. 1103-1:1.8.",
       "op": "replace_section",
@@ -49,6 +51,7 @@
       "source_refs": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 8,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }
@@ -60,14 +63,15 @@
       }
     },
     {
-      "confidence": 0.75,
+      "confidence": 0.85,
       "expected_prev_hash": "07cef0e273fc8da87560a320ff5c019e1bed4a86ea8f8d4f368e23d4397b0e3e",
-      "new_text_markdown": "Section 30. The premium rate for work performed on Sunday as such shall be time and one quarter (1 1/4X) the employee's regular straight-time rate of pay (exclusive of Courtesy Clerks). The Sunday premium, for hours worked up to eight (8), shall in no instance be offset against any weekly overtime which may be due under subparagraphs b and d of Section 28 because of the fact that the employee worked over forty (40) hours or thirty-two (32) hours in the particular workweek. (TA 12/18/24) Sunday premium pay for current Courtesy Clerks will be their regular rate of pay plus fifty cents ($.50) per hour.\n\nEmployees hired on or after March 27, 2005 shall not be eligible for Sunday Premium.",
+      "new_text_markdown": "Section 30. The premium rate for work performed on Sunday as such shall be time and one quarter (1 1/4X) the employee's regular straight-time rate of pay (exclusive of Courtesy Clerks). The Sunday premium, for hours worked up to eight (8), shall in no instance be offset against any weekly overtime which may be due under subparagraphs b and d of Section 28 because of the fact that the employee worked over forty (40) hours or thirty-two (32) hours in the particular workweek. (TA 12/18/24) \\ Sunday premium pay for current Courtesy Clerks will be their regular rate of pay plus fifty cents ($.50) per hour.\n\nEmployees hired on or after March 27, 2005 shall not be eligible for Sunday Premium.\n\n2 Including bonuses described under Article 6 of this Agreement.\n3 This Section does not apply to stores in Wyoming.\n\nPage 9 of 82\n\nUFCW Local 7 and Safeway/Albertsons\nMemorandum of Agreement\nPage 9 of 33",
       "op": "replace_section",
       "review_status": "pending",
       "source_refs": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 9,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }
@@ -79,7 +83,7 @@
       }
     },
     {
-      "confidence": 0.75,
+      "confidence": 0.85,
       "expected_prev_hash": "479c8240646a3507274a77ba5cc6a1629ed7c7c967a41dfcc024f9da2b04b832",
       "new_text_markdown": "Section 34. A premium of two dollars ($2.00) per hour shall be paid for all work performed between the hours of 12:00 p.m. midnight and 6:00 a.m. to all employees (excluding Courtesy Clerks).\n\nAll Courtesy Clerks shall receive fifty cents ($.50) per hour in addition to the hourly rate for all work performed between the hours of 12:00 midnight and 6:00 a.m.\n\nNight premium shall not apply where the employee is working at overtime or on Sunday or on a holiday.",
       "op": "replace_section",
@@ -87,6 +91,7 @@
       "source_refs": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 8,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }
@@ -98,14 +103,15 @@
       }
     },
     {
-      "confidence": 0.75,
+      "confidence": 0.85,
       "expected_prev_hash": "68bc28acca2782f284c3c0c1763ca8bbeddc4f975765ac1e809ceb65fa72d244",
-      "new_text_markdown": "(TA 4/22/25) Section 49. Accrued and unused vacation shall roll over from anniversary year to anniversary year. Each employee who carries over two (2) or more weeks of vacation from one anniversary year to the next, may make an irrevocable election at least one month prior to their anniversary date to take up to two (2) weeks as vacation pay in lieu of time off in the subsequent anniversary year. Such vacation pay in lieu of time off shall be paid out at the time of the employee's anniversary after the election is made. Employees' earned vacation banks are capped at two times their annual accrual. If the accrual cap is reached, accrual will stop until the earned vacation bank falls back below the cap, at which point accrual will begin again.\n\nBargaining note: It is understood that the provisions of this Section in no way modify the vacation scheduling language contained within this Agreement.\n\n*\n\n4 Changes to this section shall be effective beginning January 1, 2026, but payments for vacation pay in lieu of time off shall not be made until the employee's anniversary date.",
+      "new_text_markdown": "(TA 4/22/25) Section 49. Accrued and unused vacation shall roll over from anniversary year to anniversary year. Each employee who carries over two (2) or more weeks of vacation from one anniversary year to the next, may make an irrevocable election at least one month prior to their anniversary date to take up to two (2) weeks as vacation pay in lieu of time off in the subsequent anniversary year. Such vacation pay in lieu of time off shall be paid out at the time of the employee's anniversary after the election is made. Employees' earned vacation banks are capped at two times their annual accrual. If the accrual cap is reached, accrual will stop until the earned vacation bank falls back below the cap, at which point accrual will begin again.\n\nBargaining note: It is understood that the provisions of this Section in no way modify the vacation scheduling language contained within this Agreement.\n\n4 Changes to this section shall be effective beginning January 1, 2026, but payments for vacation pay in lieu of time off shall not be made until the employee's anniversary date.\n\nTH\nKC\n\nPage 10 of 82\n\nUFCW Local 7 and Safeway/Albertsons\nMemorandum of Agreement\nPage 10 of 33",
       "op": "replace_section",
       "review_status": "pending",
       "source_refs": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }
@@ -117,14 +123,15 @@
       }
     },
     {
-      "confidence": 0.75,
+      "confidence": 0.85,
       "expected_prev_hash": "ff2717dfb0589913350fdc10c5b57906efabd240c28437f5ac8dccc9de8b5c87",
-      "new_text_markdown": "Section 74. Sister Company Credit. When an employee transfers into the bargaining unit from any Albertson's store in Colorado or Wyoming, the Company shall honor the employee's most recent hire date with Albertson's and/or Safeway for all purposes except scheduling, layoffs, vacation bidding, department bidding, full-time status, promotions, and overtime. Specifically, eligibility for health care benefits shall be from the employee's most recent hire date with Albertson's and/or Safeway.\n\n> BARGAINING NOTE: For purposes of this provision, the phrase \"most recent hire date with Albertson's and/or Safeway\" means the most recent date of continuous employment with either banner.\n\n(TA 12/2/24)",
+      "new_text_markdown": "Section 74. Sister Company Credit. When an employee transfers into the bargaining unit from any Albertson's store in Colorado or Wyoming, the Company shall honor the employee's most recent hire date with Albertson's and/or Safeway for all purposes except scheduling, layoffs, vacation bidding, department bidding, full-time status, promotions, and overtime. Specifically, eligibility for health care benefits shall be from the employee's most recent hire date with Albertson's and/or Safeway.\n\nBARGAINING NOTE: For purposes of this provision, the phrase \"most recent hire date with Albertson's and/or Safeway\" means the most recent date of continuous employment with either banner.\n\n(TA 12/2/24)",
       "op": "replace_section",
       "review_status": "pending",
       "source_refs": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 8,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }
@@ -136,7 +143,7 @@
       }
     },
     {
-      "confidence": 0.75,
+      "confidence": 0.85,
       "expected_prev_hash": "1bf9ccf09ba723595dd8915d524f5a2ba4de886affd109a1a0093681f7a79fdd",
       "new_text_markdown": "Section 95. Upon request, an employee covered by this Agreement shall be granted the necessary time off with pay at his regular straight-time rate of pay in order to make arrangements for and/or attend a funeral occasioned by a death in his immediate family. Such time off with pay shall in no event exceed three (3) regularly scheduled working days. The immediate family is defined as the employee's father, mother, step-parents, grandparents, grandchildren, spouse, common-law spouse, an individual in a civil union with that employee if recognized by State law, children, step-child, brother, sister; and father, mother, brother and sister of the then existing spouse. Payments shall not be made hereunder where the relative's death occurs while the employee is on vacation or on a leave of absence.\n\nAdditional time, without pay, shall be granted as is needed by the employee up to seven (7) days for the above defined immediate family as well as for aunts, uncles, nieces, nephews, first cousins, step-brother, step-sisters, co-parents, fiancés/fiancées and grandparent of the then existing spouse.\n\nBargaining Note: For unique circumstances, the Company and the Union will meet to discuss any additional needs for leave under this section.",
       "op": "replace_section",
@@ -144,6 +151,7 @@
       "source_refs": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 14,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }
@@ -155,14 +163,15 @@
       }
     },
     {
-      "confidence": 0.75,
+      "confidence": 0.85,
       "expected_prev_hash": "d235b250aa90a4a7a1dc0a1948aca0773076577b7a4df99897363ce0fe6fa366",
-      "new_text_markdown": "Section 108. Master Safety Committee. The Employer and the Union will jointly set up a Master Safety Committee, made up of two (2) members from the Union and two (2) members from the Company, to discuss and work toward resolving safety issues in the workplace.\n\nThe Master Safety committee will meet periodically, and no less frequently than once per quarter, to review workplace safety matters. The parties will discuss and work toward resolving safety in the workplace.\n\nIn addition, the Company and the Union agree that they will continue to discuss and jointly address safety related issues and/or questions about the Company's safety program in good faith.\n\n(TA 4/10/25) The Union and the Employer agree that the prevention of violence in the store and the safekeeping of employees in the workplace is of utmost importance. As such, the parties agree that these issues are appropriate topics of discussion in Master Safety Committee meetings. Discussion may include potential government lobbying efforts.\n\nDangerous Emergencies. The Employer will develop procedures that workers should follow to protect themselves and co-workers during dangerous emergencies. These procedures may include: (i) where workers should go to protect themselves, (ii) evacuation plans, (iii) what\n\nworkers should do, and (iv) how prompt first aid and emergency medical treatment will be administered to injured workers. The procedures will also discuss signs that may indicate that a dangerous emergency may occur (such as threats, social media posts or assaults), and encourage workers, customers and others to report these matters to a manager or security guard, if applicable. The Employer will update the training as new procedures to protect workers against dangerous emergencies develop. (TA 4/10/25)",
+      "new_text_markdown": "Section 108. Master Safety Committee. The Employer and the Union will jointly set up a Master Safety Committee, made up of two (2) members from the Union and two (2) members from the Company, to discuss and work toward resolving safety issues in the workplace.\n\nThe Master Safety committee will meet periodically, and no less frequently than once per quarter, to review workplace safety matters. The parties will discuss and work toward resolving safety in the workplace.\n\nIn addition, the Company and the Union agree that they will continue to discuss and jointly address safety related issues and/or questions about the Company's safety program in good faith.\n\n(TA 4/10/25) The Union and the Employer agree that the prevention of violence in the store and the safekeeping of employees in the workplace is of utmost importance. As such, the parties agree that these issues are appropriate topics of discussion in Master Safety Committee meetings. Discussion may include potential government lobbying efforts.\n\nDangerous Emergencies. The Employer will develop procedures that workers should follow to protect themselves and co-workers during dangerous emergencies. These procedures may include: (i) where workers should go to protect themselves, (ii) evacuation plans, (iii) what\n\n[Handwritten signature]\nKC\n\nPage 15 of 82\n\nUFCW Local 7 and Safeway/Albertsons\nMemorandum of Agreement\nPage 15 of 33\n\nworkers should do, and (iv) how prompt first aid and emergency medical treatment will be administered to injured workers. The procedures will also discuss signs that may indicate that a dangerous emergency may occur (such as threats, social media posts or assaults), and encourage workers, customers and others to report these matters to a manager or security guard, if applicable. The Employer will update the training as new procedures to protect workers against dangerous emergencies develop. (TA 4/10/25)",
       "op": "replace_section",
       "review_status": "pending",
       "source_refs": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 15,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }
@@ -174,7 +183,7 @@
       }
     },
     {
-      "confidence": 0.75,
+      "confidence": 0.85,
       "expected_prev_hash": "86303bd65b66c0e5bf3d667f13c4a9c4dd0f2f7b949f4505b5d178134a6049eb",
       "new_text_markdown": "Section 158. The Employer agrees to provide all required uniforms and laundry service for all required caps, uniforms, smocks, aprons, towels and rags, except for laundering of drip-dry garments. The employee agrees to exercise care in the use of Company property and equipment.\n\nNotwithstanding the above, the employee shall be required to meet the dress requirements as detailed in this Article.\n\nNew Section. The Employer provided name badge must be worn while on duty. Employees must wear pants of wool, cotton, knit, or non-faded denim material in good condition and repair, which shall be provided by the employee. Sweats, stirrup pants, stretch pants, painter pants, spandex, etc. are prohibited. Employees will be allowed to wear clothing worn in accordance with religious obligation. Shoes must be clean and in good condition. Open toe or open heel shoes are not permitted. Courtesy Clerks and DUG Associates may wear shorts between May 1 and September 30 provided they are of the same material allowed above.\n\nThe Employer and the Union will meet and confer in good faith ninety (90) days prior to the implementation of any change to the dress code. Any such change shall not impose any undue economic burden on the bargaining unit employees. Any dress code which requires Company logo apparel shall be paid for by the Employer.\n\n(TA 11/21/24)",
       "op": "replace_section",
@@ -182,6 +191,7 @@
       "source_refs": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 14,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }

@@ -576,13 +576,27 @@ def _check_followup_role_wage(
     dataset_schema = str(results.get("dataset_schema_version") or "")
     total = int(overall.get("total") or 0)
     overall_rate = float(overall.get("pass_rate") or 0.0)
-    target_resolution_rate = float(overall.get("target_resolution_rate") or 0.0)
-    table_evidence_rate = float(overall.get("table_evidence_presence_rate") or 0.0)
-    appendix_rate = float(overall.get("appendix_citation_rate") or 0.0)
+    target_resolution_rate = float(
+        overall.get("resolved_target_resolution_rate")
+        or overall.get("target_resolution_rate")
+        or 0.0
+    )
+    table_evidence_rate = float(
+        overall.get("resolved_table_evidence_presence_rate")
+        or overall.get("table_evidence_presence_rate")
+        or 0.0
+    )
+    appendix_rate = float(
+        overall.get("resolved_appendix_citation_rate")
+        or overall.get("appendix_citation_rate")
+        or 0.0
+    )
     intent_wage_rate = float(overall.get("intent_wage_rate") or 0.0)
     no_unavailable_rate = float(overall.get("no_unavailable_rate") or 0.0)
     explicit_override_rate = float(overall.get("explicit_override_rate") or 0.0)
     profile_fallback_rate = float(overall.get("profile_fallback_rate") or 0.0)
+    clarification_total = int(overall.get("role_clarification_total") or 0)
+    resolved_case_total = int(overall.get("resolved_case_total") or max(0, total - clarification_total))
 
     per_contract = {}
     per_contract_ok = True
@@ -618,6 +632,8 @@ def _check_followup_role_wage(
         "no_unavailable_rate": no_unavailable_rate,
         "explicit_override_rate": explicit_override_rate,
         "profile_fallback_rate": profile_fallback_rate,
+        "resolved_case_total": resolved_case_total,
+        "role_clarification_total": clarification_total,
         "total_cases": total,
         "per_contract": per_contract,
         "thresholds": {
@@ -633,6 +649,84 @@ def _check_followup_role_wage(
             "min_no_unavailable_rate": min_no_unavailable_rate,
             "min_explicit_override_rate": min_explicit_override_rate,
             "min_profile_fallback_rate": min_profile_fallback_rate,
+        },
+    }
+
+
+def _check_retrieval_stage_consistency(
+    results: dict | None,
+    required_dataset_schema_version: str,
+    min_total_cases: int,
+    min_cases_per_contract: int,
+    min_overall: float,
+    min_per_contract: float,
+    min_followup_plan_pass_rate: float,
+    min_planned_strategy_match_rate: float,
+    min_policy_strategy_match_rate: float,
+    min_required_plan_flag_rate: float,
+    min_required_executed_stage_rate: float,
+    min_plan_to_execution_alignment_rate: float,
+) -> tuple[bool, dict]:
+    if not results:
+        return False, {"reason": "artifact missing"}
+    overall = results.get("overall") or {}
+    by_contract = results.get("by_contract") or {}
+    dataset_schema = str(results.get("dataset_schema_version") or "")
+    total = int(overall.get("total") or 0)
+    overall_rate = float(overall.get("pass_rate") or 0.0)
+    followup_plan_pass_rate = float(overall.get("followup_plan_pass_rate") or 0.0)
+    planned_strategy_match_rate = float(overall.get("planned_strategy_match_rate") or 0.0)
+    policy_strategy_match_rate = float(overall.get("policy_strategy_match_rate") or 0.0)
+    required_plan_flag_rate = float(overall.get("required_plan_flag_rate") or 0.0)
+    required_executed_stage_rate = float(overall.get("required_executed_stage_rate") or 0.0)
+    alignment_rate = float(overall.get("plan_to_execution_alignment_rate") or 0.0)
+
+    per_contract = {}
+    per_contract_ok = True
+    for cid, stats in sorted(by_contract.items()):
+        rate = float((stats or {}).get("pass_rate") or 0.0)
+        c_total = int((stats or {}).get("total") or 0)
+        ok = rate >= min_per_contract and c_total >= min_cases_per_contract
+        per_contract[cid] = {"pass_rate": rate, "total": c_total, "pass": ok}
+        if not ok:
+            per_contract_ok = False
+
+    ok = (
+        dataset_schema == required_dataset_schema_version
+        and total >= min_total_cases
+        and overall_rate >= min_overall
+        and followup_plan_pass_rate >= min_followup_plan_pass_rate
+        and planned_strategy_match_rate >= min_planned_strategy_match_rate
+        and policy_strategy_match_rate >= min_policy_strategy_match_rate
+        and required_plan_flag_rate >= min_required_plan_flag_rate
+        and required_executed_stage_rate >= min_required_executed_stage_rate
+        and alignment_rate >= min_plan_to_execution_alignment_rate
+        and bool(by_contract)
+        and per_contract_ok
+    )
+    return ok, {
+        "dataset_schema_version": dataset_schema,
+        "overall_pass_rate": overall_rate,
+        "followup_plan_pass_rate": followup_plan_pass_rate,
+        "planned_strategy_match_rate": planned_strategy_match_rate,
+        "policy_strategy_match_rate": policy_strategy_match_rate,
+        "required_plan_flag_rate": required_plan_flag_rate,
+        "required_executed_stage_rate": required_executed_stage_rate,
+        "plan_to_execution_alignment_rate": alignment_rate,
+        "total_cases": total,
+        "per_contract": per_contract,
+        "thresholds": {
+            "required_dataset_schema_version": required_dataset_schema_version,
+            "min_total_cases": min_total_cases,
+            "min_cases_per_contract": min_cases_per_contract,
+            "min_overall": min_overall,
+            "min_per_contract": min_per_contract,
+            "min_followup_plan_pass_rate": min_followup_plan_pass_rate,
+            "min_planned_strategy_match_rate": min_planned_strategy_match_rate,
+            "min_policy_strategy_match_rate": min_policy_strategy_match_rate,
+            "min_required_plan_flag_rate": min_required_plan_flag_rate,
+            "min_required_executed_stage_rate": min_required_executed_stage_rate,
+            "min_plan_to_execution_alignment_rate": min_plan_to_execution_alignment_rate,
         },
     }
 
@@ -851,6 +945,23 @@ def _evaluate_from_artifacts(args) -> dict:
     components["followup_role_wage"] = {"pass": followup_role_wage_ok, "details": followup_role_wage_details}
     pass_count += int(followup_role_wage_ok)
 
+    retrieval_stage_ok, retrieval_stage_details = _check_retrieval_stage_consistency(
+        _load_json(DATA_DIR / "test_set" / "retrieval_stage_consistency_results.json"),
+        required_dataset_schema_version=args.required_retrieval_stage_consistency_dataset_schema_version,
+        min_total_cases=args.min_retrieval_stage_consistency_total_cases,
+        min_cases_per_contract=args.min_retrieval_stage_consistency_cases_per_contract,
+        min_overall=args.min_retrieval_stage_consistency_pass_rate,
+        min_per_contract=args.min_retrieval_stage_consistency_per_contract,
+        min_followup_plan_pass_rate=args.min_retrieval_stage_consistency_followup_plan_pass_rate,
+        min_planned_strategy_match_rate=args.min_retrieval_stage_consistency_planned_strategy_match_rate,
+        min_policy_strategy_match_rate=args.min_retrieval_stage_consistency_policy_strategy_match_rate,
+        min_required_plan_flag_rate=args.min_retrieval_stage_consistency_required_plan_flag_rate,
+        min_required_executed_stage_rate=args.min_retrieval_stage_consistency_required_executed_stage_rate,
+        min_plan_to_execution_alignment_rate=args.min_retrieval_stage_consistency_plan_to_execution_alignment_rate,
+    )
+    components["retrieval_stage_consistency"] = {"pass": retrieval_stage_ok, "details": retrieval_stage_details}
+    pass_count += int(retrieval_stage_ok)
+
     moa_delupd_ok, moa_delupd_details = _check_moa_deleted_vs_updated(
         _load_json(DATA_DIR / "test_set" / "moa_deleted_vs_updated_results.json"),
         required_dataset_schema_version=args.required_moa_deleted_vs_updated_dataset_schema_version,
@@ -895,6 +1006,7 @@ def run(args) -> dict:
             [sys.executable, "-m", "backend.evaluate_entitlement_table_evidence"],
             [sys.executable, "-m", "backend.evaluate_role_catalog_integrity"],
             [sys.executable, "-m", "backend.evaluate_followup_role_wage", "--bm25-only"],
+            [sys.executable, "-m", "backend.evaluate_retrieval_stage_consistency", "--bm25-only"],
             [sys.executable, "-m", "backend.evaluate_moa_deleted_vs_updated", "--bm25-only"],
         ]
         for cmd in run_list:
@@ -905,7 +1017,7 @@ def run(args) -> dict:
 
     artifact_eval = _evaluate_from_artifacts(args)
     report = {
-        "schema_version": "v3_eval_v6",
+        "schema_version": "v3_eval_v7",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "mode": "from_artifacts" if args.from_artifacts else "full",
         "active_contract_ids": _active_contract_ids(),
@@ -980,6 +1092,17 @@ def run(args) -> dict:
             "min_followup_role_wage_no_unavailable_rate": args.min_followup_role_wage_no_unavailable_rate,
             "min_followup_role_wage_explicit_override_rate": args.min_followup_role_wage_explicit_override_rate,
             "min_followup_role_wage_profile_fallback_rate": args.min_followup_role_wage_profile_fallback_rate,
+            "required_retrieval_stage_consistency_dataset_schema_version": args.required_retrieval_stage_consistency_dataset_schema_version,
+            "min_retrieval_stage_consistency_total_cases": args.min_retrieval_stage_consistency_total_cases,
+            "min_retrieval_stage_consistency_cases_per_contract": args.min_retrieval_stage_consistency_cases_per_contract,
+            "min_retrieval_stage_consistency_pass_rate": args.min_retrieval_stage_consistency_pass_rate,
+            "min_retrieval_stage_consistency_per_contract": args.min_retrieval_stage_consistency_per_contract,
+            "min_retrieval_stage_consistency_followup_plan_pass_rate": args.min_retrieval_stage_consistency_followup_plan_pass_rate,
+            "min_retrieval_stage_consistency_planned_strategy_match_rate": args.min_retrieval_stage_consistency_planned_strategy_match_rate,
+            "min_retrieval_stage_consistency_policy_strategy_match_rate": args.min_retrieval_stage_consistency_policy_strategy_match_rate,
+            "min_retrieval_stage_consistency_required_plan_flag_rate": args.min_retrieval_stage_consistency_required_plan_flag_rate,
+            "min_retrieval_stage_consistency_required_executed_stage_rate": args.min_retrieval_stage_consistency_required_executed_stage_rate,
+            "min_retrieval_stage_consistency_plan_to_execution_alignment_rate": args.min_retrieval_stage_consistency_plan_to_execution_alignment_rate,
             "required_moa_deleted_vs_updated_dataset_schema_version": args.required_moa_deleted_vs_updated_dataset_schema_version,
             "min_moa_deleted_vs_updated_pass_rate": args.min_moa_deleted_vs_updated_pass_rate,
             "min_moa_deleted_vs_updated_updated_pass_rate": args.min_moa_deleted_vs_updated_updated_pass_rate,
@@ -1072,6 +1195,17 @@ def main() -> int:
     parser.add_argument("--min-followup-role-wage-no-unavailable-rate", type=float, default=0.95)
     parser.add_argument("--min-followup-role-wage-explicit-override-rate", type=float, default=0.90)
     parser.add_argument("--min-followup-role-wage-profile-fallback-rate", type=float, default=0.90)
+    parser.add_argument("--required-retrieval-stage-consistency-dataset-schema-version", default="retrieval_stage_consistency_test_v1")
+    parser.add_argument("--min-retrieval-stage-consistency-total-cases", type=int, default=5)
+    parser.add_argument("--min-retrieval-stage-consistency-cases-per-contract", type=int, default=1)
+    parser.add_argument("--min-retrieval-stage-consistency-pass-rate", type=float, default=1.0)
+    parser.add_argument("--min-retrieval-stage-consistency-per-contract", type=float, default=1.0)
+    parser.add_argument("--min-retrieval-stage-consistency-followup-plan-pass-rate", type=float, default=1.0)
+    parser.add_argument("--min-retrieval-stage-consistency-planned-strategy-match-rate", type=float, default=1.0)
+    parser.add_argument("--min-retrieval-stage-consistency-policy-strategy-match-rate", type=float, default=1.0)
+    parser.add_argument("--min-retrieval-stage-consistency-required-plan-flag-rate", type=float, default=1.0)
+    parser.add_argument("--min-retrieval-stage-consistency-required-executed-stage-rate", type=float, default=1.0)
+    parser.add_argument("--min-retrieval-stage-consistency-plan-to-execution-alignment-rate", type=float, default=1.0)
     parser.add_argument("--required-moa-deleted-vs-updated-dataset-schema-version", default="moa_deleted_vs_updated_test_v1")
     parser.add_argument("--min-moa-deleted-vs-updated-pass-rate", type=float, default=1.0)
     parser.add_argument("--min-moa-deleted-vs-updated-updated-pass-rate", type=float, default=1.0)

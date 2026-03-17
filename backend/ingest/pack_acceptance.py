@@ -20,12 +20,64 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from backend.config import DATA_DIR
+from backend.effective_contracts import (
+    resolve_effective_version_dir,
+    resolve_latest_effective_version_id,
+)
+from backend.miss_records import load_miss_record
 from backend.validate_manifests import validate_manifest
 from backend.ingest.extract_wages import lookup_wage, normalize_classification_name
 
 
 CONTRACTS_ROOT = DATA_DIR / "contracts"
-SCORECARD_VERSION = "contract_pack_scorecard_v1"
+MISS_RECORDS_ROOT = DATA_DIR / "miss_records" / "records"
+SCORECARD_VERSION = "contract_pack_scorecard_v3"
+SIDE_LETTER_BUCKET_HIT_THRESHOLD = 1
+MISS_TAXONOMY_CHECK_IDS = {
+    "onboarding_taxonomy_defect": {
+        "classification_ontology_manifest_decisions",
+        "classification_ontology_mapping_coverage",
+        "role_catalog_onboarding_default_wage_ready",
+        "role_catalog_unresolved_manifest_rate",
+        "ingestion_review_queue_issue_coverage",
+    },
+    "deterministic_answer_binding_defect": {
+        "wages_exists",
+        "wages_json_load",
+        "manifest_classification_wage_coverage",
+        "vacation_entitlement_non_empty",
+    },
+    "trigger_intent_defect": {
+        "query_routing_coverage",
+        "query_routing_article_ref_integrity",
+        "vacation_entitlement_non_empty",
+        "manifest_classification_wage_coverage",
+    },
+    "retrieval_followup_defect": {
+        "query_routing_coverage",
+        "query_routing_article_ref_integrity",
+        "chunks_exists",
+        "chunks_non_empty",
+    },
+    "artifact_scope_defect": {
+        "effective_snapshot_contract_exists",
+        "effective_chunk_index_input_non_empty",
+        "effective_wage_index_input_non_empty",
+        "effective_entitlement_index_input_non_empty",
+    },
+    "genuine_corpus_gap": {
+        "source_pdf_exists",
+        "chunks_exists",
+    },
+    "extraction_indexing_gap": {
+        "side_letter_doc_type_materialization",
+        "appendix_table_coverage_signal",
+        "language_feature_coverage",
+        "effective_chunk_index_input_non_empty",
+        "effective_wage_index_input_non_empty",
+        "effective_entitlement_index_input_non_empty",
+    },
+}
 
 
 def _sha256_file(path: Path) -> str:
@@ -48,6 +100,217 @@ def _load_json(path: Path) -> Any:
 
 def _normalize_classification_label(raw: str) -> str:
     return normalize_classification_name(str(raw or ""))
+
+
+def _check_status(checks: list[dict], check_id: str) -> Optional[str]:
+    for row in checks:
+        if row.get("id") == check_id:
+            return str(row.get("status") or "")
+    return None
+
+
+def _side_letter_chunk_metrics(chunks: list[dict]) -> dict[str, int]:
+    doc_type_counts: Counter[str] = Counter()
+    loa_text_hits = 0
+    lou_text_hits = 0
+    for row in chunks:
+        if not isinstance(row, dict):
+            continue
+        doc_type = str(row.get("doc_type") or "cba").strip().lower()
+        if doc_type:
+            doc_type_counts[doc_type] += 1
+        blob = (
+            str(row.get("citation") or "")
+            + "\n"
+            + str(row.get("content_with_tables") or "")
+            + "\n"
+            + str(row.get("content") or "")
+        ).lower()
+        if "letter of agreement" in blob:
+            loa_text_hits += 1
+        if "letter of understanding" in blob:
+            lou_text_hits += 1
+    return {
+        "loa_bucket_count": int(doc_type_counts.get("loa", 0)),
+        "lou_bucket_count": int(doc_type_counts.get("lou", 0)),
+        "loa_text_hits": loa_text_hits,
+        "lou_text_hits": lou_text_hits,
+    }
+
+
+def _load_json_artifact(path: Path) -> tuple[Any, Optional[str]]:
+    try:
+        return _load_json(path), None
+    except Exception as exc:
+        return None, str(exc)
+
+
+def _load_contract_miss_records(contract_id: str) -> tuple[list[dict[str, Any]], list[str]]:
+    records: list[dict[str, Any]] = []
+    errors: list[str] = []
+    if not MISS_RECORDS_ROOT.exists():
+        return records, errors
+    for path in sorted(MISS_RECORDS_ROOT.rglob("*.json")):
+        try:
+            record = load_miss_record(path)
+        except Exception as exc:
+            errors.append(f"{path}: {type(exc).__name__}: {exc}")
+            continue
+        if str(record.get("contract_id") or "") == contract_id:
+            records.append(record)
+    return records, errors
+
+
+def _moa_wage_patch_metrics(package_dir: Path) -> dict[str, Any]:
+    amendments_dir = package_dir / "amendments"
+    metrics: dict[str, Any] = {
+        "patch_count": 0,
+        "moa_wage_patch_count": 0,
+        "moa_wage_op_count": 0,
+        "ops_with_selected_schedule_label": 0,
+        "ops_with_source_rate_schedule": 0,
+        "patches_missing_sync_metadata": [],
+        "patches_missing_config_id": [],
+        "source_doc_ids": [],
+    }
+    if not amendments_dir.exists():
+        return metrics
+
+    source_doc_ids: set[str] = set()
+    for patch_path in sorted(amendments_dir.glob("*.json")):
+        payload, error = _load_json_artifact(patch_path)
+        if error or not isinstance(payload, dict):
+            continue
+        metrics["patch_count"] += 1
+        operations = payload.get("operations") or []
+        if not isinstance(operations, list):
+            continue
+        moa_wage_ops = []
+        for op in operations:
+            if not isinstance(op, dict):
+                continue
+            if str(op.get("op") or "").strip() != "replace_table_row":
+                continue
+            target = op.get("target") if isinstance(op.get("target"), dict) else {}
+            if str(target.get("table_id") or "").strip() != "appendix_a_wage_rows":
+                continue
+            refs = op.get("source_refs") or []
+            has_moa_ref = any(
+                isinstance(ref, dict) and str(ref.get("source_type") or "").strip().lower() == "moa"
+                for ref in refs
+            )
+            if not has_moa_ref:
+                continue
+            moa_wage_ops.append(op)
+            for ref in refs:
+                if isinstance(ref, dict):
+                    source_doc_id = str(ref.get("source_doc_id") or "").strip()
+                    if source_doc_id:
+                        source_doc_ids.add(source_doc_id)
+        if not moa_wage_ops:
+            continue
+        metrics["moa_wage_patch_count"] += 1
+        metrics["moa_wage_op_count"] += len(moa_wage_ops)
+
+        metadata = payload.get("metadata") if isinstance(payload.get("metadata"), dict) else {}
+        appendix_sync = metadata.get("appendix_a_sync") if isinstance(metadata.get("appendix_a_sync"), dict) else {}
+        if not appendix_sync:
+            metrics["patches_missing_sync_metadata"].append(str(patch_path))
+        elif not str(appendix_sync.get("config_id") or "").strip():
+            metrics["patches_missing_config_id"].append(str(patch_path))
+
+        for op in moa_wage_ops:
+            new_row = op.get("new_row") if isinstance(op.get("new_row"), dict) else {}
+            if str(new_row.get("selected_schedule_label") or "").strip():
+                metrics["ops_with_selected_schedule_label"] += 1
+            if isinstance(new_row.get("source_rate_schedule"), dict) and bool(new_row.get("source_rate_schedule")):
+                metrics["ops_with_source_rate_schedule"] += 1
+
+    metrics["source_doc_ids"] = sorted(source_doc_ids)
+    return metrics
+
+
+def _effective_moa_provenance_page_metrics(package_dir: Path) -> dict[str, Any]:
+    metrics: dict[str, Any] = {
+        "effective_version_id": None,
+        "moa_ref_count": 0,
+        "missing_page_ref_count": 0,
+        "sections_missing_page": [],
+        "tables_missing_page": [],
+        "source_doc_ids": [],
+    }
+    latest_path = package_dir / "effective" / "latest.json"
+    latest_payload, latest_error = _load_json_artifact(latest_path)
+    if latest_error or not isinstance(latest_payload, dict):
+        return metrics
+    effective_version_id = str(latest_payload.get("effective_version_id") or "").strip()
+    if not effective_version_id:
+        return metrics
+    metrics["effective_version_id"] = effective_version_id
+    effective_contract_path = package_dir / "effective" / effective_version_id / "effective_contract.json"
+    effective_payload, effective_error = _load_json_artifact(effective_contract_path)
+    if effective_error or not isinstance(effective_payload, dict):
+        return metrics
+
+    source_doc_ids: set[str] = set()
+    sections_missing_page: list[str] = []
+    tables_missing_page: list[str] = []
+
+    def _page_value(value: Any) -> Optional[int]:
+        try:
+            parsed = int(value)
+        except (TypeError, ValueError):
+            return None
+        return parsed if parsed > 0 else None
+
+    def _is_moa_ref(ref: dict[str, Any]) -> bool:
+        source_type = str(ref.get("source_type") or "").strip().lower()
+        pdf_name = str(ref.get("pdf") or "").strip().lower()
+        return "moa" in source_type or "amend" in source_type or "moa" in pdf_name
+
+    for section in effective_payload.get("sections") or []:
+        if not isinstance(section, dict):
+            continue
+        citation = str(section.get("citation") or "").strip() or str(section.get("anchor_id") or "<section>")
+        for ref in section.get("provenance") or []:
+            if not isinstance(ref, dict) or not _is_moa_ref(ref):
+                continue
+            metrics["moa_ref_count"] += 1
+            source_doc_id = str(ref.get("source_doc_id") or "").strip()
+            if source_doc_id:
+                source_doc_ids.add(source_doc_id)
+            if _page_value(ref.get("pdf_page")) is None:
+                metrics["missing_page_ref_count"] += 1
+                if citation not in sections_missing_page:
+                    sections_missing_page.append(citation)
+
+    raw_tables = effective_payload.get("tables") or {}
+    table_iter = raw_tables.values() if isinstance(raw_tables, dict) else raw_tables
+    for table in table_iter or []:
+        if not isinstance(table, dict):
+            continue
+        table_id = str(table.get("table_id") or "<table>")
+        for row in table.get("rows") or []:
+            if not isinstance(row, dict):
+                continue
+            row_key = str(row.get("row_key") or "").strip() or "<row>"
+            for ref in row.get("provenance") or []:
+                if not isinstance(ref, dict) or not _is_moa_ref(ref):
+                    continue
+                metrics["moa_ref_count"] += 1
+                source_doc_id = str(ref.get("source_doc_id") or "").strip()
+                if source_doc_id:
+                    source_doc_ids.add(source_doc_id)
+                if _page_value(ref.get("pdf_page")) is None:
+                    metrics["missing_page_ref_count"] += 1
+                    token = f"{table_id}:{row_key}"
+                    if token not in tables_missing_page:
+                        tables_missing_page.append(token)
+
+    metrics["sections_missing_page"] = sections_missing_page[:50]
+    metrics["tables_missing_page"] = tables_missing_page[:50]
+    metrics["source_doc_ids"] = sorted(source_doc_ids)
+    return metrics
 
 
 def _check(
@@ -194,6 +457,11 @@ def evaluate_contract_pack(
     contract_outline = None
     role_catalog = None
     ingestion_review_queue = None
+    effective_version_id = resolve_latest_effective_version_id(contract_id)
+    effective_version_dir = resolve_effective_version_dir(
+        contract_id,
+        effective_version_id=effective_version_id,
+    )
 
     # Manifest presence + schema integrity
     manifest_path = artifacts["manifest"]
@@ -464,6 +732,37 @@ def evaluate_contract_pack(
                 "alt_coverage": round(alt_coverage, 4),
                 "question_coverage": round(question_coverage, 4),
                 "min_required": min_coverage,
+            },
+        )
+
+        side_letter_metrics = _side_letter_chunk_metrics(chunks)
+        side_letter_text_hits = (
+            int(side_letter_metrics.get("loa_text_hits", 0))
+            + int(side_letter_metrics.get("lou_text_hits", 0))
+        )
+        side_letter_bucket_count = (
+            int(side_letter_metrics.get("loa_bucket_count", 0))
+            + int(side_letter_metrics.get("lou_bucket_count", 0))
+        )
+        side_letter_materialized = (
+            side_letter_text_hits < SIDE_LETTER_BUCKET_HIT_THRESHOLD
+            or side_letter_bucket_count > 0
+        )
+        _check(
+            checks,
+            "side_letter_doc_type_materialization",
+            side_letter_materialized,
+            "required",
+            "Side-letter lexical hits are backed by LOA/LOU doc_type buckets."
+            if side_letter_materialized
+            else "Side-letter lexical hits exist but LOA/LOU doc_type buckets were not materialized.",
+            {
+                "side_letter_hit_threshold": SIDE_LETTER_BUCKET_HIT_THRESHOLD,
+                "side_letter_text_hits": side_letter_text_hits,
+                "loa_text_hits": side_letter_metrics.get("loa_text_hits", 0),
+                "lou_text_hits": side_letter_metrics.get("lou_text_hits", 0),
+                "loa_bucket_count": side_letter_metrics.get("loa_bucket_count", 0),
+                "lou_bucket_count": side_letter_metrics.get("lou_bucket_count", 0),
             },
         )
 
@@ -992,16 +1291,43 @@ def evaluate_contract_pack(
             normalized_manifest_classes = [
                 _normalize_classification_label(v) for v in manifest_classes if str(v).strip()
             ]
+            ontology_decisions_by_source = {}
+            ontology_for_coverage_path = artifacts["classification_ontology"]
+            if ontology_for_coverage_path.exists():
+                try:
+                    ontology_for_coverage = _load_json(ontology_for_coverage_path)
+                    ontology_decisions_by_source = {
+                        str(d.get("source_key") or "").strip(): d
+                        for d in (ontology_for_coverage.get("decisions") or [])
+                        if isinstance(d, dict) and str(d.get("source_key") or "").strip()
+                    }
+                except Exception:
+                    ontology_decisions_by_source = {}
             resolved_manifest = []
             unresolved_manifest = []
+            out_of_scope_manifest = []
+            clarification_manifest = []
+            actionable_manifest = []
             for raw_label in normalized_manifest_classes:
-                if lookup_wage(wages_data, raw_label, 0, 0) is None:
-                    unresolved_manifest.append(raw_label)
-                else:
+                decision = ontology_decisions_by_source.get(raw_label, {})
+                review_state = str(decision.get("review_state") or "").strip()
+                if review_state == "out_of_scope":
+                    out_of_scope_manifest.append(raw_label)
+                    continue
+                actionable_manifest.append(raw_label)
+                if (
+                    lookup_wage(wages_data, raw_label, 0, 0) is not None
+                    or bool(decision.get("mapped_wage_key"))
+                    or review_state == "needs_clarification"
+                ):
                     resolved_manifest.append(raw_label)
+                    if review_state == "needs_clarification":
+                        clarification_manifest.append(raw_label)
+                else:
+                    unresolved_manifest.append(raw_label)
             ratio = (
-                len(resolved_manifest) / len(normalized_manifest_classes)
-                if normalized_manifest_classes else 1.0
+                len(resolved_manifest) / len(actionable_manifest)
+                if actionable_manifest else 1.0
             )
             _check(
                 checks,
@@ -1013,8 +1339,10 @@ def evaluate_contract_pack(
                 else "Manifest classification wage coverage below advisory threshold.",
                 {
                     "coverage": round(ratio, 4),
-                    "resolved": len(resolved_manifest),
-                    "total": len(normalized_manifest_classes),
+                    "resolved_or_clarified": len(resolved_manifest),
+                    "clarification_required": len(clarification_manifest),
+                    "out_of_scope": len(out_of_scope_manifest),
+                    "total": len(actionable_manifest),
                     "unresolved": unresolved_manifest[:30],
                 },
             )
@@ -1103,6 +1431,211 @@ def evaluate_contract_pack(
             },
         )
 
+    # Effective snapshot checks
+    effective_contract_path = (
+        effective_version_dir / "effective_contract.json" if effective_version_dir else None
+    )
+    effective_contract_exists = bool(
+        effective_contract_path is not None and effective_contract_path.exists()
+    )
+    _check(
+        checks,
+        "effective_snapshot_contract_exists",
+        (not effective_version_dir) or effective_contract_exists,
+        "required",
+        "Effective snapshot includes effective_contract.json."
+        if effective_contract_exists
+        else "No effective snapshot present."
+        if not effective_version_dir
+        else "Effective snapshot is missing effective_contract.json.",
+        {
+            "effective_version_id": effective_version_id,
+            "path": str(effective_contract_path) if effective_contract_path else None,
+        },
+    )
+
+    effective_index_inputs_dir = (
+        effective_version_dir / "index_inputs" if effective_version_dir else None
+    )
+    effective_chunk_input = None
+    effective_chunk_candidates = []
+    if effective_index_inputs_dir:
+        effective_chunk_candidates = [
+            effective_index_inputs_dir / artifacts["chunks_enriched"].name,
+            effective_index_inputs_dir / artifacts["chunks_base"].name,
+        ]
+        for candidate in effective_chunk_candidates:
+            if candidate.exists():
+                effective_chunk_input = candidate
+                break
+
+    _check(
+        checks,
+        "effective_chunk_index_input_exists",
+        (not effective_version_dir) or (effective_chunk_input is not None),
+        "required",
+        "Effective snapshot includes chunk index input."
+        if effective_chunk_input is not None
+        else "No effective snapshot present."
+        if not effective_version_dir
+        else "Effective snapshot is missing chunk index input.",
+        {
+            "effective_version_id": effective_version_id,
+            "path": str(effective_chunk_input) if effective_chunk_input else None,
+            "candidates": [str(v) for v in effective_chunk_candidates],
+        },
+    )
+    if effective_chunk_input is not None:
+        effective_chunk_payload, effective_chunk_error = _load_json_artifact(effective_chunk_input)
+        if effective_chunk_error:
+            _check(
+                checks,
+                "effective_chunk_index_input_json_load",
+                False,
+                "required",
+                f"Effective chunk index input JSON load failed: {effective_chunk_error}",
+                {"path": str(effective_chunk_input)},
+            )
+        effective_chunk_count = (
+            len(effective_chunk_payload)
+            if isinstance(effective_chunk_payload, list)
+            else 0
+        )
+        _check(
+            checks,
+            "effective_chunk_index_input_non_empty",
+            effective_chunk_count > 0,
+            "required",
+            "Effective chunk index input is non-empty."
+            if effective_chunk_count > 0
+            else "Effective chunk index input is empty or invalid.",
+            {
+                "path": str(effective_chunk_input),
+                "chunk_count": effective_chunk_count,
+            },
+        )
+
+    effective_wage_input = (
+        effective_index_inputs_dir / artifacts["wages"].name
+        if effective_index_inputs_dir
+        else None
+    )
+    effective_wage_required = bool(effective_version_dir and wages_exists)
+    _check(
+        checks,
+        "effective_wage_index_input_exists",
+        (not effective_wage_required)
+        or (effective_wage_input is not None and effective_wage_input.exists()),
+        "required",
+        "Effective snapshot includes wage index input."
+        if effective_wage_required and effective_wage_input is not None and effective_wage_input.exists()
+        else "Effective wage index input not required."
+        if not effective_wage_required
+        else "Effective snapshot is missing wage index input.",
+        {
+            "effective_version_id": effective_version_id,
+            "path": str(effective_wage_input) if effective_wage_input else None,
+            "required": effective_wage_required,
+        },
+    )
+    if effective_wage_required and effective_wage_input is not None and effective_wage_input.exists():
+        effective_wage_payload, effective_wage_error = _load_json_artifact(effective_wage_input)
+        if effective_wage_error:
+            _check(
+                checks,
+                "effective_wage_index_input_json_load",
+                False,
+                "required",
+                f"Effective wage index input JSON load failed: {effective_wage_error}",
+                {"path": str(effective_wage_input)},
+            )
+        effective_wage_rows = (
+            len((effective_wage_payload or {}).get("canonical_wage_rows") or [])
+            if isinstance(effective_wage_payload, dict)
+            else 0
+        )
+        _check(
+            checks,
+            "effective_wage_index_input_non_empty",
+            effective_wage_rows > 0,
+            "required",
+            "Effective wage index input is non-empty."
+            if effective_wage_rows > 0
+            else "Effective wage index input is empty or invalid.",
+            {
+                "path": str(effective_wage_input),
+                "canonical_wage_row_count": effective_wage_rows,
+            },
+        )
+
+    effective_entitlement_input = (
+        effective_index_inputs_dir / artifacts["entitlements"].name
+        if effective_index_inputs_dir
+        else None
+    )
+    effective_entitlement_required = bool(
+        effective_version_dir and (entitlements_exists or requires_entitlements)
+    )
+    _check(
+        checks,
+        "effective_entitlement_index_input_exists",
+        (not effective_entitlement_required)
+        or (
+            effective_entitlement_input is not None
+            and effective_entitlement_input.exists()
+        ),
+        "required",
+        "Effective snapshot includes entitlement index input."
+        if (
+            effective_entitlement_required
+            and effective_entitlement_input is not None
+            and effective_entitlement_input.exists()
+        )
+        else "Effective entitlement index input not required."
+        if not effective_entitlement_required
+        else "Effective snapshot is missing entitlement index input.",
+        {
+            "effective_version_id": effective_version_id,
+            "path": str(effective_entitlement_input) if effective_entitlement_input else None,
+            "required": effective_entitlement_required,
+        },
+    )
+    if (
+        effective_entitlement_required
+        and effective_entitlement_input is not None
+        and effective_entitlement_input.exists()
+    ):
+        effective_entitlement_payload, effective_entitlement_error = _load_json_artifact(
+            effective_entitlement_input
+        )
+        if effective_entitlement_error:
+            _check(
+                checks,
+                "effective_entitlement_index_input_json_load",
+                False,
+                "required",
+                f"Effective entitlement index input JSON load failed: {effective_entitlement_error}",
+                {"path": str(effective_entitlement_input)},
+            )
+        effective_schedule_count = (
+            len((effective_entitlement_payload or {}).get("vacation_entitlements") or [])
+            if isinstance(effective_entitlement_payload, dict)
+            else 0
+        )
+        _check(
+            checks,
+            "effective_entitlement_index_input_non_empty",
+            effective_schedule_count > 0,
+            "required",
+            "Effective entitlement index input is non-empty."
+            if effective_schedule_count > 0
+            else "Effective entitlement index input is empty or invalid.",
+            {
+                "path": str(effective_entitlement_input),
+                "vacation_schedule_count": effective_schedule_count,
+            },
+        )
+
     # Classification ontology checks
     ontology_path = artifacts["classification_ontology"]
     requires_ontology = bool(manifest and (manifest.get("classifications") or []))
@@ -1134,7 +1667,10 @@ def evaluate_contract_pack(
             )
 
     if classification_ontology:
-        schema_ok = classification_ontology.get("schema_version") == "classification_ontology_v1"
+        schema_ok = classification_ontology.get("schema_version") in {
+            "classification_ontology_v1",
+            "classification_ontology_v2",
+        }
         contract_match_ok = classification_ontology.get("contract_id") == contract_id
         _check(
             checks,
@@ -1206,7 +1742,11 @@ def evaluate_contract_pack(
             else "Ontology mapping coverage below advisory threshold.",
             {
                 "coverage": round(ontology_coverage, 4),
+                "covered_manifest_classes": ontology_summary.get("covered_manifest_classes"),
+                "actionable_manifest_classes": ontology_summary.get("actionable_manifest_classes"),
                 "resolved_manifest_classes": ontology_summary.get("resolved_manifest_classes"),
+                "clarification_manifest_classes": ontology_summary.get("clarification_manifest_classes"),
+                "out_of_scope_manifest_classes": ontology_summary.get("out_of_scope_manifest_classes"),
                 "total_manifest_classes": ontology_summary.get("total_manifest_classes"),
                 "unresolved_manifest_keys": (ontology_summary.get("unresolved_manifest_keys") or [])[:40],
             },
@@ -1243,7 +1783,10 @@ def evaluate_contract_pack(
 
     if role_catalog:
         roles = role_catalog.get("roles") or []
-        schema_ok = role_catalog.get("schema_version") == "role_catalog_v1"
+        schema_ok = role_catalog.get("schema_version") in {
+            "role_catalog_v1",
+            "role_catalog_v2",
+        }
         contract_match_ok = role_catalog.get("contract_id") == contract_id
         roles_ok = isinstance(roles, list)
         roles_non_empty_ok = bool(roles) if requires_role_catalog else True
@@ -1292,6 +1835,18 @@ def evaluate_contract_pack(
             {"default_unmapped_roles": default_unmapped_roles[:40]},
         )
 
+        role_catalog_summary = role_catalog.get("summary") or {}
+        summary_unresolved_manifest_roles = role_catalog_summary.get("unresolved_manifest_roles")
+        if summary_unresolved_manifest_roles is not None:
+            unresolved_manifest_roles = list(summary_unresolved_manifest_roles)
+        manifest_roles_total = int(
+            role_catalog_summary.get("actionable_manifest_roles")
+            or role_catalog_summary.get("manifest_roles")
+            or manifest_roles_total
+            or 0
+        )
+        clarification_manifest_roles = list(role_catalog_summary.get("clarification_manifest_roles") or [])
+        out_of_scope_manifest_roles = list(role_catalog_summary.get("out_of_scope_manifest_roles") or [])
         unresolved_rate = (
             len(unresolved_manifest_roles) / manifest_roles_total
             if manifest_roles_total > 0 else 0.0
@@ -1308,6 +1863,8 @@ def evaluate_contract_pack(
                 "manifest_roles_total": manifest_roles_total,
                 "unresolved_manifest_roles": len(unresolved_manifest_roles),
                 "unresolved_manifest_rate": round(unresolved_rate, 4),
+                "clarification_manifest_roles": clarification_manifest_roles[:40],
+                "out_of_scope_manifest_roles": out_of_scope_manifest_roles[:40],
                 "unresolved_manifest_role_values": unresolved_manifest_roles[:40],
             },
         )
@@ -1387,6 +1944,36 @@ def evaluate_contract_pack(
             },
         )
 
+        queue_issue_ids = {
+            str(item.get("issue_id") or "").strip()
+            for item in items
+            if isinstance(item, dict) and str(item.get("issue_id") or "").strip()
+        }
+        required_issue_ids = []
+        if unresolved_manifest_count > 0:
+            required_issue_ids.append("ontology_unresolved_manifest_classes")
+        if canonical_ambiguities_count > 0:
+            required_issue_ids.append("canonical_wage_ambiguities")
+        if canonical_conflicts_count > 0:
+            required_issue_ids.append("canonical_wage_conflicts")
+        if unresolved_rows_count > 0:
+            required_issue_ids.append("canonical_wage_unresolved_rows")
+        missing_issue_ids = sorted(set(required_issue_ids) - queue_issue_ids)
+        _check(
+            checks,
+            "ingestion_review_queue_issue_coverage",
+            len(missing_issue_ids) == 0,
+            "required",
+            "Ingestion review queue covers all unresolved ingestion issue categories."
+            if len(missing_issue_ids) == 0
+            else "Ingestion review queue is missing unresolved ingestion issue categories.",
+            {
+                "required_issue_ids": sorted(set(required_issue_ids)),
+                "queue_issue_ids": sorted(queue_issue_ids),
+                "missing_issue_ids": missing_issue_ids,
+            },
+        )
+
     # Advisory: Appendix table evidence coverage
     if manifest and manifest.get("has_appendix_a"):
         table_count = len(table_registry) if isinstance(table_registry, list) else 0
@@ -1422,6 +2009,151 @@ def evaluate_contract_pack(
             },
         )
 
+    moa_wage_patch_metrics = _moa_wage_patch_metrics(package_dir)
+    moa_wage_schedule_required = int(moa_wage_patch_metrics.get("moa_wage_op_count") or 0) > 0
+    schedule_label_ops = int(moa_wage_patch_metrics.get("ops_with_selected_schedule_label") or 0)
+    schedule_map_ops = int(moa_wage_patch_metrics.get("ops_with_source_rate_schedule") or 0)
+    sync_metadata_missing = list(moa_wage_patch_metrics.get("patches_missing_sync_metadata") or [])
+    sync_config_missing = list(moa_wage_patch_metrics.get("patches_missing_config_id") or [])
+
+    _check(
+        checks,
+        "moa_wage_schedule_metadata_integrity",
+        (not moa_wage_schedule_required)
+        or (
+            schedule_label_ops == int(moa_wage_patch_metrics.get("moa_wage_op_count") or 0)
+            and schedule_map_ops == int(moa_wage_patch_metrics.get("moa_wage_op_count") or 0)
+            and len(sync_metadata_missing) == 0
+        ),
+        "required",
+        "MOA wage row ops preserve raw schedule metadata."
+        if moa_wage_schedule_required
+        and schedule_label_ops == int(moa_wage_patch_metrics.get("moa_wage_op_count") or 0)
+        and schedule_map_ops == int(moa_wage_patch_metrics.get("moa_wage_op_count") or 0)
+        and len(sync_metadata_missing) == 0
+        else "MOA wage schedule metadata not required."
+        if not moa_wage_schedule_required
+        else "MOA wage row ops are missing selected schedule metadata or sync metadata.",
+        {
+            "required": moa_wage_schedule_required,
+            "moa_wage_patch_count": moa_wage_patch_metrics.get("moa_wage_patch_count"),
+            "moa_wage_op_count": moa_wage_patch_metrics.get("moa_wage_op_count"),
+            "ops_with_selected_schedule_label": schedule_label_ops,
+            "ops_with_source_rate_schedule": schedule_map_ops,
+            "patches_missing_sync_metadata": sync_metadata_missing[:20],
+            "source_doc_ids": moa_wage_patch_metrics.get("source_doc_ids") or [],
+        },
+    )
+    _check(
+        checks,
+        "moa_wage_schedule_sync_registration",
+        (not moa_wage_schedule_required) or len(sync_config_missing) == 0,
+        "advisory",
+        "MOA wage schedule sync metadata records a config id."
+        if moa_wage_schedule_required and len(sync_config_missing) == 0
+        else "MOA wage schedule sync registration not required."
+        if not moa_wage_schedule_required
+        else "MOA wage schedule sync metadata is missing config id.",
+        {
+            "required": moa_wage_schedule_required,
+            "patches_missing_config_id": sync_config_missing[:20],
+            "moa_wage_patch_count": moa_wage_patch_metrics.get("moa_wage_patch_count"),
+            "source_doc_ids": moa_wage_patch_metrics.get("source_doc_ids") or [],
+        },
+    )
+
+    effective_moa_provenance_metrics = _effective_moa_provenance_page_metrics(package_dir)
+    moa_provenance_required = int(effective_moa_provenance_metrics.get("moa_ref_count") or 0) > 0
+    missing_moa_pages = int(effective_moa_provenance_metrics.get("missing_page_ref_count") or 0)
+    _check(
+        checks,
+        "effective_moa_provenance_page_integrity",
+        (not moa_provenance_required) or missing_moa_pages == 0,
+        "required",
+        "Effective amended MOA provenance refs include navigable PDF pages."
+        if moa_provenance_required and missing_moa_pages == 0
+        else "Effective amended MOA provenance page integrity not required."
+        if not moa_provenance_required
+        else "Effective amended MOA provenance includes refs without PDF pages.",
+        {
+            "required": moa_provenance_required,
+            "effective_version_id": effective_moa_provenance_metrics.get("effective_version_id"),
+            "moa_ref_count": effective_moa_provenance_metrics.get("moa_ref_count"),
+            "missing_page_ref_count": missing_moa_pages,
+            "sections_missing_page": effective_moa_provenance_metrics.get("sections_missing_page") or [],
+            "tables_missing_page": effective_moa_provenance_metrics.get("tables_missing_page") or [],
+            "source_doc_ids": effective_moa_provenance_metrics.get("source_doc_ids") or [],
+        },
+    )
+
+    contract_miss_records, miss_record_load_errors = _load_contract_miss_records(contract_id)
+    miss_taxonomy_counts = Counter(
+        str(row.get("taxonomy_type") or "").strip().lower()
+        for row in contract_miss_records
+        if isinstance(row, dict)
+    )
+    regression_added_records = [
+        row for row in contract_miss_records
+        if str(row.get("regression_status") or "").strip().lower() == "regression_added"
+    ]
+    missing_regression_case_ids = sorted(
+        str(row.get("miss_id") or row.get("operator_label") or "<unknown>")
+        for row in regression_added_records
+        if not str(row.get("regression_case_id") or "").strip()
+    )
+    miss_backlog_linkage_ok = (
+        len(miss_record_load_errors) == 0 and len(missing_regression_case_ids) == 0
+    )
+    _check(
+        checks,
+        "miss_record_backlog_linkage",
+        miss_backlog_linkage_ok,
+        "advisory",
+        "Contract-scoped reviewed miss backlog is linked cleanly."
+        if miss_backlog_linkage_ok and contract_miss_records
+        else "No contract-scoped miss backlog records present."
+        if not contract_miss_records and len(miss_record_load_errors) == 0
+        else "Contract-scoped miss backlog has load or regression-linkage issues.",
+        {
+            "miss_record_count": len(contract_miss_records),
+            "regression_added_count": len(regression_added_records),
+            "missing_regression_case_ids": missing_regression_case_ids,
+            "load_errors": miss_record_load_errors[:20],
+            "taxonomy_counts": dict(sorted(miss_taxonomy_counts.items())),
+        },
+    )
+
+    failing_check_ids = {
+        str(row.get("id") or "")
+        for row in checks
+        if str(row.get("status") or "") == "fail"
+    }
+    mapped_related_checks = sorted(
+        {
+            check_id
+            for taxonomy_type in miss_taxonomy_counts.keys()
+            for check_id in MISS_TAXONOMY_CHECK_IDS.get(str(taxonomy_type), set())
+        }
+    )
+    active_related_failures = sorted(set(mapped_related_checks) & failing_check_ids)
+    _check(
+        checks,
+        "miss_record_signal_alignment",
+        len(active_related_failures) == 0,
+        "advisory",
+        "Known contract-scoped miss signals align with current green pack capabilities."
+        if len(active_related_failures) == 0 and contract_miss_records
+        else "No contract-scoped miss signals to align."
+        if not contract_miss_records
+        else "Contract pack still fails capability checks associated with reviewed miss patterns.",
+        {
+            "miss_record_count": len(contract_miss_records),
+            "mapped_related_checks": mapped_related_checks,
+            "active_related_failures": active_related_failures,
+            "taxonomy_counts": dict(sorted(miss_taxonomy_counts.items())),
+        },
+    )
+
     required_failed = [c["id"] for c in checks if c["severity"] == "required" and c["status"] == "fail"]
     advisory_failed = [c["id"] for c in checks if c["severity"] == "advisory" and c["status"] == "fail"]
     scorecard = {
@@ -1434,6 +2166,41 @@ def evaluate_contract_pack(
         "artifact_hashes": artifact_hashes,
         "pack_hash": _pack_hash(artifact_hashes) if artifact_hashes else None,
         "checks": checks,
+        "capabilities": {
+            "side_letter_doc_type_materialization": _check_status(
+                checks, "side_letter_doc_type_materialization"
+            ),
+            "effective_snapshot_present": bool(effective_version_dir),
+            "effective_chunk_index_input": _check_status(
+                checks, "effective_chunk_index_input_non_empty"
+            ) or _check_status(checks, "effective_chunk_index_input_exists"),
+            "effective_wage_index_input": _check_status(
+                checks, "effective_wage_index_input_non_empty"
+            ) or _check_status(checks, "effective_wage_index_input_exists"),
+            "effective_entitlement_index_input": _check_status(
+                checks, "effective_entitlement_index_input_non_empty"
+            ) or _check_status(checks, "effective_entitlement_index_input_exists"),
+            "moa_wage_schedule_metadata_integrity": _check_status(
+                checks, "moa_wage_schedule_metadata_integrity"
+            ),
+            "moa_wage_schedule_sync_registration": _check_status(
+                checks, "moa_wage_schedule_sync_registration"
+            ),
+            "effective_moa_provenance_page_integrity": _check_status(
+                checks, "effective_moa_provenance_page_integrity"
+            ),
+            "ingestion_review_queue_issue_coverage": _check_status(
+                checks, "ingestion_review_queue_issue_coverage"
+            ),
+            "miss_records_present": len(contract_miss_records) > 0,
+            "miss_record_count": len(contract_miss_records),
+            "miss_record_backlog_linkage": _check_status(
+                checks, "miss_record_backlog_linkage"
+            ),
+            "miss_record_signal_alignment": _check_status(
+                checks, "miss_record_signal_alignment"
+            ),
+        },
         "summary": {
             "required_failed": required_failed,
             "advisory_failed": advisory_failed,

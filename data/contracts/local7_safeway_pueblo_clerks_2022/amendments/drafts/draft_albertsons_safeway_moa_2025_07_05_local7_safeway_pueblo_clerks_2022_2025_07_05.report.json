@@ -1,13 +1,13 @@
 {
   "contract_id": "local7_safeway_pueblo_clerks_2022",
-  "generated_at_utc": "2026-02-21T20:32:24.245645+00:00",
+  "generated_at_utc": "2026-03-09T10:08:17.852764+00:00",
   "operation_count": 10,
   "patch_id": "draft_albertsons_safeway_moa_2025_07_05_local7_safeway_pueblo_clerks_2022_2025_07_05",
   "quality_flag_counts": {
     "contains_ellipsis": 3,
     "too_short": 1
   },
-  "selected_candidate_count": 29,
+  "selected_candidate_count": 30,
   "skipped": [
     {
       "article_num": 7,
@@ -34,6 +34,11 @@
         "contains_ellipsis"
       ],
       "reason": "low_quality_candidate",
+      "section_num": 20
+    },
+    {
+      "article_num": 10,
+      "reason": "target_not_found_in_base",
       "section_num": 20
     },
     {
@@ -115,10 +120,10 @@
       "section_num": 174
     }
   ],
-  "skipped_count": 19,
+  "skipped_count": 20,
   "skipped_reason_counts": {
     "ambiguous_target_multiple_base_sections": 7,
     "low_quality_candidate": 3,
-    "target_not_found_in_base": 9
+    "target_not_found_in_base": 10
   }
 }

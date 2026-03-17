@@ -1,23 +1,23 @@
 {
   "schema_version": "moa_effective_eval_v1",
   "dataset_schema_version": "moa_effective_test_v2_deep",
-  "timestamp_utc": "2026-02-22T05:31:28.881269+00:00",
-  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_test.json",
+  "timestamp_utc": "2026-03-09T10:32:21.893581+00:00",
+  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_test.json",
   "n_results": 8,
   "bm25_only": true,
   "overall": {
-    "passed": 18,
+    "passed": 17,
     "total": 18,
-    "pass_rate": 1.0,
+    "pass_rate": 0.9444,
     "citation_hit_rate": 1.0,
     "source_type_match_rate": 1.0,
     "intent_match_rate": 1.0
   },
   "by_contract": {
     "local7_safeway_pueblo_clerks_2022": {
-      "passed": 18,
+      "passed": 17,
       "total": 18,
-      "pass_rate": 1.0
+      "pass_rate": 0.9444
     }
   },
   "results": [
@@ -108,12 +108,12 @@
       "retrieved_citations": [
         "Article 58, Section 173",
         "Article 58, Section 175, Part 1",
-        "Article 4, Section 8",
-        "Article 7, Section 14, Subsection h (DRIVE UP AND GO)",
-        "Article 8, Section 19",
-        "Article 4, Section 9",
         "Article 58, Section 1749",
-        "Article 58, Section 175, Part 2"
+        "Article 58, Section 175, Part 2",
+        "Article 46, Section 140, Part 2",
+        "Article 46, Section 141",
+        "Article 48, Section 145, Part 2",
+        "Article 48, Section 146"
       ],
       "expected_rank": null,
       "citation_hit": true,
@@ -147,10 +147,10 @@
       "retrieved_citations": [
         "Article 16, Section 41",
         "Article 16, Section 42",
-        "Article 2, Section 4",
+        "Article 13, Section 30",
         "Article 4, Section 9",
         "Article 7, Section 14, Subsection h (DRIVE UP AND GO)",
-        "Article 42, Section 118, Part 3",
+        "Article 8, Section 18",
         "Article 16, Section 43",
         "Article 15, Section 34"
       ],
@@ -185,12 +185,12 @@
         "Article 15, Section 34"
       ],
       "retrieved_citations": [
-        "Article 13, Section 30",
-        "Article 2, Section 4",
+        "Article 16, Section 35",
+        "Article 16, Section 37",
         "Article 4, Section 8",
+        "Article 5, Section 11",
         "Article 7, Section 14, Subsection g (COURTESY CLERK DUTIES)",
-        "Article 42, Section 118, Part 1",
-        "Article 42, Section 119",
+        "Article 4, Section 9",
         "Article 16, Section 36",
         "Article 15, Section 34"
       ],
@@ -225,12 +225,12 @@
         "Article 15, Section 34"
       ],
       "retrieved_citations": [
-        "Article 2, Section 2",
+        "Article 16, Section 35",
         "Article 4, Section 8",
-        "Article 14, Section 31",
+        "Article 5, Section 12",
+        "Article 8, Section 17",
         "Article 7, Section 14, Subsection g (COURTESY CLERK DUTIES)",
         "Article 7, Section 16",
-        "Article 42, Section 118, Part 1",
         "Article 16, Section 36",
         "Article 15, Section 34"
       ],
@@ -263,14 +263,14 @@
       "expectation": "absent",
       "expected_citations": [],
       "retrieved_citations": [
-        "Article 2, Section 4",
+        "Article 16, Section 35",
+        "Article 16, Section 37",
         "Article 4, Section 8",
+        "Article 5, Section 10",
         "Article 7, Section 14, Subsection g (COURTESY CLERK DUTIES)",
-        "Article 2, Section 3, Part 1",
-        "Article 42, Section 118, Part 3",
-        "Article 42, Section 120",
-        "Article 15, Section 34",
-        "Article 42, Section 118, Part 1"
+        "Article 4, Section 9",
+        "Article 16, Section 36",
+        "Article 15, Section 34"
       ],
       "expected_rank": null,
       "citation_hit": true,
@@ -340,12 +340,12 @@
       "retrieved_citations": [
         "Article 16, Section 35",
         "Article 16, Section 37",
-        "Article 14, Section 31",
-        "Article 14, Section 32",
-        "Article 14, Section 33",
         "Article 16, Section 36",
         "Article 15, Section 34",
-        "Article 13, Section 29"
+        "Article 13, Section 29",
+        "Article 13, Section 30",
+        "Article 35, Section 100, Part 1-1",
+        "Article 35, Section 101"
       ],
       "expected_rank": null,
       "citation_hit": true,
@@ -378,11 +378,11 @@
         "Article 16, Section 36",
         "Article 16, Section 35",
         "Article 16, Section 37",
-        "Article 14, Section 31",
-        "Article 14, Section 32",
-        "Article 14, Section 33",
         "Article 13, Section 30",
-        "Article 13, Section 29"
+        "Article 13, Section 29",
+        "Article 15, Section 34",
+        "Article 42, Section 118, Part 3",
+        "Article 56, Section 164"
       ],
       "expected_rank": null,
       "citation_hit": true,
@@ -415,8 +415,8 @@
       ],
       "retrieved_citations": [
         "Article 18, Section 54",
-        "Article 18, Section 53",
         "Article 28, Section 76",
+        "Article 21, Section 57",
         "Article 10, Section 21, Part 10",
         "Article 10, Section 22",
         "Article 45, Section 129",
@@ -457,10 +457,10 @@
         "Article 18, Section 54",
         "Article 18, Section 53",
         "Article 28, Section 76",
+        "Article 21, Section 57",
         "Article 10, Section 21, Part 10",
         "Article 10, Section 22",
         "Article 10, Section 21, Part 1",
-        "Article 46, Section 133",
         "Article 45, Section 131"
       ],
       "expected_rank": 7,
@@ -534,16 +534,16 @@
         "Letter of Understanding 1"
       ],
       "retrieved_citations": [
-        "Article 29, Section 83, Part 5-6",
-        "Article 46, Section 141, Part 5",
-        "Article 52, Section 158",
-        "Article 29, Section 82, Part 1",
-        "Article 29, Section 83",
-        "Article 46, Section 141",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 6",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 1",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 12",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 11",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 13",
         "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 5",
-        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 1"
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 4",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 3"
       ],
-      "expected_rank": 6,
+      "expected_rank": 0,
       "citation_hit": true,
       "expected_keywords": [
         "Alcoholic Rehabilitation Program",
@@ -575,9 +575,9 @@
         "Appendix A Wage Table - Basket Hours",
         "Appendix A Wage Table - Article 58, Section 175, Part 10",
         "Article 8, Section 19",
-        "Article 8, Section 18",
-        "Article 9, Section 20",
-        "Article 18, Section 54",
+        "Article 4, Section 8",
+        "Article 5, Section 10",
+        "Article 7, Section 14, Subsection g (COURTESY CLERK DUTIES)",
         "Article 10, Section 21, Part 2",
         "Article 10, Section 25, Part 1"
       ],
@@ -611,13 +611,13 @@
       "expected_citations": [],
       "retrieved_citations": [
         "Article 8, Section 18",
-        "Article 2, Section 4",
+        "Article 8, Section 19",
         "Article 4, Section 8",
+        "Article 5, Section 12",
         "Article 9, Section 20",
-        "Article 42, Section 118, Part 1",
-        "Article 42, Section 119",
+        "Article 7, Section 15",
         "Article 8, Section 17",
-        "Article 42, Section 118, Part 2"
+        "Article 7, Section 16"
       ],
       "expected_rank": null,
       "citation_hit": true,
@@ -626,8 +626,8 @@
         "courtesy"
       ],
       "min_expected_keyword_hits": 1,
-      "best_expected_keyword_hits": 1,
-      "keywords_ok": true,
+      "best_expected_keyword_hits": 0,
+      "keywords_ok": false,
       "forbidden_keywords": [],
       "forbidden_ok": true,
       "expected_source_type": null,
@@ -639,7 +639,7 @@
       "require_no_wage_info": false,
       "wage_info_present": true,
       "wage_info_ok": true,
-      "pass": true
+      "pass": false
     },
     {
       "id": "MOA-CL-GUARD-01",
@@ -692,14 +692,14 @@
       "retrieved_citations": [
         "Article 16, Section 35",
         "Article 16, Section 37",
-        "Article 14, Section 31",
-        "Article 14, Section 32",
-        "Article 14, Section 33",
         "Article 16, Section 36",
         "Article 16, Section 43",
-        "Article 15, Section 34"
+        "Article 15, Section 34",
+        "Article 13, Section 30",
+        "Article 13, Section 29",
+        "Article 10, Section 21, Part 1"
       ],
-      "expected_rank": 7,
+      "expected_rank": 4,
       "citation_hit": true,
       "expected_keywords": [
         "Night premium shall not apply",

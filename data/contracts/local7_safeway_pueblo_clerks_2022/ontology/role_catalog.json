@@ -1,6 +1,6 @@
 {
-  "schema_version": "role_catalog_v1",
-  "generated_at_utc": "2026-02-15T18:43:12.903047+00:00",
+  "schema_version": "role_catalog_v2",
+  "generated_at_utc": "2026-03-08T21:43:31.616042+00:00",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "roles": [
     {
@@ -10,6 +10,7 @@
       "wage_key": "5star_cake_decorator",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": false,
       "onboarding_default": true
     },
@@ -20,6 +21,7 @@
       "wage_key": "all_purpose_clerk",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": true,
       "onboarding_default": true
     },
@@ -30,6 +32,7 @@
       "wage_key": "bakery_manager",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": true,
       "onboarding_default": true,
       "alias_values": [
@@ -46,6 +49,7 @@
       "wage_key": "bakery_fresh_cut_liquor_clerk",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": false,
       "onboarding_default": true
     },
@@ -56,6 +60,7 @@
       "wage_key": "cake_decorator",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": true,
       "onboarding_default": true
     },
@@ -66,6 +71,7 @@
       "wage_key": "courtesy_clerk",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": true,
       "onboarding_default": true
     },
@@ -76,6 +82,7 @@
       "wage_key": "floral_manager",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": true,
       "onboarding_default": true
     },
@@ -86,6 +93,7 @@
       "wage_key": "fresh_cut_supervisor",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": false,
       "onboarding_default": true
     },
@@ -96,6 +104,7 @@
       "wage_key": "fuel_lead",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": false,
       "onboarding_default": true
     },
@@ -106,6 +115,7 @@
       "wage_key": "head_baker",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": false,
       "onboarding_default": true
     },
@@ -116,17 +126,8 @@
       "wage_key": "head_clerk",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": true,
-      "onboarding_default": true
-    },
-    {
-      "value": "manager_trainee",
-      "label": "Manager Trainee",
-      "wage_available": true,
-      "wage_key": "manager_trainee",
-      "source": "wage_table",
-      "mapping_method": "exact_wage_key",
-      "manifest_present": false,
       "onboarding_default": true
     },
     {
@@ -136,6 +137,7 @@
       "wage_key": "nonfood_gm_floral",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": false,
       "onboarding_default": true,
       "alias_values": [
@@ -150,22 +152,13 @@
       ]
     },
     {
-      "value": "other_assistant_managers",
-      "label": "Other Assistant Managers",
-      "wage_available": true,
-      "wage_key": "other_assistant_managers",
-      "source": "wage_table",
-      "mapping_method": "exact_wage_key",
-      "manifest_present": false,
-      "onboarding_default": true
-    },
-    {
       "value": "produce_department_manager",
       "label": "Produce Department Manager",
       "wage_available": true,
       "wage_key": "produce_department_manager",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": true,
       "onboarding_default": true,
       "alias_values": [
@@ -182,6 +175,7 @@
       "wage_key": "variety_manager",
       "source": "wage_table",
       "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
       "manifest_present": false,
       "onboarding_default": true
     },
@@ -192,6 +186,8 @@
       "wage_key": "bakery_manager",
       "source": "ontology_resolved",
       "mapping_method": "token_similarity",
+      "review_state": "resolved",
+      "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false,
       "alias_of_wage_key": "bakery_manager"
@@ -203,6 +199,8 @@
       "wage_key": "nonfood_gm_floral",
       "source": "ontology_resolved",
       "mapping_method": "manual_override",
+      "review_state": "resolved",
+      "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false,
       "alias_of_wage_key": "nonfood_gm_floral"
@@ -214,9 +212,22 @@
       "wage_key": "nonfood_gm_floral",
       "source": "ontology_resolved",
       "mapping_method": "manual_override",
+      "review_state": "resolved",
+      "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false,
       "alias_of_wage_key": "nonfood_gm_floral"
+    },
+    {
+      "value": "manager_trainee",
+      "label": "Manager Trainee",
+      "wage_available": true,
+      "wage_key": "manager_trainee",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": false
     },
     {
       "value": "nonfood_clerk",
@@ -225,9 +236,22 @@
       "wage_key": "nonfood_gm_floral",
       "source": "ontology_resolved",
       "mapping_method": "manual_override",
+      "review_state": "resolved",
+      "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false,
       "alias_of_wage_key": "nonfood_gm_floral"
+    },
+    {
+      "value": "other_assistant_managers",
+      "label": "Other Assistant Managers",
+      "wage_available": true,
+      "wage_key": "other_assistant_managers",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": false
     },
     {
       "value": "produce_manager",
@@ -236,6 +260,8 @@
       "wage_key": "produce_department_manager",
       "source": "ontology_resolved",
       "mapping_method": "token_similarity",
+      "review_state": "resolved",
+      "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false,
       "alias_of_wage_key": "produce_department_manager"
@@ -247,6 +273,8 @@
       "wage_key": null,
       "source": "ontology_unresolved",
       "mapping_method": "unresolved_low_score",
+      "review_state": "unresolved",
+      "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false
     },
@@ -257,6 +285,8 @@
       "wage_key": null,
       "source": "ontology_unresolved",
       "mapping_method": "unresolved",
+      "review_state": "unresolved",
+      "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false
     },
@@ -267,6 +297,8 @@
       "wage_key": null,
       "source": "ontology_unresolved",
       "mapping_method": "unresolved",
+      "review_state": "unresolved",
+      "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false
     },
@@ -277,15 +309,20 @@
       "wage_key": null,
       "source": "ontology_unresolved",
       "mapping_method": "unresolved_low_score",
+      "review_state": "unresolved",
+      "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false
     }
   ],
   "summary": {
     "total_roles": 25,
-    "onboarding_default_roles": 16,
+    "onboarding_default_roles": 14,
     "wage_available_roles": 21,
     "manifest_roles": 16,
+    "actionable_manifest_roles": 16,
+    "clarification_manifest_roles": [],
+    "out_of_scope_manifest_roles": [],
     "unresolved_manifest_roles": [
       "deli_clerk",
       "meat_cutter",

@@ -3,14 +3,15 @@
     "local7_safeway_moa_2025_07_05"
   ],
   "artifact_hashes": {
-    "effective_contract_sha256": "6c9e884239b90de4ce3bcf1eb758934204e0d44a056eb69417847986b20775b9",
-    "effective_markdown_sha256": "423b8b1864fc94a343a59d09123b39c383219f98eb62a4c0d4e813d92f4e5de6",
-    "index_chunks_sha256": "f8e333b4fc7e0e97dd9b62ceb6cbe63ffee59f77d7549d02612541069129a43c",
-    "index_wages_sha256": "9e1ef84aee7f7baf5ab3cfea8d301bb2846c9161ea39dad430c0db21ce5c427d",
-    "patch_chain_sha256": "686d02fde59f17ef419211dc07a6f13b5bfa58bdff139a23cd2488587cfb98ec"
+    "effective_contract_sha256": "5991270ce41c915b51d4dd57e83eed29a46ed0c2d22ef3d5b2c0f4207a8ead81",
+    "effective_markdown_sha256": "647d9c7ccc9238574fb47e1d1b2d665492800b50b0a15810bd8ccb9b5bf8f873",
+    "index_chunks_sha256": "1783646cf068a47342971b8defaad7e8749950eadcff4a15c29dd78343a7543c",
+    "index_entitlements_sha256": "04df65d6601805b34521de4d781177d62a86c88055f6d8f3b1a48f7a3294466a",
+    "index_wages_sha256": "be34636e06fd5db0e31199d8c1b5cc91c7f7e1cacdc7a2d8d247613fd7193997",
+    "patch_chain_sha256": "de50b5a86bb545238c8aac44d2948e54d2305ae24ba8fe21d41b72681e43ab73"
   },
   "contract_id": "local7_safeway_pueblo_clerks_2022",
-  "effective_content_hash": "eab219af59eff62dc840e29305d38e9fcb2dd78b25a8dfb1e774db1efa4e5e3f",
+  "effective_content_hash": "c7ac70517a0e90b86d26aa4d5bae069a207ed900f16199ebe6d8fbdab0c87800",
   "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
   "errors": [],
   "materializer_version": "0.9.0",
@@ -39,13 +40,772 @@
       }
     },
     {
-      "after_hash": "6c41cc4f937e8a930ac11a9fab715c1a6d48650a276d1bc9acf14a3a2d726bc5",
+      "after_hash": "1ea374d6221f51addc47245f18e7fcb8b9e741acaca7310c007a7d3d835112c3",
       "applied": true,
-      "before_hash": "dd89359be7c5da2e2c13c6aa303326836f8eacc3d12eca5e3a1ed4b6bb4fe428",
-      "diagnostics": {},
+      "before_hash": "ec3da8d32ed30d888180fa0a62a7946a62e54e1d06dbcb6fc9d560f8b0c46832",
+      "diagnostics": {
+        "historical_row_key": "5star_cake_decorator|fixed:na|2024-01-21",
+        "new_row_key": "5star_cake_decorator|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
       "errors": [],
       "op": "replace_table_row",
       "op_id": "local7_safeway_moa_2025_07_05#2",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "5star_cake_decorator|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "f222e1443da08098eeb4bbf811c07e4128a8000e684a103caf395668d1afc7fc",
+      "applied": true,
+      "before_hash": "361607f36bd4517c267c440b75c8e004fd7cc9fb5e39e66c458756bd2a772e59",
+      "diagnostics": {
+        "historical_row_key": "all_purpose_clerk|hours:0|2024-01-21",
+        "new_row_key": "all_purpose_clerk|hours:0|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#3",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "all_purpose_clerk|hours:0|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "e6ac3f937bae293255d9253ba78e2609d57c09427e7295e7f5eb3592b2bf0b6b",
+      "applied": true,
+      "before_hash": "50e0004a31062849680ac792f6af027d6acbe370e802ade9354ddad92edc7d01",
+      "diagnostics": {
+        "historical_row_key": "all_purpose_clerk|hours:520|2024-01-21",
+        "new_row_key": "all_purpose_clerk|hours:520|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#4",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "all_purpose_clerk|hours:520|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "70e8b886fcd20deea7cb76793ea6d712d26a057dc67c2f1cd047145cec6f6256",
+      "applied": true,
+      "before_hash": "1ed5eb376f931a540bccb0ae368e55af94ed19197ad65120ffeb7f1a024ab588",
+      "diagnostics": {
+        "historical_row_key": "all_purpose_clerk|hours:1560|2024-01-21",
+        "new_row_key": "all_purpose_clerk|hours:1560|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#5",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "all_purpose_clerk|hours:1560|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "13704d27296284585e874c5bf4ece488ec089d9112b3af5c7e2852ddf227ae3b",
+      "applied": true,
+      "before_hash": "ecc383dd923c1475035aefdfa4d2d5c14f652d3afc7113cedc1109b220d5cf4d",
+      "diagnostics": {
+        "historical_row_key": "all_purpose_clerk|hours:2600|2024-01-21",
+        "new_row_key": "all_purpose_clerk|hours:2600|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#6",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "all_purpose_clerk|hours:2600|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "43260b76900f7d12448f2b85f6efcafa004804ef8bf0c1da75323513c16cc945",
+      "applied": true,
+      "before_hash": "ed261a5e045b345134b0ffcafb3824d20e526ba3bae17896defc69d95bed04e1",
+      "diagnostics": {
+        "historical_row_key": "all_purpose_clerk|hours:3640|2024-01-21",
+        "new_row_key": "all_purpose_clerk|hours:3640|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#7",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "all_purpose_clerk|hours:3640|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "0a6b3d66cb56d9cbaf0e6be1212862710ce9fbba3a16a484e63d59f9dd255e4a",
+      "applied": true,
+      "before_hash": "2e78e37fe997a2df31aff7b4abfcb05e873edd7580001c5e7f399c6009828499",
+      "diagnostics": {
+        "historical_row_key": "all_purpose_clerk|hours:4680|2024-01-21",
+        "new_row_key": "all_purpose_clerk|hours:4680|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#8",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "all_purpose_clerk|hours:4680|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "86b7e8d391a7ef8b93cf16d7c60b5be603e0906fdc925d3c5e746ac3b2b65ff1",
+      "applied": true,
+      "before_hash": "3d72c640b41dd5f8e72a28a6da2b3bba3dcbe3f40db8fa69695a4cdb28aaefd6",
+      "diagnostics": {
+        "historical_row_key": "all_purpose_clerk|hours:5720|2024-01-21",
+        "new_row_key": "all_purpose_clerk|hours:5720|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#9",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "all_purpose_clerk|hours:5720|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "aea410ebc6aa5d577377ef98bfbea3ce65e5bdc323a0325d2fcbad7439b587ec",
+      "applied": true,
+      "before_hash": "5bb0b2749998d4e47be007e0ce74601853a41fcfab2a3ca6699f2168f7f0b94c",
+      "diagnostics": {
+        "historical_row_key": "all_purpose_clerk|hours:6760|2024-01-21",
+        "new_row_key": "all_purpose_clerk|hours:6760|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#10",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "all_purpose_clerk|hours:6760|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "be4feff3694d386eb3051e5ad953e2f3237e2debc3abd2cdfbc41be3200cb300",
+      "applied": true,
+      "before_hash": "8e6468894b90115c5111103f397baa7ca115237d461488d438f54d4ced9d9e92",
+      "diagnostics": {
+        "historical_row_key": "all_purpose_clerk|hours:7800|2024-01-21",
+        "new_row_key": "all_purpose_clerk|hours:7800|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#11",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "all_purpose_clerk|hours:7800|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "7bd6e732f39c8de08da835d352695360885a17ad96cbc19e2073a31cf87a7479",
+      "applied": true,
+      "before_hash": "50ef7358bc46205fc7d421882c339e9dea90b518dde68b86412eb13503addc68",
+      "diagnostics": {
+        "historical_row_key": "bakery_fresh_cut_liquor_clerk|hours:0|2024-01-21",
+        "new_row_key": "bakery_fresh_cut_liquor_clerk|hours:0|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#12",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "bakery_fresh_cut_liquor_clerk|hours:0|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "1ffc08518810e399953e0a72dc2b1a84d66af563860e97aaf42e3ed2a58c6742",
+      "applied": true,
+      "before_hash": "238821845c1ab725004e118d152444b7bafa5f26beeee3c8067d83e98386c3b5",
+      "diagnostics": {
+        "historical_row_key": "bakery_fresh_cut_liquor_clerk|hours:520|2024-01-21",
+        "new_row_key": "bakery_fresh_cut_liquor_clerk|hours:520|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#13",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "bakery_fresh_cut_liquor_clerk|hours:520|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "e1c1cd511e5d13c3d29bb316fc20450b117c5419c4893f6bbf8ba500cdc987ac",
+      "applied": true,
+      "before_hash": "c1eb10ffb5ac262240979e45e0e82210d67fb26ea486c7cb08245544914fcbe0",
+      "diagnostics": {
+        "historical_row_key": "bakery_fresh_cut_liquor_clerk|hours:1560|2024-01-21",
+        "new_row_key": "bakery_fresh_cut_liquor_clerk|hours:1560|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#14",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "bakery_fresh_cut_liquor_clerk|hours:1560|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "abd223be0f16f67be799b1e6066b2df8df8946b6aff7d795ee5670b5028aad2a",
+      "applied": true,
+      "before_hash": "88dab735c8b2a076dfe466060a43de9106ecf088466ce6e276885bfd8646a53a",
+      "diagnostics": {
+        "historical_row_key": "bakery_fresh_cut_liquor_clerk|hours:2600|2024-01-21",
+        "new_row_key": "bakery_fresh_cut_liquor_clerk|hours:2600|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#15",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "bakery_fresh_cut_liquor_clerk|hours:2600|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "9790830be78939e40ec7c81333a7fcd4a7e065c47b596364d703f35f6c84fb20",
+      "applied": true,
+      "before_hash": "628807ffabf0ff3564ca34e23126b8986962c3955c61a80acd61c9163b6da796",
+      "diagnostics": {
+        "historical_row_key": "bakery_fresh_cut_liquor_clerk|hours:3640|2024-01-21",
+        "new_row_key": "bakery_fresh_cut_liquor_clerk|hours:3640|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#16",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "bakery_fresh_cut_liquor_clerk|hours:3640|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "cb6615f2a8c868192487a1af1a4381ed1f49dccd835af9102a27175f92a090f0",
+      "applied": true,
+      "before_hash": "6e2c667201772b266f3bb98dd5d779d7e9eaa44f7d4cb8e6e5b4cef66796d1f4",
+      "diagnostics": {
+        "historical_row_key": "bakery_fresh_cut_liquor_clerk|hours:4680|2024-01-21",
+        "new_row_key": "bakery_fresh_cut_liquor_clerk|hours:4680|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#17",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "bakery_fresh_cut_liquor_clerk|hours:4680|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "fd7982d06198406fa56c8042adb19b2302b548c9e9b54ea7e757c6142e97fb40",
+      "applied": true,
+      "before_hash": "5dfba87bafbf0304ff2d87a02daeaf2fc656348e0816b4271ef05778186678ad",
+      "diagnostics": {
+        "historical_row_key": "bakery_fresh_cut_liquor_clerk|hours:5720|2024-01-21",
+        "new_row_key": "bakery_fresh_cut_liquor_clerk|hours:5720|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#18",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "bakery_fresh_cut_liquor_clerk|hours:5720|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "2cf1e448dd9bdc9bff86970cd512d8b1249e8ffcd43ec3ba51c36c13db364e08",
+      "applied": true,
+      "before_hash": "4ddc9447da01395419c986263fca2d0f0f9705b1dc3396c3e061d4ae74cac1c2",
+      "diagnostics": {
+        "historical_row_key": "bakery_fresh_cut_liquor_clerk|hours:6760|2024-01-21",
+        "new_row_key": "bakery_fresh_cut_liquor_clerk|hours:6760|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#19",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "bakery_fresh_cut_liquor_clerk|hours:6760|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "ebca8f5dc95cd4831736aa57ad982b6f618412ade425f0550beb110b22f45442",
+      "applied": true,
+      "before_hash": "afbd06c406cc7ebf9ca196e928100937edf9c2c6911385863ff5a18f64d38675",
+      "diagnostics": {
+        "historical_row_key": "bakery_fresh_cut_liquor_clerk|hours:7800|2024-01-21",
+        "new_row_key": "bakery_fresh_cut_liquor_clerk|hours:7800|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#20",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "bakery_fresh_cut_liquor_clerk|hours:7800|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "f5208cfbb398d8a746070084d696faf57489f5fbdcde837bae061e8f856f558c",
+      "applied": true,
+      "before_hash": "c90f48f71fbe7cce59910d1248f40e693532783a4903f55d3bb15a5156702a9f",
+      "diagnostics": {
+        "historical_row_key": "bakery_manager|fixed:na|2024-01-21",
+        "new_row_key": "bakery_manager|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#21",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "bakery_manager|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "80584ed39a5afec385dad5179cc8ddcf8ad16c09b79c8c2886ffb8725e5d80b2",
+      "applied": true,
+      "before_hash": "f7501bafcfc743298f422a84cb5557891a79824ca942002500099bd6ca94622f",
+      "diagnostics": {
+        "historical_row_key": "cake_decorator|hours:0|2024-01-21",
+        "new_row_key": "cake_decorator|hours:0|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#22",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "cake_decorator|hours:0|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "370593086019a0b2bea9f940a407ce6978101e8d22a574e6a7dde8ba6720dd32",
+      "applied": true,
+      "before_hash": "caaa34abd38a23b41437a7976372f839426c90b3365b98b394d9ee775b9359ec",
+      "diagnostics": {
+        "historical_row_key": "cake_decorator|hours:520|2024-01-21",
+        "new_row_key": "cake_decorator|hours:520|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#23",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "cake_decorator|hours:520|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "cb3416fe0958730f6c7f221a701ed62496238a48019d72e99799982fd0430f13",
+      "applied": true,
+      "before_hash": "a165f4e2b921f16d72d94088c7f9cad55e3511a282b0ad00bd14ebc05f1c8b2f",
+      "diagnostics": {
+        "historical_row_key": "cake_decorator|hours:1560|2024-01-21",
+        "new_row_key": "cake_decorator|hours:1560|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#24",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "cake_decorator|hours:1560|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "a8416aa1f9e886c8fc270281d50f548ec0794258ab4a97d381266c123a9d1acf",
+      "applied": true,
+      "before_hash": "7a83ebd88cf3a7b9944192235adbbfc17c16e3efa30c8901225a1b549c00dfe1",
+      "diagnostics": {
+        "historical_row_key": "cake_decorator|hours:2600|2024-01-21",
+        "new_row_key": "cake_decorator|hours:2600|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#25",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "cake_decorator|hours:2600|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "4e60079f0207160ff8ca9d15bb4623672ae5a6f794b6f2a3eb97e02238dd8405",
+      "applied": true,
+      "before_hash": "0b7f2d8b0fb9ce30ea332ae346151992fc830494b6406d2c1af9746bb567865c",
+      "diagnostics": {
+        "historical_row_key": "cake_decorator|hours:3640|2024-01-21",
+        "new_row_key": "cake_decorator|hours:3640|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#26",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "cake_decorator|hours:3640|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "40e6c381c6647bd0aaf62f822d6c28391584278cd23ea883ae1b6029862a922f",
+      "applied": true,
+      "before_hash": "fbc1e1fce7da74bb89b42388d7041b8cf821f08b107ef64e0dd195ebeec30e7c",
+      "diagnostics": {
+        "historical_row_key": "cake_decorator|hours:4680|2024-01-21",
+        "new_row_key": "cake_decorator|hours:4680|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#27",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "cake_decorator|hours:4680|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "ff775bb0b522001dc964752bfff8cb2e96496531a9240f6f789a2b12e260a49b",
+      "applied": true,
+      "before_hash": "9d36fc44df9f2dd93c44aecd8fb56db98a81dc2e9d0fbc238c93312598275253",
+      "diagnostics": {
+        "historical_row_key": "cake_decorator|hours:5720|2024-01-21",
+        "new_row_key": "cake_decorator|hours:5720|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#28",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "cake_decorator|hours:5720|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "38c458c5a7c522a0768303c6d5591b193f48637f6a95a96f04fe91f455b12de8",
+      "applied": true,
+      "before_hash": "c2a17404c54abfcdfdaec61ea2743e5f0e51ef59e2b7c8ceff5f6b450083df3d",
+      "diagnostics": {
+        "historical_row_key": "cake_decorator|hours:6760|2024-01-21",
+        "new_row_key": "cake_decorator|hours:6760|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#29",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "cake_decorator|hours:6760|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "25838458155bf6f7e3d681c918507f8a273b791c3dd489253b515bccf6fa9b94",
+      "applied": true,
+      "before_hash": "4649dcdaaec53faff202367c6ab1d219864597c8ce707e694127460ba9b80fa2",
+      "diagnostics": {
+        "historical_row_key": "cake_decorator|hours:7800|2024-01-21",
+        "new_row_key": "cake_decorator|hours:7800|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#30",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "cake_decorator|hours:7800|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "c8c42aa77bb95e155b83a6bd4b3caf7a6cc5e0432f05c3ae11f4934f1f649402",
+      "applied": true,
+      "before_hash": "dd89359be7c5da2e2c13c6aa303326836f8eacc3d12eca5e3a1ed4b6bb4fe428",
+      "diagnostics": {
+        "historical_row_key": "courtesy_clerk|hours:0|2024-01-21",
+        "new_row_key": "courtesy_clerk|hours:0|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#31",
       "sources": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
@@ -60,17 +820,589 @@
       }
     },
     {
+      "after_hash": "817edfd1ab07d1e4cac7cb61b42011865fc6daf550c50af3cf581adfdfd550f3",
+      "applied": true,
+      "before_hash": "d2638bf5e7583f87fd254d7eb071e51d9b28dca0b9ea596c2e7fc37158f35992",
+      "diagnostics": {
+        "historical_row_key": "courtesy_clerk|months:36|2024-01-21",
+        "new_row_key": "courtesy_clerk|months:36|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#32",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 12,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "courtesy_clerk|months:36|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "1a6fc226459bd5f879cf09c91a89befbcde64406a406ffb60c51ab8cfc6297b8",
+      "applied": true,
+      "before_hash": "27c52f6fadae8607d33b1492aab59c8570402752cce03a3be5b4dad56e52612b",
+      "diagnostics": {
+        "historical_row_key": "courtesy_clerk|months:72|2024-01-21",
+        "new_row_key": "courtesy_clerk|months:72|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#33",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 12,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "courtesy_clerk|months:72|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "293d476adea8757a14d35b7b88a6ce81b886a93149fe2a48d8f122ac632f4d0b",
+      "applied": true,
+      "before_hash": "5a791faea96c5e00203a1e0489601718ad57814c93c6f2b5cb75faa132d2ad59",
+      "diagnostics": {
+        "historical_row_key": "courtesy_clerk|months:108|2024-01-21",
+        "new_row_key": "courtesy_clerk|months:108|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#34",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 12,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "courtesy_clerk|months:108|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "37bcf2214e8c883641649688a72e80eb1b17c95166b14ea36484427a37ce39ac",
+      "applied": true,
+      "before_hash": "792baf16afca653e176ca0d068dec834337aae22037b864eb0e0aab4e9627fa5",
+      "diagnostics": {
+        "historical_row_key": "floral_manager|fixed:na|2024-01-21",
+        "new_row_key": "floral_manager|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#35",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "floral_manager|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "eaa90f2c1a21a5e7e516210c0a590da7f63873b49be929e99615e502111661d7",
+      "applied": true,
+      "before_hash": "93bd920c072c5b93aefba0b82963e89fc624d7cf63dc482722ead2ddb4e4bc4d",
+      "diagnostics": {
+        "historical_row_key": "fresh_cut_supervisor|fixed:na|2024-01-21",
+        "new_row_key": "fresh_cut_supervisor|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#36",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "fresh_cut_supervisor|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "faa70ab6d2e1cf6b607bf3f255e44587c9ef5c9ca5e89cbcfc23fcf587faa71b",
+      "applied": true,
+      "before_hash": "8943880424bcba89ad54ae962cf95734e8320f61e4719245b498769a0e418798",
+      "diagnostics": {
+        "historical_row_key": "fuel_lead|fixed:na|2024-01-21",
+        "new_row_key": "fuel_lead|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#37",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "fuel_lead|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "652198aaafa25ac81f1c1f6bcc1a1a39639604350827530bcd961bc18bb2002b",
+      "applied": true,
+      "before_hash": "78f00104487ea7d959cf84a6ccaa2594a3d7ed32f6dfc79bf2644ecfb97a7060",
+      "diagnostics": {
+        "historical_row_key": "grandfathered|fixed:na|2024-01-21",
+        "new_row_key": "grandfathered|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#38",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "grandfathered|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "9b1e9d346192be9b697829b8470d0ce3a35328f16bfbc78777e351c0e50fda2b",
+      "applied": true,
+      "before_hash": "2329b705fe3cea193013e4a84daa2e35acd24ddc6d279165f655c6d47ee09fd5",
+      "diagnostics": {
+        "historical_row_key": "head_baker|fixed:na|2024-01-21",
+        "new_row_key": "head_baker|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#39",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "head_baker|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "d98750afd5393625bc8f8d9a005954671f91848bce59676f7871d018f8ffb264",
+      "applied": true,
+      "before_hash": "b8797f140a4e61549571aa8665a612a12ed792727e74e54817c88a00ba7dd49b",
+      "diagnostics": {
+        "historical_row_key": "head_clerk|fixed:na|2024-01-21",
+        "new_row_key": "head_clerk|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#40",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "head_clerk|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "aa64a619e78c97ed9a132d0476ec71889922e13c51f988759a56668cdd5a1623",
+      "applied": true,
+      "before_hash": "87341fd71c2cda64ecd196d1a8517340785b901d89566ee01a07823d74481def",
+      "diagnostics": {
+        "historical_row_key": "manager_trainee|fixed:na|2024-01-21",
+        "new_row_key": "manager_trainee|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#41",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "manager_trainee|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "e3890cd13733e193bbd89e6492f03fdd10727abac9a8a4b753da0ecc2905d4ba",
+      "applied": true,
+      "before_hash": "667e4630265fcd1d58b628d2b41e96769d12f0ad64302d742e7af68fd9478ab5",
+      "diagnostics": {
+        "historical_row_key": "nonfood_gm_floral|hours:0|2024-01-21",
+        "new_row_key": "nonfood_gm_floral|hours:0|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#42",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "nonfood_gm_floral|hours:0|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "918198b9c5d6411336ca3facc3c4676c9a0ab5aa6d4d33e5480b3abee9187200",
+      "applied": true,
+      "before_hash": "7ac77d0c1e751168be856531b4c3e8e8a1f23b775a3fbce8425fdf1e6eba85df",
+      "diagnostics": {
+        "historical_row_key": "nonfood_gm_floral|hours:520|2024-01-21",
+        "new_row_key": "nonfood_gm_floral|hours:520|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#43",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "nonfood_gm_floral|hours:520|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "aec67a5b98e3da90af6f9bc017d1a129c0af702a9f6a35510dc73f72f5cbb109",
+      "applied": true,
+      "before_hash": "67372173d53d0efa5e77b8740fc12d843e0f09c50a091d9c0dc389080c76bd6a",
+      "diagnostics": {
+        "historical_row_key": "nonfood_gm_floral|hours:1560|2024-01-21",
+        "new_row_key": "nonfood_gm_floral|hours:1560|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#44",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "nonfood_gm_floral|hours:1560|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "9fc7e95327a24049e3a82a16f8465b7a38f8743d91fd2ce638000200d9779b1e",
+      "applied": true,
+      "before_hash": "54d72b39c603fd15132ad390125901318905b024ae1f307afa62a7bb87dd0a42",
+      "diagnostics": {
+        "historical_row_key": "nonfood_gm_floral|hours:2600|2024-01-21",
+        "new_row_key": "nonfood_gm_floral|hours:2600|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#45",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "nonfood_gm_floral|hours:2600|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "4bf54e4bf12a9d651e38d982299c2fbf074517757ce88ceb81b5dc4a98ee8919",
+      "applied": true,
+      "before_hash": "b1e0446edb9cfd3081eda3e2bd44be4c7879ccd2c8c4e53154dbb631726034ad",
+      "diagnostics": {
+        "historical_row_key": "nonfood_gm_floral|hours:3640|2024-01-21",
+        "new_row_key": "nonfood_gm_floral|hours:3640|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#46",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "nonfood_gm_floral|hours:3640|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "b9148ee6752514178c58923e55b66a7d8dcac61dadfd365532a4f28e173279ca",
+      "applied": true,
+      "before_hash": "c20e98c703aee0cca9ba457875b1b7b1e325b90cf95546be9bc34267c6762497",
+      "diagnostics": {
+        "historical_row_key": "nonfood_gm_floral|hours:4680|2024-01-21",
+        "new_row_key": "nonfood_gm_floral|hours:4680|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#47",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "nonfood_gm_floral|hours:4680|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "9980400ab2d8ee8201a18846c99820382909f0a766f00c8e4605b3f20197a8cd",
+      "applied": true,
+      "before_hash": "1acb16bb941837917dd737bb1bd3579aacb500e3a5b893ae1a8c8183b8b12e20",
+      "diagnostics": {
+        "historical_row_key": "nonfood_gm_floral|hours:5720|2024-01-21",
+        "new_row_key": "nonfood_gm_floral|hours:5720|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#48",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "nonfood_gm_floral|hours:5720|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "1fb035bc8a6c5d9c85059b3bb0fd08f4cf3901b4586f1ea8e6d12dadc0c64425",
+      "applied": true,
+      "before_hash": "2b519c7027867d0f2864346c8b61d9bce0dccffdd41c479af82392b6d98484bb",
+      "diagnostics": {
+        "historical_row_key": "nonfood_gm_floral|hours:6760|2024-01-21",
+        "new_row_key": "nonfood_gm_floral|hours:6760|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#49",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "nonfood_gm_floral|hours:6760|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "96422c42fe961ad8ff98b105a6fd4da1f39b3a2d2cfaed8b405c44f6443077bf",
+      "applied": true,
+      "before_hash": "007b05cc578d6ea510148945c98f6db03ab5c7a0ca9748b795b05453aa104404",
+      "diagnostics": {
+        "historical_row_key": "nonfood_gm_floral|hours:7800|2024-01-21",
+        "new_row_key": "nonfood_gm_floral|hours:7800|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#50",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "nonfood_gm_floral|hours:7800|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "cc6f41d7e4ec55f56da6bcf7afc6a25a21159a5d258b6847f36992748cfed785",
+      "applied": true,
+      "before_hash": "875d96622c89af8475b786ff0654efbfcfcff83f7bbbfb300b1d7dbacb37192e",
+      "diagnostics": {
+        "historical_row_key": "other_assistant_managers|fixed:na|2024-01-21",
+        "new_row_key": "other_assistant_managers|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#51",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "other_assistant_managers|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "a0c66848eae70ba04216e7e8322cbb26a90a02780f5f340d57f26420d9f7a465",
+      "applied": true,
+      "before_hash": "13c45046e0729b40c5c7027446791ec081d7a668af9fcb2d5e6669371f96b484",
+      "diagnostics": {
+        "historical_row_key": "produce_department_manager|fixed:na|2024-01-21",
+        "new_row_key": "produce_department_manager|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#52",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "produce_department_manager|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "a257b9565b444ccdacc8f4bdd9a9dfff33143793a9f4b0d4876cf65a942a6d00",
+      "applied": true,
+      "before_hash": "3c17c624488af976dca21f0ceaf65d3b78c2bad0a2012a130dcd90910ad626d2",
+      "diagnostics": {
+        "historical_row_key": "variety_manager|fixed:na|2024-01-21",
+        "new_row_key": "variety_manager|fixed:na|2025-07-05",
+        "patch_effective_date": "2025-07-05",
+        "supersede_mode": true
+      },
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#53",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 10,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "variety_manager|fixed:na|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
       "after_hash": "30a71c2a4be4b8bfa30623697c7d5f83b040e555cd6c6d05c35b1ae45b9165d5",
       "applied": true,
       "before_hash": "479c8240646a3507274a77ba5cc6a1629ed7c7c967a41dfcc024f9da2b04b832",
       "diagnostics": {},
       "errors": [],
       "op": "replace_section",
-      "op_id": "local7_safeway_moa_2025_07_05#3",
+      "op_id": "local7_safeway_moa_2025_07_05#54",
       "sources": [
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
-          "pdf_page": null,
+          "pdf_page": 8,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }

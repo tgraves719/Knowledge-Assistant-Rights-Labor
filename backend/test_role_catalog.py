@@ -32,7 +32,7 @@ def _load_role_catalog(contract_id: str) -> dict:
 def _test_role_catalog_schema_and_default_wage_integrity() -> None:
     for contract_id in CONTRACT_IDS:
         catalog = _load_role_catalog(contract_id)
-        assert catalog.get("schema_version") == "role_catalog_v1", (
+        assert catalog.get("schema_version") == "role_catalog_v2", (
             f"Unexpected role-catalog schema for {contract_id}"
         )
         assert catalog.get("contract_id") == contract_id, (
@@ -100,10 +100,32 @@ def _test_clerks_dug_aliases_not_duplicated_in_default_options() -> None:
     )
 
 
+def _test_reviewed_manifest_roles_are_not_counted_as_unresolved() -> None:
+    kings_catalog = _load_role_catalog("local7_kingsoopers_loveland_meat_2019")
+    kings_summary = kings_catalog.get("summary") or {}
+    assert "head_clerk" in set(kings_summary.get("clarification_manifest_roles") or []), (
+        "Expected head_clerk to be preserved as a reviewed clarification role."
+    )
+    assert "head_clerk" not in set(kings_summary.get("unresolved_manifest_roles") or []), (
+        "Reviewed clarification roles should not count as unresolved."
+    )
+
+    meat_catalog = _load_role_catalog("local7_safeway_pueblo_meat_2022")
+    meat_summary = meat_catalog.get("summary") or {}
+    expected_out_of_scope = {"cake_decorator", "courtesy_clerk", "pharmacy_technician"}
+    assert expected_out_of_scope.issubset(set(meat_summary.get("out_of_scope_manifest_roles") or [])), (
+        "Expected reviewed out-of-scope manifest classes to be preserved in the role catalog."
+    )
+    assert expected_out_of_scope.isdisjoint(set(meat_summary.get("unresolved_manifest_roles") or [])), (
+        "Reviewed out-of-scope roles should not count as unresolved."
+    )
+
+
 def main() -> None:
     _test_role_catalog_schema_and_default_wage_integrity()
     _test_default_classification_options_exclude_unresolved_manifest_roles()
     _test_clerks_dug_aliases_not_duplicated_in_default_options()
+    _test_reviewed_manifest_roles_are_not_counted_as_unresolved()
     print("[OK] Role catalog checks passed")
 
 

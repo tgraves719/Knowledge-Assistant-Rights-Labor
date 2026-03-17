@@ -1,5 +1,931 @@
 # Karl Update Log
 
+## v0.9.0 - MOA Amendment Handling, Real-User Correction Infrastructure, Effective Contract Materialization (March 17, 2026)
+
+### Overview
+
+First major release of the amendment-aware contract retrieval pipeline. v0.9.0 closes the loop on MOA handling end-to-end: ingestion, materialization, provenance enforcement, and PDF navigation. Introduces structured real-user miss records as a governed correction pathway, adds retrieval stage consistency and effective wage snapshot coverage as release gates, and ships the KARL settings library and reader UI. All 10 release gates green at ship time.
+
+### What's In This Release
+
+#### MOA Amendment Handling
+- Config-driven MOA wage schedule sync engine with raw schedule label support (`Current`, `FSAR`, `OE+52`, `OE+104`)
+- Effective contract materialization with full base+MOA provenance chain per section
+- Page-backed MOA section provenance enforcement — amended sections without navigable PDF page anchors now block pack acceptance (required gate)
+- `sync_patch_source_pages.py` — repair utility for legacy approved patches missing `source_refs[].pdf_page` values
+- `sync_moa_wage_schedule_patch.py`, `sync_clerks_moa_appendix_from_output.py`, `seed_moa_wage_rollforward_ops.py` — targeted sync utilities for MOA wage schedule and appendix repair
+- API article-level effective provenance selection tightened: prefers MOA-backed sections with valid PDF pages over base sections
+- Edge PDF viewer fallback for article-level page anchor navigation
+
+#### Real-User Correction Infrastructure
+- Structured miss record schema (`backend/miss_records.py`) with normalization, regression stub generation, and `regression_status` lifecycle tracking
+- `scripts/create_miss_record.py` — CLI for creating miss records from real user reports
+- `backend/evaluate_miss_record_integrity.py` — eval gate verifying miss record schema integrity and regression linkage
+- `backend/evaluate_real_user_regressions.py` — regression coverage eval for promoted miss records
+- `data/test_set/real_user_regressions_results.json` gitignored (sensitive real-user data)
+
+#### Retrieval & Evaluation Hardening
+- Retrieval stage consistency eval (`evaluate_retrieval_stage_consistency.py`) — verifies that retrieval pipeline stages produce consistent outputs across runs
+- Effective wage snapshot coverage eval (`evaluate_effective_wage_coverage.py`) — ensures effective contract wage tables are complete and navigable
+- Effective snapshot coverage results added to release gate tracking
+- Side-letter retrieval stabilization with fallback doc-type inference for older packs
+- Effective-aware entitlement resolution — prefers effective contract entitlement tables over base when available
+- Role catalog integrity eval hardened for multi-contract consistency
+
+#### KARL Settings Library & UI
+- `backend/karl_docs.py` — allowlisted markdown document loader for safe in-app document serving
+- `/api/karl/info` — version and instance info endpoint
+- `/api/karl/doc/{doc_id}` — safe document reader endpoint
+- Frontend Settings tab: version info display and KARL document reader
+- Response tone and verbosity preference system wired into generation prompts
+
+#### Contract Pack Infrastructure
+- `scripts/onboard_contract_packages.py` — contract onboarding with pack acceptance enforcement
+- `backend/test_pack_acceptance.py` — pack acceptance test coverage
+- `backend/test_onboard_contract_packages.py` — onboarding pipeline regression coverage
+- `docs/AGENT_HANDOFF_SCALE_PASS.md` — scale architecture handoff document for 0.9.1 planning
+
+### Release Gate Status (all required)
+
+| Gate | Status |
+|---|---|
+| Canonical evaluation (all tracks) | PASS — 55/55 |
+| v3 deterministic multi-contract suite | PASS — 18/18 |
+| Release 0.9.0 scorecard | PASS — 10/10 |
+| All contract packs pass acceptance | PASS — 3/3 (no required failures) |
+| Frontend syntax validation | PASS |
+| Deterministic wage binding integrity | PASS |
+| Effective snapshot + MOA provenance integrity | PASS |
+| Miss record integrity + regression linkage | PASS |
+| Retrieval stage consistency | PASS |
+| Role catalog + classification integrity | PASS |
+
+### Contracts Covered
+
+- `local7_safeway_pueblo_clerks_2022` — Safeway Pueblo Clerks (2022-2025) + MOA July 5 2025
+- `local7_safeway_pueblo_meat_2022` — Safeway Pueblo Meat (2022) + MOA July 5 2025
+- `local7_kingsoopers_loveland_meat_2019` — King Soopers Loveland Meat (2019)
+
+### Known Gaps (targeted in v0.9.1)
+
+- `backend/retrieval/router.py` is 3,829 lines — decomposition into logical submodules planned
+- Miss record triage-to-regression loop is functional but not yet formalized as a triage CLI
+- Contract onboarding runbook not yet written (currently requires codebase familiarity)
+- Append-only audit log not yet implemented
+- Chunk top-level `source_doc_id`/`pdf_page` fields not yet backfilled from provenance in materializer
+
+---
+
+## v0.8.112 - Required MOA Section Page Provenance Before Release (March 9, 2026)
+
+### Overview
+
+Closed the remaining amended-article PDF gap at the ingestion layer. Draft MOA section extraction now uses page-aware source-doc JSON when markdown lacks page markers, legacy approved patches can inherit missing `pdf_page` refs from regenerated drafts, and amended MOA page provenance is now a required pack gate instead of an advisory.
+
+### What Changed
+
+- `backend/ingest/generate_patch_drafts.py`
+  - added page-aware source-doc markdown reconstruction from `output.json` / `extracted.json`
+  - draft generation now falls back to JSON-backed page markers when `extracted.md` does not preserve `Page N of M`
+  - MOA section candidates now carry real `source_page` values for shared source docs like:
+    - `albertsons_safeway_moa_2025_07_05`
+
+- `backend/ingest/sync_patch_source_pages.py` (new)
+  - added a generic repair utility for legacy approved patch artifacts
+  - copies missing `source_refs[].pdf_page` from regenerated draft ops into approved patch ops by deterministic target signature
+  - supports in-place repair for already-reviewed patches
+
+- `backend/test_moa_patch_draft_generator.py`
+  - added coverage for page-aware source-doc JSON rendering and candidate extraction
+
+- `backend/test_patch_source_page_sync.py` (new)
+  - added regression coverage for syncing missing `pdf_page` values into approved patches
+
+- `data/contracts/local7_safeway_pueblo_clerks_2022/amendments/local7_safeway_moa_2025_07_05.json`
+  - repaired `Article 15, Section 34` MOA source provenance with `pdf_page=8`
+
+- `data/contracts/local7_safeway_pueblo_meat_2022/amendments/local7_safeway_moa_2025_07_05.json`
+  - repaired missing section-level MOA pages for:
+    - `Article 7, Section 14`
+    - `Article 7, Section 16`
+    - `Article 27, Section 71`
+    - `Article 27, Section 74`
+    - `Article 33, Section 95`
+    - `Article 49, Section 143`
+    - `Article 50, Section 149`
+
+- `backend/ingest/materialize_effective.py`
+  - reran effective snapshot materialization for both Pueblo contracts so repaired MOA section provenance is now present in:
+    - `effective_contract.json`
+    - chunk index inputs
+    - latest effective pointers
+
+- `backend/ingest/pack_acceptance.py`
+  - promoted `effective_moa_provenance_page_integrity` from advisory to required
+  - now blocks packs where amended MOA provenance exists but is not navigable to a PDF page
+
+- `backend/test_pack_acceptance.py`
+  - refreshed expectations so the repaired Pueblo packs are fully green
+  - pins `effective_moa_provenance_page_integrity` as required, not advisory
+
+### Validation
+
+- `.venv\Scripts\python.exe -m py_compile backend\ingest\generate_patch_drafts.py backend\ingest\sync_patch_source_pages.py backend\ingest\pack_acceptance.py backend\test_moa_patch_draft_generator.py backend\test_patch_source_page_sync.py backend\test_pack_acceptance.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_moa_patch_draft_generator.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_patch_source_page_sync.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.ingest.generate_patch_drafts --source-doc-id albertsons_safeway_moa_2025_07_05 --contract-id local7_safeway_pueblo_clerks_2022 --contract-id local7_safeway_pueblo_meat_2022` -> PASS
+- `.venv\Scripts\python.exe backend\ingest\sync_patch_source_pages.py --approved-patch data\contracts\local7_safeway_pueblo_clerks_2022\amendments\local7_safeway_moa_2025_07_05.json --draft-patch data\contracts\local7_safeway_pueblo_clerks_2022\amendments\drafts\draft_albertsons_safeway_moa_2025_07_05_local7_safeway_pueblo_clerks_2022_2025_07_05.json --in-place` -> PASS (`changed_count=1`)
+- `.venv\Scripts\python.exe backend\ingest\sync_patch_source_pages.py --approved-patch data\contracts\local7_safeway_pueblo_meat_2022\amendments\local7_safeway_moa_2025_07_05.json --draft-patch data\contracts\local7_safeway_pueblo_meat_2022\amendments\drafts\draft_albertsons_safeway_moa_2025_07_05_local7_safeway_pueblo_meat_2022_2025_07_05.json --in-place` -> PASS (`changed_count=7`)
+- `.venv\Scripts\python.exe -m backend.ingest.materialize_effective --contract-id local7_safeway_pueblo_clerks_2022` -> PASS
+- `.venv\Scripts\python.exe -m backend.ingest.materialize_effective --contract-id local7_safeway_pueblo_meat_2022` -> PASS
+- `.venv\Scripts\python.exe backend\test_contract_history_api.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_pack_acceptance.py` -> PASS
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_clerks_2022 --no-write` -> PASS
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_meat_2022 --no-write` -> PASS
+- `.venv\Scripts\python.exe backend\test_real_user_error_corrections.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_real_user_regressions` -> PASS (`14/14`)
+
+### Why This Matters
+
+- Moves amended-article PDF navigation onto stable ingestion provenance instead of relying on runtime fallback.
+- Repairs the two real July 5 Safeway MOA packs that were still missing section-level page anchors.
+- Makes `0.9.0` safer by blocking future packs that mark sections as MOA-amended but still cannot navigate those amendments to a real PDF page.
+
+## v0.8.111 - MOA Provenance Page Integrity Guardrail (March 9, 2026)
+
+### Overview
+
+Added a structural pack-acceptance signal for amended MOA page provenance so KARL can distinguish “latest amended source exists” from “latest amended source is actually navigable to a PDF page.”
+
+### What Changed
+
+- `backend/ingest/pack_acceptance.py`
+  - added `_effective_moa_provenance_page_metrics(...)`
+  - scans the latest `effective_contract.json` for MOA-backed section/table provenance refs
+  - detects amended provenance refs that still have no `pdf_page`
+  - added advisory check:
+    - `effective_moa_provenance_page_integrity`
+  - exposed the check in pack `capabilities`
+
+- `backend/test_pack_acceptance.py`
+  - added a focused synthetic regression for missing amended MOA page refs
+  - pinned current local-pack behavior:
+    - Pueblo Clerks and Pueblo Meat now surface the issue as an explicit advisory
+    - older non-affected local pack stays green
+
+- `backend/api.py`
+  - article/citation PDF auto-navigation now prefers a page-backed source when the latest MOA provenance ref exists but has no page anchor
+
+- `frontend/modular/src/app.js`
+  - citation/TOC provenance hints now rank page-backed refs ahead of page-less refs for default navigation
+
+### Validation
+
+- `.venv\Scripts\python.exe -m py_compile backend\ingest\pack_acceptance.py backend\test_pack_acceptance.py backend\api.py backend\test_contract_history_api.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_pack_acceptance.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_contract_history_api.py` -> PASS
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_clerks_2022 --no-write` -> PASS with advisory
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_meat_2022 --no-write` -> PASS with advisory
+- `node --check frontend\modular\src\app.js` -> PASS
+
+### Why This Matters
+
+- Moves the amended MOA page-linking problem into an explicit ingestion-quality signal instead of leaving it as a runtime surprise.
+- Keeps navigation usable now by preferring page-backed sources.
+- Makes the remaining upstream work concrete:
+  - Pueblo Clerks still has at least one approved MOA op with missing page provenance.
+  - Pueblo Meat’s approved MOA patch still carries section/source refs without page anchors.
+  - the next structural ingestion tranche is to make MOA patch generation preserve `pdf_page` for section-level ops, not just wage rows.
+
+## v0.8.110 - KARL Settings Library + Audit Reader (March 9, 2026)
+
+### Overview
+
+Added a dedicated KARL library surface to the modular UI so members and stewards can inspect version/build state, update notes, and key governance/legal documents without leaving the app or digging through the repo.
+
+### What Changed
+
+- `backend/karl_docs.py` (new)
+  - added an explicit allowlist of KARL-readable markdown documents
+  - exposes:
+    - version
+    - release channel
+    - document metadata
+    - safe markdown loading for approved files only
+
+- `backend/api.py`
+  - added:
+    - `GET /api/karl/info`
+    - `GET /api/karl/doc/{doc_id}`
+  - extended `QueryRequest` with optional:
+    - `response_tone`
+    - `response_verbosity`
+
+- `backend/generation/prompts.py`
+  - non-deterministic answer generation now accepts response-style preferences and carries them into the system prompt
+  - deterministic wage / entitlement paths remain unchanged
+
+- `frontend/modular/index.html`
+  - added Settings controls for:
+    - answer tone
+    - answer detail
+  - added a KARL section in Settings with visible version info and an `Open KARL` action
+  - added a hidden `content-karl` reader tab for markdown docs
+
+- `frontend/modular/src/app.js`
+  - added KARL info/doc loading
+  - added markdown doc rendering for the KARL tab
+  - syncs version/build info into Settings and the KARL reader
+  - sends tone / verbosity preferences with `/api/query`
+
+- `backend/test_karl_docs.py` (new)
+  - regression coverage for:
+    - allowlisted document listing
+    - markdown loading
+    - unknown-doc rejection
+
+### Validation
+
+- `.venv\Scripts\python.exe backend\test_karl_docs.py` -> PASS
+- `.venv\Scripts\python.exe -m py_compile backend\karl_docs.py backend\api.py backend\generation\prompts.py` -> PASS
+- `node --check frontend\modular\src\app.js` -> PASS
+
+### Why This Matters
+
+- Makes KARL itself more auditable from within the product.
+- Gives stewards and members a readable path to governance and release materials without exposing arbitrary filesystem reads.
+- Creates a low-risk place to put future steward/developer controls without crowding the main contract/chat experience.
+
+## v0.8.109 - Effective Article PDF Selection + Edge Original-PDF Fallback (March 9, 2026)
+
+### Overview
+
+Tightened the contract viewer so amended articles default to the latest applicable PDF source, while preserving an easy switch back to the original/base agreement. Also added a pragmatic Edge fallback for original-PDF navigation, since Edge's embedded PDF viewer was ignoring article-level page anchors that worked correctly in Chrome and in new tabs.
+
+### What Changed
+
+- `backend/api.py`
+  - strengthened article-level effective provenance selection for `/api/pdf-location`
+  - article-only PDF navigation now prefers:
+    - amended/MOA-backed sections with valid PDF pages
+    - then amended/MOA-backed sections without page anchors
+    - then base sections
+  - when an amended article only has MOA document provenance but no MOA page anchor, auto-selection now stays on the MOA document instead of silently falling back to Base
+  - source candidate ordering is now more stable for latest-vs-base article switching
+
+- `backend/test_contract_history_api.py`
+  - added regression coverage for:
+    - amended article auto-navigation selecting the MOA PDF/page
+    - amended article auto-navigation staying on the MOA document even when the MOA section lacks a page anchor
+
+- `frontend/modular/src/app.js`
+  - article TOC navigation now uses article-level PDF provenance more reliably
+  - `PDF Source` ordering is cleaner for normal users:
+    - `Latest article version (Auto)`
+    - latest amended PDF
+    - original/base PDF
+  - citation popover + contract viewer source switching now share the same latest/original contract-source model
+  - Edge original-PDF navigation now bypasses the embedded iframe path and opens the resolved PDF/page in a new tab
+  - citation-popover original-PDF actions on Edge now stay in the current tab instead of forcing a jump to the Contract tab
+
+- `frontend/modular/index.html`
+  - cleaned up the `PDF Source` control styling so it sits more cleanly with:
+    - `Reset`
+    - `Download`
+    - `Open Tab`
+  - added an in-pane Edge fallback notice for original-PDF mode
+
+### Validation
+
+- `.venv\Scripts\python.exe backend\test_contract_history_api.py` -> PASS
+- `node --check frontend\modular\src\app.js` -> PASS
+- `node --check frontend\modular\src\modules\member-onboarding.js` -> PASS
+- `node --check frontend\modular\src\modules\steward-onboarding.js` -> PASS
+
+### Why This Matters
+
+- Makes article-level contract navigation behave the way workers expect: if an article was amended, the latest article version loads first.
+- Preserves easy access to the original/base agreement for comparison without forcing users into developer-mode provenance controls.
+- Stops Edge's embedded PDF renderer from undermining a genuinely useful contract-navigation workflow by routing original-PDF jumps through the already-working new-tab path.
+
+## v0.8.108 - Pack Gate For MOA Wage Schedule Metadata (March 9, 2026)
+
+### Overview
+
+Added a contract-pack guardrail for staged MOA wage tables so future ingestion cannot silently drop schedule semantics like `FSAR` / `OE+52` once Appendix A row ops are approved into a patch.
+
+### What Changed
+
+- `backend/ingest/pack_acceptance.py`
+  - added `moa_wage_schedule_metadata_integrity` as a required pack check
+  - added `moa_wage_schedule_sync_registration` as an advisory pack check
+  - scans approved amendment patches for MOA-backed `appendix_a_wage_rows` operations
+  - requires those ops to preserve:
+    - `selected_schedule_label`
+    - `source_rate_schedule`
+  - requires sync metadata when MOA wage row ops are present
+  - surfaces both checks in pack capabilities
+
+- `backend/ingest/moa_wage_schedule_sync.py`
+  - now records `config_id` in `metadata.appendix_a_sync`
+
+- `backend/test_pack_acceptance.py`
+  - pins green MOA wage schedule metadata coverage on Pueblo Clerks
+  - pins non-applicable green behavior on Pueblo Meat
+
+- refreshed:
+  - `data/contracts/local7_safeway_pueblo_clerks_2022/amendments/local7_safeway_moa_2025_07_05.json`
+    - sync metadata now records the generic schedule-sync config id
+
+### Validation
+
+- `.venv\Scripts\python.exe -m py_compile backend\ingest\pack_acceptance.py backend\test_pack_acceptance.py backend\ingest\moa_wage_schedule_sync.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.ingest.sync_clerks_moa_appendix_from_output` -> PASS
+- `.venv\Scripts\python.exe backend\test_pack_acceptance.py` -> PASS
+
+### Why This Matters
+
+- Turns the new MOA wage-schedule engine into an enforceable ingestion invariant instead of a best-effort refactor.
+- Prevents future MOA wage patches from flattening staged schedules back into opaque final numbers.
+- Keeps pack admission aligned with the long-term scale goal: preserve source semantics first, then normalize later from evidence.
+
+## v0.8.107 - Generalized MOA Wage Schedule Sync Engine (March 9, 2026)
+
+### Overview
+
+Moved the `Current` / `FSAR` / `OE+52` MOA wage handling out of a clerks-only script and into a reusable schedule-sync engine. This keeps raw MOA schedule semantics available for future contracts and future MOAs instead of re-solving the same table shape one patch script at a time.
+
+### What Changed
+
+- `backend/ingest/moa_wage_schedule_sync.py` (new)
+  - added a reusable MOA wage schedule sync engine
+  - preserves raw schedule columns such as:
+    - `Current`
+    - `FSAR`
+    - `OE+52`
+    - `OE+104`
+  - selects the active payable rate from configurable preferred schedule labels
+  - builds deterministic `replace_table_row` patch ops with:
+    - `rate`
+    - `selected_schedule_label`
+    - `source_rate_schedule`
+
+- `backend/ingest/moa_wage_schedule_configs.py` (new)
+  - added a declarative config registry for contract/source-doc wage schedule syncs
+  - seeded the first config for:
+    - `local7_safeway_pueblo_clerks_2025_07_05`
+
+- `backend/ingest/sync_moa_wage_schedule_patch.py` (new)
+  - added a generic CLI entrypoint for schedule-sync patch updates by config id
+
+- `backend/ingest/sync_clerks_moa_appendix_from_output.py`
+  - reduced to a backward-compatible wrapper around the generic engine
+  - keeps the old entrypoint working while moving the real logic into the reusable sync module
+
+- `backend/ingest/seed_moa_wage_rollforward_ops.py`
+  - now preserves `selected_schedule_label` and `source_rate_schedule` when cloning wage rows forward into later MOA patches
+
+- `backend/test_moa_wage_schedule_sync.py` (new)
+  - added regression coverage for:
+    - raw schedule preservation
+    - payable-label selection
+    - generated row-op metadata
+    - roll-forward preservation of schedule metadata
+
+### Validation
+
+- `.venv\Scripts\python.exe -m py_compile backend\ingest\moa_wage_schedule_sync.py backend\ingest\moa_wage_schedule_configs.py backend\ingest\sync_moa_wage_schedule_patch.py backend\ingest\sync_clerks_moa_appendix_from_output.py backend\ingest\seed_moa_wage_rollforward_ops.py backend\test_moa_wage_schedule_sync.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_moa_wage_schedule_sync.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.ingest.sync_clerks_moa_appendix_from_output --dry-run` -> PASS
+- `.venv\Scripts\python.exe backend\test_canonical_wage_lookup.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_real_user_error_corrections.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_real_user_regressions` -> PASS (`14/14`)
+
+### Why This Matters
+
+- The Pueblo Clerks `FSAR` fix is no longer trapped inside a one-off sync script.
+- Future MOAs with staged wage columns can reuse the same engine/config pattern instead of re-implementing table parsing.
+- KARL now preserves more of the source contract’s wage semantics over time, which is the right foundation for later cross-union normalization.
+
+## v0.8.106 - MOA Wage Schedule Semantics For Current Payable Rates (March 9, 2026)
+
+### Overview
+
+Fixed a scale-critical ingestion bug in the Pueblo Clerks MOA wage pipeline: the sync path was collapsing MOA schedule tables onto the pre-ratification `Current` column instead of preserving the full schedule and selecting the post-ratification payable rate.
+
+### What Changed
+
+- `backend/ingest/sync_clerks_moa_appendix_from_output.py`
+  - stopped flattening Denver Metro clerks MOA wage rows to the `current` column
+  - preserves raw schedule labels from the source table:
+    - `Current`
+    - `FSAR`
+    - `OE+52`
+    - `OE+104`
+  - writes `source_rate_schedule` for each patched row
+  - writes `selected_schedule_label` for the currently payable schedule entry
+  - now selects `FSAR` as the current payable rate for the July 5, 2025 Pueblo Clerks MOA sync
+
+- `backend/ingest/materializer.py`
+  - preserves `source_rate_schedule` and `selected_schedule_label` in both base/effective canonical wage artifacts
+
+- `backend/ingest/extract_wages.py`
+  - carries schedule metadata through deterministic wage lookup and Appendix evidence rows
+
+- `backend/api.py`
+  - deterministic wage answers now surface the selected MOA schedule label in the narrative when present
+  - wage context/session reuse now carries the selected schedule label
+
+- `backend/test_canonical_wage_lookup.py`
+  - pins Pueblo Clerks Courtesy Clerk `Start` to the post-ratification `FSAR` rate
+  - asserts the raw MOA schedule is preserved alongside the chosen current rate
+
+- `backend/test_real_user_error_corrections.py`
+  - added a regression proving the Courtesy Clerk answer uses the `FSAR` rate in both structured data and the chat answer
+
+- `backend/evaluate_real_user_regressions.py`
+  - added the `courtesy_clerk_fsar_rate_surfaces_in_answer` canonical regression case
+
+### Validation
+
+- `.venv\Scripts\python.exe -m py_compile backend\ingest\sync_clerks_moa_appendix_from_output.py backend\ingest\materializer.py backend\ingest\extract_wages.py backend\api.py backend\test_canonical_wage_lookup.py backend\test_real_user_error_corrections.py backend\evaluate_real_user_regressions.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.ingest.sync_clerks_moa_appendix_from_output --dry-run` -> PASS
+- `.venv\Scripts\python.exe -m backend.ingest.sync_clerks_moa_appendix_from_output` -> PASS
+- `.venv\Scripts\python.exe -m backend.ingest.materialize_effective --contract-id local7_safeway_pueblo_clerks_2022 --effective-version-id effective_local7_safeway_moa_2025_07_05` -> PASS
+- `.venv\Scripts\python.exe backend\test_canonical_wage_lookup.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_real_user_error_corrections.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_real_user_regressions` -> PASS
+
+### Why This Matters
+
+- Fixes the current-payable wage answer through the ingestion pipeline instead of patching chat logic.
+- Preserves contract-native schedule semantics (`FSAR`, `OE+52`) so future cross-union normalization can be built from real source patterns rather than guessed abstractions.
+- Prevents the same MOA table-shape bug from silently recurring on future contract packages that use staged wage schedules.
+
+## v0.8.102 - Canonical Runner Split From Legacy Baselines (March 9, 2026)
+
+### Overview
+
+Tightened evaluation semantics so a green canonical runner result means the release-aligned suite passed, not that a mix of canonical and exploratory legacy evaluators happened to exit cleanly.
+
+### What Changed
+
+- `backend/evaluate_runner.py`
+  - added a dedicated `legacy_baselines` track for:
+    - `backend.evaluate`
+    - `backend.evaluate_comprehensive`
+    - `backend.evaluate_multi_contract`
+  - changed `track all` to run only the canonical release-aligned suite
+  - updated CLI help/text to make the canonical-vs-legacy split explicit
+
+- `backend/evaluate_release_090.py`
+  - strengthened the `runner_track_all_green` gate
+  - release scorecards now require fresh `track=all` metadata to include key canonical commands:
+    - `backend.evaluate_v3`
+    - `backend.evaluate_role_catalog_integrity`
+    - `backend.evaluate_retrieval_stage_consistency`
+    - `backend.evaluate_real_user_regressions`
+    - `backend.evaluate_moa_readiness`
+
+- `backend/test_evaluate_runner.py` (new)
+  - pins that canonical `all` excludes legacy suites
+  - pins that `legacy_baselines` preserves the old evaluator bundle
+
+- `backend/test_release_090_eval.py`
+  - added a regression ensuring `release_090` fails if `track all` metadata is missing required canonical commands
+
+### Validation
+
+- `.venv\Scripts\python.exe -m py_compile backend\evaluate_runner.py backend\evaluate_release_090.py backend\test_evaluate_runner.py backend\test_release_090_eval.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_evaluate_runner.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_release_090_eval.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track all --skip-manifest-validation` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track legacy_baselines --skip-manifest-validation` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_release_090 --eval-runner-metadata data\test_set\eval_run_metadata_all_20260309T001609Z.json --skip-manifest-validation` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track release_090 --skip-manifest-validation` -> PASS
+
+### Why This Matters
+
+- Makes `track all` a trustworthy canonical signal for release readiness.
+- Preserves the older evaluator families for exploratory comparison without letting them muddy canonical green/red semantics.
+- Keeps the release scorecard anchored to the exact canonical components we care about at scale.
+
+## v0.8.103 - Canonical Miss-Record Integrity Gate (March 9, 2026)
+
+### Overview
+
+Integrated the structured miss-record workflow into the canonical evaluation and release path so reviewed local misses are now checked as governed artifacts, not just stored as side-channel notes.
+
+### What Changed
+
+- `backend/miss_records.py`
+  - bumped schema to `real_miss_record_v3`
+  - added `regression_case_id` so reviewed misses can link directly to canonical regression coverage
+
+- `backend/evaluate_real_user_regressions.py`
+  - added `case_ids()` helper for canonical regression linkage checks
+
+- `backend/evaluate_miss_record_integrity.py` (new)
+  - scans `data/miss_records/records`
+  - validates miss-record schema/normalization
+  - checks reviewed clarification metadata integrity
+  - checks follow-up miss records carry retrieval anchor metadata
+  - checks `regression_added` records point to known canonical regression case IDs
+  - writes `data/test_set/miss_record_integrity_results.json`
+
+- `backend/evaluate_runner.py`
+  - added canonical `miss_record_integrity` track
+  - included it in canonical `track all`
+
+- `backend/evaluate_release_090.py`
+  - added `miss_record_integrity_green` as a release component
+  - strengthened `runner_track_all_green` so canonical all-track metadata must include `backend.evaluate_miss_record_integrity`
+  - scorecard schema bumped to `release_090_scorecard_v2`
+
+- `backend/test_miss_record_integrity_eval.py` (new)
+  - adds deterministic coverage for linked/unlinked/follow-up miss-record integrity cases
+
+- Seeded structured reviewed miss records in:
+  - `data/miss_records/records/courtesy_clerk_wage_consistency_19_months.json`
+  - `data/miss_records/records/vacation_followup_4_years_clerks.json`
+
+### Validation
+
+- `.venv\Scripts\python.exe -m py_compile backend\miss_records.py backend\evaluate_real_user_regressions.py backend\evaluate_miss_record_integrity.py backend\test_miss_records.py backend\test_miss_record_integrity_eval.py backend\evaluate_runner.py backend\test_evaluate_runner.py backend\evaluate_release_090.py backend\test_release_090_eval.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_miss_records.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_miss_record_integrity_eval.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_evaluate_runner.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_release_090_eval.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_miss_record_integrity` -> PASS (`2/2`)
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track miss_record_integrity --skip-manifest-validation` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track all --skip-manifest-validation` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_release_090 --eval-runner-metadata data\test_set\eval_run_metadata_all_20260309T004031Z.json --skip-manifest-validation` -> PASS (`10/10`)
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track release_090 --skip-manifest-validation` -> PASS
+
+### Why This Matters
+
+- Makes the real-user correction loop measurable in the same canonical system as retrieval, onboarding, and release readiness.
+- Forces reviewed misses marked `regression_added` to prove they map to actual canonical regression coverage.
+- Keeps the workflow local-first and governance-safe: structured records can be evaluated without pooling raw user logs.
+
+## v0.8.104 - Contract-Pack Miss Backlog Linkage (March 9, 2026)
+
+### Overview
+
+Extended contract-pack acceptance so reviewed local miss records are now visible at the pack layer, not only in release-time evals.
+
+### What Changed
+
+- `backend/ingest/pack_acceptance.py`
+  - bumped scorecard schema to `contract_pack_scorecard_v3`
+  - loads contract-scoped reviewed miss records from `data/miss_records/records`
+  - adds `miss_record_backlog_linkage`
+  - adds `miss_record_signal_alignment`
+  - surfaces miss backlog counts/status in `capabilities`
+  - maps reviewed miss taxonomy types to relevant pack capability checks so packs can be flagged when they still fail in the same areas as known reviewed misses
+
+- `backend/test_pack_acceptance.py`
+  - now asserts Pueblo Clerks surfaces green miss backlog linkage/alignment with `2` reviewed miss records
+  - now asserts packs without local miss records stay green and explicit about zero-record state
+
+- Refreshed checked-in scorecards for:
+  - `local7_safeway_pueblo_clerks_2022`
+  - `local7_safeway_pueblo_meat_2022`
+  - `local7_kingsoopers_loveland_meat_2019`
+
+### Validation
+
+- `.venv\Scripts\python.exe -m py_compile backend\ingest\pack_acceptance.py backend\test_pack_acceptance.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_pack_acceptance.py` -> PASS
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_clerks_2022 --no-write` -> PASS
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_meat_2022 --no-write` -> PASS
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_kingsoopers_loveland_meat_2019 --no-write` -> PASS
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_clerks_2022` -> PASS
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_meat_2022` -> PASS
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_kingsoopers_loveland_meat_2019` -> PASS
+
+### Why This Matters
+
+- Moves the real-user correction loop closer to ingestion and pack quality, which is where 100+ contract scale lives.
+- Lets a contract pack show whether reviewed misses exist for it and whether the pack still has capability debt in those same areas.
+- Preserves a pragmatic split: runtime/release still own behavioral correctness, while pack acceptance now sees the local miss backlog signal without over-blocking on runtime-only issues.
+
+## v0.8.105 - v0.9.0 Release Hardening Pass (March 9, 2026)
+
+### Overview
+
+Closed the release-hardening loop with a fresh canonical run, a successful local API smoke, and an updated readiness document that matches current branch reality.
+
+### What Changed
+
+- `scripts/smoke_local_api.py` (new)
+  - added a cross-platform Python smoke harness for:
+    - `/api/health`
+    - `/api/contracts`
+    - `/api/contract-history`
+    - `/api/contract-browse`
+    - article/browse-item fetch
+    - `/api/pdf-location`
+    - `/api/query`
+  - starts/stops a local uvicorn server when `--start-server` is used
+  - fills the gap where the existing smoke script is PowerShell-only
+
+- `RELEASE_0_9_0_READINESS.md`
+  - refreshed from the older February snapshot to the current March 9 release state
+  - now reflects:
+    - canonical all-track green
+    - `release_090` green at `10/10`
+    - miss-record integrity in the release path
+    - checked-in local packs green
+    - local smoke pass
+
+### Validation
+
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track all --skip-manifest-validation`
+  - metadata: `data/test_set/eval_run_metadata_all_20260309T011810Z.json`
+- `.venv\Scripts\python.exe -m backend.evaluate_release_090 --eval-runner-metadata data/test_set/eval_run_metadata_all_20260309T011810Z.json --skip-manifest-validation` -> PASS (`10/10`)
+- `node --check frontend/modular/src/app.js` -> PASS
+- `node --check frontend/modular/src/modules/member-onboarding.js` -> PASS
+- `node --check frontend/modular/src/modules/steward-onboarding.js` -> PASS
+- `.venv\Scripts\python.exe -m py_compile scripts/smoke_local_api.py` -> PASS
+- `.venv\Scripts\python.exe scripts/smoke_local_api.py --start-server` -> PASS
+
+### Why This Matters
+
+- Gives `0.9.0` a concrete release-hardening story, not just green unit/eval artifacts.
+- Makes local smoke validation usable from the same environment as the rest of the release checks.
+- Puts the branch in a clean “ready to review/tag” state rather than a “still converging” state.
+
+## v0.8.99 - Retrieval Plan/Policy Canonical Eval + Side-Letter Doc-Type Normalization (March 8, 2026)
+
+### Overview
+
+Extended the scale-oriented retrieval work from request-level observability into canonical evaluation and fixed a runtime/eval mismatch that showed up during the broader runner sweep.
+
+This update does two things:
+
+- adds a first-class `retrieval_stage_consistency` canonical track so router plans and executed stages are measured directly across contracts
+- normalizes inferred LOA/LOU doc types onto returned retrieval chunks so older side-letter-heavy packs stay consistent between runtime behavior and eval expectations
+
+### What Changed
+
+- `backend/evaluate_retrieval_stage_consistency.py` (new)
+  - evaluates typed router-owned records directly via:
+    - `FollowupRoutingPlan.from_dict(...)`
+    - `RetrievalPlanRecord.from_dict(...)`
+    - `RetrievalPolicyRecord.from_dict(...)`
+  - validates:
+    - short follow-up routing-plan reuse
+    - planned retrieval strategy vs executed retrieval policy
+    - required plan flags
+    - required executed stages
+    - plan-to-execution alignment by contract
+  - writes canonical results to `data/test_set/retrieval_stage_consistency_results.json`
+
+- `data/test_set/retrieval_stage_consistency_test.json`
+  - added/kept cross-contract cases for:
+    - vacation follow-up planning
+    - vacation topic-anchor execution
+    - explicit side-letter retrieval
+    - side-letter-adjacent notice phrasing on older packs
+    - wage/topic retrieval in Pueblo Clerks
+  - tightened the standalone notice-query expectation to match the current router-owned topic/article-seeded policy instead of incorrectly requiring side-letter promotion without prior context
+
+- `backend/test_retrieval_stage_consistency_eval.py` (new)
+  - adds regression coverage for the new canonical retrieval-stage track
+
+- `backend/evaluate_runner.py`
+  - added the `retrieval_stage_consistency` track
+  - included it in `track all`
+
+- `backend/evaluate_v3.py`, `backend/evaluate_release_090.py`
+  - promoted `retrieval_stage_consistency` from runner-only coverage into canonical gating
+  - `v3` now runs and validates the retrieval-stage artifact directly
+  - `release_090` now requires the `retrieval_stage_consistency` component to be present and passing inside `v3_results.json`
+
+- `backend/retrieval/router.py`
+  - added `_normalize_resolved_doc_types(...)` so final returned chunks consistently expose inferred `loa` / `lou` doc types when raw older-pack artifacts still say `cba`
+  - applies that normalization on both `retrieve(...)` and `multi_angle_retrieve(...)` result paths
+
+- `backend/test_topic_routing.py`
+  - strengthened the vague side-letter notice regression to assert that the returned `Article 32, Section 94, Part 5+` chunk exposes `doc_type="lou"` rather than only checking the citation
+
+### Validation
+
+- `.venv\Scripts\python.exe -m py_compile backend\retrieval\router.py backend\test_topic_routing.py backend\evaluate_retrieval_stage_consistency.py backend\test_retrieval_stage_consistency_eval.py backend\evaluate_runner.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_topic_routing.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_retrieval_stage_consistency_eval.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_retrieval_stage_consistency --bm25-only` -> PASS (`5/5`)
+- `.venv\Scripts\python.exe -m backend.evaluate_side_letter_retrieval --bm25-only` -> PASS (`16/16`, top-8 `15/16`, depth-20 `16/16`)
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track retrieval_stage_consistency --skip-manifest-validation` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track all --skip-manifest-validation` -> PASS
+- `.venv\Scripts\python.exe backend\test_v3_eval.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_release_090_eval.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_v3 --bm25-only` -> PASS (`18/18`)
+- `.venv\Scripts\python.exe -m backend.evaluate_release_090 --eval-runner-metadata data\test_set\eval_run_metadata_all_20260308T204211Z.json` -> PASS (`9/9`)
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track release_090 --skip-manifest-validation` -> PASS
+
+### Why This Matters
+
+- Makes retrieval planning/execution a measurable contract-level artifact instead of a debugging-only metadata blob.
+- Closes a real scale risk where runtime could find the right side-letter text but still emit the wrong `doc_type`, causing eval drift and pack-quality blind spots.
+- Pushes KARL toward a more stable 100+ contract shape: typed retrieval contracts, contract-scoped canonical evals, and fewer hidden mismatches between retrieval heuristics and release gates.
+
+## v0.8.98 - Real-User Error-Correction Runtime Fixes + Clarification Coverage (March 8, 2026)
+
+### Overview
+
+Closed the first real-user error-correction misses that were still leaking into runtime behavior:
+
+- wage answer/card contradictions
+- vacation follow-up failures on short elliptical turns
+- entitlement resolution missing effective-state parity with wages
+- retrieval/topic carryover on follow-ups
+- ambiguous management-role onboarding and wage-query handling
+
+### What Changed
+
+- `backend/api.py`
+  - deterministic wage responses now bind answer text directly to resolved `wage_info`
+  - vacation follow-up logic now reuses prior topic/article context and parses short overrides like `4 years`, `full time`, and estimate-language assumptions
+  - wage queries that still reference ambiguous management roles now return a deterministic clarification response instead of falling through to missing-wage behavior
+  - profile updates now preserve contract changes while refusing to store ambiguous classifications until clarified
+  - `/api/classifications` now supports `include_unmapped` so onboarding/UX can explicitly request the full contract-scoped option set
+
+- `backend/generation/context.py`
+  - session turns now persist retrieval context (topic, article anchors, chunk ids, artifact type) for follow-up routing reuse
+  - retrieval context now also records explicit follow-up-policy metadata (`retrieval_strategy`, reused-anchor count, retry usage, rewritten routing question when applicable)
+
+- `backend/entitlement_files.py`, `backend/retrieval/router.py`
+  - entitlement resolution now prefers effective artifacts and carries effective metadata through the deterministic vacation lookup path
+  - retrieval now emits router-owned `retrieval_policy` metadata summarizing which deterministic stages actually fired (topic seeding, side-letter promotion, explicit article fetch, search mode)
+
+- `backend/user/profile.py`, `backend/ingest/role_catalog.py`
+  - ambiguous assistant-manager/management-trainee roles remain hidden from onboarding defaults
+  - new deterministic role-clarification payloads surface concrete contract choices for onboarding and wage questions
+
+- `frontend/modular/src/app.js`, `frontend/modular/index.html`
+  - chat responses now render actionable clarification cards when KARL needs the exact role before answering
+  - steward/settings onboarding now shows clarification banners with one-click role choices instead of leaving the user at a dead-end save
+  - member onboarding role step can surface the same clarification guidance when profile state requires it
+
+- `backend/test_real_user_error_corrections.py`, `backend/evaluate_real_user_regressions.py`, `backend/evaluate_runner.py`
+  - added canonical regression coverage and runner wiring for the first real-user correction cycle
+
+- `docs/ARCHITECTURE_SCALE_PLAN_100_CONTRACTS.md`, `docs/NEXT_AGENT_HANDOFF_PROMPT_SCALE.md`
+  - added a scaling-oriented architecture plan and reusable next-agent handoff prompt focused on 100+ contract readiness
+
+- `backend/miss_records.py`, `scripts/create_miss_record.py`, `backend/test_miss_records.py`
+  - added a structured, local-first miss-record schema and normalization workflow
+  - added a small CLI to convert reviewed incidents into governed miss records and regression stubs
+  - established the first concrete implementation slice for the guide's "real miss backlog" workflow
+
+### Validation
+
+- `.venv\Scripts\python.exe backend\test_real_user_error_corrections.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_classification_options.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_real_user_regressions` -> PASS (`8/8`)
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track real_user_regressions --skip-manifest-validation` -> PASS
+- `.venv\Scripts\python.exe -m py_compile backend\retrieval\router.py backend\api.py backend\test_topic_routing.py backend\test_real_user_error_corrections.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_v3_eval.py` -> PASS
+- `.venv\Scripts\python.exe backend\test_miss_records.py` -> PASS
+- `.venv\Scripts\python.exe -m py_compile backend\api.py backend\test_real_user_error_corrections.py` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_side_letter_retrieval --bm25-only` -> PASS (`16/16`)
+- `.venv\Scripts\python.exe -m backend.evaluate_v3 --bm25-only` -> PASS (`17/17`)
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track all --skip-manifest-validation` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_release_090 --eval-runner-metadata data\test_set\eval_run_metadata_all_20260308T191715Z.json` -> PASS
+- `.venv\Scripts\python.exe scripts\create_miss_record.py --help` -> PASS
+- `.venv\Scripts\python.exe -m backend.evaluate_real_user_regressions` -> PASS (`10/10`)
+- `.venv\Scripts\python.exe backend\test_topic_routing.py` -> PASS
+
+### Why This Matters
+
+- Prevents deterministic wage and vacation data from being contradicted by narrative generation.
+- Makes short follow-ups behave like real conversations instead of isolated benchmark prompts.
+- Moves ambiguous role handling from silent hiding to explicit clarification, which is safer for onboarding and wage estimates.
+- Keeps older contract packs retrievable for side-letter prompts even when LOA/LOU doc-type buckets were not materialized.
+- Aligns aggregate eval gates with clarification-aware runtime behavior instead of penalizing successful clarification turns as missing wage answers.
+
+## v0.8.97 - Full Clerks Appendix A MOA Patch Sync from Source-Doc Output + Demo Validation (February 24, 2026)
+
+### Overview
+
+Closed the remaining Pueblo Clerks wage-demo gap after the wage chronology materializer fix: the approved July 2025 MOA patch only updated one `courtesy_clerk` row, so most Clerks wage lookups (for example `NON-FOOD/GM/FLORAL` / DUG) still correctly returned 2024 base rows.
+
+This update adds a deterministic sync utility that reads the structured MOA source-doc `output.json` (Denver Metro Clerks Appendix A tables) and expands the approved patch to all Pueblo Clerks Appendix A wage rows before rematerialization.
+
+### Investigation / Design Notes
+
+- Verified `data/source_docs/moa/albertsons_safeway_moa_2025_07_05/output.json` contains structured Clerks wage tables with `Current / FSAR / OE+52 / OE+104` columns and page-level context.
+- Confirmed Pueblo Clerks belongs to the `Denver Metro` Safeway Clerks grouping in the MOA source bundle (pages 37-39 in `output.json`).
+- Confirmed the approved Clerks patch (`data/contracts/local7_safeway_pueblo_clerks_2022/amendments/local7_safeway_moa_2025_07_05.json`) only had one wage-row op before this change.
+- Chose a deterministic `Current`-column sync to 2025-effective rows (via materializer supersede semantics) rather than guessing dates for `FSAR / OE+52 / OE+104`.
+
+### What Changed
+
+- `backend/ingest/sync_clerks_moa_appendix_from_output.py` (new)
+  - parses `data/source_docs/moa/albertsons_safeway_moa_2025_07_05/output.json`
+  - extracts Denver Metro Clerks Appendix A `Current` rates for Pueblo Clerks classifications
+  - maps structured table rows to canonical Appendix A row targets in the Clerks effective contract (`classification_key`, `step_type`, `threshold_value`)
+  - rebuilds approved `replace_table_row` ops for all 52 Pueblo Clerks Appendix A rows in:
+    - `data/contracts/local7_safeway_pueblo_clerks_2022/amendments/local7_safeway_moa_2025_07_05.json`
+  - preserves non-wage MOA ops and annotates patch metadata with sync provenance
+
+- Clerks approved MOA patch now contains:
+  - `52` Appendix A wage row ops (up from `1`)
+  - total operations `54` (2 section ops + 52 wage-row ops)
+
+- Clerks effective snapshot rematerialization now produces a full MOA-effective Appendix A wage layer:
+  - `appendix_a_wage_rows` dates: `2022`, `2023`, `2024`, and `2025-07-05` with `52` rows at the MOA date
+
+- Docs/runbook sync:
+  - `README.md`
+  - `SETUP.md`
+  - `docs/LOCAL_SETUP_WINDOWS.md`
+  - added the optional `sync_clerks_moa_appendix_from_output` step before rematerialization for the Pueblo Clerks July 2025 MOA path
+
+### Validation / Benchmarking
+
+- `python -m backend.ingest.sync_clerks_moa_appendix_from_output --dry-run` -> PASS
+  - coverage: `52` MOA row mappings / `52` Pueblo Clerks Appendix A rows (`missing=0`, `extras=0`)
+- `python -m backend.ingest.sync_clerks_moa_appendix_from_output` -> PASS
+  - patch expanded from `3` ops to `54` ops
+- `python -m backend.ingest.materialize_effective --contract-id local7_safeway_pueblo_clerks_2022` -> PASS
+- Effective contract artifact sanity check -> PASS
+  - `appendix_a_wage_rows` date distribution now includes `2025-07-05: 52`
+- `python -m backend.evaluate_effective_wage_coverage --contract-id local7_safeway_pueblo_clerks_2022` -> PASS (`1/1`, `wage_patch_ops=52`)
+- `python -m backend.evaluate_effective_coverage` -> PASS (`2/2`)
+- `python -m backend.evaluate_runner --track wage_table_evidence` -> PASS (runner invocation succeeded; benchmark command rc=`0`)
+- `python -m backend.evaluate_moa_readiness --skip-topic-routing-test` -> PASS (`effective_wage_snapshot_coverage=True`)
+
+### Why This Matters
+
+- Fixes the practical demo failure mode where Clerks MOA text looked updated but most wage lookups still cited 2024 base Appendix A rows.
+- Uses the actual MOA source-doc structured output (`output.json`) instead of hand-editing dozens of wage rows.
+- Preserves the project’s deterministic/effective-snapshot design: patch ops are explicit, rematerialization is repeatable, and coverage is benchmarked before demoing.
+
+## v0.8.96 - MOA Effective Wage Chronology Fix + Demo-Safe Coverage Validation (February 24, 2026)
+
+### Overview
+
+Closed a real MOA architecture gap affecting wage demos: approved Appendix A wage-row patches could be applied to effective snapshots without materializing a new row at the patch effective date.
+
+The root issue was table-row patch semantics. `replace_table_row` previously mutated the historical wage row in place, which can preserve the wrong wage chronology for demo/runtime lookups even when the MOA snapshot metadata shows the patch as applied.
+
+This update adds wage-aware supersede behavior in the materializer, a validator to catch chronology drift, and docs/runbook guidance for rematerializing effective artifacts before demos.
+
+### What Changed
+
+- `backend/ingest/materializer.py`
+  - upgraded `replace_table_row` handling for `appendix_a_wage_rows`:
+    - when a patch effective date is later than the target wage row date, preserves the historical row and clones a new row with the patch effective date
+    - recomputes `row_key` for the cloned row
+    - adds row-level MOA amendment metadata to the superseded row only
+  - added conflict detection (`supersede_row_key_conflict`) for duplicate superseded row keys
+  - tightened wage artifact provenance so row-level `amendments_applied` reflects row-specific amendments rather than stamping the full patch chain on every row
+
+- `backend/evaluate_effective_wage_coverage.py` (new)
+  - validates that approved applied MOA wage-table row patches actually materialize wage rows at the patch effective date in the effective snapshot wage artifact
+  - writes results to `data/test_set/effective_wage_snapshot_coverage_results.json`
+
+- `backend/evaluate_runner.py`
+  - added `effective_wage_coverage` track (`python -m backend.evaluate_runner --track effective_wage_coverage`)
+  - included the track in `all` so chronology integrity runs in the standard canonical evaluation sweep
+
+- `backend/evaluate_moa_readiness.py`, `backend/evaluate_moa_deep_suite.py`
+  - wired effective wage snapshot coverage into MOA gate/suite command bundles
+  - MOA readiness gate now fails if wage-row patch chronology materialization regresses
+
+- `backend/test_moa_materializer.py`
+  - expanded expectations for wage-row MOA patches to assert:
+    - historical row is preserved
+    - new row exists at MOA effective date
+    - row-level amendment metadata is deterministic and correctly scoped
+
+- `README.md`, `SETUP.md`, `docs/LOCAL_SETUP_WINDOWS.md`
+  - added demo-safe MOA refresh guidance:
+    - rematerialize effective snapshot artifacts after MOA changes
+    - run effective wage coverage validator
+  - added troubleshooting notes for "Appendix A / wages still look old" cases
+
+### Validation / Benchmarking
+
+- `python -m py_compile backend/ingest/materializer.py backend/evaluate_effective_wage_coverage.py` -> PASS
+- `python -m backend.test_moa_materializer` -> PASS
+- `python -m backend.test_canonical_wage_lookup` -> PASS
+- `python -m backend.ingest.materialize_effective --contract-id local7_safeway_pueblo_clerks_2022` -> PASS
+- `python -m backend.evaluate_effective_wage_coverage --contract-id local7_safeway_pueblo_clerks_2022` -> PASS (`1/1`)
+- `python -m backend.evaluate_runner --track wage_table_evidence` -> PASS
+- `python -m backend.evaluate_runner --track effective_wage_coverage` -> PASS
+- `python -m backend.evaluate_moa_readiness --skip-topic-routing-test` -> PASS (`effective_wage_snapshot_coverage=True`)
+  - `data/test_set/wage_table_evidence_results.json`: `12/12`, `pass_rate=1.0`
+
+### Why This Matters
+
+- Aligns MOA wage handling with KARL's provenance-first/effective-snapshot design principles (preserve history, materialize current-effective state explicitly).
+- Prevents demos from showing "old" Appendix A wage chronology when MOA patches are present but incompletely materialized.
+- Adds an objective validator so this class of issue is caught before demos or releases instead of through manual spot-checking.
+
 ## v0.8.95 - `karl` Wrapper CLI + Setup Tooling CI (Linux/Windows) (February 24, 2026)
 
 ### Overview
@@ -4893,3 +5819,139 @@ This architecture laid the groundwork for v0.6's Query Interpreter:
 - Proved LLM-in-the-loop retrieval is effective
 - Established feature flag pattern for gradual rollout
 - Identified need for deeper semantic understanding (→ Query Interpreter)
+## v0.8.99 - Contract Pack Capability Gates For Scale (March 8, 2026)
+
+Added architecture-oriented pack admission checks in `backend/ingest/pack_acceptance.py` so contract packages fail earlier on capability gaps instead of leaving them to runtime:
+
+- `side_letter_doc_type_materialization` is now a required gate. If chunk text clearly contains LOA/LOU language but ingestion did not materialize `doc_type=loa|lou` buckets, the pack scorecard fails.
+- Effective snapshots are now checked explicitly. If a latest effective snapshot exists, pack acceptance verifies:
+  - `effective_contract.json` exists
+  - chunk index input exists and is non-empty
+  - wage index input exists and is non-empty when wage artifacts are required
+  - entitlement index input exists and is non-empty when entitlement artifacts are required
+- `ingestion_review_queue_issue_coverage` is now a required gate. Review queues must cover unresolved ontology mappings and canonical wage ambiguity/conflict categories, not just exist as a file.
+- Scorecards now expose a top-level `capabilities` summary and use schema version `contract_pack_scorecard_v2`.
+
+Added regression coverage in `backend/test_pack_acceptance.py` using the checked-in contract packs to pin:
+
+- older side-letter packs failing materialization
+- effective packs failing missing entitlement parity
+- non-effective packs not being incorrectly penalized
+- review-queue issue coverage staying green
+- capability statuses being surfaced in the scorecard
+
+Validation:
+
+- `.venv\Scripts\python.exe -m py_compile backend\ingest\pack_acceptance.py backend\test_pack_acceptance.py`
+- `.venv\Scripts\python.exe backend\test_pack_acceptance.py`
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_meat_2022 --no-write`
+
+Follow-up generator hardening for the same scale path:
+
+- `scripts/onboard_contract_packages.py` now normalizes side-letter `doc_type` buckets during onboarding, writes package-local/runtime `pdf_nav_index` artifacts, and writes package-local contract outlines. That closes the old gap where pack acceptance required navigation artifacts the onboarding pipeline never produced.
+- `backend/ingest/backfill_side_letter_doc_types.py` now exposes reusable normalization logic instead of only a CLI-only mutation path.
+- `backend/ingest/materializer.py` now writes `index_inputs/entitlement_tables_<contract>.json` for effective snapshots and includes entitlement bytes in effective content hashing/artifact hashes.
+- `backend/ingest/materializer.py` also refreshes `base/` snapshot chunks and wages when package artifacts change, preventing stale base snapshots from drifting away from current contract-pack semantics.
+
+Added regressions:
+
+- `backend/test_onboard_contract_packages.py`
+- `backend/test_moa_materializer.py`
+- refreshed `backend/test_pack_acceptance.py` to assert the new required-capability baseline on the checked-in packs
+
+Refreshed local package/effective artifacts through the canonical generators:
+
+- reran `scripts/onboard_contract_packages.py` for:
+  - `local7_kingsoopers_loveland_meat_2019`
+  - `local7_safeway_pueblo_clerks_2022`
+  - `local7_safeway_pueblo_meat_2022`
+- reran `backend.ingest.materialize_effective` for:
+  - `local7_safeway_pueblo_clerks_2022`
+  - `local7_safeway_pueblo_meat_2022`
+
+Validation:
+
+- `.venv\Scripts\python.exe -m py_compile backend\ingest\backfill_side_letter_doc_types.py backend\ingest\materializer.py scripts\onboard_contract_packages.py backend\test_moa_materializer.py backend\test_onboard_contract_packages.py backend\test_pack_acceptance.py`
+- `.venv\Scripts\python.exe backend\test_onboard_contract_packages.py`
+- `.venv\Scripts\python.exe backend\test_moa_materializer.py`
+- `.venv\Scripts\python.exe backend\test_pack_acceptance.py`
+- `.venv\Scripts\python.exe -m backend.evaluate_contract_artifact_integrity --strict-side-letter-buckets`
+- `.venv\Scripts\python.exe -m backend.evaluate_side_letter_retrieval --bm25-only`
+- `.venv\Scripts\python.exe scripts\onboard_contract_packages.py --package local7_kingsoopers_loveland_meat_2019 --package local7_safeway_pueblo_clerks_2022 --package local7_safeway_pueblo_meat_2022`
+## v0.8.100 - Reviewed Manifest States And Green Pack Advisories (March 8, 2026)
+
+Long-term scaling fix for contract-pack classification drift.
+
+- Added first-class reviewed manifest states in `backend/ingest/classification_ontology.py`:
+  - `out_of_scope`
+  - `needs_clarification`
+- Extended `manual_classification_overrides.json` to v2 with `classification_review_overrides`, and updated:
+  - `scripts/onboard_contract_packages.py`
+  - `scripts/apply_review_overrides.py`
+  - `backend/ingest/review_queue.py`
+  - `backend/ingest/role_catalog.py`
+  - `backend/ingest/pack_acceptance.py`
+- Changed coverage semantics so:
+  - reviewed `out_of_scope` manifest classes leave the wage-coverage denominator
+  - reviewed `needs_clarification` manifest classes count as safely covered instead of unresolved
+- Propagated reviewed clarification metadata into runtime classification options in `backend/user/profile.py`.
+- Seeded reviewed decisions for:
+  - `local7_safeway_pueblo_meat_2022`
+    - `cake_decorator`
+    - `courtesy_clerk`
+    - `pharmacy_technician`
+    - marked `out_of_scope`
+  - `local7_kingsoopers_loveland_meat_2019`
+    - `head_clerk`
+    - marked `needs_clarification` with deli/meat head-clerk options
+- Regenerated the three checked-in local packs and refreshed scorecards/registry.
+- Result:
+  - all three checked-in local packs now pass `pack_acceptance` with `required_failed=[]` and `advisory_failed=[]`
+
+Added/updated regression coverage:
+- `backend/test_classification_review_overrides.py`
+- `backend/test_role_catalog.py`
+- `backend/test_classification_options.py`
+- `backend/test_pack_acceptance.py`
+
+Validated:
+- `.venv\Scripts\python.exe backend\test_classification_review_overrides.py`
+- `.venv\Scripts\python.exe backend\test_role_catalog.py`
+- `.venv\Scripts\python.exe backend\test_classification_options.py`
+- `.venv\Scripts\python.exe backend\test_pack_acceptance.py`
+- `.venv\Scripts\python.exe backend\test_real_user_error_corrections.py`
+- `.venv\Scripts\python.exe -m backend.evaluate_role_catalog_integrity`
+- `.venv\Scripts\python.exe -m backend.evaluate_contract_artifact_integrity --strict-side-letter-buckets`
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_kingsoopers_loveland_meat_2019 --no-write`
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_clerks_2022 --no-write`
+- `.venv\Scripts\python.exe backend\ingest\pack_acceptance.py --package local7_safeway_pueblo_meat_2022 --no-write`
+
+## v0.8.101 - Reviewed States In Miss Records And Canonical Release Revalidation (March 8, 2026)
+
+- Extended `backend/miss_records.py` to `real_miss_record_v2` with:
+  - `classification_review_state`
+  - `clarification_wage_keys`
+  - `retrieval_strategy`
+  - `followup_context_used`
+  - `retrieval_anchor_count`
+- Extended regression stubs emitted by `scripts/create_miss_record.py` to preserve reviewed classification state and retrieval strategy context.
+- Added miss-record regressions in `backend/test_miss_records.py`.
+- Updated `backend/test_topic_routing.py` to reflect the stronger post-onboarding invariant that refreshed packs now support raw LOA/LOU filtering after side-letter normalization.
+- Reran broad canonical validation after the pack-review-state tranche:
+  - `backend.evaluate_v3`
+  - `backend.evaluate_runner --track all`
+  - `backend.evaluate_release_090`
+  - `backend.evaluate_runner --track release_090`
+
+Validated:
+- `.venv\Scripts\python.exe backend\test_miss_records.py`
+- `.venv\Scripts\python.exe -m backend.test_topic_routing`
+- `.venv\Scripts\python.exe -m backend.evaluate_moa_readiness`
+- `.venv\Scripts\python.exe -m backend.evaluate_v3 --bm25-only`
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track all --skip-manifest-validation`
+- `.venv\Scripts\python.exe -m backend.evaluate_release_090 --eval-runner-metadata data\test_set\eval_run_metadata_all_20260308T222828Z.json --skip-manifest-validation`
+- `.venv\Scripts\python.exe -m backend.evaluate_runner --track release_090 --skip-manifest-validation`
+
+Result:
+- canonical `track all` is green again
+- `release_090` is green at `9/9`

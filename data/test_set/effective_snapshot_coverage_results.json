@@ -1,23 +1,44 @@
 {
   "overall": {
     "pass_rate": 1.0,
-    "passed": 1,
-    "total": 1
+    "passed": 2,
+    "total": 2
   },
   "results": [
     {
       "base_chunk_total": 315,
       "base_doc_type_counts": {
         "appendix": 4,
-        "cba": 274,
-        "lou": 37
+        "cba": 271,
+        "lou": 40
       },
       "contract_id": "local7_safeway_pueblo_clerks_2022",
       "effective_chunk_total": 315,
       "effective_doc_type_counts": {
         "appendix": 4,
-        "cba": 274,
-        "lou": 37
+        "cba": 271,
+        "lou": 40
+      },
+      "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+      "increased_doc_types": [],
+      "missing_doc_types": [],
+      "missing_files": [],
+      "pass": true,
+      "reduced_doc_types": []
+    },
+    {
+      "base_chunk_total": 259,
+      "base_doc_type_counts": {
+        "appendix": 2,
+        "cba": 256,
+        "lou": 1
+      },
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "effective_chunk_total": 259,
+      "effective_doc_type_counts": {
+        "appendix": 2,
+        "cba": 256,
+        "lou": 1
       },
       "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
       "increased_doc_types": [],
@@ -28,5 +49,5 @@
     }
   ],
   "schema_version": "effective_snapshot_coverage_v1",
-  "timestamp_utc": "2026-02-22T05:45:02.786905+00:00"
+  "timestamp_utc": "2026-03-09T10:32:22.391099+00:00"
 }

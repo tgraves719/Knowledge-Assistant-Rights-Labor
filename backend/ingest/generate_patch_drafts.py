@@ -89,6 +89,67 @@ def resolve_target_contract_ids(
     return targets, selection_mode
 
 
+def _render_page_aware_markdown_from_source_json(payload: Any) -> str:
+    if not isinstance(payload, dict):
+        return ""
+    raw_pages = payload.get("pages")
+    if not isinstance(raw_pages, list) or not raw_pages:
+        return ""
+
+    page_entries: list[tuple[int, dict[str, Any]]] = []
+    for page in raw_pages:
+        if not isinstance(page, dict):
+            continue
+        page_number = page.get("page_number")
+        if not isinstance(page_number, int) or page_number <= 0:
+            continue
+        page_entries.append((page_number, page))
+    if not page_entries:
+        return ""
+
+    total_pages = max(page_number for page_number, _page in page_entries)
+    parts: list[str] = []
+    for page_number, page in sorted(page_entries, key=lambda row: row[0]):
+        parts.append(f"Page {page_number} of {total_pages}")
+        for item in page.get("items") or []:
+            if not isinstance(item, dict):
+                continue
+            md = str(item.get("md") or "").strip()
+            if not md:
+                continue
+            parts.append(md)
+    return "\n\n".join(parts).strip()
+
+
+def _load_source_doc_markdown(source_dir: Path) -> str:
+    extracted_md_path = source_dir / "extracted.md"
+    output_md_path = source_dir / "output.md"
+
+    md_text = ""
+    for path in (extracted_md_path, output_md_path):
+        if path.exists():
+            md_text = path.read_text(encoding="utf-8")
+            if md_text.strip():
+                break
+
+    if _PAGE_RE.search(md_text):
+        return md_text
+
+    for json_name in ("output.json", "extracted.json"):
+        json_path = source_dir / json_name
+        if not json_path.exists():
+            continue
+        try:
+            payload = json.loads(json_path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        rendered = _render_page_aware_markdown_from_source_json(payload)
+        if rendered:
+            return rendered
+
+    return md_text
+
+
 def _extract_effective_candidates(md_text: str) -> list[dict[str, Any]]:
     lines = str(md_text or "").splitlines()
     out: list[dict[str, Any]] = []
@@ -377,9 +438,6 @@ def generate_patch_draft_for_contract(
     source_dir = resolve_source_doc_dir(source_doc_id)
     if not source_dir:
         raise FileNotFoundError(f"Source doc not found: {source_doc_id}")
-    extracted_md_path = source_dir / "extracted.md"
-    if not extracted_md_path.exists():
-        raise FileNotFoundError(f"Missing extracted markdown: {extracted_md_path}")
 
     metadata = load_source_doc_metadata(source_doc_id)
     source_pdf = resolve_source_doc_pdf_name(source_doc_id)
@@ -388,7 +446,9 @@ def generate_patch_draft_for_contract(
     if not effective_date:
         raise ValueError(f"Missing effective date (provide --effective-date or metadata.document_date) for {source_doc_id}")
 
-    md_text = extracted_md_path.read_text(encoding="utf-8")
+    md_text = _load_source_doc_markdown(source_dir)
+    if not md_text.strip():
+        raise FileNotFoundError(f"Missing extracted markdown/json content under {source_dir}")
     raw_candidates = _extract_effective_candidates(md_text)
     selected_candidates = _select_candidates(raw_candidates, include_unmarked=include_unmarked)
 

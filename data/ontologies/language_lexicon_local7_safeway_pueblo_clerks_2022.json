@@ -1,11 +1,17 @@
 {
   "schema_version": "language_lexicon_v1",
-  "generated_at_utc": "2026-02-15T18:43:12.613882+00:00",
+  "generated_at_utc": "2026-03-08T21:43:31.372495+00:00",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "region_id": "region-pueblo",
   "union_local_id": "UFCW Local 7",
   "employer": "SAFEWAY INC.",
   "entries": [
+    {
+      "canonical": "401k plan",
+      "aliases": [
+        "401k plan"
+      ]
+    },
     {
       "canonical": "bargaining unit work jurisdiction",
       "aliases": [
@@ -545,6 +551,7 @@
     }
   ],
   "alias_to_canonical": {
+    "401k plan": "401k plan",
     "bargaining unit work jurisdiction": "bargaining unit work jurisdiction",
     "unit work": "bargaining unit work jurisdiction",
     "unit work jurisdiction": "bargaining unit work jurisdiction",

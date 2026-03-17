@@ -398,6 +398,92 @@ def _allow_legacy_unscoped_chunks_for_routing() -> bool:
     return len(list(MANIFESTS_DIR.glob("*.json"))) == 1
 
 
+def _infer_side_letter_doc_type_from_text(text: str) -> Optional[str]:
+    lower = str(text or "").lower()
+    if not lower:
+        return None
+    has_loa = "letter of agreement" in lower
+    has_lou = "letter of understanding" in lower
+    if has_loa and not has_lou:
+        return "loa"
+    if has_lou and not has_loa:
+        return "lou"
+    if has_loa:
+        return "loa"
+    if has_lou:
+        return "lou"
+    return None
+
+
+def _resolved_side_letter_doc_type(row: Optional[dict]) -> str:
+    chunk = row if isinstance(row, dict) else {}
+    raw_doc_type = str(chunk.get("doc_type") or "").strip().lower()
+    if raw_doc_type in {"loa", "lou"}:
+        return raw_doc_type
+
+    meta_text = "\n".join(
+        [
+            str(chunk.get("citation") or ""),
+            str(chunk.get("article_title") or ""),
+            str(chunk.get("parent_context") or ""),
+            str(chunk.get("content_with_tables") or ""),
+            str(chunk.get("content") or ""),
+        ]
+    )
+    inferred = _infer_side_letter_doc_type_from_text(meta_text)
+    return inferred or raw_doc_type
+
+
+def _normalize_resolved_doc_types(chunks: Optional[list[dict]]) -> list[dict]:
+    normalized: list[dict] = []
+    for chunk in list(chunks or []):
+        if not isinstance(chunk, dict):
+            continue
+        chunk_copy = dict(chunk)
+        resolved_doc_type = _resolved_side_letter_doc_type(chunk_copy)
+        if resolved_doc_type in {"loa", "lou"}:
+            chunk_copy["doc_type"] = resolved_doc_type
+        normalized.append(chunk_copy)
+    return normalized
+
+
+@lru_cache(maxsize=16)
+def contract_supports_side_letter_doc_type_filter(contract_id: str = CONTRACT_ID) -> bool:
+    """
+    Only apply retrieval-time doc_type filters when the pack actually materialized
+    LOA/LOU buckets. Older packs still need lexical side-letter retrieval.
+    """
+    chunks_path = resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+    if not chunks_path or not chunks_path.exists():
+        return False
+
+    try:
+        with open(chunks_path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+    except Exception:
+        return False
+
+    if not isinstance(payload, list):
+        return False
+
+    target_region = str(resolve_contract_region_id(contract_id))
+    allow_unscoped = _allow_legacy_unscoped_chunks_for_routing()
+    for row in payload:
+        if not isinstance(row, dict):
+            continue
+        chunk_contract_id = row.get("contract_id")
+        if chunk_contract_id != contract_id:
+            if not (allow_unscoped and chunk_contract_id in (None, "")):
+                continue
+        chunk_region = row.get("region_id") or resolve_contract_region_id(str(chunk_contract_id or contract_id))
+        if str(chunk_region) != target_region and not (allow_unscoped and chunk_contract_id in (None, "")):
+            continue
+        raw_doc_type = str(row.get("doc_type") or "").strip().lower()
+        if raw_doc_type in {"loa", "lou"}:
+            return True
+    return False
+
+
 @lru_cache(maxsize=16)
 def infer_side_letter_articles(contract_id: str = CONTRACT_ID) -> list[int]:
     """
@@ -436,7 +522,7 @@ def infer_side_letter_articles(contract_id: str = CONTRACT_ID) -> list[int]:
         if str(chunk_region) != target_region and not (allow_unscoped and chunk_contract_id in (None, "")):
             continue
 
-        doc_type = str(row.get("doc_type") or "").strip().lower()
+        doc_type = _resolved_side_letter_doc_type(row)
 
         try:
             article_num = int(row.get("article_num") or 0)
@@ -777,12 +863,13 @@ WAGE_SUPPRESS_TOPICS = {
 CLASSIFICATION_PATTERNS = {
     "courtesy_clerk": r"courtesy\s*clerk|bagger",
     "head_clerk": r"head\s*clerk",
-    "all_purpose_clerk": r"all\s*purpose\s*clerk|clerk",
+    "all_purpose_clerk": r"all[\s-]*purpose\s*clerk",
     "produce_manager": r"produce\s*(department)?\s*manager",
     "bakery_manager": r"bakery\s*manager",
     "cake_decorator": r"cake\s*decorator",
     "pharmacy_tech": r"pharmacy\s*tech",
-    "non_foods_clerk": r"non.?food|gm\s*clerk|general\s*merchandise|non.?food.*gm.*floral|dug\s*shopper|drive\s*up\s*and\s*go|floral",
+    "other_assistant_managers": r"other\s*assistant\s*managers?|assistant\s*managers?",
+    "non_foods_clerk": r"non.?food|gm\s*clerk|general\s*merchandise|non.?food.*gm.*floral|floral",
 }
 
 CONTRACT_TERM_CUE_PATTERN = (
@@ -1044,6 +1131,272 @@ class QueryPlan:
     article_anchors: list[int]
     required_evidence_slots: list[str]
     explicit_articles: list[int]
+
+
+@dataclass
+class FollowupRoutingPlan:
+    """Router-owned follow-up routing plan derived from prior retrieval context."""
+    question: str
+    routing_query: str
+    strategy: str = "global_default"
+    followup_context_used: bool = False
+    topic: Optional[str] = None
+    article_anchors: list[int] = None
+    prior_citations: list[str] = None
+
+    def __post_init__(self):
+        if self.article_anchors is None:
+            self.article_anchors = []
+        if self.prior_citations is None:
+            self.prior_citations = []
+
+    def to_dict(self) -> dict:
+        return {
+            "question": self.question,
+            "routing_query": self.routing_query,
+            "strategy": self.strategy,
+            "followup_context_used": self.followup_context_used,
+            "topic": self.topic,
+            "article_anchors": list(self.article_anchors),
+            "prior_citations": list(self.prior_citations),
+        }
+
+    @classmethod
+    def from_dict(cls, payload: Optional[dict]) -> "FollowupRoutingPlan":
+        data = dict(payload or {})
+        return cls(
+            question=str(data.get("question") or ""),
+            routing_query=str(data.get("routing_query") or data.get("question") or ""),
+            strategy=str(data.get("strategy") or "global_default"),
+            followup_context_used=bool(data.get("followup_context_used")),
+            topic=str(data.get("topic") or "").strip() or None,
+            article_anchors=_normalize_article_list(list(data.get("article_anchors") or [])),
+            prior_citations=[str(v) for v in list(data.get("prior_citations") or [])],
+        )
+
+
+@dataclass
+class RetrievalPlanRecord:
+    """Typed retrieval plan before execution."""
+    planned_strategy: str
+    search_mode: str
+    use_hybrid: bool
+    use_interpreter: bool
+    intent_type: str
+    topic: Optional[str]
+    article_anchors: list[int]
+    article_anchor_count: int
+    explicit_articles_requested: list[int]
+    explicit_article_request_count: int
+    query_expansion_count: int
+    doc_type_filter: Optional[str]
+    side_letter_filter_supported: bool
+    side_letter_query_detected: bool
+    apply_topic_seed_coverage: bool
+    apply_article_prioritization: bool
+    apply_side_letter_promotion: bool
+    apply_full_article_expansion: bool
+    apply_related_section_expansion: bool
+    apply_vacation_entitlement_coverage: bool
+    apply_holiday_premium_coverage: bool
+
+    def to_dict(self) -> dict:
+        return {
+            "planned_strategy": self.planned_strategy,
+            "search_mode": self.search_mode,
+            "use_hybrid": self.use_hybrid,
+            "use_interpreter": self.use_interpreter,
+            "intent_type": self.intent_type,
+            "topic": self.topic,
+            "article_anchors": list(self.article_anchors),
+            "article_anchor_count": self.article_anchor_count,
+            "explicit_articles_requested": list(self.explicit_articles_requested),
+            "explicit_article_request_count": self.explicit_article_request_count,
+            "query_expansion_count": self.query_expansion_count,
+            "doc_type_filter": self.doc_type_filter,
+            "side_letter_filter_supported": self.side_letter_filter_supported,
+            "side_letter_query_detected": self.side_letter_query_detected,
+            "apply_topic_seed_coverage": self.apply_topic_seed_coverage,
+            "apply_article_prioritization": self.apply_article_prioritization,
+            "apply_side_letter_promotion": self.apply_side_letter_promotion,
+            "apply_full_article_expansion": self.apply_full_article_expansion,
+            "apply_related_section_expansion": self.apply_related_section_expansion,
+            "apply_vacation_entitlement_coverage": self.apply_vacation_entitlement_coverage,
+            "apply_holiday_premium_coverage": self.apply_holiday_premium_coverage,
+        }
+
+    @classmethod
+    def from_dict(cls, payload: Optional[dict]) -> "RetrievalPlanRecord":
+        data = dict(payload or {})
+        return cls(
+            planned_strategy=str(data.get("planned_strategy") or "global_default"),
+            search_mode=str(data.get("search_mode") or "single_angle_hybrid"),
+            use_hybrid=bool(data.get("use_hybrid")),
+            use_interpreter=bool(data.get("use_interpreter")),
+            intent_type=str(data.get("intent_type") or ""),
+            topic=str(data.get("topic") or "").strip() or None,
+            article_anchors=_normalize_article_list(list(data.get("article_anchors") or [])),
+            article_anchor_count=max(0, int(data.get("article_anchor_count") or 0)),
+            explicit_articles_requested=_normalize_article_list(list(data.get("explicit_articles_requested") or [])),
+            explicit_article_request_count=max(0, int(data.get("explicit_article_request_count") or 0)),
+            query_expansion_count=max(0, int(data.get("query_expansion_count") or 0)),
+            doc_type_filter=str(data.get("doc_type_filter") or "").strip().lower() or None,
+            side_letter_filter_supported=bool(data.get("side_letter_filter_supported")),
+            side_letter_query_detected=bool(data.get("side_letter_query_detected")),
+            apply_topic_seed_coverage=bool(data.get("apply_topic_seed_coverage")),
+            apply_article_prioritization=bool(data.get("apply_article_prioritization")),
+            apply_side_letter_promotion=bool(data.get("apply_side_letter_promotion")),
+            apply_full_article_expansion=bool(data.get("apply_full_article_expansion")),
+            apply_related_section_expansion=bool(data.get("apply_related_section_expansion")),
+            apply_vacation_entitlement_coverage=bool(data.get("apply_vacation_entitlement_coverage")),
+            apply_holiday_premium_coverage=bool(data.get("apply_holiday_premium_coverage")),
+        )
+
+
+@dataclass
+class RetrievalPolicyRecord:
+    """Typed retrieval policy summary after execution."""
+    strategy: str
+    search_mode: str
+    article_anchors: list[int]
+    article_anchor_count: int
+    article_anchor_hits: int
+    topic_seeded: bool
+    topic_seed_count: int
+    side_letter_seeded: bool
+    side_letter_seed_count: int
+    explicit_articles_fetched: list[int]
+    doc_type_filter: Optional[str]
+    query_expansion_count: int
+    interpreter_used: bool
+    executed_stages: list[str]
+    executed_stage_count: int
+
+    def to_dict(self) -> dict:
+        return {
+            "strategy": self.strategy,
+            "search_mode": self.search_mode,
+            "article_anchors": list(self.article_anchors),
+            "article_anchor_count": self.article_anchor_count,
+            "article_anchor_hits": self.article_anchor_hits,
+            "topic_seeded": self.topic_seeded,
+            "topic_seed_count": self.topic_seed_count,
+            "side_letter_seeded": self.side_letter_seeded,
+            "side_letter_seed_count": self.side_letter_seed_count,
+            "explicit_articles_fetched": list(self.explicit_articles_fetched),
+            "doc_type_filter": self.doc_type_filter,
+            "query_expansion_count": self.query_expansion_count,
+            "interpreter_used": self.interpreter_used,
+            "executed_stages": list(self.executed_stages),
+            "executed_stage_count": self.executed_stage_count,
+        }
+
+    @classmethod
+    def from_dict(cls, payload: Optional[dict]) -> "RetrievalPolicyRecord":
+        data = dict(payload or {})
+        return cls(
+            strategy=str(data.get("strategy") or "global_default"),
+            search_mode=str(data.get("search_mode") or "single_angle_hybrid"),
+            article_anchors=_normalize_article_list(list(data.get("article_anchors") or [])),
+            article_anchor_count=max(0, int(data.get("article_anchor_count") or 0)),
+            article_anchor_hits=max(0, int(data.get("article_anchor_hits") or 0)),
+            topic_seeded=bool(data.get("topic_seeded")),
+            topic_seed_count=max(0, int(data.get("topic_seed_count") or 0)),
+            side_letter_seeded=bool(data.get("side_letter_seeded")),
+            side_letter_seed_count=max(0, int(data.get("side_letter_seed_count") or 0)),
+            explicit_articles_fetched=_normalize_article_list(list(data.get("explicit_articles_fetched") or [])),
+            doc_type_filter=str(data.get("doc_type_filter") or "").strip().lower() or None,
+            query_expansion_count=max(0, int(data.get("query_expansion_count") or 0)),
+            interpreter_used=bool(data.get("interpreter_used")),
+            executed_stages=[str(v).strip() for v in list(data.get("executed_stages") or []) if str(v).strip()],
+            executed_stage_count=max(0, int(data.get("executed_stage_count") or 0)),
+        )
+
+
+_FOLLOWUP_REFERENCE_TOKENS = {
+    "about",
+    "that",
+    "those",
+    "them",
+    "there",
+    "it",
+    "one",
+    "ones",
+    "what",
+    "how",
+    "if",
+    "and",
+}
+
+
+def _parse_article_numbers_from_citations(citations: list[str]) -> list[int]:
+    articles: list[int] = []
+    seen: set[int] = set()
+    for citation in citations or []:
+        for match in re.finditer(r"\barticle\s+(\d+)\b", str(citation or ""), flags=re.IGNORECASE):
+            article = int(match.group(1))
+            if article in seen:
+                continue
+            seen.add(article)
+            articles.append(article)
+    return articles
+
+
+def is_followup_query_text(text: str) -> bool:
+    normalized = _normalize_query_text(text or "")
+    if not normalized:
+        return False
+    tokens = normalized.split()
+    if len(tokens) <= 8 and any(token in _FOLLOWUP_REFERENCE_TOKENS for token in tokens):
+        return True
+    return bool(
+        re.search(
+            r"^(what|how)\s+about\b|^and\b|^what\s+if\b|^if\s+i\b|^\d+\s+(year|month|hour)s?\b",
+            normalized,
+        )
+    )
+
+
+def build_followup_routing_plan(
+    question: str,
+    prior_topic: Optional[str],
+    prior_citations: Optional[list[str]] = None,
+    prior_article_anchors: Optional[list[int]] = None,
+) -> FollowupRoutingPlan:
+    normalized_question = _normalize_query_text(question or "")
+    topic = str(prior_topic or "").strip().lower() or None
+    article_anchors = _normalize_article_list(
+        list(prior_article_anchors or []) + _parse_article_numbers_from_citations(list(prior_citations or []))
+    )
+    if not topic or not is_followup_query_text(question):
+        return FollowupRoutingPlan(
+            question=question,
+            routing_query=question,
+            strategy="global_default",
+            followup_context_used=False,
+            topic=topic,
+            article_anchors=article_anchors,
+            prior_citations=list(prior_citations or []),
+        )
+
+    pieces: list[str] = []
+    if topic and topic not in normalized_question:
+        pieces.append(topic)
+    if article_anchors and len(normalized_question.split()) <= 10:
+        pieces.append(" ".join(f"Article {article}" for article in article_anchors[:2]))
+    if normalized_question:
+        pieces.append(normalized_question)
+    routing_query = " ".join(piece for piece in pieces if piece).strip() or question
+    strategy = "followup_anchor_seeded" if article_anchors else "followup_topic_seeded"
+    return FollowupRoutingPlan(
+        question=question,
+        routing_query=routing_query,
+        strategy=strategy,
+        followup_context_used=True,
+        topic=topic,
+        article_anchors=article_anchors,
+        prior_citations=list(prior_citations or []),
+    )
 
 
 def _is_role_comparison_query(query: str) -> bool:
@@ -1593,12 +1946,21 @@ class HybridRetriever:
         if not self.entitlements_data:
             return None
         from backend.ingest.extract_entitlements import lookup_vacation_entitlement
-        return lookup_vacation_entitlement(
+        result = lookup_vacation_entitlement(
             self.entitlements_data,
             months_employed=months_employed,
             hours_worked=hours_worked,
             hire_date=hire_date,
         )
+        if not result:
+            return None
+        if isinstance(self.entitlements_data, dict):
+            result = dict(result)
+            result["effective_version_id"] = (
+                str(self.entitlements_data.get("effective_version_id") or "").strip() or None
+            )
+            result["amendments_applied"] = list(self.entitlements_data.get("amendments_applied") or [])
+        return result
     
     def _load_all_chunks_for_contract(self, contract_id: str) -> list:
         """Load and cache chunks scoped to a specific contract."""
@@ -1901,7 +2263,7 @@ class HybridRetriever:
         content = str(chunk.get("content_with_tables") or chunk.get("content") or "")
         blob = f"{citation}\n{parent}\n{content}"
         blob_lower = blob.lower()
-        doc_type = str(chunk.get("doc_type") or "").strip().lower()
+        doc_type = _resolved_side_letter_doc_type(chunk)
         similarity = float(chunk.get("similarity", 0) or 0.0)
 
         explicit_type = targets.get("explicit_type")
@@ -2027,7 +2389,7 @@ class HybridRetriever:
 
         top_seed = list(chunks[: max(8, n_results)])
         has_side_letter_in_seed = any(
-            str((c or {}).get("doc_type") or "").strip().lower() in {"lou", "loa"}
+            _resolved_side_letter_doc_type(c) in {"lou", "loa"}
             for c in top_seed
         )
         has_side_letter_reference_in_seed = any(
@@ -2069,7 +2431,7 @@ class HybridRetriever:
                 cid = c.get("chunk_id", c.get("citation", ""))
                 if cid in existing_ids:
                     continue
-                doc_type = str(c.get("doc_type") or "").strip().lower()
+                doc_type = _resolved_side_letter_doc_type(c)
                 if doc_type not in {"lou", "loa"}:
                     continue
 
@@ -2111,6 +2473,9 @@ class HybridRetriever:
                 )
                 for _, c in additions[: max(1, int(max_additional))]:
                     c_copy = dict(c)
+                    resolved_doc_type = _resolved_side_letter_doc_type(c_copy)
+                    if resolved_doc_type in {"lou", "loa"}:
+                        c_copy["doc_type"] = resolved_doc_type
                     c_copy["similarity"] = max(float(c_copy.get("similarity", 0) or 0.0), 0.74)
                     c_copy["is_side_letter_seed"] = True
                     enriched_chunks.append(c_copy)
@@ -2126,7 +2491,10 @@ class HybridRetriever:
             base_similarity = float(c.get("similarity", 0) or 0.0)
             total = base_similarity + bonus + lexical
             c_copy = dict(c)
-            if (bonus + lexical) >= 1.0 and str(c_copy.get("doc_type") or "").strip().lower() in {"lou", "loa"}:
+            resolved_doc_type = _resolved_side_letter_doc_type(c_copy)
+            if resolved_doc_type in {"lou", "loa"}:
+                c_copy["doc_type"] = resolved_doc_type
+            if (bonus + lexical) >= 1.0 and resolved_doc_type in {"lou", "loa"}:
                 c_copy["is_side_letter_seed"] = True
                 c_copy["similarity"] = max(base_similarity, min(0.98, total))
             scored_rows.append((total, bonus, lexical, idx, c_copy))
@@ -2140,6 +2508,191 @@ class HybridRetriever:
             )
         )
         return [row[4] for row in scored_rows]
+
+    def _build_retrieval_policy(
+        self,
+        *,
+        chunks: list,
+        intent: QueryIntent,
+        search_mode: str,
+        doc_type_filter: Optional[str] = None,
+        explicit_articles: Optional[list[int]] = None,
+        query_expansions: Optional[list[str]] = None,
+        executed_stages: Optional[list[str]] = None,
+    ) -> dict:
+        """Summarize the deterministic retrieval stages that actually fired."""
+        normalized_chunks = list(chunks or [])
+        article_anchors = _normalize_article_list(list(getattr(intent, "relevant_articles", []) or []))
+        anchor_set = set(article_anchors)
+        explicit_article_list = _normalize_article_list(list(explicit_articles or []))
+        executed_stage_list = [str(stage).strip() for stage in (executed_stages or []) if str(stage).strip()]
+        topic_seed_count = sum(1 for chunk in normalized_chunks if chunk.get("is_topic_seed"))
+        side_letter_seed_count = sum(1 for chunk in normalized_chunks if chunk.get("is_side_letter_seed"))
+        anchor_hits = {
+            int(chunk.get("article_num"))
+            for chunk in normalized_chunks
+            if isinstance(chunk.get("article_num"), int) and int(chunk.get("article_num")) in anchor_set
+        }
+        strategy = search_mode
+        if explicit_article_list:
+            strategy = "explicit_article_fetch"
+        elif side_letter_seed_count:
+            strategy = "side_letter_promoted"
+        elif topic_seed_count:
+            strategy = "topic_article_seeded"
+        elif doc_type_filter:
+            strategy = "doc_type_filtered"
+        return RetrievalPolicyRecord(
+            strategy=strategy,
+            search_mode=search_mode,
+            article_anchors=article_anchors,
+            article_anchor_count=len(article_anchors),
+            article_anchor_hits=len(anchor_hits),
+            topic_seeded=topic_seed_count > 0,
+            topic_seed_count=topic_seed_count,
+            side_letter_seeded=side_letter_seed_count > 0,
+            side_letter_seed_count=side_letter_seed_count,
+            explicit_articles_fetched=explicit_article_list,
+            doc_type_filter=str(doc_type_filter or "").strip().lower() or None,
+            query_expansion_count=len(list(query_expansions or [])),
+            interpreter_used=search_mode == "multi_angle_interpreted",
+            executed_stages=executed_stage_list,
+            executed_stage_count=len(executed_stage_list),
+        ).to_dict()
+
+    def _build_retrieval_plan(
+        self,
+        *,
+        intent: QueryIntent,
+        search_mode: str,
+        use_hybrid: bool,
+        explicit_articles: Optional[list[int]] = None,
+        query_expansions: Optional[list[str]] = None,
+        doc_type_filter: Optional[str] = None,
+        supports_side_letter_filter: bool = False,
+        lou_detected: bool = False,
+        loa_detected: bool = False,
+        side_letter_detected: bool = False,
+    ) -> dict:
+        """Describe the deterministic retrieval stages planned before execution."""
+        article_anchors = _normalize_article_list(list(getattr(intent, "relevant_articles", []) or []))
+        explicit_article_list = _normalize_article_list(list(explicit_articles or []))
+        planned_strategy = search_mode
+        if explicit_article_list:
+            planned_strategy = "explicit_article_fetch"
+        elif lou_detected or loa_detected or side_letter_detected:
+            planned_strategy = "side_letter_query"
+        elif article_anchors:
+            planned_strategy = "topic_anchor_guided"
+        elif doc_type_filter:
+            planned_strategy = "doc_type_filtered"
+        return RetrievalPlanRecord(
+            planned_strategy=planned_strategy,
+            search_mode=search_mode,
+            use_hybrid=bool(use_hybrid),
+            use_interpreter=search_mode == "multi_angle_interpreted",
+            intent_type=str(getattr(intent, "intent_type", "") or ""),
+            topic=str(getattr(intent, "topic", "") or "") or None,
+            article_anchors=article_anchors,
+            article_anchor_count=len(article_anchors),
+            explicit_articles_requested=explicit_article_list,
+            explicit_article_request_count=len(explicit_article_list),
+            query_expansion_count=len(list(query_expansions or [])),
+            doc_type_filter=str(doc_type_filter or "").strip().lower() or None,
+            side_letter_filter_supported=bool(supports_side_letter_filter),
+            side_letter_query_detected=bool(lou_detected or loa_detected or side_letter_detected),
+            apply_topic_seed_coverage=bool(article_anchors),
+            apply_article_prioritization=bool(article_anchors),
+            apply_side_letter_promotion=bool(lou_detected or loa_detected or side_letter_detected or explicit_article_list),
+            apply_full_article_expansion=True,
+            apply_related_section_expansion=True,
+            apply_vacation_entitlement_coverage=str(getattr(intent, "topic", "") or "").strip().lower() == "vacation",
+            apply_holiday_premium_coverage=True,
+        ).to_dict()
+
+    def _execute_retrieval_plan(
+        self,
+        *,
+        chunks: list,
+        plan: Optional[dict],
+        contract_id: str = CONTRACT_ID,
+        query_text: Optional[str] = None,
+        n_results: int = 8,
+        related_section_max_total: Optional[int] = None,
+    ) -> tuple[list, list[str]]:
+        """Execute the deterministic post-retrieval stages described by a plan."""
+        working_chunks = list(chunks or [])
+        plan_data = dict(plan or {})
+        article_anchors = _normalize_article_list(list(plan_data.get("article_anchors") or []))
+        topic = str(plan_data.get("topic") or "").strip().lower() or None
+        executed_stages: list[str] = []
+
+        if plan_data.get("apply_topic_seed_coverage"):
+            working_chunks = self._ensure_topic_article_coverage(
+                working_chunks,
+                article_anchors,
+                contract_id=contract_id,
+                max_additional=3,
+                query_text=query_text,
+            )
+            executed_stages.append("topic_seed_coverage")
+
+        if plan_data.get("apply_full_article_expansion"):
+            working_chunks = self._expand_to_full_article(
+                working_chunks,
+                contract_id=contract_id,
+                n_results=n_results,
+                preferred_articles=article_anchors,
+            )
+            executed_stages.append("full_article_expansion")
+
+        if plan_data.get("apply_related_section_expansion"):
+            max_total = related_section_max_total or max(len(working_chunks) + 3, n_results + 6)
+            working_chunks = self._expand_with_related_sections(
+                working_chunks,
+                contract_id=contract_id,
+                max_total=max_total,
+                preferred_articles=article_anchors,
+            )
+            executed_stages.append("related_section_expansion")
+
+        if plan_data.get("apply_vacation_entitlement_coverage"):
+            working_chunks = self._ensure_vacation_entitlement_coverage(
+                working_chunks,
+                contract_id=contract_id,
+                preferred_articles=article_anchors,
+                topic=topic,
+                query_text=query_text,
+            )
+            executed_stages.append("vacation_entitlement_coverage")
+
+        if plan_data.get("apply_holiday_premium_coverage"):
+            working_chunks = self._ensure_holiday_work_premium_coverage(
+                working_chunks,
+                contract_id=contract_id,
+                query_text=query_text,
+            )
+            executed_stages.append("holiday_premium_coverage")
+
+        if plan_data.get("apply_article_prioritization"):
+            working_chunks = self._prioritize_topic_articles(
+                working_chunks,
+                article_anchors,
+                topic=topic,
+                query_text=query_text,
+            )
+            executed_stages.append("article_prioritization")
+
+        if plan_data.get("apply_side_letter_promotion"):
+            working_chunks = self._promote_side_letter_context(
+                working_chunks,
+                contract_id=contract_id,
+                query_text=query_text,
+                n_results=n_results,
+            )
+            executed_stages.append("side_letter_promotion")
+
+        return working_chunks, executed_stages
 
     def _ensure_topic_article_coverage(
         self,
@@ -2826,16 +3379,31 @@ class HybridRetriever:
             "escalation_required": intent.requires_escalation,
             "contract_id": contract_id,
             "query_expansions": expansions,  # Track what slang was expanded
-            "hypothesis_result": hypothesis_result  # Track hypothesis for metrics
+            "hypothesis_result": hypothesis_result,  # Track hypothesis for metrics
+            "retrieval_plan": None,
+            "retrieval_policy": None,
         }
 
         # Use hybrid search (vector + BM25 with RRF)
         # Weights configured in config.py (default: equal 1.0/1.0 for balanced fusion)
         doc_type_filter = None
-        if lou_detected and not loa_detected and not side_letter_detected:
+        supports_side_letter_filter = contract_supports_side_letter_doc_type_filter(contract_id)
+        if supports_side_letter_filter and lou_detected and not loa_detected and not side_letter_detected:
             doc_type_filter = "lou"
-        elif loa_detected and not lou_detected and not side_letter_detected:
+        elif supports_side_letter_filter and loa_detected and not lou_detected and not side_letter_detected:
             doc_type_filter = "loa"
+        result["retrieval_plan"] = self._build_retrieval_plan(
+            intent=intent,
+            search_mode="single_angle_hybrid" if use_hybrid else "single_angle_vector",
+            use_hybrid=use_hybrid,
+            explicit_articles=[],
+            query_expansions=expansions,
+            doc_type_filter=doc_type_filter,
+            supports_side_letter_filter=supports_side_letter_filter,
+            lou_detected=lou_detected,
+            loa_detected=loa_detected,
+            side_letter_detected=side_letter_detected,
+        )
 
         if use_hybrid:
             region_id = resolve_contract_region_id(contract_id)
@@ -2868,14 +3436,6 @@ class HybridRetriever:
                 doc_type=doc_type_filter,  # Filter by doc_type if LOU detected
             )
 
-        chunks = self._ensure_topic_article_coverage(
-            chunks,
-            intent.relevant_articles,
-            contract_id=contract_id,
-            max_additional=3,
-            query_text=query,
-        )
-
         # ===== PHASE 2: TITLE BOOSTING =====
         # Boost chunks whose article_title matches hypothesized titles
         if hypothesis_result and hypothesis_result.success:
@@ -2885,49 +3445,27 @@ class HybridRetriever:
             )
         # ===== END TITLE BOOSTING =====
 
-        # ===== PHASE 3: FULL ARTICLE EXPANSION =====
-        # Fetch all chunks from the "winning" article for complete context
-        chunks = self._expand_to_full_article(
-            chunks,
-            contract_id=contract_id,
-            n_results=n_results,
-            preferred_articles=intent.relevant_articles,
-        )
-        # ===== END FULL ARTICLE EXPANSION =====
-
-        # Expand context: fetch related sections from the same articles
-        chunks = self._expand_with_related_sections(
-            chunks,
-            contract_id=contract_id,
-            max_total=max(len(chunks) + 3, n_results + 6),
-            preferred_articles=intent.relevant_articles,
-        )
-        chunks = self._ensure_vacation_entitlement_coverage(
-            chunks,
-            contract_id=contract_id,
-            preferred_articles=intent.relevant_articles,
-            topic=intent.topic,
-            query_text=query,
-        )
-        chunks = self._ensure_holiday_work_premium_coverage(
-            chunks,
-            contract_id=contract_id,
-            query_text=query,
-        )
-        chunks = self._prioritize_topic_articles(
-            chunks,
-            intent.relevant_articles,
-            topic=intent.topic,
-            query_text=query,
-        )
-        chunks = self._promote_side_letter_context(
-            chunks,
+        retrieval_plan = dict(result.get("retrieval_plan") or {})
+        chunks, executed_stages = self._execute_retrieval_plan(
+            chunks=chunks,
+            plan=retrieval_plan,
             contract_id=contract_id,
             query_text=query,
             n_results=n_results,
+            related_section_max_total=max(len(chunks) + 3, n_results + 6),
         )
 
+        chunks = _normalize_resolved_doc_types(chunks)
         result["chunks"] = chunks
+        result["retrieval_policy"] = self._build_retrieval_policy(
+            chunks=chunks,
+            intent=intent,
+            search_mode="single_angle_hybrid" if use_hybrid else "single_angle_vector",
+            doc_type_filter=doc_type_filter,
+            explicit_articles=[],
+            query_expansions=expansions,
+            executed_stages=executed_stages,
+        )
         inferred_hours, inferred_months = self._infer_tenure_from_query(query)
         resolved_hours = int(hours_worked or 0) if int(hours_worked or 0) > 0 else inferred_hours
         resolved_months = int(months_employed or 0) if int(months_employed or 0) > 0 else inferred_months
@@ -3120,53 +3658,24 @@ class HybridRetriever:
             expanded_query = " ".join([query] + interpretation.key_concepts)
             intent = classify_intent(expanded_query, contract_id=contract_id)
 
-        final_chunks = self._ensure_topic_article_coverage(
-            final_chunks,
-            intent.relevant_articles,
-            contract_id=contract_id,
-            max_additional=3,
-            query_text=query,
+        retrieval_plan = self._build_retrieval_plan(
+            intent=intent,
+            search_mode="multi_angle_interpreted",
+            use_hybrid=True,
+            explicit_articles=interpretation.explicit_articles,
+            query_expansions=search_queries,
         )
-
-        # Apply full article expansion on merged results
-        final_chunks = self._expand_to_full_article(
-            final_chunks,
-            contract_id=contract_id,
-            n_results=n_results,
-            preferred_articles=intent.relevant_articles,
-        )
-        final_chunks = self._expand_with_related_sections(
-            final_chunks,
-            contract_id=contract_id,
-            max_total=max(len(final_chunks) + 4, n_results + 4),
-            preferred_articles=intent.relevant_articles,
-        )
-        final_chunks = self._ensure_vacation_entitlement_coverage(
-            final_chunks,
-            contract_id=contract_id,
-            preferred_articles=intent.relevant_articles,
-            topic=intent.topic,
-            query_text=query,
-        )
-        final_chunks = self._ensure_holiday_work_premium_coverage(
-            final_chunks,
-            contract_id=contract_id,
-            query_text=query,
-        )
-        final_chunks = self._prioritize_topic_articles(
-            final_chunks,
-            intent.relevant_articles,
-            topic=intent.topic,
-            query_text=query,
-        )
-        final_chunks = self._promote_side_letter_context(
-            final_chunks,
+        final_chunks, executed_stages = self._execute_retrieval_plan(
+            chunks=final_chunks,
+            plan=retrieval_plan,
             contract_id=contract_id,
             query_text=query,
             n_results=n_results,
+            related_section_max_total=max(len(final_chunks) + 4, n_results + 4),
         )
 
         # Build result
+        final_chunks = _normalize_resolved_doc_types(final_chunks)
         result = {
             "chunks": final_chunks,
             "wage_info": None,
@@ -3179,6 +3688,15 @@ class HybridRetriever:
             "search_angles_used": len(search_queries),
             "explicit_articles_fetched": interpretation.explicit_articles,
             "reranker_result": reranker_result,  # Include reranker metrics
+            "retrieval_plan": retrieval_plan,
+            "retrieval_policy": self._build_retrieval_policy(
+                chunks=final_chunks,
+                intent=intent,
+                search_mode="multi_angle_interpreted",
+                explicit_articles=interpretation.explicit_articles,
+                query_expansions=search_queries,
+                executed_stages=executed_stages,
+            ),
         }
         inferred_hours, inferred_months = self._infer_tenure_from_query(query)
         resolved_hours = int(hours_worked or 0) if int(hours_worked or 0) > 0 else inferred_hours

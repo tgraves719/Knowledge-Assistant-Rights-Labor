@@ -218,13 +218,26 @@ def _test_replace_table_row_correctness() -> None:
     patches = _patch_list_for_base(base)
     effective, _log = materializer.apply_patch_list(base, patches)
 
-    row = effective["tables"][materializer_module.WAGE_TABLE_ID]["rows"][0]
-    assert float(row["columns"]["rate"]) == 17.5
-    assert "patch_2025_07_05" in row["amendments"]
+    rows = effective["tables"][materializer_module.WAGE_TABLE_ID]["rows"]
+    assert len(rows) == 2, "MOA wage patch should preserve historical row and add superseding row"
+
+    by_key = {str(row.get("row_key")): row for row in rows}
+    base_key = "courtesy_clerk|hours:0|2024-01-21"
+    superseded_key = "courtesy_clerk|hours:0|2025-07-05"
+    assert base_key in by_key
+    assert superseded_key in by_key
+
+    base_row = by_key[base_key]
+    new_row = by_key[superseded_key]
+    assert float(base_row["columns"]["rate"]) == 17.0
+    assert "patch_2025_07_05" not in (base_row.get("amendments") or [])
+    assert float(new_row["columns"]["rate"]) == 17.5
+    assert str(new_row["columns"]["effective_date"]) == "2025-07-05"
+    assert "patch_2025_07_05" in (new_row.get("amendments") or [])
     assert any(
         (ref.get("source_type") == "moa" and ref.get("pdf_page") == 12)
-        for ref in row.get("provenance", [])
-    ), "Table-row provenance must include MOA source ref"
+        for ref in new_row.get("provenance", [])
+    ), "Superseded wage row provenance must include MOA source ref"
 
 
 def _test_collision_detection_expected_hash_mismatch() -> None:
@@ -582,6 +595,20 @@ def _test_materialization_determinism_bytes_and_hashes() -> None:
             assert patch_chain.get("applied_patch_ids") == ["determinism_patch_1"]
             assert patch_chain.get("patch_count") == 1
 
+            effective_wages = json.loads(Path(result1["index_wages_path"]).read_text(encoding="utf-8"))
+            assert effective_wages.get("effective_version_id") == "effective_test"
+            assert "determinism_patch_1" in (effective_wages.get("amendments_applied") or [])
+            assert "2025-07-05" in (effective_wages.get("effective_dates") or [])
+            rows_by_date = {
+                str(row.get("effective_date")): row
+                for row in (effective_wages.get("canonical_wage_rows") or [])
+                if str(row.get("classification_key") or "") == "courtesy_clerk"
+            }
+            assert float(rows_by_date["2024-01-21"]["rate"]) == 17.0
+            assert float(rows_by_date["2025-07-05"]["rate"]) == 17.5
+            assert rows_by_date["2024-01-21"].get("amendments_applied") in ([], None)
+            assert rows_by_date["2025-07-05"].get("amendments_applied") == ["determinism_patch_1"]
+
 
 def _test_retrieval_prefers_effective_snapshot_inputs() -> None:
     contract_id = "router_contract"
@@ -622,6 +649,84 @@ def _test_retrieval_prefers_effective_snapshot_inputs() -> None:
 
             assert resolved_chunks == effective_chunk_path
             assert resolved_wages == effective_wage_path
+
+
+def _test_ensure_base_snapshot_refreshes_when_package_artifacts_change() -> None:
+    contract_id = "base_refresh_contract"
+    with _workspace_tempdir("moa_base_refresh_") as tmp:
+        data_root = tmp / "data"
+        contract_root = data_root / "contracts" / contract_id
+        (contract_root / "chunks").mkdir(parents=True, exist_ok=True)
+        (contract_root / "wages").mkdir(parents=True, exist_ok=True)
+        (data_root / "manifests").mkdir(parents=True, exist_ok=True)
+        (data_root / "ontologies").mkdir(parents=True, exist_ok=True)
+        (data_root / "chunks").mkdir(parents=True, exist_ok=True)
+        (data_root / "wages").mkdir(parents=True, exist_ok=True)
+
+        with open(data_root / "manifests" / f"{contract_id}.json", "w", encoding="utf-8") as f:
+            json.dump({"contract_id": contract_id}, f)
+
+        source_chunks_path = contract_root / "chunks" / f"contract_chunks_enriched_{contract_id}.json"
+        source_wages_path = contract_root / "wages" / f"wage_tables_{contract_id}.json"
+        with open(source_chunks_path, "w", encoding="utf-8") as f:
+            json.dump(
+                [
+                    {
+                        "chunk_id": "c1",
+                        "contract_id": contract_id,
+                        "region_id": "region-test",
+                        "doc_type": "cba",
+                        "article_num": 1,
+                        "article_title": "General",
+                        "section_num": 1,
+                        "citation": "Article 1, Section 1",
+                        "content": "Base text",
+                        "content_with_tables": "Base text",
+                    }
+                ],
+                f,
+                indent=2,
+            )
+        with open(source_wages_path, "w", encoding="utf-8") as f:
+            json.dump(
+                {
+                    "contract_id": contract_id,
+                    "effective_dates": ["2024-01-21"],
+                    "classifications": {},
+                    "canonical_wage_rows": [],
+                },
+                f,
+                indent=2,
+            )
+
+        with _patched_data_root(data_root):
+            base_paths = materializer_module.ensure_base_snapshot(contract_id)
+            original_base_chunks = json.loads(base_paths["chunks"].read_text(encoding="utf-8"))
+            assert str(original_base_chunks[0].get("doc_type") or "") == "cba"
+
+            with open(source_chunks_path, "w", encoding="utf-8") as f:
+                json.dump(
+                    [
+                        {
+                            "chunk_id": "c1",
+                            "contract_id": contract_id,
+                            "region_id": "region-test",
+                            "doc_type": "lou",
+                            "article_num": 1,
+                            "article_title": "General",
+                            "section_num": 1,
+                            "citation": "Letter of Understanding",
+                            "content": "Updated LOU text",
+                            "content_with_tables": "Updated LOU text",
+                        }
+                    ],
+                    f,
+                    indent=2,
+                )
+
+            refreshed_paths = materializer_module.ensure_base_snapshot(contract_id)
+            refreshed_base_chunks = json.loads(refreshed_paths["chunks"].read_text(encoding="utf-8"))
+            assert str(refreshed_base_chunks[0].get("doc_type") or "") == "lou"
 
 
 def _test_rebase_patch_file_updates_stale_expected_hash() -> None:
@@ -1063,7 +1168,120 @@ def _test_effective_materialization_preserves_lou_chunks_in_index() -> None:
                 doc_counts[key] = int(doc_counts.get(key, 0)) + 1
             assert doc_counts.get("cba") == 1
             assert doc_counts.get("lou") == 1
-            assert len(effective_chunks) == 2
+
+
+def _test_effective_materialization_writes_entitlement_index_input() -> None:
+    contract_id = "effective_entitlement_contract"
+    with _workspace_tempdir("moa_entitlement_effective_") as tmp:
+        data_root = tmp / "data"
+        contract_root = data_root / "contracts" / contract_id
+        (contract_root / "chunks").mkdir(parents=True, exist_ok=True)
+        (contract_root / "wages").mkdir(parents=True, exist_ok=True)
+        (contract_root / "amendments").mkdir(parents=True, exist_ok=True)
+        (data_root / "manifests").mkdir(parents=True, exist_ok=True)
+        (data_root / "ontologies").mkdir(parents=True, exist_ok=True)
+        (data_root / "chunks").mkdir(parents=True, exist_ok=True)
+        (data_root / "wages").mkdir(parents=True, exist_ok=True)
+
+        with open(data_root / "manifests" / f"{contract_id}.json", "w", encoding="utf-8") as f:
+            json.dump(
+                {
+                    "contract_id": contract_id,
+                    "region_id": "region-test",
+                    "article_titles": {"17": "Vacations"},
+                },
+                f,
+                indent=2,
+            )
+
+        source_chunks = [
+            {
+                "chunk_id": "vac_1",
+                "contract_id": contract_id,
+                "region_id": "region-test",
+                "doc_type": "cba",
+                "article_num": 17,
+                "article_title": "Vacations",
+                "section_num": 1,
+                "subsection": None,
+                "citation": "Article 17, Section 1",
+                "parent_context": "Vacation eligibility",
+                "content": (
+                    "All regular full-time employees shall receive one (1) week's paid vacation "
+                    "after one (1) year of continuous service and two (2) weeks' paid vacation "
+                    "after two (2) years of continuous service."
+                ),
+                "content_with_tables": (
+                    "All regular full-time employees shall receive one (1) week's paid vacation "
+                    "after one (1) year of continuous service and two (2) weeks' paid vacation "
+                    "after two (2) years of continuous service."
+                ),
+            }
+        ]
+        with open(
+            contract_root / "chunks" / f"contract_chunks_enriched_{contract_id}.json",
+            "w",
+            encoding="utf-8",
+        ) as f:
+            json.dump(source_chunks, f, indent=2)
+
+        source_wages = {
+            "contract_id": contract_id,
+            "effective_dates": ["2024-01-21"],
+            "classifications": {},
+            "canonical_wage_rows": [],
+        }
+        with open(
+            contract_root / "wages" / f"wage_tables_{contract_id}.json",
+            "w",
+            encoding="utf-8",
+        ) as f:
+            json.dump(source_wages, f, indent=2)
+
+        with _patched_data_root(data_root):
+            base_paths = materializer_module.ensure_base_snapshot(contract_id)
+            base_state = materializer_module.load_base_contract_state(contract_id, base_paths)
+            section = base_state["sections"][0]
+            patch_payload = {
+                "schema_version": "moa_patch_v0_9_0",
+                "patch_id": "ent_patch",
+                "contract_id": contract_id,
+                "source_pdf": "ENT-MOA.pdf",
+                "effective_date": "2025-07-05",
+                "ratified_date": "2025-07-05",
+                "parent_effective_version_id": "base_snapshot_v0_9_0",
+                "operations": [
+                    {
+                        "op": "replace_section",
+                        "target": {"anchor_id": str(section.get("anchor_id") or "")},
+                        "expected_prev_hash": ContractMaterializer.hash_text(section["content_markdown"]),
+                        "new_text_markdown": section["content_markdown"] + "\nVacation language remains in force.",
+                        "source_refs": [
+                            {
+                                "source_type": "moa",
+                                "pdf": "ENT-MOA.pdf",
+                                "pdf_page": 4,
+                            }
+                        ],
+                        "review_status": "approved",
+                    }
+                ],
+            }
+            patch_path = contract_root / "amendments" / "ent_patch.json"
+            with open(patch_path, "w", encoding="utf-8") as f:
+                json.dump(patch_payload, f, indent=2)
+
+            result = materializer_module.materialize_contract(
+                contract_id=contract_id,
+                effective_version_id="effective_ent_test",
+                patch_paths=[patch_path],
+                write_latest_pointer=True,
+            )
+            effective_entitlements = json.loads(
+                Path(result["index_entitlements_path"]).read_text(encoding="utf-8")
+            )
+            assert effective_entitlements.get("contract_id") == contract_id
+            assert len(effective_entitlements.get("vacation_entitlements") or []) >= 1
 
 
 def main() -> None:
@@ -1075,10 +1293,12 @@ def main() -> None:
     _test_missing_source_refs_fails_build()
     _test_materialization_determinism_bytes_and_hashes()
     _test_retrieval_prefers_effective_snapshot_inputs()
+    _test_ensure_base_snapshot_refreshes_when_package_artifacts_change()
     _test_rebase_patch_file_updates_stale_expected_hash()
     _test_patch_chain_manifest_orders_patches_deterministically()
     _test_load_base_state_keeps_lou_chunks()
     _test_effective_materialization_preserves_lou_chunks_in_index()
+    _test_effective_materialization_writes_entitlement_index_input()
     print("[OK] MOA materializer and effective-routing checks passed")
 
 

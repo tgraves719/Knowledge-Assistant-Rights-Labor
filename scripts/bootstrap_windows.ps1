@@ -39,8 +39,10 @@ function Get-CmdTailArgs {
 function Resolve-PythonCommand {
     param([string]$Preference)
     if ($Preference) {
+        # Be forgiving if a wrapped path was pasted from chat/terminal output.
+        $Preference = ($Preference -replace "\s*`r?`n\s*", "").Trim()
         if ($Preference -eq "py") { return @("py", "-3.11") }
-        return @($Preference)
+        return ,$Preference
     }
 
     $candidates = @(
@@ -66,6 +68,17 @@ function Get-VenvPythonPath {
     param([string]$PathValue)
     $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
     return Join-Path $repoRoot (Join-Path $PathValue "Scripts\python.exe")
+}
+
+function Get-PythonVersionString {
+    param([object[]]$Cmd)
+    try {
+        $tail = Get-CmdTailArgs -Cmd $Cmd
+        $version = & $Cmd[0] @($tail | Where-Object { $_ }) -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')"
+        if ($LASTEXITCODE -eq 0) { return ($version | Select-Object -First 1) }
+    } catch {
+    }
+    return $null
 }
 
 function Invoke-Doctor {
@@ -97,12 +110,16 @@ Write-Host ("Repo:    " + $repoRoot)
 
 if (-not $SkipPreflight) {
     Write-Step "Running repo preflight (host Python)"
-    $hostPythonCmd = @("python")
-    try {
-        python --version *> $null
-        if ($LASTEXITCODE -ne 0) { $hostPythonCmd = Resolve-PythonCommand -Preference $PythonPreference }
-    } catch {
-        $hostPythonCmd = Resolve-PythonCommand -Preference $PythonPreference
+    if ($PythonPreference) {
+        $hostPythonCmd = @(Resolve-PythonCommand -Preference $PythonPreference)
+    } else {
+        $hostPythonCmd = @("python")
+        try {
+            python --version *> $null
+            if ($LASTEXITCODE -ne 0) { $hostPythonCmd = @(Resolve-PythonCommand -Preference $PythonPreference) }
+        } catch {
+            $hostPythonCmd = @(Resolve-PythonCommand -Preference $PythonPreference)
+        }
     }
     $hostTail = Get-CmdTailArgs -Cmd $hostPythonCmd
     & $hostPythonCmd[0] @($hostTail | Where-Object { $_ }) "scripts/dev_preflight.py" --profile $Profile --port $Port
@@ -116,7 +133,7 @@ if ($Profile -eq "ui-only") {
     exit 0
 }
 
-$pythonCmd = Resolve-PythonCommand -Preference $PythonPreference
+$pythonCmd = @(Resolve-PythonCommand -Preference $PythonPreference)
 Write-Step ("Using Python launcher: " + ($pythonCmd -join " "))
 $requirementsFile = Resolve-RequirementsFile -BootstrapProfile $Profile
 Write-Step ("Dependency profile file: " + $requirementsFile)
@@ -133,6 +150,11 @@ if (-not (Test-Path $venvPython)) {
     & $pythonCmd[0] @($pythonTail | Where-Object { $_ }) -m venv $VenvPath
     if ($LASTEXITCODE -ne 0) { throw "Failed to create virtual environment." }
 } else {
+    $selectedVersion = Get-PythonVersionString -Cmd $pythonCmd
+    $venvVersion = Get-PythonVersionString -Cmd @($venvPython)
+    if ($selectedVersion -and $venvVersion -and (($selectedVersion -split '\.')[0..1] -join '.') -ne (($venvVersion -split '\.')[0..1] -join '.')) {
+        throw "Existing venv uses Python $venvVersion but selected interpreter is $selectedVersion. Rerun with -RecreateVenv to rebuild $VenvPath."
+    }
     Write-Step ("Reusing existing venv: " + $VenvPath)
 }
 

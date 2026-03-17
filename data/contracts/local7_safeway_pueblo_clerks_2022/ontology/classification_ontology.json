@@ -1,6 +1,6 @@
 {
-  "schema_version": "classification_ontology_v1",
-  "generated_at_utc": "2026-02-15T18:43:12.889359+00:00",
+  "schema_version": "classification_ontology_v2",
+  "generated_at_utc": "2026-03-08T21:43:31.605042+00:00",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "manifest_classifications": [
     {
@@ -175,7 +175,8 @@
       "mapped_wage_key": "all_purpose_clerk",
       "mapping_method": "exact",
       "score": 1.0,
-      "candidate_scores": []
+      "candidate_scores": [],
+      "review_state": "resolved"
     },
     {
       "source_key": "bakery_department_manager",
@@ -206,7 +207,8 @@
           "wage_key": "other_assistant_managers",
           "score": 0.403673
         }
-      ]
+      ],
+      "review_state": "resolved"
     },
     {
       "source_key": "bakery_manager",
@@ -216,7 +218,8 @@
       "mapped_wage_key": "bakery_manager",
       "mapping_method": "exact",
       "score": 1.0,
-      "candidate_scores": []
+      "candidate_scores": [],
+      "review_state": "resolved"
     },
     {
       "source_key": "cake_decorator",
@@ -226,7 +229,8 @@
       "mapped_wage_key": "cake_decorator",
       "mapping_method": "exact",
       "score": 1.0,
-      "candidate_scores": []
+      "candidate_scores": [],
+      "review_state": "resolved"
     },
     {
       "source_key": "courtesy_clerk",
@@ -236,7 +240,8 @@
       "mapped_wage_key": "courtesy_clerk",
       "mapping_method": "exact",
       "score": 1.0,
-      "candidate_scores": []
+      "candidate_scores": [],
+      "review_state": "resolved"
     },
     {
       "source_key": "deli_clerk",
@@ -263,7 +268,8 @@
           "wage_key": "bakery_fresh_cut_liquor_clerk",
           "score": 0.295604
         }
-      ]
+      ],
+      "review_state": "unresolved"
     },
     {
       "source_key": "drive_up_and_go",
@@ -278,7 +284,8 @@
           "wage_key": "nonfood_gm_floral",
           "score": 1.0
         }
-      ]
+      ],
+      "review_state": "resolved"
     },
     {
       "source_key": "dug_shopper",
@@ -293,7 +300,8 @@
           "wage_key": "nonfood_gm_floral",
           "score": 1.0
         }
-      ]
+      ],
+      "review_state": "resolved"
     },
     {
       "source_key": "floral_manager",
@@ -303,7 +311,8 @@
       "mapped_wage_key": "floral_manager",
       "mapping_method": "exact",
       "score": 1.0,
-      "candidate_scores": []
+      "candidate_scores": [],
+      "review_state": "resolved"
     },
     {
       "source_key": "head_clerk",
@@ -313,7 +322,8 @@
       "mapped_wage_key": "head_clerk",
       "mapping_method": "exact",
       "score": 1.0,
-      "candidate_scores": []
+      "candidate_scores": [],
+      "review_state": "resolved"
     },
     {
       "source_key": "meat_cutter",
@@ -323,7 +333,8 @@
       "mapped_wage_key": null,
       "mapping_method": "unresolved",
       "score": 0.0,
-      "candidate_scores": []
+      "candidate_scores": [],
+      "review_state": "unresolved"
     },
     {
       "source_key": "nonfood_clerk",
@@ -338,7 +349,8 @@
           "wage_key": "nonfood_gm_floral",
           "score": 1.0
         }
-      ]
+      ],
+      "review_state": "resolved"
     },
     {
       "source_key": "pharmacy_technician",
@@ -348,7 +360,8 @@
       "mapped_wage_key": null,
       "mapping_method": "unresolved",
       "score": 0.0,
-      "candidate_scores": []
+      "candidate_scores": [],
+      "review_state": "unresolved"
     },
     {
       "source_key": "produce_department_manager",
@@ -358,7 +371,8 @@
       "mapped_wage_key": "produce_department_manager",
       "mapping_method": "exact",
       "score": 1.0,
-      "candidate_scores": []
+      "candidate_scores": [],
+      "review_state": "resolved"
     },
     {
       "source_key": "produce_manager",
@@ -389,7 +403,8 @@
           "wage_key": "manager_trainee",
           "score": 0.415
         }
-      ]
+      ],
+      "review_state": "resolved"
     },
     {
       "source_key": "sanitation_clerk",
@@ -416,7 +431,8 @@
           "wage_key": "bakery_fresh_cut_liquor_clerk",
           "score": 0.277143
         }
-      ]
+      ],
+      "review_state": "unresolved"
     }
   ],
   "alias_to_wage_key": {
@@ -445,7 +461,11 @@
   "summary": {
     "total_manifest_classes": 16,
     "resolved_manifest_classes": 12,
+    "clarification_manifest_classes": 0,
+    "out_of_scope_manifest_classes": 0,
     "unresolved_manifest_classes": 4,
+    "actionable_manifest_classes": 16,
+    "covered_manifest_classes": 12,
     "coverage": 0.75,
     "unresolved_manifest_keys": [
       "deli_clerk",
@@ -453,6 +473,9 @@
       "pharmacy_technician",
       "sanitation_clerk"
     ],
-    "manual_override_count": 3
+    "clarification_manifest_keys": [],
+    "out_of_scope_manifest_keys": [],
+    "manual_override_count": 3,
+    "manual_review_override_count": 0
   }
 }

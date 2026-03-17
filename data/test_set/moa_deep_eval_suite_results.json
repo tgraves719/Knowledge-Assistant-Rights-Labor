@@ -1,9 +1,9 @@
 {
   "commands": [
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_moa_effective --bm25-only --output D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_moa_effective --bm25-only --output C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json",
       "name": "moa_effective_baseline",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
@@ -12,26 +12,26 @@
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Effective Evaluation\n========================================================================\nPass: 4/4 (100.0%)\nCitation hit rate: 1.0\nSource-type match rate: 1.0\nIntent match rate: 1.0\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json\n"
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Effective Evaluation\n========================================================================\nPass: 4/4 (100.0%)\nCitation hit rate: 1.0\nSource-type match rate: 1.0\nIntent match rate: 1.0\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_moa_effective --bm25-only --input D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_test.json --output D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_results.json",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_moa_effective --bm25-only --input C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_test.json --output C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_results.json",
       "name": "moa_effective_deep",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_results.json",
       "result_summary": {
         "gate_pass": null,
-        "pass_rate": 1.0,
-        "passed": 18,
+        "pass_rate": 0.9444,
+        "passed": 17,
         "total": 18
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Effective Evaluation\n========================================================================\nPass: 18/18 (100.0%)\nCitation hit rate: 1.0\nSource-type match rate: 1.0\nIntent match rate: 1.0\n- local7_safeway_pueblo_clerks_2022: 18/18 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_results.json\n"
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Effective Evaluation\n========================================================================\nPass: 17/18 (94.4%)\nCitation hit rate: 1.0\nSource-type match rate: 1.0\nIntent match rate: 1.0\n- local7_safeway_pueblo_clerks_2022: 17/18 (94.4%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_moa_deleted_vs_updated --bm25-only",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_moa_deleted_vs_updated --bm25-only",
       "name": "moa_deleted_vs_updated",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json",
       "result_summary": {
         "gate_pass": true,
         "pass_rate": 1.0,
@@ -40,12 +40,12 @@
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Deleted-vs-Updated Eval\n========================================================================\nOverall: 4/4 (100.0%)\n- updated: 2/2 (100.0%)\n- deleted: 2/2 (100.0%)\nGate: True\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json\n"
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Deleted-vs-Updated Eval\n========================================================================\nOverall: 4/4 (100.0%)\n- updated: 2/2 (100.0%)\n- deleted: 2/2 (100.0%)\nGate: True\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_moa_deleted_vs_updated_answer --bm25-only",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_moa_deleted_vs_updated_answer --bm25-only",
       "name": "moa_deleted_vs_updated_answer",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_answer_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_answer_results.json",
       "result_summary": {
         "gate_pass": true,
         "pass_rate": 1.0,
@@ -54,33 +54,47 @@
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Deleted-vs-Updated Answer Evaluation\n========================================================================\nOverall: 4/4 (100.0%)\n- updated: 2/2 (100.0%)\n- deleted: 2/2 (100.0%)\nSource-type match rate: 1.0\nGate: True\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_answer_results.json\n"
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Deleted-vs-Updated Answer Evaluation\n========================================================================\nOverall: 4/4 (100.0%)\n- updated: 2/2 (100.0%)\n- deleted: 2/2 (100.0%)\nSource-type match rate: 1.0\nGate: True\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_answer_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_moa_readiness --deep-input D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_test.json --deep-pass-rate-threshold 0.85",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_moa_readiness --deep-input C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_test.json --deep-pass-rate-threshold 0.85",
       "name": "moa_readiness",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_readiness_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_readiness_results.json",
       "result_summary": null,
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "========================================================================\nKARL MOA Readiness\n========================================================================\nGate pass: True\n- tests_and_commands_ok: True\n- moa_effective_pass_rate: True\n- moa_deleted_vs_updated_gate: True\n- moa_deleted_vs_updated_answer_gate: True\n- moa_effective_deep_pass_rate: True\nMOA effective pass rate: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_readiness_results.json\n"
+      "stdout_tail": "========================================================================\nKARL MOA Readiness\n========================================================================\nGate pass: True\n- tests_and_commands_ok: True\n- moa_effective_pass_rate: True\n- moa_deleted_vs_updated_gate: True\n- moa_deleted_vs_updated_answer_gate: True\n- effective_wage_snapshot_coverage: True\n- moa_effective_deep_pass_rate: True\nMOA effective pass rate: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_readiness_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_effective_coverage",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_effective_coverage",
       "name": "effective_snapshot_coverage",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_snapshot_coverage_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_snapshot_coverage_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
-        "passed": 1,
-        "total": 1
+        "passed": 2,
+        "total": 2
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "========================================================================\nKARL Effective Snapshot Coverage\n========================================================================\nPass: 1/1 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_snapshot_coverage_results.json\n- local7_safeway_pueblo_clerks_2022: pass=True base=315 effective=315 missing_doc_types=[]\n"
+      "stdout_tail": "========================================================================\nKARL Effective Snapshot Coverage\n========================================================================\nPass: 2/2 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_snapshot_coverage_results.json\n- local7_safeway_pueblo_clerks_2022: pass=True base=315 effective=315 missing_doc_types=[]\n- local7_safeway_pueblo_meat_2022: pass=True base=259 effective=259 missing_doc_types=[]\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.test_false_unavailable_fallback",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_effective_wage_coverage",
+      "name": "effective_wage_snapshot_coverage",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_wage_snapshot_coverage_results.json",
+      "result_summary": {
+        "gate_pass": null,
+        "pass_rate": 1.0,
+        "passed": 2,
+        "total": 2
+      },
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "========================================================================\nKARL Effective Wage Snapshot Coverage\n========================================================================\nPass: 2/2 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_wage_snapshot_coverage_results.json\n- local7_safeway_pueblo_clerks_2022: pass=True wage_patch_ops=52 missing_materializations=0\n- local7_safeway_pueblo_meat_2022: pass=True wage_patch_ops=0 missing_materializations=0\n"
+    },
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.test_false_unavailable_fallback",
       "name": "false_unavailable_fallback_test",
       "result_file": null,
       "result_summary": null,
@@ -89,9 +103,9 @@
       "stdout_tail": "[OK] False-unavailable fallback checks passed\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_cross_contract_mentions --bm25-only",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_cross_contract_mentions --bm25-only",
       "name": "cross_contract_mentions",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
@@ -100,12 +114,12 @@
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "========================================================================\nKARL Cross-Contract Mention Evaluation\n========================================================================\nOverall: 9/9 (100.0%)\nNo-citation rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 3/3 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 3/3 (100.0%)\n- local7_safeway_pueblo_meat_2022: 3/3 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_results.json\n"
+      "stdout_tail": "========================================================================\nKARL Cross-Contract Mention Evaluation\n========================================================================\nOverall: 9/9 (100.0%)\nNo-citation rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 3/3 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 3/3 (100.0%)\n- local7_safeway_pueblo_meat_2022: 3/3 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_false_unavailable --bm25-only",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_false_unavailable --bm25-only",
       "name": "false_unavailable",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
@@ -113,13 +127,13 @@
         "total": 15
       },
       "return_code": 0,
-      "stderr_tail": "Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.\n",
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL False-Unavailable Guard Evaluation\n========================================================================\nOverall: 15/15 (100.0%)\nRecovered (evidence-present): 12/12 (100.0%)\nProper uncertainty (evidence-absent): 3/3 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_results.json\n"
+      "stderr_tail": "",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL False-Unavailable Guard Evaluation\n========================================================================\nOverall: 15/15 (100.0%)\nRecovered (evidence-present): 12/12 (100.0%)\nProper uncertainty (evidence-absent): 3/3 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_unanswerable --bm25-only",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_unanswerable --bm25-only",
       "name": "unanswerable",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
@@ -127,13 +141,13 @@
         "total": 12
       },
       "return_code": 0,
-      "stderr_tail": "Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.\n",
-      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Unanswerable Multi-Contract Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nAbstention rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_results.json\n"
+      "stderr_tail": "",
+      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Unanswerable Multi-Contract Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nAbstention rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_adversarial_precedence --bm25-only",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_adversarial_precedence --bm25-only",
       "name": "adversarial_precedence",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
@@ -142,12 +156,12 @@
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Adversarial Formal-Precedence Evaluation\n========================================================================\nPass: 12/12 (100.0%)\nCitation hit rate: 1.0\nKeyword hit rate: 1.0\nPrecedence pass rate: 1.0\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_results.json\n"
+      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Adversarial Formal-Precedence Evaluation\n========================================================================\nPass: 12/12 (100.0%)\nCitation hit rate: 1.0\nKeyword hit rate: 1.0\nPrecedence pass rate: 1.0\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_wage_table_evidence --bm25-only",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_wage_table_evidence --bm25-only",
       "name": "wage_table_evidence",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\wage_table_evidence_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\wage_table_evidence_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
@@ -156,12 +170,12 @@
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "========================================================================\nKARL Wage-Table Evidence Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nSource-method pass rate: 100.0%\nTable evidence presence rate: 100.0%\nTable ID presence rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\wage_table_evidence_results.json\n"
+      "stdout_tail": "========================================================================\nKARL Wage-Table Evidence Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nSource-method pass rate: 100.0%\nTable evidence presence rate: 100.0%\nTable ID presence rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\wage_table_evidence_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_entitlement_table_evidence",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_entitlement_table_evidence",
       "name": "entitlement_table_evidence",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\entitlement_table_evidence_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\entitlement_table_evidence_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
@@ -170,26 +184,26 @@
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "========================================================================\nKARL Entitlement-Table Evidence Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nWeeks-resolution pass rate: 100.0%\nSource-method pass rate: 100.0%\nEvidence presence rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\entitlement_table_evidence_results.json\n"
+      "stdout_tail": "========================================================================\nKARL Entitlement-Table Evidence Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nWeeks-resolution pass rate: 100.0%\nSource-method pass rate: 100.0%\nEvidence presence rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\entitlement_table_evidence_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_side_letter_retrieval --bm25-only",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_side_letter_retrieval --bm25-only",
       "name": "side_letter_retrieval",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\side_letter_retrieval_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\side_letter_retrieval_results.json",
       "result_summary": {
         "gate_pass": true,
-        "pass_rate": 1.0,
-        "passed": 16,
+        "pass_rate": 0.9375,
+        "passed": 15,
         "total": 16
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Side-Letter Retrieval Evaluation\n========================================================================\nTop-8 pass: 16/16 (100.0%)\nDepth-20 pass: 16/16 (100.0%)\nCombined pass: 16/16 (100.0%)\nBoth-fail cases: 0\nGate: True (topk_threshold=0.80, depth_threshold=0.95)\n- local7_kingsoopers_loveland_meat_2019: topk=8/8 (100.0%), depth=8/8 (100.0%)\n- local7_safeway_pueblo_meat_2022: topk=8/8 (100.0%), depth=8/8 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\side_letter_retrieval_results.json\n"
+      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Side-Letter Retrieval Evaluation\n========================================================================\nTop-8 pass: 15/16 (93.8%)\nDepth-20 pass: 16/16 (100.0%)\nCombined pass: 16/16 (100.0%)\nBoth-fail cases: 0\nGate: True (topk_threshold=0.80, depth_threshold=0.95)\n- local7_kingsoopers_loveland_meat_2019: topk=7/8 (87.5%), depth=8/8 (100.0%)\n- local7_safeway_pueblo_meat_2022: topk=8/8 (100.0%), depth=8/8 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\side_letter_retrieval_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_role_catalog_integrity",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_role_catalog_integrity",
       "name": "role_catalog_integrity",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
@@ -198,26 +212,26 @@
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "========================================================================\nKARL Role-Catalog Integrity Evaluation\n========================================================================\nOverall: 20/20 (100.0%)\nDataset-case pass rate: 100.0%\nDefault wage-ready rate: 100.0%\nUnresolved-not-default rate: 100.0%\nDefault wage-key-unique rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 6/6 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 8/8 (100.0%)\n- local7_safeway_pueblo_meat_2022: 6/6 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_results.json\n"
+      "stdout_tail": "========================================================================\nKARL Role-Catalog Integrity Evaluation\n========================================================================\nOverall: 20/20 (100.0%)\nDataset-case pass rate: 100.0%\nDefault wage-ready rate: 100.0%\nUnresolved-not-default rate: 100.0%\nDefault wage-key-unique rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 6/6 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 8/8 (100.0%)\n- local7_safeway_pueblo_meat_2022: 6/6 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_followup_role_wage --bm25-only",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_followup_role_wage --bm25-only",
       "name": "followup_role_wage",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\followup_role_wage_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\followup_role_wage_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
-        "passed": 12,
-        "total": 12
+        "passed": 14,
+        "total": 14
       },
       "return_code": 0,
-      "stderr_tail": "Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.\n",
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL Follow-Up Role Wage Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nTarget resolution rate: 100.0%\nIntent wage rate: 100.0%\nAppendix citation rate: 100.0%\nTable evidence presence rate: 100.0%\nExplicit override rate: 100.0%\nProfile fallback rate: 100.0%\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\followup_role_wage_results.json\n"
+      "stderr_tail": "",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL Follow-Up Role Wage Evaluation\n========================================================================\nOverall: 14/14 (100.0%)\nTarget resolution rate: 92.9%\nIntent wage rate: 100.0%\nAppendix citation rate: 92.9%\nTable evidence presence rate: 92.9%\nExplicit override rate: 100.0%\nProfile fallback rate: 100.0%\nRole clarification rate: 100.0%\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\followup_role_wage_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.evaluate_needle --bm25-only",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_needle --bm25-only",
       "name": "needle",
-      "result_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\needle_results.json",
+      "result_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\needle_results.json",
       "result_summary": {
         "gate_pass": null,
         "pass_rate": 1.0,
@@ -226,10 +240,10 @@
       },
       "return_code": 0,
       "stderr_tail": "",
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL Needle Retrieval Evaluation\n========================================================================\nPass: 5/5 (100.0%)\nCitation match rate: 1.0\nKeyword pass rate: 1.0\n- bottom: 1/1 (100.0%)\n- middle: 2/2 (100.0%)\n- top: 2/2 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\needle_results.json\n"
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL Needle Retrieval Evaluation\n========================================================================\nPass: 5/5 (100.0%)\nCitation match rate: 1.0\nKeyword pass rate: 1.0\n- bottom: 1/1 (100.0%)\n- middle: 2/2 (100.0%)\n- top: 2/2 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\needle_results.json\n"
     },
     {
-      "command": "C:\\Python313\\python.exe -m backend.test_topic_routing",
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.test_topic_routing",
       "name": "topic_routing_test",
       "result_file": null,
       "result_summary": null,
@@ -240,10 +254,10 @@
   ],
   "overall": {
     "all_passed": true,
-    "commands_passed": 18,
-    "commands_total": 18,
+    "commands_passed": 19,
+    "commands_total": 19,
     "pass_rate": 1.0
   },
   "schema_version": "moa_deep_eval_suite_v1",
-  "timestamp_utc": "2026-02-22T05:32:05.847851+00:00"
+  "timestamp_utc": "2026-03-09T10:32:55.035246+00:00"
 }

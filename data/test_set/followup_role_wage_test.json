@@ -109,6 +109,28 @@
       "expectation": "profile_fallback",
       "expected_target_classification": "deli_chef",
       "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-13",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "user_classification": "courtesy_clerk",
+      "question": "what does drive up and go make per hour",
+      "expectation": "explicit_role_override",
+      "expected_target_classification": "nonfood_gm_floral",
+      "min_table_evidence_rows": 1
+    },
+    {
+      "id": "FRW-14",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "user_classification": "courtesy_clerk",
+      "question": "what do clerks make",
+      "expectation": "needs_role_clarification",
+      "expected_role_family": "clerk_general",
+      "expected_clarification_values": [
+        "courtesy_clerk",
+        "all_purpose_clerk",
+        "head_clerk"
+      ]
     }
   ]
 }

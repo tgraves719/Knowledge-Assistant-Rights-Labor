@@ -1,6 +1,6 @@
 {
   "contract_id": "local7_safeway_pueblo_meat_2022",
-  "generated_at_utc": "2026-02-21T20:32:24.363886+00:00",
+  "generated_at_utc": "2026-03-09T10:08:17.935283+00:00",
   "operation_count": 7,
   "patch_id": "draft_albertsons_safeway_moa_2025_07_05_local7_safeway_pueblo_meat_2022_2025_07_05",
   "quality_flag_counts": {
@@ -8,7 +8,7 @@
     "missing_section_header": 1,
     "too_short": 2
   },
-  "selected_candidate_count": 29,
+  "selected_candidate_count": 30,
   "skipped": [
     {
       "article_num": 7,
@@ -26,6 +26,11 @@
     },
     {
       "article_num": 9,
+      "reason": "target_not_found_in_base",
+      "section_num": 20
+    },
+    {
+      "article_num": 10,
       "reason": "target_not_found_in_base",
       "section_num": 20
     },
@@ -135,10 +140,10 @@
       "section_num": 174
     }
   ],
-  "skipped_count": 22,
+  "skipped_count": 23,
   "skipped_reason_counts": {
     "ambiguous_target_multiple_base_sections": 1,
     "low_quality_candidate": 4,
-    "target_not_found_in_base": 17
+    "target_not_found_in_base": 18
   }
 }

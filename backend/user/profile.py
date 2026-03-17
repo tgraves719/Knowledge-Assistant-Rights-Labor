@@ -381,6 +381,28 @@ CLASSIFICATION_DISPLAY_NAMES = {
 
 
 _classification_cache_by_contract: dict[str, list[dict]] = {}
+_AMBIGUOUS_ROLE_VALUE_HINTS = {
+    "manager",
+    "manager_trainee",
+    "other_assistant_managers",
+    "assistant_manager",
+}
+_ROLE_CLARIFICATION_GROUPS = {
+    "management_ambiguous": (
+        "head_clerk",
+        "manager_trainee",
+        "other_assistant_managers",
+    ),
+    "clerk_general": (
+        "courtesy_clerk",
+        "all_purpose_clerk",
+        "head_clerk",
+    ),
+    "nonfood_gm_floral": (
+        "dug_shopper",
+        "nonfood_gm_floral",
+    ),
+}
 
 
 def _prettify_classification_label(value: str) -> str:
@@ -422,6 +444,200 @@ def _normalize_classification_label(label: str) -> str:
             cleaned = re.sub(rf"\b{acronym}\b", acronym.upper(), cleaned)
 
     return cleaned
+
+
+def _infer_role_family(
+    value: str,
+    label: str,
+    wage_key: Optional[str],
+) -> str:
+    blob = " ".join(
+        part for part in [str(value or ""), str(label or ""), str(wage_key or "")]
+        if part
+    ).lower()
+    if "courtesy" in blob:
+        return "courtesy_clerk"
+    if "all purpose" in blob:
+        return "all_purpose_clerk"
+    if "dug" in blob or "drive up" in blob or "non-food" in blob or "gm" in blob or "floral" in blob:
+        return "nonfood_gm_floral"
+    if "assistant manager" in blob or "manager trainee" in blob:
+        return "management_ambiguous"
+    if "manager" in blob:
+        return "management"
+    if "head clerk" in blob:
+        return "head_clerk"
+    return "general"
+
+
+def _requires_role_clarification(
+    value: str,
+    label: str,
+    wage_key: Optional[str],
+    manifest_present: bool,
+) -> bool:
+    blob = " ".join(
+        part for part in [str(value or ""), str(label or ""), str(wage_key or "")]
+        if part
+    ).lower()
+    normalized_value = normalize_classification_name(value or "")
+    if normalized_value in _AMBIGUOUS_ROLE_VALUE_HINTS:
+        return True
+    if "assistant manager" in blob:
+        return True
+    if "manager trainee" in blob:
+        return True
+    return False
+
+
+def resolve_classification_option(
+    contract_id: Optional[str],
+    classification: Optional[str],
+) -> Optional[dict]:
+    """Resolve a contract-scoped classification option from a raw value or label."""
+    if not contract_id or not classification:
+        return None
+
+    raw = str(classification).strip()
+    if not raw:
+        return None
+
+    normalized_value = _normalize_profile_classification_value(raw, contract_id=contract_id)
+    raw_lower = raw.lower()
+    options = get_classification_options(contract_id=contract_id, include_unmapped=True)
+
+    for opt in options:
+        value = str(opt.get("value") or "").strip().lower()
+        label = str(opt.get("label") or "").strip().lower()
+        if normalized_value and value == str(normalized_value).strip().lower():
+            return opt
+        if value and value == raw_lower:
+            return opt
+        if label and label == raw_lower:
+            return opt
+        for alias in opt.get("alias_labels") or []:
+            if str(alias).strip().lower() == raw_lower:
+                return opt
+    return None
+
+
+def get_role_clarification(
+    contract_id: Optional[str],
+    classification: Optional[str],
+) -> Optional[dict]:
+    """
+    Build a deterministic clarification payload for ambiguous role selections.
+
+    Returns `None` when the classification is already specific enough.
+    """
+    if not contract_id or not classification:
+        return None
+
+    raw = str(classification).strip()
+    if not raw:
+        return None
+
+    raw_lower = raw.lower()
+    matched_option = resolve_classification_option(contract_id, raw)
+    role_family = str((matched_option or {}).get("role_family") or "").strip().lower()
+    needs_clarification = bool((matched_option or {}).get("requires_role_clarification"))
+
+    if not needs_clarification:
+        if (
+            raw_lower == "manager"
+            or "assistant manager" in raw_lower
+            or "manager trainee" in raw_lower
+        ):
+            role_family = "management_ambiguous"
+            needs_clarification = True
+        elif raw_lower in {"clerk", "store clerk"}:
+            role_family = "clerk_general"
+            needs_clarification = True
+        elif (
+            re.search(r"\bclerks?\b", raw_lower)
+            and not any(
+                cue in raw_lower
+                for cue in (
+                    "courtesy",
+                    "all purpose",
+                    "all-purpose",
+                    "head clerk",
+                    "dug",
+                    "drive up",
+                    "non food",
+                    "non-food",
+                    "gm floral",
+                )
+            )
+        ):
+            role_family = "clerk_general"
+            needs_clarification = True
+
+    if not needs_clarification:
+        return None
+
+    options = get_classification_options(contract_id=contract_id, include_unmapped=True)
+    by_value = {
+        str(opt.get("value") or "").strip().lower(): opt
+        for opt in options
+        if str(opt.get("value") or "").strip()
+    }
+
+    suggestion_values = list(_ROLE_CLARIFICATION_GROUPS.get(role_family, ()))
+    if matched_option:
+        matched_value = str(matched_option.get("value") or "").strip().lower()
+        if matched_value and matched_value not in suggestion_values:
+            suggestion_values.insert(0, matched_value)
+
+    clarification_options: list[dict] = []
+    seen: set[str] = set()
+    for value in suggestion_values:
+        opt = by_value.get(str(value).strip().lower())
+        if not opt:
+            continue
+        opt_value = str(opt.get("value") or "").strip().lower()
+        if not opt_value or opt_value in seen:
+            continue
+        seen.add(opt_value)
+        clarification_options.append(
+            {
+                "value": opt.get("value"),
+                "label": opt.get("label"),
+                "wage_available": bool(opt.get("wage_available")),
+                "requires_role_clarification": bool(opt.get("requires_role_clarification")),
+                "role_family": opt.get("role_family"),
+            }
+        )
+
+    labels = [str(opt.get("label") or "").strip() for opt in clarification_options if str(opt.get("label") or "").strip()]
+    if role_family == "management_ambiguous":
+        message = (
+            "I need your exact management classification before I can use the right contract rules. "
+            "In this contract, manager and assistant-manager wording can overlap with Head Clerk, "
+            "Manager Trainee, and Other Assistant Managers."
+        )
+    elif role_family == "clerk_general":
+        message = (
+            "I need your exact clerk classification before I can apply the right rules. "
+            "This contract distinguishes Courtesy Clerk, All-Purpose Clerk, and Head Clerk."
+        )
+    else:
+        message = (
+            "I need your exact classification before I can apply the right rules. "
+            "This contract separates DUG/Drive Up and Go roles from Non-Food/GM/Floral classifications."
+        )
+
+    if labels:
+        message += " Please choose one of: " + ", ".join(labels) + "."
+
+    return {
+        "needs_clarification": True,
+        "role_family": role_family or None,
+        "matched_value": (matched_option or {}).get("value"),
+        "matched_label": (matched_option or {}).get("label"),
+        "message": message,
+        "options": clarification_options,
+    }
 
 
 def _load_contract_classification_options_from_wages(contract_id: str) -> list[dict]:
@@ -501,7 +717,13 @@ def _load_contract_classification_options_from_role_catalog(contract_id: str) ->
             label = CLASSIFICATION_DISPLAY_NAMES.get(value) or _prettify_classification_label(value)
         alias_labels = role.get("alias_labels") if isinstance(role.get("alias_labels"), list) else []
         alias_labels = [str(x).strip() for x in alias_labels if str(x).strip()]
-        if alias_labels and bool(role.get("onboarding_default")):
+        if (
+            alias_labels
+            and bool(role.get("onboarding_default"))
+            and not bool(role.get("requires_role_clarification"))
+            and str(role.get("review_state") or "").strip().lower() != "needs_clarification"
+            and not list(role.get("clarification_wage_keys") or [])
+        ):
             preview = " / ".join(alias_labels[:2])
             if preview and preview.lower() not in label.lower():
                 label = f"{label} ({preview})"
@@ -510,11 +732,31 @@ def _load_contract_classification_options_from_role_catalog(contract_id: str) ->
         wage_key = normalize_classification_name(str(role.get("wage_key") or "")) or None
         if not wage_available:
             wage_key = None
+        manifest_present = bool(role.get("manifest_present"))
+        review_state = str(role.get("review_state") or "").strip().lower()
+        clarification_wage_keys = [
+            normalize_classification_name(str(value or ""))
+            for value in (role.get("clarification_wage_keys") or [])
+            if normalize_classification_name(str(value or ""))
+        ]
+        requires_role_clarification = (
+            bool(role.get("requires_role_clarification"))
+            or review_state == "needs_clarification"
+            or _requires_role_clarification(
+            value=value,
+            label=label,
+            wage_key=wage_key,
+            manifest_present=manifest_present,
+        )
+        )
+        role_family = _infer_role_family(value=value, label=label, wage_key=wage_key)
         onboarding_default = (
             bool(role.get("onboarding_default"))
             if "onboarding_default" in role
             else wage_available
         )
+        if requires_role_clarification:
+            onboarding_default = False
 
         options.append(
             {
@@ -524,9 +766,14 @@ def _load_contract_classification_options_from_role_catalog(contract_id: str) ->
                 "wage_key": wage_key,
                 "source": str(role.get("source") or "role_catalog"),
                 "mapping_method": str(role.get("mapping_method") or ""),
-                "manifest_present": bool(role.get("manifest_present")),
+                "review_state": review_state or None,
+                "manifest_present": manifest_present,
                 "onboarding_default": onboarding_default,
                 "alias_labels": alias_labels,
+                "clarification_wage_keys": clarification_wage_keys,
+                "role_family": role_family,
+                "role_confidence": "ambiguous" if requires_role_clarification else ("high" if manifest_present else "medium"),
+                "requires_role_clarification": requires_role_clarification,
             }
         )
 

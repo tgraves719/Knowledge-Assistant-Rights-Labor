@@ -67,3 +67,8 @@ NUL
 pytest-cache-files-*/
 tmp_test_work/
 tmp_karl_smoke_server*.log
+tmp_*.py
+
+# Real user data — never publish
+data/miss_records/
+data/test_set/real_user_regressions_results.json

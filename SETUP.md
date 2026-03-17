@@ -2,12 +2,20 @@
 
 Complete setup instructions for getting Karl running on your machine.
 
+## Choose a Setup Path
+
+Use one of these paths:
+
+- Windows native (PowerShell): fastest way to get KARL running on a Windows machine you control
+- Docker/devcontainer: best default for repeatable contributor setup across machines
+
 ## Recommended (Windows Fast Path)
 
 If you are on Windows, use the scripted bootstrap + smoke path first:
 
 ```powershell
 python scripts/karl.py setup --profile backend
+python scripts/karl.py start
 python scripts/karl.py smoke
 ```
 
@@ -16,18 +24,21 @@ Detailed Windows setup / troubleshooting:
 
 ## Preferred Engineering Path (Containerized)
 
+Use this path for contributor onboarding when Docker is available. It avoids most
+Windows-native compiler/toolchain issues.
+
 ```bash
-docker compose -f docker-compose.dev.yml up --build
+python scripts/karl.py docker-up --build
 ```
 
 Optional dependency profile for image build:
 
 ```bash
 # Linux/Mac
-KARL_REQ_PROFILE=base docker compose -f docker-compose.dev.yml up --build
+KARL_REQ_PROFILE=backend docker compose -f docker-compose.dev.yml up --build
 
 # Windows PowerShell
-$env:KARL_REQ_PROFILE="base"; docker compose -f docker-compose.dev.yml up --build
+$env:KARL_REQ_PROFILE="backend"; docker compose -f docker-compose.dev.yml up --build
 ```
 
 ## Prerequisites
@@ -45,7 +56,7 @@ git clone <repository-url>
 cd Knowledge-Assistant-Rights-Labor
 ```
 
-### 2. Install Python Dependencies
+### 2. Install Python Dependencies (manual path)
 
 Prefer profile installs for faster setup:
 
@@ -66,11 +77,7 @@ Profiles:
 - `requirements/eval.txt` (base + eval)
 - `requirements/full.txt` (full local engineering stack)
 
-```bash
-pip install -r requirements.txt
-```
-
-This installs the backend, retrieval, embedding, and evaluation dependencies used by KARL.
+`requirements.txt` remains available for broad installs, but the profile files are usually a better fit for local development.
 
 ### 3. Set Up Your API Key (Optional)
 
@@ -119,10 +126,24 @@ python -m backend.ingest.rebuild_index
 
 **Note:** If you see files in `data/chunks/` and `data/wages/`, you can skip this step - the data is already processed!
 
+### 4b. Refresh MOA-effective artifacts after amendment updates (demo-safe)
+
+If you change MOA patch files or source docs and want current-effective behavior in demos,
+rebuild the effective snapshot and validate the wage chronology materialization:
+
+```bash
+# Optional (Pueblo Clerks / Safeway MOA July 2025):
+# sync full Appendix A wage-row patch ops from data/source_docs/moa/.../output.json
+python -m backend.ingest.sync_clerks_moa_appendix_from_output
+
+python -m backend.ingest.materialize_effective --contract-id <contract_id>
+python -m backend.evaluate_effective_wage_coverage --contract-id <contract_id>
+```
+
 ### 5. Start the Server
 
 ```bash
-python -m uvicorn backend.api:app --host 127.0.0.1 --port 8000
+python scripts/karl.py start
 ```
 
 If your environment blocks HuggingFace/model downloads, start in offline BM25 mode:
@@ -131,7 +152,7 @@ If your environment blocks HuggingFace/model downloads, start in offline BM25 mo
 # Windows (PowerShell)
 $env:KARL_HYBRID_VECTOR_WEIGHT="0"
 $env:KARL_HYBRID_KEYWORD_WEIGHT="1"
-python -m uvicorn backend.api:app --host 127.0.0.1 --port 8000
+python scripts/karl.py start
 ```
 
 You should see:
@@ -149,12 +170,12 @@ Go to `http://127.0.0.1:8000` (primary modular app), or `http://127.0.0.1:8000/m
 ## Troubleshooting
 
 ### "Module not found" errors
-- Make sure you ran `pip install -r requirements.txt`
+- Make sure you ran `python scripts/karl.py setup --profile backend` or installed `requirements/base.txt`
 - Check that you're using a supported Python version for current dependencies
 
 ### Server won't start
 - Check if port 8000 is already in use
-- Try a different port: `--port 8001`
+- Try a different port: `python scripts/karl.py start --port 8001`
 - Make sure you're in the project directory
 - If startup hangs on `huggingface.co`, run with:
   - `KARL_HYBRID_VECTOR_WEIGHT=0`
@@ -163,6 +184,11 @@ Go to `http://127.0.0.1:8000` (primary modular app), or `http://127.0.0.1:8000/m
 ### "No chunks found" or empty responses
 - Run the data processing scripts (step 4)
 - Check that `data/chunks/contract_chunks.json` exists
+
+### MOA changes applied but wage answers still look old
+- Re-run effective materialization for the affected contract (`step 4b`)
+- Run `python -m backend.evaluate_effective_wage_coverage --contract-id <contract_id>`
+- Restart KARL so the runtime reloads the latest effective artifacts
 
 ### API key not working
 - Make sure your `.env` file is in the project root (same folder as `requirements.txt`)

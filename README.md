@@ -93,7 +93,15 @@ karl/
 
 ## Quick Start
 
-Preferred engineering path (containerized):
+Choose one setup path:
+
+### Option A (Recommended): Docker / Dev Container
+
+```bash
+python scripts/karl.py docker-up --build
+```
+
+Direct Docker Compose also works:
 
 ```bash
 docker compose -f docker-compose.dev.yml up --build
@@ -101,10 +109,18 @@ docker compose -f docker-compose.dev.yml up --build
 
 VS Code devcontainer is also available via `.devcontainer/devcontainer.json`.
 
-Prefer the scripted local setup path on Windows:
+### Option B: Windows Native (PowerShell)
+
+Use the scripted setup path (recommended over manual `pip install`):
 
 ```powershell
 python scripts/karl.py setup --profile backend
+```
+
+Start the local API:
+
+```powershell
+python scripts/karl.py start
 ```
 
 Then validate runtime/API + Contract-tab endpoints:
@@ -116,7 +132,7 @@ python scripts/karl.py smoke
 Detailed Windows setup + troubleshooting:
 - `docs/LOCAL_SETUP_WINDOWS.md`
 
-### 1. Install dependencies
+### 1. Install dependencies (manual path)
 
 For faster local installs, prefer dependency profiles instead of the full default:
 
@@ -134,9 +150,7 @@ Preflight checks (recommended before/after setup):
 python scripts/karl.py doctor --profile backend
 ```
 
-```bash
-pip install -r requirements.txt
-```
+`requirements.txt` still works, but profile-based installs are faster and easier to debug.
 
 ### 2. Configure API key (optional but recommended)
 
@@ -158,10 +172,30 @@ python -u -m backend.ingest.enricher --batch-size 15 --delay 1.0
 python -m backend.ingest.rebuild_index
 ```
 
+### 3b. Refresh MOA-effective artifacts after amendment changes (demo-safe)
+
+If you updated MOA patch files or source docs and need current-effective demo behavior
+(especially Appendix A wage changes), rematerialize the effective snapshot and validate
+the effective wage artifact chronology:
+
+```bash
+# Optional (Pueblo Clerks / July 2025 Safeway MOA):
+# rebuild full Appendix A wage row patch ops from data/source_docs/moa/.../output.json
+python -m backend.ingest.sync_clerks_moa_appendix_from_output
+
+python -m backend.ingest.materialize_effective --contract-id <contract_id>
+python -m backend.evaluate_effective_wage_coverage --contract-id <contract_id>
+```
+
+This catches cases where an MOA wage patch was applied but no row was materialized at the patch effective date.
+For the Pueblo Clerks July 2025 MOA, the sync command expands the approved patch to all
+52 Appendix A rows using the structured `output.json` Denver Metro Clerks tables (`Current` column)
+before rematerialization.
+
 ### 4. Start server
 
 ```bash
-python -m uvicorn backend.api:app --host 127.0.0.1 --port 8000
+python scripts/karl.py start
 ```
 
 ### 5. Open app
@@ -370,9 +404,12 @@ python -m backend.evaluate_runner --track role_catalog_integrity
 # Follow-up role-targeted wage integrity slice
 python -m backend.evaluate_runner --track followup_role_wage
 
+# Real-user regression slice
+python -m backend.evaluate_runner --track real_user_regressions
+
 # v0.9.0 readiness scorecard (aggregated must-have gates)
 python -m backend.evaluate_runner --track release_090
-```
+``` 
 
 False-unavailable evaluation now includes both:
 - evidence-present recovery cases
@@ -422,6 +459,16 @@ python -m backend.evaluate_wage_table_evidence --bm25-only
 
 `backend.evaluate_gate_check` treats wage-table-evidence thresholds as blocking when
 `data/test_set/wage_table_evidence_results.json` is missing or below floor.
+
+### Effective wage snapshot coverage (MOA chronology integrity)
+
+```bash
+python -m backend.evaluate_effective_wage_coverage
+python -m backend.evaluate_effective_wage_coverage --contract-id <contract_id>
+```
+
+Validates that approved MOA wage-table row patches materialize rows at the patch effective date
+in the latest effective snapshot wage artifact.
 
 ### Entitlement-table evidence slice
 

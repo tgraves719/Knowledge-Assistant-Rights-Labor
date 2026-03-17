@@ -21,7 +21,7 @@ from backend.config import DATA_DIR
 from backend.ingest.classification_ontology import (
     MANUAL_OVERRIDE_SCHEMA_VERSION,
     build_classification_ontology,
-    load_manual_classification_overrides,
+    load_manual_classification_review_overrides,
     normalize_classification_name,
 )
 
@@ -58,12 +58,22 @@ def _build_template(contract_id: str, ontology: dict) -> dict:
     for d in ontology.get("decisions", []) or []:
         if d.get("mapped_wage_key"):
             continue
+        suggested_action = (
+            "needs_clarification"
+            if str(d.get("review_state") or "") == "needs_clarification"
+            or str(d.get("mapping_method") or "") == "unresolved_ambiguous"
+            else "out_of_scope"
+        )
         unresolved.append(
             {
                 "source_key": d.get("source_key"),
-                "action": "no_map",
-                "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+                "action": suggested_action,
+                "comment": (
+                    "Use 'map' with target_wage_key, 'out_of_scope', or "
+                    "'needs_clarification' with clarification_wage_keys after human review."
+                ),
                 "candidate_scores": (d.get("candidate_scores") or [])[:5],
+                "clarification_wage_keys": (d.get("clarification_wage_keys") or [])[:5],
             }
         )
     return {
@@ -72,14 +82,16 @@ def _build_template(contract_id: str, ontology: dict) -> dict:
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "set_aliases": {},
         "remove_aliases": [],
+        "review_overrides": {},
         "decision_notes": unresolved,
     }
 
 
-def _parse_decision_file(path: Path) -> tuple[dict[str, str], set[str]]:
+def _parse_decision_file(path: Path) -> tuple[dict[str, str], set[str], dict[str, dict]]:
     raw = _load_json(path)
     set_aliases: dict[str, str] = {}
     remove_aliases: set[str] = set()
+    review_overrides: dict[str, dict] = {}
 
     if not isinstance(raw, dict):
         raise ValueError("Decision file must be a JSON object.")
@@ -95,7 +107,62 @@ def _parse_decision_file(path: Path) -> tuple[dict[str, str], set[str]]:
             src_key = normalize_classification_name(str(src or ""))
             if src_key:
                 remove_aliases.add(src_key)
-        return set_aliases, remove_aliases
+        for src, cfg in (raw.get("review_overrides") or {}).items():
+            src_key = normalize_classification_name(str(src or ""))
+            if not src_key:
+                continue
+            if isinstance(cfg, str):
+                action = normalize_classification_name(cfg)
+                if action in {"out_of_scope", "needs_clarification"}:
+                    review_overrides[src_key] = {"action": action}
+                continue
+            if not isinstance(cfg, dict):
+                continue
+            action = normalize_classification_name(str(cfg.get("action") or ""))
+            if action not in {"out_of_scope", "needs_clarification"}:
+                continue
+            payload = {"action": action}
+            candidates = [
+                normalize_classification_name(str(v or ""))
+                for v in (cfg.get("clarification_wage_keys") or [])
+                if normalize_classification_name(str(v or ""))
+            ]
+            if candidates:
+                payload["clarification_wage_keys"] = candidates
+            comment = str(cfg.get("comment") or "").strip()
+            if comment:
+                payload["comment"] = comment
+            review_overrides[src_key] = payload
+        for row in (raw.get("decision_notes") or []):
+            if not isinstance(row, dict):
+                continue
+            src_key = normalize_classification_name(str(row.get("source_key") or ""))
+            action = normalize_classification_name(str(row.get("action") or ""))
+            if not src_key or not action:
+                continue
+            if action == "map":
+                dst_key = normalize_classification_name(str(row.get("target_wage_key") or ""))
+                if dst_key:
+                    set_aliases[src_key] = dst_key
+                continue
+            if action in {"remove", "clear"}:
+                remove_aliases.add(src_key)
+                review_overrides.pop(src_key, None)
+                continue
+            if action in {"out_of_scope", "needs_clarification"}:
+                payload = {"action": action}
+                candidates = [
+                    normalize_classification_name(str(v or ""))
+                    for v in (row.get("clarification_wage_keys") or [])
+                    if normalize_classification_name(str(v or ""))
+                ]
+                if candidates:
+                    payload["clarification_wage_keys"] = candidates
+                comment = str(row.get("comment") or "").strip()
+                if comment:
+                    payload["comment"] = comment
+                review_overrides[src_key] = payload
+        return set_aliases, remove_aliases, review_overrides
 
     if "classification_alias_overrides" in raw:
         raw_map = raw.get("classification_alias_overrides") or {}
@@ -111,7 +178,33 @@ def _parse_decision_file(path: Path) -> tuple[dict[str, str], set[str]]:
             dst_key = normalize_classification_name(str(dst))
             if dst_key:
                 set_aliases[src_key] = dst_key
-        return set_aliases, remove_aliases
+        for src, cfg in (raw.get("classification_review_overrides") or {}).items():
+            src_key = normalize_classification_name(str(src or ""))
+            if not src_key:
+                continue
+            if isinstance(cfg, str):
+                action = normalize_classification_name(cfg)
+                if action in {"out_of_scope", "needs_clarification"}:
+                    review_overrides[src_key] = {"action": action}
+                continue
+            if not isinstance(cfg, dict):
+                continue
+            action = normalize_classification_name(str(cfg.get("action") or ""))
+            if action not in {"out_of_scope", "needs_clarification"}:
+                continue
+            payload = {"action": action}
+            candidates = [
+                normalize_classification_name(str(v or ""))
+                for v in (cfg.get("clarification_wage_keys") or [])
+                if normalize_classification_name(str(v or ""))
+            ]
+            if candidates:
+                payload["clarification_wage_keys"] = candidates
+            comment = str(cfg.get("comment") or "").strip()
+            if comment:
+                payload["comment"] = comment
+            review_overrides[src_key] = payload
+        return set_aliases, remove_aliases, review_overrides
 
     # Fallback: treat object as source->target map, null/empty means remove.
     for src, dst in raw.items():
@@ -124,7 +217,7 @@ def _parse_decision_file(path: Path) -> tuple[dict[str, str], set[str]]:
         dst_key = normalize_classification_name(str(dst))
         if dst_key:
             set_aliases[src_key] = dst_key
-    return set_aliases, remove_aliases
+    return set_aliases, remove_aliases, review_overrides
 
 
 def _print_changes(current: dict[str, str], merged: dict[str, str]) -> None:
@@ -163,7 +256,7 @@ def main() -> int:
     manifest = _load_json(paths["manifest"])
     wages_data = _load_json(paths["wages"])
 
-    current_overrides, current_warnings = load_manual_classification_overrides(
+    current_overrides, current_review_overrides, current_warnings = load_manual_classification_review_overrides(
         paths["manual_overrides"], contract_id=args.contract_id
     )
     if current_warnings:
@@ -176,6 +269,7 @@ def main() -> int:
         manifest_classifications=manifest.get("classifications", []) or [],
         wages_data=wages_data,
         manual_alias_overrides=current_overrides,
+        manual_review_overrides=current_review_overrides,
     )
 
     if args.emit_template:
@@ -187,6 +281,7 @@ def main() -> int:
     if not args.decision_file:
         print("No decision file provided; preview complete.")
         print(f"Current override entries: {len(current_overrides)}")
+        print(f"Current reviewed entries: {len(current_review_overrides)}")
         print(f"Current ontology coverage: {(base_ontology.get('summary') or {}).get('coverage')}")
         return 0
 
@@ -195,7 +290,7 @@ def main() -> int:
         print(f"[FAIL] Decision file not found: {decision_path}")
         return 1
 
-    set_aliases, remove_aliases = _parse_decision_file(decision_path)
+    set_aliases, remove_aliases, review_overrides = _parse_decision_file(decision_path)
 
     wage_keys = set((wages_data.get("classifications") or {}).keys())
     invalid_targets = sorted(
@@ -206,18 +301,36 @@ def main() -> int:
         for item in invalid_targets[:50]:
             print(f"- {item}")
         return 1
+    invalid_review_targets = sorted(
+        f"{src}->{dst}"
+        for src, cfg in review_overrides.items()
+        for dst in (cfg.get("clarification_wage_keys") or [])
+        if dst not in wage_keys
+    )
+    if invalid_review_targets:
+        print("[FAIL] Some clarification targets are not wage keys:")
+        for item in invalid_review_targets[:50]:
+            print(f"- {item}")
+        return 1
 
     merged = dict(current_overrides)
+    merged_reviews = dict(current_review_overrides)
     for src in sorted(remove_aliases):
         merged.pop(src, None)
+        merged_reviews.pop(src, None)
     for src, dst in sorted(set_aliases.items()):
         merged[src] = dst
+        merged_reviews.pop(src, None)
+    for src, cfg in sorted(review_overrides.items()):
+        if src not in merged:
+            merged_reviews[src] = cfg
 
     after_ontology = build_classification_ontology(
         contract_id=args.contract_id,
         manifest_classifications=manifest.get("classifications", []) or [],
         wages_data=wages_data,
         manual_alias_overrides=merged,
+        manual_review_overrides=merged_reviews,
     )
 
     before_summary = base_ontology.get("summary", {}) or {}
@@ -236,6 +349,8 @@ def main() -> int:
     print(f"Coverage before: {before_cov:.4f}")
     print(f"Coverage after:  {after_cov:.4f}")
     print(f"Coverage delta:  {after_cov - before_cov:+.4f}")
+    print(f"Reviewed entries before: {len(current_review_overrides)}")
+    print(f"Reviewed entries after:  {len(merged_reviews)}")
     print(f"Newly resolved keys: {newly_resolved}")
     print(f"Newly unresolved keys: {newly_unresolved}")
 
@@ -254,6 +369,7 @@ def main() -> int:
         "schema_version": MANUAL_OVERRIDE_SCHEMA_VERSION,
         "contract_id": args.contract_id,
         "classification_alias_overrides": {k: merged[k] for k in sorted(merged)},
+        "classification_review_overrides": {k: merged_reviews[k] for k in sorted(merged_reviews)},
         "updated_at_utc": datetime.now(timezone.utc).isoformat(),
         "source_decision_file": str(decision_path),
     }

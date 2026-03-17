@@ -1,11 +1,17 @@
 {
   "schema_version": "language_lexicon_v1",
-  "generated_at_utc": "2026-02-15T18:43:09.265842+00:00",
+  "generated_at_utc": "2026-03-08T21:43:30.326317+00:00",
   "contract_id": "local7_kingsoopers_loveland_meat_2019",
   "region_id": "region-loveland",
   "union_local_id": "UFCW LOCAL 7",
   "employer": "KING SOOPERS, INC. A DIVISION OF DILLON COMPANIES, INC.",
   "entries": [
+    {
+      "canonical": "available hours",
+      "aliases": [
+        "available hours"
+      ]
+    },
     {
       "canonical": "bereavement leave",
       "aliases": [
@@ -38,6 +44,13 @@
       "canonical": "check off",
       "aliases": [
         "check off"
+      ]
+    },
+    {
+      "canonical": "definitions of classifications",
+      "aliases": [
+        "definitions classifications",
+        "definitions of classifications"
       ]
     },
     {
@@ -138,6 +151,12 @@
       ]
     },
     {
+      "canonical": "layoffs",
+      "aliases": [
+        "layoffs"
+      ]
+    },
+    {
       "canonical": "leaves of absence",
       "aliases": [
         "leaves absence",
@@ -172,6 +191,17 @@
       ]
     },
     {
+      "canonical": "new employees transferred employees promoted or demoted",
+      "aliases": [
+        "new employees transferred employees promoted or demoted",
+        "new transferred",
+        "new transferred promoted",
+        "promoted demoted",
+        "transferred promoted",
+        "transferred promoted demoted"
+      ]
+    },
+    {
       "canonical": "new store opening",
       "aliases": [
         "new store",
@@ -180,9 +210,27 @@
       ]
     },
     {
+      "canonical": "night premium",
+      "aliases": [
+        "extra money at night",
+        "graveyard pay",
+        "graveyard shift",
+        "night differential",
+        "night premium",
+        "night shift pay"
+      ]
+    },
+    {
       "canonical": "no discrimination",
       "aliases": [
         "no discrimination"
+      ]
+    },
+    {
+      "canonical": "no reduction in pay",
+      "aliases": [
+        "no reduction in pay",
+        "reduction pay"
       ]
     },
     {
@@ -285,6 +333,13 @@
       ]
     },
     {
+      "canonical": "rights of management",
+      "aliases": [
+        "rights management",
+        "rights of management"
+      ]
+    },
+    {
       "canonical": "safety",
       "aliases": [
         "accident",
@@ -378,9 +433,26 @@
       ]
     },
     {
+      "canonical": "sunday premium",
+      "aliases": [
+        "extra pay sunday",
+        "sunday differential",
+        "sunday pay",
+        "sunday premium",
+        "sundays",
+        "working sundays"
+      ]
+    },
+    {
       "canonical": "technological changes",
       "aliases": [
         "technological changes"
+      ]
+    },
+    {
+      "canonical": "temporary assignments",
+      "aliases": [
+        "temporary assignments"
       ]
     },
     {
@@ -409,6 +481,12 @@
         "transfer from store to store",
         "transfer store",
         "transfer store store"
+      ]
+    },
+    {
+      "canonical": "travel pay",
+      "aliases": [
+        "travel pay"
       ]
     },
     {
@@ -475,9 +553,16 @@
         "wage",
         "wages"
       ]
+    },
+    {
+      "canonical": "workweek",
+      "aliases": [
+        "workweek"
+      ]
     }
   ],
   "alias_to_canonical": {
+    "available hours": "available hours",
     "bereavement leave": "bereavement leave",
     "days off for funeral": "bereavement leave",
     "death in family": "bereavement leave",
@@ -492,6 +577,8 @@
     "rest break": "breaks",
     "bulletin board": "bulletin board",
     "check off": "check off",
+    "definitions classifications": "definitions of classifications",
+    "definitions of classifications": "definitions of classifications",
     "discharge": "discipline",
     "discipline": "discipline",
     "fired": "discipline",
@@ -533,6 +620,7 @@
     "displacement": "layoff",
     "laid off": "layoff",
     "layoff": "layoff",
+    "layoffs": "layoffs",
     "leaves absence": "leaves of absence",
     "leaves of absence": "leaves of absence",
     "break between shifts": "relief periods",
@@ -547,10 +635,24 @@
     "minimum weekly": "minimum weekly schedule",
     "minimum weekly schedule": "minimum weekly schedule",
     "weekly schedule": "minimum weekly schedule",
+    "new employees transferred employees promoted or demoted": "new employees transferred employees promoted or demoted",
+    "new transferred": "new employees transferred employees promoted or demoted",
+    "new transferred promoted": "new employees transferred employees promoted or demoted",
+    "promoted demoted": "new employees transferred employees promoted or demoted",
+    "transferred promoted": "new employees transferred employees promoted or demoted",
+    "transferred promoted demoted": "new employees transferred employees promoted or demoted",
     "new store": "new store opening",
     "new store opening": "new store opening",
     "store opening": "new store opening",
+    "extra money at night": "night premium",
+    "graveyard pay": "night premium",
+    "graveyard shift": "night premium",
+    "night differential": "night premium",
+    "night premium": "night premium",
+    "night shift pay": "night premium",
     "no discrimination": "no discrimination",
+    "no reduction in pay": "no reduction in pay",
+    "reduction pay": "no reduction in pay",
     "no strike no lockout": "no strike no lockout",
     "strike lockout": "no strike no lockout",
     "duplication benefits": "non duplication of benefits",
@@ -585,6 +687,8 @@
     "reporting pay": "reporting pay minimum daily schedule",
     "reporting pay minimum": "reporting pay minimum daily schedule",
     "reporting pay minimum daily schedule": "reporting pay minimum daily schedule",
+    "rights management": "rights of management",
+    "rights of management": "rights of management",
     "accident": "safety",
     "injury": "safety",
     "safety": "safety",
@@ -617,7 +721,14 @@
     "store or plant closing": "store or plant closing",
     "store plant": "store or plant closing",
     "store plant closing": "store or plant closing",
+    "extra pay sunday": "sunday premium",
+    "sunday differential": "sunday premium",
+    "sunday pay": "sunday premium",
+    "sunday premium": "sunday premium",
+    "sundays": "sunday premium",
+    "working sundays": "sunday premium",
     "technological changes": "technological changes",
+    "temporary assignments": "temporary assignments",
     "contract term": "term of agreement",
     "effective date": "term of agreement",
     "end date": "term of agreement",
@@ -631,6 +742,7 @@
     "transfer from store to store": "transfer from store to store",
     "transfer store": "transfer from store to store",
     "transfer store store": "transfer from store to store",
+    "travel pay": "travel pay",
     "uniforms equipment": "uniforms equipment",
     "representative visitation": "union representative visitation",
     "union representative visitation": "union representative visitation",
@@ -650,7 +762,8 @@
     "pay rate": "wages",
     "rate of pay": "wages",
     "wage": "wages",
-    "wages": "wages"
+    "wages": "wages",
+    "workweek": "workweek"
   },
   "article_aliases": {
     "1": [

@@ -1,9 +1,9 @@
 {
   "metrics": {
     "total_tests": 55,
-    "passed": 49,
-    "pass_rate": 0.8909090909090909,
-    "retrieval_accuracy": 0.8909090909090909,
+    "passed": 51,
+    "pass_rate": 0.9272727272727272,
+    "retrieval_accuracy": 0.9272727272727272,
     "wage_accuracy": 1.0,
     "escalation_accuracy": 1.0,
     "category_breakdown": {
@@ -58,14 +58,14 @@
         "rate": 1.0
       },
       "classification": {
-        "passed": 1,
+        "passed": 2,
         "total": 3,
-        "rate": 0.3333333333333333
+        "rate": 0.6666666666666666
       },
       "union": {
-        "passed": 1,
+        "passed": 2,
         "total": 2,
-        "rate": 0.5
+        "rate": 1.0
       },
       "holiday": {
         "passed": 3,
@@ -215,8 +215,8 @@
       "expected_citation": "Article 12, Section 28",
       "retrieved_citations": [
         "Article 28, Section 76",
-        "Article 12, Section 28",
-        "Article 10, Section 21, Part 1"
+        "Article 5, Section 10",
+        "Article 5, Section 11"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -232,8 +232,8 @@
       "expected_citation": "Article 12, Section 28",
       "retrieved_citations": [
         "Article 28, Section 76",
-        "Article 12, Section 28",
-        "Article 10, Section 21, Part 1"
+        "Article 5, Section 12",
+        "Article 5, Section 10"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -352,7 +352,7 @@
       "retrieved_citations": [
         "Article 18, Section 54",
         "Article 28, Section 76",
-        "Article 10, Section 21, Part 1"
+        "Article 21, Section 57"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -435,9 +435,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 29",
       "retrieved_citations": [
-        "Article 17, Section 48",
-        "Article 17, Section 47",
-        "Article 29, Section 77"
+        "Article 29, Section 80",
+        "Article 29, Section 80, Part 1-1",
+        "Article 29, Section 82, Part 1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -503,9 +503,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 35, Section 100",
       "retrieved_citations": [
-        "Article 35, Section 100, Part 1-1",
-        "Article 35, Section 100, Part 3-4",
-        "Article 35, Section 100, Part 2-2"
+        "Article 40, Section 116, Part 4-4",
+        "Article 32, Section 87",
+        "Article 17, Section 44, Part 1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -520,9 +520,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 35, Section 100",
       "retrieved_citations": [
-        "Article 35, Section 100, Part 1-1",
-        "Article 35, Section 100, Part 2-2",
-        "Article 35, Section 100, Part 7+"
+        "Article 40, Section 116",
+        "Article 40, Section 116, Part 1-1",
+        "Article 32, Section 87"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -537,9 +537,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 35",
       "retrieved_citations": [
-        "Article 35, Section 100, Part 1-1",
-        "Article 35, Section 100, Part 5-5",
-        "Article 35, Section 100, Part 2-2"
+        "Article 40, Section 116, Part 1-1",
+        "Article 32, Section 87",
+        "Article 17, Section 44, Part 1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -588,9 +588,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 26, Section 62",
       "retrieved_citations": [
-        "Article 26, Section 62",
-        "Article 16, Section 36",
-        "Article 16, Section 37"
+        "Article 5, Section 10",
+        "Article 5, Section 11",
+        "Article 26, Section 62"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -658,7 +658,7 @@
       "retrieved_citations": [
         "Article 24, Section 60",
         "Article 25, Section 61",
-        "Article 32, Section 87"
+        "Article 21, Section 57"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -691,8 +691,8 @@
       "expected_citation": "Article 7, Section 14(g)",
       "retrieved_citations": [
         "Article 4, Section 8",
-        "Article 15, Section 34",
-        "Article 55, Section 162"
+        "Article 5, Section 10",
+        "Article 8, Section 17"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -704,18 +704,18 @@
       "test_id": 36,
       "category": "classification",
       "question": "What is a Head Clerk?",
-      "retrieval_correct": false,
+      "retrieval_correct": true,
       "expected_citation": "Article 7, Section 14(c)",
       "retrieved_citations": [
-        "Article 9, Section 20",
-        "Article 27, Section 68, Part 1",
-        "Article 27, Section 66"
+        "Article 4, Section 8",
+        "Article 5, Section 10",
+        "Article 7, Section 14, Subsection h (DRIVE UP AND GO)"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": false,
-      "notes": "Expected 'Article 7, Section 14(c)' not found"
+      "passed": true,
+      "notes": ""
     },
     {
       "test_id": 37,
@@ -755,18 +755,18 @@
       "test_id": 39,
       "category": "union",
       "question": "Can a union representative visit the store?",
-      "retrieval_correct": false,
+      "retrieval_correct": true,
       "expected_citation": "Article 44, Section 128",
       "retrieved_citations": [
-        "Article 43, Section 122",
-        "Article 43, Section 123",
-        "Article 43, Section 125"
+        "Article 45, Section 130",
+        "Article 45, Section 129",
+        "Article 36, Section 105"
       ],
       "wage_correct": null,
       "escalation_correct": null,
       "intent_detected": "contract",
-      "passed": false,
-      "notes": "Expected 'Article 44, Section 128' not found"
+      "passed": true,
+      "notes": ""
     },
     {
       "test_id": 40,
@@ -826,9 +826,9 @@
       "retrieval_correct": true,
       "expected_citation": "Article 39",
       "retrieved_citations": [
-        "Article 42, Section 118, Part 1",
-        "Article 42, Section 118, Part 2",
-        "Article 42, Section 119"
+        "Article 40, Section 116, Part 1-1",
+        "Article 39, Section 115",
+        "Article 40, Section 116"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -845,7 +845,7 @@
       "retrieved_citations": [
         "Article 40, Section 116, Part 1-1",
         "Article 40, Section 116, Part 1-2",
-        "Article 18, Section 53"
+        "Article 17, Section 44, Part 1"
       ],
       "wage_correct": null,
       "escalation_correct": null,
@@ -929,8 +929,8 @@
       "expected_citation": "Article 20",
       "retrieved_citations": [
         "Article 43, Section 126",
-        "Article 43, Section 123",
-        "Article 43, Section 124"
+        "Article 3, Section 6",
+        "Article 6, Section 13"
       ],
       "wage_correct": null,
       "escalation_correct": null,

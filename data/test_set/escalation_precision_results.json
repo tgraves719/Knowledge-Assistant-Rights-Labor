@@ -2,7 +2,7 @@
   "metadata": {
     "policy": "deterministic two-stage classification: high_stakes_topic vs active_urgent_context",
     "total_cases": 30,
-    "source_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\escalation_precision_test.json"
+    "source_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\escalation_precision_test.json"
   },
   "escalation_confusion_matrix": {
     "tp": 9,

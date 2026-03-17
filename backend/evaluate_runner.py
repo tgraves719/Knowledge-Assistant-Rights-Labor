@@ -2,9 +2,10 @@
 Canonical evaluation runner for KARL.
 
 Tracks:
-- v1: legacy golden benchmark
-- v2: comprehensive benchmark (ablation-capable)
-- v2_multi_contract: multi-contract benchmark slice with per-contract reporting
+- v1: legacy golden benchmark (exploratory; not part of canonical all-track)
+- v2: comprehensive benchmark (ablation-capable, exploratory; not part of canonical all-track)
+- v2_multi_contract: multi-contract benchmark slice with per-contract reporting (exploratory; not part of canonical all-track)
+- legacy_baselines: run v1 + v2 + v2_multi_contract together for exploratory comparison
 - v3: canonical multi-contract phase suite
 - escalation: escalation precision slice
 - paraphrase: paraphrase/slang robustness slice
@@ -13,6 +14,7 @@ Tracks:
 - cross_contract_mentions: deterministic /api/query guard for foreign-contract references
 - false_unavailable: deterministic guard against false "not available" responses
 - wage_table_evidence: deterministic canonical wage-row table evidence slice
+- effective_wage_coverage: deterministic MOA effective wage chronology integrity slice
 - entitlement_table_evidence: deterministic canonical entitlement schedule evidence slice
 - moa_effective: deterministic effective-state/MOA retrieval integrity slice
 - moa_deleted_vs_updated: deterministic regression slice for deleted-vs-updated MOA clauses
@@ -26,9 +28,12 @@ Tracks:
 - contract_text_compare_amended: deterministic amended-section base-vs-effective text compare regression slice
 - role_catalog_integrity: deterministic contract-scoped role integrity slice
 - followup_role_wage: deterministic role-targeted wage follow-up integrity slice
+- retrieval_stage_consistency: deterministic router plan-vs-execution consistency slice across contracts
+- real_user_regressions: deterministic regression slice for first real-user correction cycle
+- miss_record_integrity: deterministic structured miss-record integrity + canonical regression linkage slice
 - needle: needle retrieval integrity slice
 - release_090: deterministic v0.9.0 readiness scorecard over canonical artifacts
-- all: run v1 + v2 + v2_multi_contract + escalation + paraphrase + adversarial + unanswerable + cross_contract_mentions + false_unavailable + wage_table_evidence + entitlement_table_evidence + moa_effective + moa_deleted_vs_updated + moa_readiness + side_letter_retrieval + role_catalog_integrity + followup_role_wage + needle + v3
+- all: run the canonical release-aligned suite only (excludes exploratory legacy baselines)
 
 This runner records deterministic run metadata for auditability:
 - timestamp, command, cwd
@@ -185,6 +190,12 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
         return [cmd]
     if track == "v2_multi_contract":
         return [[py, "-m", "backend.evaluate_multi_contract", "--bm25-only"]]
+    if track == "legacy_baselines":
+        return (
+            _build_commands("v1", ablation_mode, bucket_filter, seed)
+            + _build_commands("v2", ablation_mode, bucket_filter, seed)
+            + _build_commands("v2_multi_contract", ablation_mode, bucket_filter, seed)
+        )
     if track == "v3":
         return [[py, "-m", "backend.evaluate_v3", "--bm25-only"]]
     if track == "escalation":
@@ -201,6 +212,8 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
         return [[py, "-m", "backend.evaluate_false_unavailable", "--bm25-only"]]
     if track == "wage_table_evidence":
         return [[py, "-m", "backend.evaluate_wage_table_evidence", "--bm25-only"]]
+    if track == "effective_wage_coverage":
+        return [[py, "-m", "backend.evaluate_effective_wage_coverage"]]
     if track == "entitlement_table_evidence":
         return [[py, "-m", "backend.evaluate_entitlement_table_evidence"]]
     if track == "moa_effective":
@@ -236,22 +249,26 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
         return [[py, "-m", "backend.evaluate_role_catalog_integrity"]]
     if track == "followup_role_wage":
         return [[py, "-m", "backend.evaluate_followup_role_wage", "--bm25-only"]]
+    if track == "retrieval_stage_consistency":
+        return [[py, "-m", "backend.evaluate_retrieval_stage_consistency", "--bm25-only"]]
+    if track == "real_user_regressions":
+        return [[py, "-m", "backend.evaluate_real_user_regressions"]]
+    if track == "miss_record_integrity":
+        return [[py, "-m", "backend.evaluate_miss_record_integrity"]]
     if track == "needle":
         return [[py, "-m", "backend.evaluate_needle", "--bm25-only"]]
     if track == "release_090":
         return [[py, "-m", "backend.evaluate_release_090"]]
     if track == "all":
         return (
-            _build_commands("v1", ablation_mode, bucket_filter, seed)
-            + _build_commands("v2", ablation_mode, bucket_filter, seed)
-            + _build_commands("v2_multi_contract", ablation_mode, bucket_filter, seed)
-            + _build_commands("escalation", ablation_mode, bucket_filter, seed)
+            _build_commands("escalation", ablation_mode, bucket_filter, seed)
             + _build_commands("paraphrase", ablation_mode, bucket_filter, seed)
             + _build_commands("adversarial", ablation_mode, bucket_filter, seed)
             + _build_commands("unanswerable", ablation_mode, bucket_filter, seed)
             + _build_commands("cross_contract_mentions", ablation_mode, bucket_filter, seed)
             + _build_commands("false_unavailable", ablation_mode, bucket_filter, seed)
             + _build_commands("wage_table_evidence", ablation_mode, bucket_filter, seed)
+            + _build_commands("effective_wage_coverage", ablation_mode, bucket_filter, seed)
             + _build_commands("entitlement_table_evidence", ablation_mode, bucket_filter, seed)
             + _build_commands("moa_effective", ablation_mode, bucket_filter, seed)
             + _build_commands("moa_deleted_vs_updated", ablation_mode, bucket_filter, seed)
@@ -262,6 +279,9 @@ def _build_commands(track: str, ablation_mode: str, bucket_filter: str | None, s
             + _build_commands("artifact_integrity", ablation_mode, bucket_filter, seed)
             + _build_commands("role_catalog_integrity", ablation_mode, bucket_filter, seed)
             + _build_commands("followup_role_wage", ablation_mode, bucket_filter, seed)
+            + _build_commands("retrieval_stage_consistency", ablation_mode, bucket_filter, seed)
+            + _build_commands("real_user_regressions", ablation_mode, bucket_filter, seed)
+            + _build_commands("miss_record_integrity", ablation_mode, bucket_filter, seed)
             + _build_commands("needle", ablation_mode, bucket_filter, seed)
             + _build_commands("v3", ablation_mode, bucket_filter, seed)
         )
@@ -333,7 +353,7 @@ def main():
     parser = argparse.ArgumentParser(description="Canonical KARL evaluation runner with metadata capture.")
     parser.add_argument(
         "--track",
-        choices=["v1", "v2", "v2_multi_contract", "v3", "escalation", "paraphrase", "adversarial", "unanswerable", "cross_contract_mentions", "false_unavailable", "wage_table_evidence", "entitlement_table_evidence", "moa_effective", "moa_deleted_vs_updated", "moa_deleted_vs_updated_answer", "moa_readiness", "moa_deep_suite", "artifact_integrity", "artifact_integrity_strict", "side_letter_retrieval", "side_letter_retrieval_pueblo_clerks", "contract_text_compare_amended", "role_catalog_integrity", "followup_role_wage", "needle", "release_090", "all"],
+        choices=["v1", "v2", "v2_multi_contract", "legacy_baselines", "v3", "escalation", "paraphrase", "adversarial", "unanswerable", "cross_contract_mentions", "false_unavailable", "wage_table_evidence", "effective_wage_coverage", "entitlement_table_evidence", "moa_effective", "moa_deleted_vs_updated", "moa_deleted_vs_updated_answer", "moa_readiness", "moa_deep_suite", "artifact_integrity", "artifact_integrity_strict", "side_letter_retrieval", "side_letter_retrieval_pueblo_clerks", "contract_text_compare_amended", "role_catalog_integrity", "followup_role_wage", "retrieval_stage_consistency", "real_user_regressions", "miss_record_integrity", "needle", "release_090", "all"],
         default="v2",
     )
     parser.add_argument("--ablation-mode", default="normal")

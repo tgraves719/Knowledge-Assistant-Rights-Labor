@@ -1,6 +1,6 @@
 {
   "schema_version": "ingestion_review_queue_v1",
-  "generated_at_utc": "2026-02-15T18:43:12.891397+00:00",
+  "generated_at_utc": "2026-03-08T21:43:31.606042+00:00",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "summary": {
     "total_items": 1,
@@ -29,7 +29,7 @@
           "sanitation_clerk"
         ]
       },
-      "recommended_action": "Review candidate_scores and add manual_classification_overrides entries where appropriate."
+      "recommended_action": "Review candidate_scores and add manual_classification_overrides or reviewed classification_review_overrides entries where appropriate."
     }
   ]
 }

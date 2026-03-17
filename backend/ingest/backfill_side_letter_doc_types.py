@@ -130,7 +130,10 @@ def _select_candidate_indexes(chunks: list[dict], max_changes: int) -> list[int]
     return ordered
 
 
-def _update_chunk_payload(chunks: list[dict], max_changes: int) -> tuple[list[dict], list[dict]]:
+def normalize_side_letter_doc_types(
+    chunks: list[dict],
+    max_changes: int = 0,
+) -> tuple[list[dict], list[dict]]:
     updated = [dict(row) if isinstance(row, dict) else row for row in chunks]
     selected = _select_candidate_indexes(chunks=updated, max_changes=max_changes)
     changes: list[dict] = []
@@ -158,6 +161,10 @@ def _update_chunk_payload(chunks: list[dict], max_changes: int) -> tuple[list[di
             }
         )
     return updated, changes
+
+
+def _update_chunk_payload(chunks: list[dict], max_changes: int) -> tuple[list[dict], list[dict]]:
+    return normalize_side_letter_doc_types(chunks=chunks, max_changes=max_changes)
 
 
 def run(contract_ids: Optional[list[str]], apply: bool, max_changes_per_file: int) -> dict:

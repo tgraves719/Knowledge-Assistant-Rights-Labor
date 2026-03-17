@@ -271,7 +271,9 @@ def build_prompt(
     user_classification: str = None,
     conversation_context: str = None,
     user_profile: dict = None,
-    is_wage_estimate: bool = False
+    is_wage_estimate: bool = False,
+    response_tone: str = None,
+    response_verbosity: str = None,
 ) -> str:
     """
     Build the full prompt with context for the LLM.
@@ -295,6 +297,16 @@ def build_prompt(
     escalation_note = ESCALATION_NOTE if requires_escalation else NO_ESCALATION_NOTE
     terminology_note = format_query_expansions(query_expansions)
     contract_note = format_contract_context(contract_context)
+    response_style_lines: list[str] = []
+    normalized_tone = str(response_tone or "").strip().lower()
+    normalized_verbosity = str(response_verbosity or "").strip().lower()
+    if normalized_tone:
+        response_style_lines.append(f"- Tone preference: {normalized_tone}")
+    if normalized_verbosity:
+        response_style_lines.append(f"- Verbosity preference: {normalized_verbosity}")
+    response_style_note = ""
+    if response_style_lines:
+        response_style_note = "## RESPONSE STYLE\n" + "\n".join(response_style_lines)
 
     # Use profile if provided, otherwise fall back to classification
     if user_profile:
@@ -318,6 +330,9 @@ def build_prompt(
     # Add terminology note if there were expansions
     if terminology_note:
         system = system + "\n\n" + terminology_note
+
+    if response_style_note:
+        system = system + "\n\n" + response_style_note
 
     # Add conversation context for follow-up questions
     if conversation_context:

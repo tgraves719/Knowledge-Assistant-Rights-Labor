@@ -1,7 +1,7 @@
 {
   "schema_version": "multi_contract_eval_v1",
-  "timestamp_utc": "2026-02-22T01:15:42.362080+00:00",
-  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\multi_contract_v2.json",
+  "timestamp_utc": "2026-03-09T10:33:08.511865+00:00",
+  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\multi_contract_v2.json",
   "bm25_only": true,
   "n_results": 5,
   "overall": {
@@ -52,8 +52,9 @@
       ],
       "retrieved_articles": [
         "Article 28",
-        "Article 12",
+        "Article 5",
         "Article 10",
+        "Article 12",
         "Article 35",
         "Article 56"
       ],
@@ -67,8 +68,8 @@
         "Article 16"
       ],
       "retrieved_articles": [
-        "Article 17",
-        "Article 16"
+        "Article 16",
+        "Article 35"
       ],
       "pass": true
     },
@@ -81,6 +82,8 @@
       ],
       "retrieved_articles": [
         "Article 17",
+        "Article 16",
+        "Article 19",
         "Article 10",
         "Article 35",
         "Article 27",
@@ -96,8 +99,10 @@
         "Article 46"
       ],
       "retrieved_articles": [
-        "Article 57",
-        "Article 46"
+        "Article 46",
+        "Article 9",
+        "Article 17",
+        "Article 26"
       ],
       "pass": true
     },
@@ -109,6 +114,9 @@
         "Article 8"
       ],
       "retrieved_articles": [
+        "Article 4",
+        "Article 5",
+        "Article 7",
         "Article 8",
         "Article 17"
       ],
@@ -135,7 +143,8 @@
       ],
       "retrieved_articles": [
         "Article 12",
-        "Article 30",
+        "Article 5",
+        "Article 29",
         "Article 18",
         "Article 38",
         "Article 57",
@@ -152,8 +161,10 @@
         "Article 16"
       ],
       "retrieved_articles": [
+        "Article 16",
         "Article 17",
-        "Article 16"
+        "Article 28",
+        "Article 32"
       ],
       "pass": true
     },
@@ -166,7 +177,9 @@
       ],
       "retrieved_articles": [
         "Article 17",
+        "Article 16",
         "Article 27",
+        "Article 31",
         "Article 38"
       ],
       "pass": true
@@ -179,7 +192,10 @@
         "Article 50"
       ],
       "retrieved_articles": [
-        "Article 50"
+        "Article 50",
+        "Article 8",
+        "Article 28",
+        "Article 42"
       ],
       "pass": true
     },
@@ -193,8 +209,8 @@
       "retrieved_articles": [
         "Article 31",
         "Article 32",
-        "Article 18",
-        "Article 28"
+        "Article 7",
+        "Article 2"
       ],
       "pass": true
     },
@@ -219,7 +235,8 @@
       ],
       "retrieved_articles": [
         "Article 12",
-        "Article 30",
+        "Article 5",
+        "Article 11",
         "Article 27",
         "Article 57",
         "Article 18"
@@ -234,8 +251,9 @@
         "Article 16"
       ],
       "retrieved_articles": [
-        "Article 17",
-        "Article 16"
+        "Article 16",
+        "Article 38",
+        "Article 57"
       ],
       "pass": true
     },
@@ -248,7 +266,9 @@
       ],
       "retrieved_articles": [
         "Article 17",
+        "Article 16",
         "Article 27",
+        "Article 11",
         "Article 57"
       ],
       "pass": true
@@ -262,7 +282,9 @@
       ],
       "retrieved_articles": [
         "Article 48",
-        "Article 40",
+        "Article 8",
+        "Article 17",
+        "Article 27",
         "Article 57"
       ],
       "pass": true
@@ -275,9 +297,12 @@
         "Article 8"
       ],
       "retrieved_articles": [
+        "Article 48",
+        "Article 27",
         "Article 8",
-        "Article 2",
-        "Article 57"
+        "Article 17",
+        "Article 57",
+        "Article 2"
       ],
       "pass": true
     }

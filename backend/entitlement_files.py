@@ -4,19 +4,30 @@ from pathlib import Path
 from typing import Optional
 
 from backend.config import ENTITLEMENTS_DIR, MANIFESTS_DIR
+from backend.effective_contracts import resolve_effective_index_input
 
 
 def candidate_entitlement_files(contract_id: Optional[str] = None) -> list[Path]:
-    names: list[str] = []
+    candidates: list[Path] = []
     if contract_id:
-        names.extend(
-            [
+        for name in (
+            f"entitlement_tables_{contract_id}.json",
+            f"{contract_id}_entitlement_tables.json",
+        ):
+            effective_path = resolve_effective_index_input(contract_id=contract_id, filename=name)
+            if effective_path:
+                candidates.append(effective_path)
+
+        candidates.extend(
+            ENTITLEMENTS_DIR / name
+            for name in (
                 f"entitlement_tables_{contract_id}.json",
                 f"{contract_id}_entitlement_tables.json",
-            ]
+            )
         )
-    names.append("entitlement_tables.json")
-    return [ENTITLEMENTS_DIR / name for name in names]
+
+    candidates.append(ENTITLEMENTS_DIR / "entitlement_tables.json")
+    return candidates
 
 
 def resolve_entitlement_file(

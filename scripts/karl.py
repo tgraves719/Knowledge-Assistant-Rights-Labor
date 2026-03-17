@@ -16,6 +16,7 @@ import os
 import shutil
 import subprocess
 import sys
+import socket
 from pathlib import Path
 
 
@@ -31,11 +32,42 @@ def _run(cmd: list[str]) -> int:
     return int(proc.returncode)
 
 
+def _venv_python() -> str:
+    if os.name == "nt":
+        return str(REPO_ROOT / ".venv" / "Scripts" / "python.exe")
+    return str(REPO_ROOT / ".venv" / "bin" / "python")
+
+
 def _powershell_exe() -> str | None:
     for name in ("pwsh", "powershell"):
         if shutil.which(name):
             return name
+    if os.name == "nt":
+        fallbacks = [
+            r"C:\Program Files\PowerShell\7\pwsh.exe",
+            r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe",
+        ]
+        for path in fallbacks:
+            if Path(path).exists():
+                return path
     return None
+
+
+def _docker_compose_prefix() -> list[str] | None:
+    if shutil.which("docker"):
+        return ["docker", "compose"]
+    if shutil.which("docker-compose"):
+        return ["docker-compose"]
+    return None
+
+
+def _port_in_use(host: str, port: int) -> bool:
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(0.2)
+            return sock.connect_ex((host, port)) == 0
+    except OSError:
+        return False
 
 
 def _doctor_command(args: argparse.Namespace) -> list[str]:
@@ -113,6 +145,36 @@ def _smoke_command(args: argparse.Namespace) -> list[str]:
     return cmd
 
 
+def _start_command(args: argparse.Namespace) -> list[str]:
+    python_exe = args.python_exe or _venv_python()
+    cmd = [python_exe, "-m", "uvicorn", "backend.api:app", "--host", args.host, "--port", str(args.port)]
+    if args.reload:
+        cmd.append("--reload")
+    return cmd
+
+
+def _docker_up_command(args: argparse.Namespace) -> list[str]:
+    compose = _docker_compose_prefix()
+    if not compose:
+        raise RuntimeError("Docker Compose not found (expected `docker compose` or `docker-compose`).")
+    cmd = compose + ["-f", "docker-compose.dev.yml", "up"]
+    if args.build:
+        cmd.append("--build")
+    if args.detach:
+        cmd.append("-d")
+    return cmd
+
+
+def _docker_down_command(args: argparse.Namespace) -> list[str]:
+    compose = _docker_compose_prefix()
+    if not compose:
+        raise RuntimeError("Docker Compose not found (expected `docker compose` or `docker-compose`).")
+    cmd = compose + ["-f", "docker-compose.dev.yml", "down"]
+    if args.volumes:
+        cmd.append("-v")
+    return cmd
+
+
 def _handle_doctor(args: argparse.Namespace) -> int:
     return _run(_doctor_command(args))
 
@@ -126,6 +188,27 @@ def _handle_setup(args: argparse.Namespace) -> int:
 
 def _handle_smoke(args: argparse.Namespace) -> int:
     return _run(_smoke_command(args))
+
+
+def _handle_start(args: argparse.Namespace) -> int:
+    if not Path(args.python_exe or _venv_python()).exists():
+        print("[ERROR] .venv Python not found. Run `python scripts/karl.py setup --profile backend` first.", file=sys.stderr)
+        return 2
+    if _port_in_use(args.host, args.port):
+        print(
+            f"[ERROR] Port {args.host}:{args.port} is already in use. Stop the existing server or pass --port <new-port>.",
+            file=sys.stderr,
+        )
+        return 2
+    return _run(_start_command(args))
+
+
+def _handle_docker_up(args: argparse.Namespace) -> int:
+    return _run(_docker_up_command(args))
+
+
+def _handle_docker_down(args: argparse.Namespace) -> int:
+    return _run(_docker_down_command(args))
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -167,6 +250,22 @@ def _build_parser() -> argparse.ArgumentParser:
     smoke.add_argument("--no-contract-tab-smoke", action="store_true")
     smoke.add_argument("--verbose-output", action="store_true")
     smoke.set_defaults(func=_handle_smoke)
+
+    start = sub.add_parser("start", help="Start KARL API from local .venv")
+    start.add_argument("--python-exe", default=_venv_python())
+    start.add_argument("--host", default="127.0.0.1")
+    start.add_argument("--port", type=int, default=8000)
+    start.add_argument("--reload", action="store_true")
+    start.set_defaults(func=_handle_start)
+
+    docker_up = sub.add_parser("docker-up", help="Start KARL dev container stack")
+    docker_up.add_argument("--build", action="store_true")
+    docker_up.add_argument("--detach", action="store_true")
+    docker_up.set_defaults(func=_handle_docker_up)
+
+    docker_down = sub.add_parser("docker-down", help="Stop KARL dev container stack")
+    docker_down.add_argument("--volumes", action="store_true")
+    docker_down.set_defaults(func=_handle_docker_down)
 
     return parser
 

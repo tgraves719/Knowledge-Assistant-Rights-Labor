@@ -11,6 +11,7 @@ from backend.ingest.generate_patch_drafts import (  # noqa: E402
     _build_patch_payload,
     _extract_effective_candidates,
     _metadata_contract_ids,
+    _render_page_aware_markdown_from_source_json,
     _select_candidates,
     _to_effective_text,
     resolve_target_contract_ids,
@@ -48,6 +49,27 @@ def _test_extract_candidates_tracks_article_section_and_page() -> None:
     assert first["section_num"] == 34
     assert first["source_page"] == 12
     assert first["has_redline"] is True
+
+
+def _test_render_page_aware_markdown_from_source_json_tracks_pages() -> None:
+    payload = {
+        "pages": [
+            {
+                "page_number": 2,
+                "items": [
+                    {"type": "header", "md": "UFCW Local 7\nPage 2 of 33\nMemorandum of Agreement"},
+                    {"type": "heading", "md": "### ARTICLE 15"},
+                    {"type": "text", "md": "Section 34. Night premium <u>fifty</u>~~twenty-five~~ cents."},
+                ],
+            }
+        ]
+    }
+    md = _render_page_aware_markdown_from_source_json(payload)
+    assert "Page 2 of 2" in md
+    candidates = _extract_effective_candidates(md)
+    assert candidates[0]["article_num"] == 15
+    assert candidates[0]["section_num"] == 34
+    assert candidates[0]["source_page"] == 2
 
 
 def _test_build_patch_payload_section_mapping() -> None:
@@ -211,6 +233,7 @@ def _test_explicit_contract_target_resolution_with_exclusions() -> None:
 def main() -> None:
     _test_to_effective_text_strips_redlines()
     _test_extract_candidates_tracks_article_section_and_page()
+    _test_render_page_aware_markdown_from_source_json_tracks_pages()
     _test_build_patch_payload_section_mapping()
     _test_low_quality_candidate_is_skipped()
     _test_metadata_contract_target_resolution()

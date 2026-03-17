@@ -1,34 +1,18 @@
 {
   "schema_version": "ingestion_review_queue_v1",
-  "generated_at_utc": "2026-02-15T18:43:11.025945+00:00",
+  "generated_at_utc": "2026-03-08T21:43:32.689349+00:00",
   "contract_id": "local7_safeway_pueblo_meat_2022",
   "summary": {
-    "total_items": 1,
+    "total_items": 0,
     "severity_counts": {
-      "high": 1,
+      "high": 0,
       "medium": 0,
       "low": 0
     },
-    "unresolved_manifest_classes": 3,
+    "unresolved_manifest_classes": 0,
     "canonical_conflicts": 0,
     "canonical_ambiguities": 0,
     "unresolved_wage_rows": 0
   },
-  "items": [
-    {
-      "issue_id": "ontology_unresolved_manifest_classes",
-      "category": "classification_ontology",
-      "severity": "high",
-      "summary": "Some manifest classifications do not map to wage keys.",
-      "evidence": {
-        "unresolved_count": 3,
-        "unresolved_source_keys": [
-          "cake_decorator",
-          "courtesy_clerk",
-          "pharmacy_technician"
-        ]
-      },
-      "recommended_action": "Review candidate_scores and add manual_classification_overrides entries where appropriate."
-    }
-  ]
+  "items": []
 }

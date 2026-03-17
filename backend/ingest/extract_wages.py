@@ -1061,6 +1061,22 @@ def _pick_effective_date(
     return normalized[-1]
 
 
+def _preferred_wage_provenance_ref(provenance: Any) -> dict:
+    refs = provenance if isinstance(provenance, list) else []
+    normalized_refs = [ref for ref in refs if isinstance(ref, dict)]
+    if not normalized_refs:
+        return {}
+
+    def _rank(ref: dict) -> tuple[int, int]:
+        source_type = str(ref.get("source_type") or "").strip().lower()
+        pdf_name = str(ref.get("pdf") or "").strip().lower()
+        is_moa = int("moa" in source_type or "amend" in source_type or "moa" in pdf_name)
+        has_page = int(ref.get("pdf_page") not in (None, "", 0))
+        return (is_moa, has_page)
+
+    return sorted(normalized_refs, key=_rank, reverse=True)[0]
+
+
 def _lookup_wage_from_canonical_rows(
     wages_data: dict,
     class_key: str,
@@ -1188,6 +1204,14 @@ def _lookup_wage_from_canonical_rows(
         if evidence_key in evidence_seen:
             continue
         evidence_seen.add(evidence_key)
+        preferred_ref = _preferred_wage_provenance_ref(row.get("provenance"))
+        source_page_raw = preferred_ref.get("pdf_page")
+        source_page = None
+        if source_page_raw not in (None, "", 0):
+            try:
+                source_page = int(source_page_raw)
+            except (TypeError, ValueError):
+                source_page = None
         evidence_rows.append(
             {
                 "table_id": table_id or None,
@@ -1200,8 +1224,16 @@ def _lookup_wage_from_canonical_rows(
                 "source_method": str(row.get("source_method") or "canonical_rows"),
                 "confidence": float(row.get("confidence", 0.0) or 0.0),
                 "provenance": row.get("provenance") if isinstance(row.get("provenance"), list) else [],
+                "source_type": str(preferred_ref.get("source_type") or "").strip() or None,
+                "source_pdf": str(preferred_ref.get("pdf") or "").strip() or None,
+                "source_page": source_page,
+                "source_doc_id": str(preferred_ref.get("source_doc_id") or "").strip() or None,
                 "effective_version_id": str(row.get("effective_version_id") or "").strip() or None,
                 "amendments_applied": list(row.get("amendments_applied") or []),
+                "selected_schedule_label": str(row.get("selected_schedule_label") or "").strip() or None,
+                "source_rate_schedule": dict(row.get("source_rate_schedule") or {})
+                if isinstance(row.get("source_rate_schedule"), dict)
+                else {},
             }
         )
 
@@ -1221,6 +1253,10 @@ def _lookup_wage_from_canonical_rows(
         "table_evidence": evidence_rows,
         "effective_version_id": str(wages_data.get("effective_version_id") or "").strip() or None,
         "amendments_applied": list(wages_data.get("amendments_applied") or []),
+        "selected_schedule_label": str(chosen.get("selected_schedule_label") or "").strip() or None,
+        "source_rate_schedule": dict(chosen.get("source_rate_schedule") or {})
+        if isinstance(chosen.get("source_rate_schedule"), dict)
+        else {},
     }
 
 

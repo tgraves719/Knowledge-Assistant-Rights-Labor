@@ -1,6 +1,6 @@
 {
-  "schema_version": "classification_ontology_v1",
-  "generated_at_utc": "2026-02-15T18:43:09.477383+00:00",
+  "schema_version": "classification_ontology_v2",
+  "generated_at_utc": "2026-03-08T21:43:30.470833+00:00",
   "contract_id": "local7_kingsoopers_loveland_meat_2019",
   "manifest_classifications": [
     {
@@ -61,7 +61,7 @@
         "Head Clerk"
       ],
       "mapped_wage_key": null,
-      "mapping_method": "unresolved_ambiguous",
+      "mapping_method": "reviewed_needs_clarification",
       "score": 0.5667,
       "candidate_scores": [
         {
@@ -71,20 +71,14 @@
         {
           "wage_key": "meat_head_clerk_asst",
           "score": 0.566667
-        },
-        {
-          "wage_key": "deli_department_head",
-          "score": 0.355
-        },
-        {
-          "wage_key": "deli_coffee_cheese_clerk",
-          "score": 0.32451
-        },
-        {
-          "wage_key": "deli_department_head_grandfathered",
-          "score": 0.315455
         }
-      ]
+      ],
+      "review_state": "needs_clarification",
+      "clarification_wage_keys": [
+        "deli_head_clerk_asst",
+        "meat_head_clerk_asst"
+      ],
+      "review_comment": "Head Clerk is contract-present but requires department clarification between deli and meat head clerk wage rows."
     },
     {
       "source_key": "meat_cutter",
@@ -99,7 +93,8 @@
           "wage_key": "meat_cutters",
           "score": 0.99
         }
-      ]
+      ],
+      "review_state": "resolved"
     }
   ],
   "alias_to_wage_key": {
@@ -117,11 +112,18 @@
   "summary": {
     "total_manifest_classes": 2,
     "resolved_manifest_classes": 1,
-    "unresolved_manifest_classes": 1,
-    "coverage": 0.5,
-    "unresolved_manifest_keys": [
+    "clarification_manifest_classes": 1,
+    "out_of_scope_manifest_classes": 0,
+    "unresolved_manifest_classes": 0,
+    "actionable_manifest_classes": 2,
+    "covered_manifest_classes": 2,
+    "coverage": 1.0,
+    "unresolved_manifest_keys": [],
+    "clarification_manifest_keys": [
       "head_clerk"
     ],
-    "manual_override_count": 0
+    "out_of_scope_manifest_keys": [],
+    "manual_override_count": 0,
+    "manual_review_override_count": 1
   }
 }

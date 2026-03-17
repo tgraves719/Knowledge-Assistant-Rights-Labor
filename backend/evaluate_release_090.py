@@ -24,6 +24,7 @@ DEFAULT_API_FILE = PROJECT_ROOT / "backend" / "api.py"
 DEFAULT_VERIFIER_FILE = PROJECT_ROOT / "backend" / "generation" / "verifier.py"
 DEFAULT_BASE_CHUNK_LINEAGE_FILE = DATA_DIR / "test_set" / "base_chunk_lineage_report.json"
 DEFAULT_CONTRACT_TEXT_COMPARE_AMENDED_FILE = DATA_DIR / "test_set" / "contract_text_compare_amended_results.json"
+DEFAULT_MISS_RECORD_INTEGRITY_FILE = DATA_DIR / "test_set" / "miss_record_integrity_results.json"
 
 
 def _load_json(path: Path) -> dict | None:
@@ -72,17 +73,32 @@ def _check_track_all_metadata(path: Path) -> tuple[bool, dict]:
     manifest_rc = payload.get("manifest_validation_return_code")
     command_count = len(results)
     failing = [r for r in results if int(r.get("return_code", 1)) != 0]
+    commands = [str(r.get("command") or "") for r in results]
+    required_command_tokens = [
+        "backend.evaluate_v3",
+        "backend.evaluate_role_catalog_integrity",
+        "backend.evaluate_retrieval_stage_consistency",
+        "backend.evaluate_real_user_regressions",
+        "backend.evaluate_miss_record_integrity",
+        "backend.evaluate_moa_readiness",
+    ]
+    missing_required_commands = [
+        token for token in required_command_tokens
+        if not any(token in command for command in commands)
+    ]
     pass_all = (
         track == "all"
         and manifest_rc == 0
         and command_count > 0
         and not failing
+        and not missing_required_commands
     )
     return pass_all, {
         "path": str(path),
         "track": track,
         "manifest_validation_return_code": manifest_rc,
         "command_count": command_count,
+        "missing_required_commands": missing_required_commands,
         "failing_commands": [str(r.get("command") or "") for r in failing[:10]],
         "pass": pass_all,
     }
@@ -93,14 +109,38 @@ def _check_v3(path: Path) -> tuple[bool, dict]:
     if not payload:
         return False, {"reason": "artifact_missing", "path": str(path)}
     overall = payload.get("overall") or {}
+    components = payload.get("components") or {}
+    retrieval_component = components.get("retrieval_stage_consistency") or {}
     passed = bool(overall.get("pass"))
     pass_rate = float(overall.get("pass_rate") or 0.0)
     total = int(overall.get("components_total") or 0)
-    return passed, {
+    retrieval_component_present = bool(retrieval_component)
+    retrieval_component_pass = bool(retrieval_component.get("pass")) if retrieval_component_present else False
+    ok = passed and retrieval_component_present and retrieval_component_pass
+    return ok, {
         "path": str(path),
         "pass": passed,
         "pass_rate": pass_rate,
         "components_total": total,
+        "retrieval_stage_consistency_present": retrieval_component_present,
+        "retrieval_stage_consistency_pass": retrieval_component_pass,
+    }
+
+
+def _check_miss_record_integrity(path: Path) -> tuple[bool, dict]:
+    payload = _load_json(path)
+    if not payload:
+        return False, {"reason": "artifact_missing", "path": str(path)}
+    overall = payload.get("overall") or {}
+    passed = bool(overall.get("pass"))
+    return passed, {
+        "path": str(path),
+        "pass": passed,
+        "records_total": int(overall.get("records_total") or 0),
+        "records_present": bool(overall.get("records_present")),
+        "regression_added_total": int(overall.get("regression_added_total") or 0),
+        "regression_linked_total": int(overall.get("regression_linked_total") or 0),
+        "regression_link_coverage_rate": float(overall.get("regression_link_coverage_rate") or 0.0),
     }
 
 
@@ -409,6 +449,10 @@ def run(args) -> dict:
     components["v3_green"] = {"pass": v3_ok, "details": v3_details}
     pass_count += int(v3_ok)
 
+    miss_record_ok, miss_record_details = _check_miss_record_integrity(Path(args.miss_record_integrity_results))
+    components["miss_record_integrity_green"] = {"pass": miss_record_ok, "details": miss_record_details}
+    pass_count += int(miss_record_ok)
+
     moa_deep_ok, moa_deep_details = _check_moa_deep(Path(args.moa_deep_results))
     components["moa_deep_suite_green"] = {"pass": moa_deep_ok, "details": moa_deep_details}
     pass_count += int(moa_deep_ok)
@@ -463,10 +507,11 @@ def run(args) -> dict:
     total_components = len(components)
     overall_pass = pass_count == total_components
     return {
-        "schema_version": "release_090_scorecard_v1",
+        "schema_version": "release_090_scorecard_v2",
         "inputs": {
             "eval_runner_metadata": str(eval_metadata_path) if eval_metadata_path else None,
             "v3_results": str(Path(args.v3_results)),
+            "miss_record_integrity_results": str(Path(args.miss_record_integrity_results)),
             "moa_deep_results": str(Path(args.moa_deep_results)),
             "moa_readiness_results": str(Path(args.moa_readiness_results)),
             "moa_effective_results": str(Path(args.moa_effective_results)),
@@ -515,6 +560,7 @@ def main() -> int:
         help="Path to eval_run_metadata_all_*.json. Default: newest available.",
     )
     parser.add_argument("--v3-results", default=str(DATA_DIR / "test_set" / "v3_results.json"))
+    parser.add_argument("--miss-record-integrity-results", default=str(DEFAULT_MISS_RECORD_INTEGRITY_FILE))
     parser.add_argument("--moa-deep-results", default=str(DATA_DIR / "test_set" / "moa_deep_eval_suite_results.json"))
     parser.add_argument("--moa-readiness-results", default=str(DATA_DIR / "test_set" / "moa_readiness_results.json"))
     parser.add_argument("--moa-effective-results", default=str(DATA_DIR / "test_set" / "moa_effective_results.json"))

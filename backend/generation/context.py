@@ -6,7 +6,7 @@ Enables follow-up questions like "what about them?" to maintain context.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Any, Optional
 from datetime import datetime, timedelta
 
 
@@ -16,6 +16,8 @@ class ConversationTurn:
     question: str
     answer: str
     citations: list[str] = field(default_factory=list)
+    detected_entities: dict[str, Any] = field(default_factory=dict)
+    retrieval_context: dict[str, Any] = field(default_factory=dict)
     timestamp: datetime = field(default_factory=datetime.now)
     
     def summary(self, max_length: int = 200) -> str:
@@ -67,7 +69,8 @@ class ConversationContext:
         question: str, 
         answer: str, 
         citations: list[str] = None,
-        detected_entities: dict[str, str] = None
+        detected_entities: dict[str, Any] = None,
+        retrieval_context: dict[str, Any] = None,
     ):
         """
         Add a conversation turn to history.
@@ -84,7 +87,9 @@ class ConversationContext:
         turn = ConversationTurn(
             question=question,
             answer=answer,
-            citations=citations or []
+            citations=citations or [],
+            detected_entities=dict(detected_entities or {}),
+            retrieval_context=dict(retrieval_context or {}),
         )
         
         self.history.append(turn)
@@ -165,6 +170,27 @@ class ConversationContext:
         """Get the classification from the last turn, if any."""
         return self.mentioned_entities.get("classification")
 
+    def get_last_turn(self) -> Optional[ConversationTurn]:
+        """Get the most recent conversation turn."""
+        self._check_timeout()
+        if not self.history:
+            return None
+        return self.history[-1]
+
+    def get_last_citations(self) -> list[str]:
+        """Get citations from the most recent turn."""
+        turn = self.get_last_turn()
+        if not turn:
+            return []
+        return list(turn.citations or [])
+
+    def get_last_retrieval_context(self) -> dict[str, Any]:
+        """Get retrieval anchors from the most recent turn."""
+        turn = self.get_last_turn()
+        if not turn:
+            return {}
+        return dict(turn.retrieval_context or {})
+
 
 # =============================================================================
 # SESSION MANAGEMENT
@@ -218,6 +244,11 @@ _session_manager = SessionManager()
 def get_session_context(session_id: str) -> ConversationContext:
     """Get conversation context for a session (convenience function)."""
     return _session_manager.get_context(session_id)
+
+
+def clear_session_context(session_id: str):
+    """Clear conversation context for a session."""
+    _session_manager.clear_session(session_id)
 
 
 # =============================================================================

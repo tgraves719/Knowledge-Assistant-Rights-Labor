@@ -1,6 +1,6 @@
 {
-  "base_chunks_sha256": "01406ecb7c486881353227694725eacdb79798dde66e691b31b0b1ec31aa7dc0",
+  "base_chunks_sha256": "c5a232e2db55906d96fb3feae7e6db0a74c8477b7a12ac83e1d49c38c42c425a",
   "base_version_id": "base_snapshot_v0_9_0",
-  "base_wages_sha256": "09101eacaf94441707eda2ff8be12924968a36cc27fc42f7b9e460d1550bef8f",
+  "base_wages_sha256": "1ab83c66fd699f1634914bbe3aa7f646b97f3b14e0d88fb32d29d0e64fd6b084",
   "contract_id": "local7_safeway_pueblo_meat_2022"
 }

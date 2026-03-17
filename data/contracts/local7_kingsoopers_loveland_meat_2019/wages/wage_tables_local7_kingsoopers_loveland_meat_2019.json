@@ -2307,11 +2307,18 @@
   "classification_ontology_summary": {
     "total_manifest_classes": 2,
     "resolved_manifest_classes": 1,
-    "unresolved_manifest_classes": 1,
-    "coverage": 0.5,
-    "unresolved_manifest_keys": [
+    "clarification_manifest_classes": 1,
+    "out_of_scope_manifest_classes": 0,
+    "unresolved_manifest_classes": 0,
+    "actionable_manifest_classes": 2,
+    "covered_manifest_classes": 2,
+    "coverage": 1.0,
+    "unresolved_manifest_keys": [],
+    "clarification_manifest_keys": [
       "head_clerk"
     ],
-    "manual_override_count": 0
+    "out_of_scope_manifest_keys": [],
+    "manual_override_count": 0,
+    "manual_review_override_count": 1
   }
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": "cross_contamination_eval_v1",
-  "timestamp_utc": "2026-02-22T01:15:43.009934+00:00",
+  "timestamp_utc": "2026-03-09T10:33:09.074512+00:00",
   "contracts_tested": [
     "local7_kingsoopers_loveland_meat_2019",
     "local7_safeway_pueblo_clerks_2022",
@@ -13,5 +13,5 @@
   "skipped": false,
   "pass": true,
   "require_multi_contract": true,
-  "results_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contamination_results.json"
+  "results_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contamination_results.json"
 }

@@ -306,7 +306,7 @@ Section 33. Employees temporarily transferred to another store shall receive tra
 
 ---
 
-PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a15_s34, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p14;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf@albertsons_safeway_moa_2025_07_05])
+PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a15_s34, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p14;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p8@albertsons_safeway_moa_2025_07_05])
 
 Section 34. A premium of **two** dollars (**$2.00**) per hour shall be paid for all work performed between the hours of 12:00 midnight and 6:00 a.m. to all employees (excluding Courtesy Clerks).
 
@@ -862,25 +862,6 @@ PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a29_s83_p2, effect
 PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a29_s83_p4, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p28])
 
 4. If a management employee who is not a member of the bargaining unit is demoted, voluntarily or involuntarily, into a non-management bargaining unit position, the employee may exercise full Company seniority from the date of such demotion, notwithstanding language set forth in the Collective Bargaining Agreement establishing a 30 day waiting period, and will be deemed to have signed the full-time and promotion request lists and to have all rights available to an employee on such lists. Such an employee, however, may not bump an incumbent employee from a position but must await a vacancy which he may claim based on his seniority as provided for in the full-time and promotion request procedures. Pending a vacancy, the employee may be placed as a management trainee as defined in the Collective Bargaining Agreement or a Courtesy Clerk. Further, the employee must be employed for one continuous year in a store or facility covered by any Collective Bargaining Agreement with Local 7 immediately preceding the demotion or the employee shall be placed in the position of Courtesy Clerk.
-
-PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a29_s83_p5, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p28])
-
-5. The Company may demote a management employee who is not a member of the bargaining unit into a management bargaining unit position of Head Clerk or above so long as such assignment does not circumvent the Collective Bargaining Agreement.
-
-6. When a reduction in the number of employees in a classification of Head Clerk and above is implemented, this procedure shall not apply, but rather the Letter of Understanding concerning layoff of bargaining unit management personnel shall be followed.
-
----
-
-
-
-27                                                    PUEBLO CLERKS
-                                                      2022-2025
-
-PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a29_s83_p7, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p28])
-
-**7. This Settlement Agreement shall apply to all Collective Bargaining Agreements between Safeway and Local 7 in Colorado and shall have a term coextensive with the current collective bargaining agreements.**
-
-**8. Local 7 agrees that the arbitrator in the Monte Vista Reduction of Hours arbitration, Union case #644-85, currently pending ("Monte Vista Arbitration") will not be advised of either the fact or terms of this Letter of Understanding and that this Letter of Understanding shall not be used as evidence in any way in the Monte Vista Arbitration.**
 
 PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a30_s85, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p29])
 
@@ -1763,24 +1744,6 @@ b. Cases that are continued at the monthly settlement meeting pending further re
 
 c. Cases that have been discussed but not resolved may, at the option of the grieving party, be scheduled for arbitration as provided below.
 
-PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a46_s141_p5, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p50])
-
-5. Grievances referred to arbitration shall be placed in the scheduling queue and scheduled for hearing as follows:
-
-a. Cases shall be scheduled from the scheduling queue in order of their respective grievance filing date with the understanding termination or demotion cases shall move to the front of the scheduling queue in date order.
-
-b. The party requesting arbitration shall promptly request a panel of arbitrators from FMCS for each case placed in the scheduling queue.
-
-c. Within sixty (60) days after a final settlement meeting decision, the parties will select an arbitrator.
-
-d. The parties will use best efforts to schedule the hearing in the matter for which an arbitrator has been appointed within six (6) months following a final settlement meeting decision with the understanding that the parties may schedule a hearing a date later than six (6) months upon mutual agreement or as the result of 6(e) below.
-
-e. Notwithstanding the provisions of 6(d) above, neither party shall be required or obligated to schedule more than three (3) cases per calendar month except by mutual agreement.
-
-f. In all disciplinary cases referred to arbitration, as a condition to accepting appointment, the arbitrator must agree to render a decision and award no later than thirty (30) days after receipt of the parties' post hearing statements. Unless otherwise agreed by the parties, such statements must be filed no later than fourteen (14) days following the close of the hearing (or receipt of transcript where applicable) and must be limited to no more than ten (10) single space letter size pages. It is specifically agreed and understood that any such case resolved under this procedure shall be deemed "nonprecedential" and will not be cited by either party in any future proceeding. The provisions of this subsection (e) may be modified on a case by case basis by mutual agreement of the parties.
-
-The Company's Director of Labor Relations and the Union President will retain jurisdiction over this letter of understanding and may, by mutual agreement, modify this letter of understanding as they deem necessary and appropriate to improve the efficiency and effectiveness of the agreements' grievance and arbitration process. Any such modifications must be in writing and signed by both parties.
-
 PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a46_s143, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p52])
 
 Section 143. Remedies for Errors: If an error is made by management in the application of the provisions of this Agreement resulting in a lost work opportunity for the aggrieved employee such as vendor stocking, scheduling and assignment of hours disputes, classification issues, and work jurisdiction matters and the affected
@@ -2623,6 +2586,43 @@ ADDITIONAL PROVISIONS > Basket Hours
 | After 36 months       | $16.55    | $17.05    | $17.55    |
 | After 72 months       | $17.10    | $17.60    | $18.10    |
 | After 108 months      | $17.65    | $18.15    | $18.65    |
+
+PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a29_s83_p5, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p28])
+
+5. The Company may demote a management employee who is not a member of the bargaining unit into a management bargaining unit position of Head Clerk or above so long as such assignment does not circumvent the Collective Bargaining Agreement.
+
+6. When a reduction in the number of employees in a classification of Head Clerk and above is implemented, this procedure shall not apply, but rather the Letter of Understanding concerning layoff of bargaining unit management personnel shall be followed.
+
+---
+
+
+
+27                                                    PUEBLO CLERKS
+                                                      2022-2025
+
+PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a29_s83_p7, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p28])
+
+**7. This Settlement Agreement shall apply to all Collective Bargaining Agreements between Safeway and Local 7 in Colorado and shall have a term coextensive with the current collective bargaining agreements.**
+
+**8. Local 7 agrees that the arbitrator in the Monte Vista Reduction of Hours arbitration, Union case #644-85, currently pending ("Monte Vista Arbitration") will not be advised of either the fact or terms of this Letter of Understanding and that this Letter of Understanding shall not be used as evidence in any way in the Monte Vista Arbitration.**
+
+PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a46_s141_p5, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p50])
+
+5. Grievances referred to arbitration shall be placed in the scheduling queue and scheduled for hearing as follows:
+
+a. Cases shall be scheduled from the scheduling queue in order of their respective grievance filing date with the understanding termination or demotion cases shall move to the front of the scheduling queue in date order.
+
+b. The party requesting arbitration shall promptly request a panel of arbitrators from FMCS for each case placed in the scheduling queue.
+
+c. Within sixty (60) days after a final settlement meeting decision, the parties will select an arbitrator.
+
+d. The parties will use best efforts to schedule the hearing in the matter for which an arbitrator has been appointed within six (6) months following a final settlement meeting decision with the understanding that the parties may schedule a hearing a date later than six (6) months upon mutual agreement or as the result of 6(e) below.
+
+e. Notwithstanding the provisions of 6(d) above, neither party shall be required or obligated to schedule more than three (3) cases per calendar month except by mutual agreement.
+
+f. In all disciplinary cases referred to arbitration, as a condition to accepting appointment, the arbitrator must agree to render a decision and award no later than thirty (30) days after receipt of the parties' post hearing statements. Unless otherwise agreed by the parties, such statements must be filed no later than fourteen (14) days following the close of the hearing (or receipt of transcript where applicable) and must be limited to no more than ten (10) single space letter size pages. It is specifically agreed and understood that any such case resolved under this procedure shall be deemed "nonprecedential" and will not be cited by either party in any future proceeding. The provisions of this subsection (e) may be modified on a case by case basis by mutual agreement of the parties.
+
+The Company's Director of Labor Relations and the Union President will retain jurisdiction over this letter of understanding and may, by mutual agreement, modify this letter of understanding as they deem necessary and appropriate to improve the efficiency and effectiveness of the agreements' grievance and arbitration process. Any such modifications must be in writing and signed by both parties.
 
 PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=lou_14, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf])
 

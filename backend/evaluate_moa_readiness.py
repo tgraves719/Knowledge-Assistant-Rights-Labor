@@ -3,6 +3,7 @@
 Runs key deterministic checks and emits a single gate report:
 - materializer integrity tests
 - effective snapshot coverage (base vs effective index)
+- effective wage snapshot chronology coverage (MOA wage-row patch date materialization)
 - contract-history/pdf-source API tests
 - MOA effective retrieval benchmark
 - deleted-vs-updated MOA regression slice (deleted clauses absent; updated clauses retrieved from MOA provenance)
@@ -48,10 +49,12 @@ def run(
     baseline_output = DATA_DIR / "test_set" / "moa_effective_results.json"
     deleted_vs_updated_output = DATA_DIR / "test_set" / "moa_deleted_vs_updated_results.json"
     deleted_vs_updated_answer_output = DATA_DIR / "test_set" / "moa_deleted_vs_updated_answer_results.json"
+    effective_wage_coverage_output = DATA_DIR / "test_set" / "effective_wage_snapshot_coverage_results.json"
     deep_output = DATA_DIR / "test_set" / "moa_effective_deep_results.json"
     commands = [
         [py, "-m", "backend.test_moa_materializer"],
         [py, "-m", "backend.evaluate_effective_coverage"],
+        [py, "-m", "backend.evaluate_effective_wage_coverage", "--output", str(effective_wage_coverage_output)],
         [py, "-m", "backend.test_contract_history_api"],
         [py, "-m", "backend.evaluate_moa_effective", "--bm25-only", "--output", str(baseline_output)],
         [py, "-m", "backend.evaluate_moa_deleted_vs_updated", "--bm25-only", "--output", str(deleted_vs_updated_output)],
@@ -97,6 +100,19 @@ def run(
     delupd_answer_eval = _load_json_or_empty(deleted_vs_updated_answer_output)
     delupd_answer_gate = delupd_answer_eval.get("gate") if isinstance(delupd_answer_eval, dict) else {}
     delupd_answer_gate_ok = bool((delupd_answer_gate or {}).get("pass"))
+    effective_wage_coverage_eval = _load_json_or_empty(effective_wage_coverage_output)
+    effective_wage_coverage_overall = (
+        effective_wage_coverage_eval.get("overall") if isinstance(effective_wage_coverage_eval, dict) else {}
+    )
+    effective_wage_coverage_passed = int((effective_wage_coverage_overall or {}).get("passed") or 0)
+    effective_wage_coverage_total = int((effective_wage_coverage_overall or {}).get("total") or 0)
+    effective_wage_coverage_pass_rate = float(
+        (effective_wage_coverage_overall or {}).get("pass_rate")
+        or _rate(effective_wage_coverage_passed, effective_wage_coverage_total)
+    )
+    effective_wage_coverage_ok = (
+        effective_wage_coverage_total > 0 and effective_wage_coverage_passed == effective_wage_coverage_total
+    )
 
     deep_gate_block = None
     if deep_input:
@@ -138,6 +154,12 @@ def run(
             "detail": "End-to-end answer behavior for deleted-vs-updated MOA clauses.",
             "results_file": str(deleted_vs_updated_answer_output),
         },
+        "effective_wage_snapshot_coverage": {
+            "pass": effective_wage_coverage_ok,
+            "observed": effective_wage_coverage_pass_rate,
+            "detail": "MOA wage-row patches materialize rows at patch effective dates in effective snapshots.",
+            "results_file": str(effective_wage_coverage_output),
+        },
     }
     if deep_gate_block:
         gates["moa_effective_deep_pass_rate"] = deep_gate_block
@@ -165,6 +187,11 @@ def run(
             "results_file": str(deleted_vs_updated_answer_output),
             "overall": (delupd_answer_eval.get("overall") if isinstance(delupd_answer_eval, dict) else None),
             "by_bucket": (delupd_answer_eval.get("by_bucket") if isinstance(delupd_answer_eval, dict) else None),
+        },
+        "effective_wage_snapshot_coverage_summary": {
+            "gate_pass": effective_wage_coverage_ok,
+            "results_file": str(effective_wage_coverage_output),
+            "overall": effective_wage_coverage_overall if isinstance(effective_wage_coverage_overall, dict) else None,
         },
         "commands": results,
     }

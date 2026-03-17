@@ -1,0 +1,59 @@
+{
+  "by_contract": [
+    {
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "records": 2
+    }
+  ],
+  "input_dir": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\miss_records\\records",
+  "known_canonical_regression_case_ids": [
+    "ambiguous_management_not_default",
+    "ambiguous_management_profile_clarification",
+    "ambiguous_management_wage_query_clarification",
+    "courtesy_clerk_fsar_rate_surfaces_in_answer",
+    "dug_query_still_resolves_nonfood_gm_floral",
+    "effective_entitlement_prefers_effective_snapshot",
+    "generic_clerk_wage_query_clarification",
+    "night_premium_suppresses_wage_fast_path",
+    "vacation_followup_4_years",
+    "vacation_followup_estimate_assumption",
+    "vacation_followup_full_time_override",
+    "wage_answer_binding",
+    "wage_next_bracket_followup_appendix_rows",
+    "wage_progression_followup_deterministic"
+  ],
+  "overall": {
+    "pass": true,
+    "pass_rate": 1.0,
+    "passed": 2,
+    "records_present": true,
+    "records_total": 2,
+    "regression_added_total": 2,
+    "regression_link_coverage_rate": 1.0,
+    "regression_linked_total": 2
+  },
+  "results": [
+    {
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "errors": [],
+      "miss_id": "miss_courtesy_wage_01",
+      "operator_label": "courtesy_clerk_wage_consistency_19_months",
+      "pass": true,
+      "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\miss_records\\records\\courtesy_clerk_wage_consistency_19_months.json",
+      "regression_case_id": "wage_answer_binding",
+      "regression_status": "regression_added"
+    },
+    {
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "errors": [],
+      "miss_id": "miss_vacation_followup_01",
+      "operator_label": "vacation_followup_4_years_clerks",
+      "pass": true,
+      "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\miss_records\\records\\vacation_followup_4_years_clerks.json",
+      "regression_case_id": "vacation_followup_4_years",
+      "regression_status": "regression_added"
+    }
+  ],
+  "schema_version": "miss_record_integrity_eval_v1",
+  "timestamp_utc": "2026-03-09T10:33:03.969350+00:00"
+}

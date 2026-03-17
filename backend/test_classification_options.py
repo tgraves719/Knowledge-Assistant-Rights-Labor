@@ -34,6 +34,9 @@ def _test_kingsoopers_meat_hides_unmapped_by_default() -> None:
         assert value not in default_opts, (
             f"Unmapped role should be excluded from default onboarding options: {value}"
         )
+    assert all_opts["head_clerk"].get("requires_role_clarification") is True, (
+        "Expected reviewed head_clerk ambiguity to surface as a clarification-required option."
+    )
 
 
 def _test_clerks_contract_keeps_cake_decorator_wage_role() -> None:
@@ -43,6 +46,17 @@ def _test_clerks_contract_keeps_cake_decorator_wage_role() -> None:
     assert "cake_decorator" in default_opts, "Expected cake_decorator in clerks wage options."
     assert default_opts["cake_decorator"].get("wage_available") is True, (
         "Expected clerks cake_decorator to be wage-available."
+    )
+
+
+def _test_clerks_contract_includes_assistant_managers_and_keeps_nonfood_label_specific() -> None:
+    contract_id = "local7_safeway_pueblo_clerks_2022"
+    all_opts = _by_value(get_classification_options(contract_id=contract_id, include_unmapped=True))
+
+    assert "other_assistant_managers" in all_opts, "Expected Other Assistant Managers in full clerks role options."
+    nonfood_label = str(all_opts["nonfood_gm_floral"].get("label") or "")
+    assert "DUG" not in nonfood_label, (
+        "Expected Non-Food/GM/Floral option label to remain specific instead of inheriting DUG aliases."
     )
 
 
@@ -64,6 +78,7 @@ def _test_pueblo_meat_normalized_role_values_are_unique() -> None:
 def main() -> None:
     _test_kingsoopers_meat_hides_unmapped_by_default()
     _test_clerks_contract_keeps_cake_decorator_wage_role()
+    _test_clerks_contract_includes_assistant_managers_and_keeps_nonfood_label_specific()
     _test_pueblo_meat_normalized_role_values_are_unique()
     print("[OK] Classification option checks passed")
 

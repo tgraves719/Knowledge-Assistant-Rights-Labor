@@ -3486,7 +3486,11 @@
   "classification_ontology_summary": {
     "total_manifest_classes": 16,
     "resolved_manifest_classes": 12,
+    "clarification_manifest_classes": 0,
+    "out_of_scope_manifest_classes": 0,
     "unresolved_manifest_classes": 4,
+    "actionable_manifest_classes": 16,
+    "covered_manifest_classes": 12,
     "coverage": 0.75,
     "unresolved_manifest_keys": [
       "deli_clerk",
@@ -3494,6 +3498,9 @@
       "pharmacy_technician",
       "sanitation_clerk"
     ],
-    "manual_override_count": 3
+    "clarification_manifest_keys": [],
+    "out_of_scope_manifest_keys": [],
+    "manual_override_count": 3,
+    "manual_review_override_count": 0
   }
 }

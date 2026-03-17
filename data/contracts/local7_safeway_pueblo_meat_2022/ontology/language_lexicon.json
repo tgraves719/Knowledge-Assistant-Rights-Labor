@@ -1,11 +1,17 @@
 {
   "schema_version": "language_lexicon_v1",
-  "generated_at_utc": "2026-02-15T18:43:10.782041+00:00",
+  "generated_at_utc": "2026-03-08T21:43:32.515324+00:00",
   "contract_id": "local7_safeway_pueblo_meat_2022",
   "region_id": "region-pueblo",
   "union_local_id": "UFCW Local 7",
   "employer": "SAFEWAY INC.",
   "entries": [
+    {
+      "canonical": "401k plan",
+      "aliases": [
+        "401k plan"
+      ]
+    },
     {
       "canonical": "available hours",
       "aliases": [
@@ -562,6 +568,7 @@
     }
   ],
   "alias_to_canonical": {
+    "401k plan": "401k plan",
     "available hours": "available hours",
     "bereavement leave": "bereavement leave",
     "days off for funeral": "bereavement leave",

@@ -97,7 +97,7 @@ def _evaluate_contract_invariants(contract_id: str) -> list[dict]:
     roles = role_catalog.get("roles") if isinstance(role_catalog, dict) else []
     schema_valid = (
         role_catalog_ok
-        and role_catalog.get("schema_version") == "role_catalog_v1"
+        and role_catalog.get("schema_version") in {"role_catalog_v1", "role_catalog_v2"}
         and role_catalog.get("contract_id") == contract_id
         and isinstance(roles, list)
         and len(roles) > 0

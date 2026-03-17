@@ -1,8 +1,8 @@
 {
   "schema_version": "cross_contract_mentions_eval_v1",
   "dataset_schema_version": "cross_contract_mentions_test_v1",
-  "timestamp_utc": "2026-02-22T05:31:34.807067+00:00",
-  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_test.json",
+  "timestamp_utc": "2026-03-09T10:33:21.824037+00:00",
+  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_test.json",
   "bm25_only": true,
   "overall": {
     "passed": 9,

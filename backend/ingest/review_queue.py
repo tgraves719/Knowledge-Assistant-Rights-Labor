@@ -59,7 +59,11 @@ def build_ingestion_review_queue(
     decisions = (ontology or {}).get("decisions", []) or []
     unresolved_decisions = [
         d for d in decisions
-        if isinstance(d, dict) and not d.get("mapped_wage_key")
+        if (
+            isinstance(d, dict)
+            and not d.get("mapped_wage_key")
+            and str(d.get("review_state") or "unresolved") == "unresolved"
+        )
     ]
     if unresolved_decisions:
         items.append(
@@ -74,7 +78,10 @@ def build_ingestion_review_queue(
                         d.get("source_key") for d in unresolved_decisions[:100]
                     ],
                 },
-                recommended_action="Review candidate_scores and add manual_classification_overrides entries where appropriate.",
+                recommended_action=(
+                    "Review candidate_scores and add manual_classification_overrides "
+                    "or reviewed classification_review_overrides entries where appropriate."
+                ),
             )
         )
 

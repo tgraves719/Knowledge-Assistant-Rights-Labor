@@ -1,6 +1,20 @@
 {
-  "schema_version": "classification_manual_overrides_v1",
+  "schema_version": "classification_manual_overrides_v2",
   "contract_id": "local7_safeway_pueblo_meat_2022",
   "classification_alias_overrides": {},
-  "notes": "Add source_key -> wage_key overrides after reviewing ingestion_review_queue.json"
+  "classification_review_overrides": {
+    "cake_decorator": {
+      "action": "out_of_scope",
+      "comment": "Present in source classification list but outside the meat-pack wage artifact scope."
+    },
+    "courtesy_clerk": {
+      "action": "out_of_scope",
+      "comment": "Present in source classification list but outside the meat-pack wage artifact scope."
+    },
+    "pharmacy_technician": {
+      "action": "out_of_scope",
+      "comment": "Present in source classification list but outside the meat-pack wage artifact scope."
+    }
+  },
+  "notes": "Add source_key -> wage_key overrides or reviewed classification states after reviewing ingestion_review_queue.json"
 }

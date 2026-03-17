@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import backend.retrieval.router as router_module
 from backend.retrieval.router import (
     HybridRetriever,
+    build_followup_routing_plan,
     classify_intent,
     extract_classifications_for_contract,
     infer_side_letter_articles,
@@ -312,8 +313,11 @@ def _test_query_embedded_hours_drive_wage_lookup_step() -> None:
     assert str(wage_info.get("step") or "").strip().lower() == "after 520 hours", (
         f"Expected 'After 520 hours' step, got: {wage_info.get('step')}"
     )
-    assert float(wage_info.get("rate") or 0.0) == 17.5, (
-        f"Expected 17.5 rate for 520-hour step, got: {wage_info.get('rate')}"
+    assert float(wage_info.get("rate") or 0.0) == 17.75, (
+        f"Expected 17.75 rate for 520-hour step, got: {wage_info.get('rate')}"
+    )
+    assert str(wage_info.get("selected_schedule_label") or "").strip().upper() == "FSAR", (
+        f"Expected FSAR-selected wage step, got: {wage_info.get('selected_schedule_label')}"
     )
 
 
@@ -333,7 +337,17 @@ def _test_side_letter_followup_query_routes_side_letter_anchor() -> None:
     contract_id = "local7_safeway_pueblo_meat_2022"
     query = "How much written notice is required if either party wants to discontinue that agreement?"
 
-    intent, citations = _run_bm25_retrieval(query=query, contract_id=contract_id, n_results=8)
+    intent = classify_intent(query, contract_id=contract_id)
+    retriever = HybridRetriever(vector_store=None)
+    result = retriever.retrieve(
+        query=query,
+        intent=intent,
+        n_results=8,
+        use_hybrid=True,
+        contract_id=contract_id,
+    )
+    chunks = list(result.get("chunks") or [])
+    citations = [str(c.get("citation") or "") for c in chunks[:8]]
     joined = " | ".join(citations)
 
     assert 32 in set(intent.relevant_articles), (
@@ -341,6 +355,90 @@ def _test_side_letter_followup_query_routes_side_letter_anchor() -> None:
     )
     assert any(c.startswith("Article 32, Section 94, Part 5+") for c in citations), (
         f"Expected side-letter notice clause in top results. Got: {joined}"
+    )
+    match = next(
+        (chunk for chunk in chunks if str(chunk.get("citation") or "").startswith("Article 32, Section 94, Part 5+")),
+        None,
+    )
+    assert match is not None, f"Expected to recover the side-letter notice chunk. Got: {joined}"
+    assert str(match.get("doc_type") or "").strip().lower() == "lou", (
+        f"Expected returned side-letter notice chunk to expose inferred doc_type 'lou', got: {match.get('doc_type')}"
+    )
+
+
+def _test_followup_routing_plan_rewrites_short_vacation_turn() -> None:
+    plan = build_followup_routing_plan(
+        question="what about 4 years",
+        prior_topic="vacation",
+        prior_citations=["Article 17, Section 42"],
+        prior_article_anchors=[17],
+    )
+    plan_dict = plan.to_dict()
+    assert plan.followup_context_used is True, f"Expected follow-up plan to reuse context, got: {plan_dict}"
+    assert plan.strategy == "followup_anchor_seeded", (
+        f"Expected anchor-seeded follow-up strategy, got: {plan_dict}"
+    )
+    assert 17 in set(plan.article_anchors), f"Expected follow-up plan to preserve Article 17 anchor, got: {plan_dict}"
+    assert "vacation" in plan.routing_query.lower(), f"Expected routing query to inject prior topic, got: {plan_dict}"
+    assert "article 17" in plan.routing_query.lower(), f"Expected routing query to inject prior article anchor, got: {plan_dict}"
+
+
+def _test_explicit_side_letter_query_infers_doc_type_without_pack_backfill() -> None:
+    contract_id = "local7_safeway_pueblo_meat_2022"
+    query = "What does the Floater Pool Letter of Understanding say?"
+
+    intent = classify_intent(query, contract_id=contract_id)
+    retriever = HybridRetriever(vector_store=None)
+    result = retriever.retrieve(
+        query=query,
+        intent=intent,
+        n_results=8,
+        use_hybrid=True,
+        contract_id=contract_id,
+    )
+    retrieval_policy = dict(result.get("retrieval_policy") or {})
+    retrieval_plan = dict(result.get("retrieval_plan") or {})
+    chunks = list(result.get("chunks") or [])
+    citations = [str(c.get("citation") or "") for c in chunks[:8]]
+    joined = " | ".join(citations)
+
+    match = next(
+        (chunk for chunk in chunks if str(chunk.get("citation") or "").startswith("Article 32, Section 94, Part 5+")),
+        None,
+    )
+    assert match is not None, (
+        f"Expected explicit LOU query to surface Article 32, Section 94, Part 5+. Got: {joined}"
+    )
+    assert str(match.get("doc_type") or "").strip().lower() == "lou", (
+        f"Expected inferred doc_type 'lou' for explicit side-letter query, got: {match.get('doc_type')}"
+    )
+    assert retrieval_plan.get("planned_strategy") == "side_letter_query", (
+        f"Expected explicit LOU query to declare side-letter query planning, got: {retrieval_plan}"
+    )
+    assert retrieval_plan.get("apply_side_letter_promotion") is True, (
+        f"Expected plan to include side-letter promotion, got: {retrieval_plan}"
+    )
+    assert retrieval_plan.get("side_letter_filter_supported") is True, (
+        f"Expected refreshed pack to report raw side-letter filter support, got: {retrieval_plan}"
+    )
+    assert retrieval_policy.get("search_mode") == "single_angle_hybrid", (
+        f"Expected router policy to record single-angle hybrid retrieval, got: {retrieval_policy}"
+    )
+    assert retrieval_policy.get("doc_type_filter") == "lou", (
+        f"Expected refreshed pack to use raw lou doc-type filtering after normalization, got: {retrieval_policy}"
+    )
+    assert retrieval_policy.get("side_letter_seeded") is True, (
+        f"Expected explicit LOU query to record side-letter promotion, got: {retrieval_policy}"
+    )
+    assert retrieval_policy.get("strategy") == "side_letter_promoted", (
+        f"Expected side-letter promotion strategy, got: {retrieval_policy}"
+    )
+    executed_stages = list(retrieval_policy.get("executed_stages") or [])
+    assert "side_letter_promotion" in executed_stages, (
+        f"Expected staged executor to record side-letter promotion, got: {retrieval_policy}"
+    )
+    assert "full_article_expansion" in executed_stages, (
+        f"Expected staged executor to record full-article expansion, got: {retrieval_policy}"
     )
 
 
@@ -367,6 +465,8 @@ def main() -> None:
         _test_query_embedded_hours_drive_wage_lookup_step()
         _test_side_letter_anchor_inference_discovers_expected_articles()
         _test_side_letter_followup_query_routes_side_letter_anchor()
+        _test_followup_routing_plan_rewrites_short_vacation_turn()
+        _test_explicit_side_letter_query_infers_doc_type_without_pack_backfill()
     finally:
         router_module.HYBRID_VECTOR_WEIGHT = original_vector
         router_module.HYBRID_KEYWORD_WEIGHT = original_keyword

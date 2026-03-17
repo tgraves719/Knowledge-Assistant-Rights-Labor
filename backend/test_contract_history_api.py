@@ -234,6 +234,266 @@ def _test_pdf_location_moa_without_page_avoids_base_fallback() -> None:
             assert str(getattr(pdf_response, "path", "")).endswith("original.pdf")
 
 
+def _test_pdf_location_article_auto_prefers_moa_source_for_amended_article() -> None:
+    contract_id = "history_contract_article_auto_moa"
+    with _workspace_tempdir("contract_history_article_auto_") as tmp:
+        data_root = tmp / "data"
+        contract_root = data_root / "contracts" / contract_id
+        source_dir = contract_root / "source"
+        effective_dir = contract_root / "effective" / "effective_2025_07_05"
+        source_doc_id = "albertsons_safeway_moa_2025_07_05"
+
+        base_pdf = "Base-CBA.pdf"
+        moa_pdf = "Signed+MOA+-+July+5,+2025+(Safeway).pdf"
+        _touch_pdf(source_dir / base_pdf)
+        _write_source_doc(
+            data_root=data_root,
+            source_doc_id=source_doc_id,
+            doc_type="moa",
+            pdf_name=moa_pdf,
+        )
+
+        _write_json(
+            contract_root / "effective" / "latest.json",
+            {
+                "effective_version_id": "effective_2025_07_05",
+                "effective_content_hash": "f" * 64,
+            },
+        )
+        _write_json(
+            effective_dir / "effective_contract.json",
+            {
+                "contract_id": contract_id,
+                "effective_version_id": "effective_2025_07_05",
+                "sections": [
+                    {
+                        "article_num": 15,
+                        "section_num": 1,
+                        "anchor_id": "a15_s1",
+                        "provenance": [
+                            {
+                                "source_type": "base",
+                                "pdf": base_pdf,
+                                "pdf_page": 40,
+                            }
+                        ],
+                    },
+                    {
+                        "article_num": 15,
+                        "section_num": 34,
+                        "anchor_id": "a15_s34",
+                        "provenance": [
+                            {
+                                "source_type": "base",
+                                "pdf": base_pdf,
+                                "pdf_page": 55,
+                            },
+                            {
+                                "source_type": "moa",
+                                "pdf": moa_pdf,
+                                "pdf_page": 7,
+                                "source_doc_id": source_doc_id,
+                            },
+                        ],
+                    },
+                ],
+            },
+        )
+
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(api, "DATA_DIR", data_root))
+            stack.enter_context(patch.object(effective_contracts, "DATA_DIR", data_root))
+            stack.enter_context(patch.object(source_docs, "SOURCE_DOCS_DIR", data_root / "source_docs"))
+            stack.enter_context(patch.object(api, "get_contract_catalog_entry", lambda _cid: {"contract_id": contract_id}))
+
+            response = asyncio.run(api.get_pdf_location(contract_id=contract_id, article_num=15))
+            assert response.contract_id == contract_id
+            assert response.page_number == 7
+            assert response.matched_by == "effective_provenance_auto"
+            assert response.pdf_url and "source_type=moa" in response.pdf_url
+            assert response.selected_source_key is not None
+            auto_choice = next((row for row in response.source_candidates if row.get("key") == "effective_auto"), None)
+            assert auto_choice is not None
+            assert "Latest amended article" in str(auto_choice.get("label") or "")
+            selected = next((row for row in response.source_candidates if row.get("key") == response.selected_source_key), None)
+            assert selected is not None
+            assert selected.get("source_type") == "moa"
+            assert "Latest amended article PDF" in str(selected.get("label") or "")
+
+
+def _test_pdf_location_article_auto_prefers_page_backed_source_when_moa_page_missing() -> None:
+    contract_id = "history_contract_article_auto_moa_no_page"
+    with _workspace_tempdir("contract_history_article_auto_no_page_") as tmp:
+        data_root = tmp / "data"
+        contract_root = data_root / "contracts" / contract_id
+        source_dir = contract_root / "source"
+        effective_dir = contract_root / "effective" / "effective_2025_07_05"
+        source_doc_id = "albertsons_safeway_moa_2025_07_05"
+
+        base_pdf = "Base-CBA.pdf"
+        moa_pdf = "Signed+MOA+-+July+5,+2025+(Safeway).pdf"
+        _touch_pdf(source_dir / base_pdf)
+        _write_source_doc(
+            data_root=data_root,
+            source_doc_id=source_doc_id,
+            doc_type="moa",
+            pdf_name=moa_pdf,
+        )
+
+        _write_json(
+            contract_root / "effective" / "latest.json",
+            {
+                "effective_version_id": "effective_2025_07_05",
+                "effective_content_hash": "g" * 64,
+            },
+        )
+        _write_json(
+            effective_dir / "effective_contract.json",
+            {
+                "contract_id": contract_id,
+                "effective_version_id": "effective_2025_07_05",
+                "sections": [
+                    {
+                        "article_num": 15,
+                        "section_num": 1,
+                        "anchor_id": "a15_s1",
+                        "provenance": [
+                            {
+                                "source_type": "base",
+                                "pdf": base_pdf,
+                                "pdf_page": 40,
+                            }
+                        ],
+                    },
+                    {
+                        "article_num": 15,
+                        "section_num": 34,
+                        "anchor_id": "a15_s34",
+                        "provenance": [
+                            {
+                                "source_type": "base",
+                                "pdf": base_pdf,
+                                "pdf_page": 55,
+                            },
+                            {
+                                "source_type": "moa",
+                                "pdf": moa_pdf,
+                                "pdf_page": None,
+                                "source_doc_id": source_doc_id,
+                            },
+                        ],
+                    },
+                ],
+            },
+        )
+
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(api, "DATA_DIR", data_root))
+            stack.enter_context(patch.object(effective_contracts, "DATA_DIR", data_root))
+            stack.enter_context(patch.object(source_docs, "SOURCE_DOCS_DIR", data_root / "source_docs"))
+            stack.enter_context(patch.object(api, "get_contract_catalog_entry", lambda _cid: {"contract_id": contract_id}))
+
+            response = asyncio.run(api.get_pdf_location(contract_id=contract_id, article_num=15))
+            assert response.contract_id == contract_id
+            assert response.page_number == 55
+            assert response.matched_by == "effective_provenance_auto"
+            assert response.pdf_url and "Base-CBA.pdf" in response.pdf_url
+            assert response.selected_source_key is not None
+            auto_choice = next((row for row in response.source_candidates if row.get("key") == "effective_auto"), None)
+            assert auto_choice is not None
+            assert "Latest amended article" in str(auto_choice.get("label") or "")
+            selected = next((row for row in response.source_candidates if row.get("key") == response.selected_source_key), None)
+            assert selected is not None
+            assert selected.get("source_type") == "base"
+            assert "Original / base article PDF" in str(selected.get("label") or "")
+
+
+def _test_pdf_location_section_auto_prefers_base_for_unamended_section() -> None:
+    contract_id = "history_contract_section_auto_base"
+    with _workspace_tempdir("contract_history_section_auto_base_") as tmp:
+        data_root = tmp / "data"
+        contract_root = data_root / "contracts" / contract_id
+        source_dir = contract_root / "source"
+        effective_dir = contract_root / "effective" / "effective_2025_07_05"
+        source_doc_id = "albertsons_safeway_moa_2025_07_05"
+
+        base_pdf = "Base-CBA.pdf"
+        moa_pdf = "Signed+MOA+-+July+5,+2025+(Safeway).pdf"
+        _touch_pdf(source_dir / base_pdf)
+        _write_source_doc(
+            data_root=data_root,
+            source_doc_id=source_doc_id,
+            doc_type="moa",
+            pdf_name=moa_pdf,
+        )
+
+        _write_json(
+            contract_root / "effective" / "latest.json",
+            {
+                "effective_version_id": "effective_2025_07_05",
+                "effective_content_hash": "h" * 64,
+            },
+        )
+        _write_json(
+            effective_dir / "effective_contract.json",
+            {
+                "contract_id": contract_id,
+                "effective_version_id": "effective_2025_07_05",
+                "sections": [
+                    {
+                        "article_num": 15,
+                        "section_num": 1,
+                        "anchor_id": "a15_s1",
+                        "provenance": [
+                            {
+                                "source_type": "base",
+                                "pdf": base_pdf,
+                                "pdf_page": 40,
+                            }
+                        ],
+                    },
+                    {
+                        "article_num": 15,
+                        "section_num": 34,
+                        "anchor_id": "a15_s34",
+                        "provenance": [
+                            {
+                                "source_type": "base",
+                                "pdf": base_pdf,
+                                "pdf_page": 55,
+                            },
+                            {
+                                "source_type": "moa",
+                                "pdf": moa_pdf,
+                                "pdf_page": 7,
+                                "source_doc_id": source_doc_id,
+                            },
+                        ],
+                    },
+                ],
+            },
+        )
+
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(api, "DATA_DIR", data_root))
+            stack.enter_context(patch.object(effective_contracts, "DATA_DIR", data_root))
+            stack.enter_context(patch.object(source_docs, "SOURCE_DOCS_DIR", data_root / "source_docs"))
+            stack.enter_context(patch.object(api, "get_contract_catalog_entry", lambda _cid: {"contract_id": contract_id}))
+
+            response = asyncio.run(api.get_pdf_location(contract_id=contract_id, article_num=15, section_num=1))
+            assert response.contract_id == contract_id
+            assert response.page_number == 40
+            assert response.matched_by == "effective_provenance_auto"
+            assert response.pdf_url and "Base-CBA.pdf" in response.pdf_url
+            auto_choice = next((row for row in response.source_candidates if row.get("key") == "effective_auto"), None)
+            assert auto_choice is not None
+            assert "Original / base section" in str(auto_choice.get("label") or "")
+            selected = next((row for row in response.source_candidates if row.get("key") == response.selected_source_key), None)
+            assert selected is not None
+            assert selected.get("source_type") == "base"
+            assert "Original / base section PDF" in str(selected.get("label") or "")
+
+
 def _test_foreign_source_doc_is_blocked_for_contract_pdf_and_history() -> None:
     contract_id = "history_contract_scope_guard"
     foreign_contract_id = "different_contract"
@@ -487,6 +747,9 @@ def _test_article_and_browse_item_support_source_view_base() -> None:
 def main() -> None:
     _test_contract_history_payload_and_endpoint()
     _test_pdf_location_moa_without_page_avoids_base_fallback()
+    _test_pdf_location_article_auto_prefers_moa_source_for_amended_article()
+    _test_pdf_location_article_auto_prefers_page_backed_source_when_moa_page_missing()
+    _test_pdf_location_section_auto_prefers_base_for_unamended_section()
     _test_foreign_source_doc_is_blocked_for_contract_pdf_and_history()
     _test_contract_browse_groups_and_item_endpoint()
     _test_article_and_browse_item_support_source_view_base()

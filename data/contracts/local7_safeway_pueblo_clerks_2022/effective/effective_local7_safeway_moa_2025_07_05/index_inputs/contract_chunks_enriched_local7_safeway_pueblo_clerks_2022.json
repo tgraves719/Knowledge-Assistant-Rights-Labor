@@ -2933,7 +2933,7 @@
       },
       {
         "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
-        "pdf_page": null,
+        "pdf_page": 8,
         "row_index": null,
         "source_doc_id": "albertsons_safeway_moa_2025_07_05",
         "source_type": "moa",
@@ -7239,118 +7239,6 @@
     ],
     "worker_questions": [
       "how does seniority affect my rights"
-    ]
-  },
-  {
-    "alternative_names": [
-      "layoff",
-      "laid off",
-      "bumping",
-      "displacement",
-      "head clerk"
-    ],
-    "amendments_applied": [
-      "local7_safeway_moa_2025_07_05"
-    ],
-    "anchor_id": "a29_s83_p5",
-    "applies_to": [
-      "all"
-    ],
-    "article_num": 29,
-    "article_title": "LAYOFFS",
-    "char_count": 636,
-    "chunk_id": "art29_sec83_seg_005_006",
-    "citation": "Article 29, Section 83, Part 5-6",
-    "content": "5. The Company may demote a management employee who is not a member of the bargaining unit into a management bargaining unit position of Head Clerk or above so long as such assignment does not circumvent the Collective Bargaining Agreement.\n\n6. When a reduction in the number of employees in a classification of Head Clerk and above is implemented, this procedure shall not apply, but rather the Letter of Understanding concerning layoff of bargaining unit management personnel shall be followed.\n\n---\n\n\n\n27                                                    PUEBLO CLERKS\n                                                      2022-2025",
-    "content_with_tables": "5. The Company may demote a management employee who is not a member of the bargaining unit into a management bargaining unit position of Head Clerk or above so long as such assignment does not circumvent the Collective Bargaining Agreement.\n\n6. When a reduction in the number of employees in a classification of Head Clerk and above is implemented, this procedure shall not apply, but rather the Letter of Understanding concerning layoff of bargaining unit management personnel shall be followed.\n\n---\n\n\n\n27                                                    PUEBLO CLERKS\n                                                      2022-2025",
-    "contract_id": "local7_safeway_pueblo_clerks_2022",
-    "cross_references": [],
-    "doc_type": "cba",
-    "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
-    "hire_date_sensitive": false,
-    "is_definition": false,
-    "is_exception": false,
-    "is_high_stakes": false,
-    "parent_context": "Article 29 (LAYOFFS) > Section 83 (Courtesy Clerk Options) > Part 5-6",
-    "provenance": [
-      {
-        "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
-        "pdf_page": 28,
-        "source_type": "base"
-      }
-    ],
-    "region_id": "region-pueblo",
-    "section_num": 83,
-    "source_type": "base",
-    "span_id": "120e77bdd5e7275478b28f9d5f23026c66dbb92bedcf932fa496b46e99cf2788",
-    "subsection": null,
-    "subsection_title": null,
-    "summary": null,
-    "table_refs": [],
-    "topics": [
-      "layoff"
-    ],
-    "worker_questions": [
-      "what are my rights if i get laid off"
-    ]
-  },
-  {
-    "alternative_names": [
-      "grievance",
-      "dispute",
-      "arbitration",
-      "appeal",
-      "schedule",
-      "scheduling",
-      "shift",
-      "hours",
-      "posting"
-    ],
-    "amendments_applied": [
-      "local7_safeway_moa_2025_07_05"
-    ],
-    "anchor_id": "a29_s83_p7",
-    "applies_to": [
-      "all"
-    ],
-    "article_num": 29,
-    "article_title": "LAYOFFS",
-    "char_count": 560,
-    "chunk_id": "art29_sec83_seg_007_plus",
-    "citation": "Article 29, Section 83, Part 7+",
-    "content": "**7. This Settlement Agreement shall apply to all Collective Bargaining Agreements between Safeway and Local 7 in Colorado and shall have a term coextensive with the current collective bargaining agreements.**\n\n**8. Local 7 agrees that the arbitrator in the Monte Vista Reduction of Hours arbitration, Union case #644-85, currently pending (\"Monte Vista Arbitration\") will not be advised of either the fact or terms of this Letter of Understanding and that this Letter of Understanding shall not be used as evidence in any way in the Monte Vista Arbitration.**",
-    "content_with_tables": "**7. This Settlement Agreement shall apply to all Collective Bargaining Agreements between Safeway and Local 7 in Colorado and shall have a term coextensive with the current collective bargaining agreements.**\n\n**8. Local 7 agrees that the arbitrator in the Monte Vista Reduction of Hours arbitration, Union case #644-85, currently pending (\"Monte Vista Arbitration\") will not be advised of either the fact or terms of this Letter of Understanding and that this Letter of Understanding shall not be used as evidence in any way in the Monte Vista Arbitration.**",
-    "contract_id": "local7_safeway_pueblo_clerks_2022",
-    "cross_references": [],
-    "doc_type": "cba",
-    "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
-    "hire_date_sensitive": false,
-    "is_definition": false,
-    "is_exception": false,
-    "is_high_stakes": false,
-    "parent_context": "Article 29 (LAYOFFS) > Section 83 (Courtesy Clerk Options) > Part 7+",
-    "provenance": [
-      {
-        "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
-        "pdf_page": 28,
-        "source_type": "base"
-      }
-    ],
-    "region_id": "region-pueblo",
-    "section_num": 83,
-    "source_type": "base",
-    "span_id": "c000459860f1e437351afefb47dce7e4b9847e64affe8b0c623b5fe35fd1ebb1",
-    "subsection": null,
-    "subsection_title": null,
-    "summary": null,
-    "table_refs": [],
-    "topics": [
-      "grievance",
-      "scheduling"
-    ],
-    "worker_questions": [
-      "how do i file a grievance",
-      "can they change my schedule like this"
     ]
   },
   {
@@ -12624,72 +12512,6 @@
   {
     "alternative_names": [
       "dispute procedure",
-      "grievance",
-      "dispute",
-      "arbitration",
-      "appeal",
-      "discipline",
-      "warning",
-      "write up",
-      "written up",
-      "discharge",
-      "termination",
-      "fired",
-      "schedule",
-      "scheduling"
-    ],
-    "amendments_applied": [
-      "local7_safeway_moa_2025_07_05"
-    ],
-    "anchor_id": "a46_s141_p5",
-    "applies_to": [
-      "all"
-    ],
-    "article_num": 46,
-    "article_title": "DISPUTE PROCEDURE",
-    "char_count": 2301,
-    "chunk_id": "art46_sec141_seg_005",
-    "citation": "Article 46, Section 141, Part 5",
-    "content": "5. Grievances referred to arbitration shall be placed in the scheduling queue and scheduled for hearing as follows:\n\na. Cases shall be scheduled from the scheduling queue in order of their respective grievance filing date with the understanding termination or demotion cases shall move to the front of the scheduling queue in date order.\n\nb. The party requesting arbitration shall promptly request a panel of arbitrators from FMCS for each case placed in the scheduling queue.\n\nc. Within sixty (60) days after a final settlement meeting decision, the parties will select an arbitrator.\n\nd. The parties will use best efforts to schedule the hearing in the matter for which an arbitrator has been appointed within six (6) months following a final settlement meeting decision with the understanding that the parties may schedule a hearing a date later than six (6) months upon mutual agreement or as the result of 6(e) below.\n\ne. Notwithstanding the provisions of 6(d) above, neither party shall be required or obligated to schedule more than three (3) cases per calendar month except by mutual agreement.\n\nf. In all disciplinary cases referred to arbitration, as a condition to accepting appointment, the arbitrator must agree to render a decision and award no later than thirty (30) days after receipt of the parties' post hearing statements. Unless otherwise agreed by the parties, such statements must be filed no later than fourteen (14) days following the close of the hearing (or receipt of transcript where applicable) and must be limited to no more than ten (10) single space letter size pages. It is specifically agreed and understood that any such case resolved under this procedure shall be deemed \"nonprecedential\" and will not be cited by either party in any future proceeding. The provisions of this subsection (e) may be modified on a case by case basis by mutual agreement of the parties.\n\nThe Company's Director of Labor Relations and the Union President will retain jurisdiction over this letter of understanding and may, by mutual agreement, modify this letter of understanding as they deem necessary and appropriate to improve the efficiency and effectiveness of the agreements' grievance and arbitration process. Any such modifications must be in writing and signed by both parties.",
-    "content_with_tables": "5. Grievances referred to arbitration shall be placed in the scheduling queue and scheduled for hearing as follows:\n\na. Cases shall be scheduled from the scheduling queue in order of their respective grievance filing date with the understanding termination or demotion cases shall move to the front of the scheduling queue in date order.\n\nb. The party requesting arbitration shall promptly request a panel of arbitrators from FMCS for each case placed in the scheduling queue.\n\nc. Within sixty (60) days after a final settlement meeting decision, the parties will select an arbitrator.\n\nd. The parties will use best efforts to schedule the hearing in the matter for which an arbitrator has been appointed within six (6) months following a final settlement meeting decision with the understanding that the parties may schedule a hearing a date later than six (6) months upon mutual agreement or as the result of 6(e) below.\n\ne. Notwithstanding the provisions of 6(d) above, neither party shall be required or obligated to schedule more than three (3) cases per calendar month except by mutual agreement.\n\nf. In all disciplinary cases referred to arbitration, as a condition to accepting appointment, the arbitrator must agree to render a decision and award no later than thirty (30) days after receipt of the parties' post hearing statements. Unless otherwise agreed by the parties, such statements must be filed no later than fourteen (14) days following the close of the hearing (or receipt of transcript where applicable) and must be limited to no more than ten (10) single space letter size pages. It is specifically agreed and understood that any such case resolved under this procedure shall be deemed \"nonprecedential\" and will not be cited by either party in any future proceeding. The provisions of this subsection (e) may be modified on a case by case basis by mutual agreement of the parties.\n\nThe Company's Director of Labor Relations and the Union President will retain jurisdiction over this letter of understanding and may, by mutual agreement, modify this letter of understanding as they deem necessary and appropriate to improve the efficiency and effectiveness of the agreements' grievance and arbitration process. Any such modifications must be in writing and signed by both parties.",
-    "contract_id": "local7_safeway_pueblo_clerks_2022",
-    "cross_references": [],
-    "doc_type": "cba",
-    "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
-    "hire_date_sensitive": false,
-    "is_definition": false,
-    "is_exception": false,
-    "is_high_stakes": false,
-    "parent_context": "Article 46 (DISPUTE PROCEDURE) > Section 141 (EXPEDITED ARBITRATION PROCEDURES) > Part 5",
-    "provenance": [
-      {
-        "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
-        "pdf_page": 50,
-        "source_type": "base"
-      }
-    ],
-    "region_id": "region-pueblo",
-    "section_num": 141,
-    "source_type": "base",
-    "span_id": "43ef8e9fe14eb6854ba18eee0dee6ab1cd7151fa046387059013e4999f68bf12",
-    "subsection": null,
-    "subsection_title": null,
-    "summary": null,
-    "table_refs": [],
-    "topics": [
-      "discipline",
-      "grievance",
-      "scheduling"
-    ],
-    "worker_questions": [
-      "how do i file a grievance",
-      "can i be written up or fired for this",
-      "can they change my schedule like this"
-    ]
-  },
-  {
-    "alternative_names": [
-      "dispute procedure",
       "overtime",
       "ot",
       "extra hours",
@@ -15962,6 +15784,184 @@
     ],
     "worker_questions": [
       "how much should i be making per hour",
+      "can they change my schedule like this"
+    ]
+  },
+  {
+    "alternative_names": [
+      "layoff",
+      "laid off",
+      "bumping",
+      "displacement",
+      "head clerk"
+    ],
+    "amendments_applied": [
+      "local7_safeway_moa_2025_07_05"
+    ],
+    "anchor_id": "a29_s83_p5",
+    "applies_to": [
+      "all"
+    ],
+    "article_num": 29,
+    "article_title": "LAYOFFS",
+    "char_count": 636,
+    "chunk_id": "art29_sec83_seg_005_006",
+    "citation": "Article 29, Section 83, Part 5-6",
+    "content": "5. The Company may demote a management employee who is not a member of the bargaining unit into a management bargaining unit position of Head Clerk or above so long as such assignment does not circumvent the Collective Bargaining Agreement.\n\n6. When a reduction in the number of employees in a classification of Head Clerk and above is implemented, this procedure shall not apply, but rather the Letter of Understanding concerning layoff of bargaining unit management personnel shall be followed.\n\n---\n\n\n\n27                                                    PUEBLO CLERKS\n                                                      2022-2025",
+    "content_with_tables": "5. The Company may demote a management employee who is not a member of the bargaining unit into a management bargaining unit position of Head Clerk or above so long as such assignment does not circumvent the Collective Bargaining Agreement.\n\n6. When a reduction in the number of employees in a classification of Head Clerk and above is implemented, this procedure shall not apply, but rather the Letter of Understanding concerning layoff of bargaining unit management personnel shall be followed.\n\n---\n\n\n\n27                                                    PUEBLO CLERKS\n                                                      2022-2025",
+    "contract_id": "local7_safeway_pueblo_clerks_2022",
+    "cross_references": [],
+    "doc_type": "lou",
+    "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+    "hire_date_sensitive": false,
+    "is_definition": false,
+    "is_exception": false,
+    "is_high_stakes": false,
+    "parent_context": "Article 29 (LAYOFFS) > Section 83 (Courtesy Clerk Options) > Part 5-6",
+    "provenance": [
+      {
+        "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+        "pdf_page": 28,
+        "source_type": "base"
+      }
+    ],
+    "region_id": "region-pueblo",
+    "section_num": 83,
+    "source_type": "base",
+    "span_id": "120e77bdd5e7275478b28f9d5f23026c66dbb92bedcf932fa496b46e99cf2788",
+    "subsection": null,
+    "subsection_title": null,
+    "summary": null,
+    "table_refs": [],
+    "topics": [
+      "layoff"
+    ],
+    "worker_questions": [
+      "what are my rights if i get laid off"
+    ]
+  },
+  {
+    "alternative_names": [
+      "grievance",
+      "dispute",
+      "arbitration",
+      "appeal",
+      "schedule",
+      "scheduling",
+      "shift",
+      "hours",
+      "posting"
+    ],
+    "amendments_applied": [
+      "local7_safeway_moa_2025_07_05"
+    ],
+    "anchor_id": "a29_s83_p7",
+    "applies_to": [
+      "all"
+    ],
+    "article_num": 29,
+    "article_title": "LAYOFFS",
+    "char_count": 560,
+    "chunk_id": "art29_sec83_seg_007_plus",
+    "citation": "Article 29, Section 83, Part 7+",
+    "content": "**7. This Settlement Agreement shall apply to all Collective Bargaining Agreements between Safeway and Local 7 in Colorado and shall have a term coextensive with the current collective bargaining agreements.**\n\n**8. Local 7 agrees that the arbitrator in the Monte Vista Reduction of Hours arbitration, Union case #644-85, currently pending (\"Monte Vista Arbitration\") will not be advised of either the fact or terms of this Letter of Understanding and that this Letter of Understanding shall not be used as evidence in any way in the Monte Vista Arbitration.**",
+    "content_with_tables": "**7. This Settlement Agreement shall apply to all Collective Bargaining Agreements between Safeway and Local 7 in Colorado and shall have a term coextensive with the current collective bargaining agreements.**\n\n**8. Local 7 agrees that the arbitrator in the Monte Vista Reduction of Hours arbitration, Union case #644-85, currently pending (\"Monte Vista Arbitration\") will not be advised of either the fact or terms of this Letter of Understanding and that this Letter of Understanding shall not be used as evidence in any way in the Monte Vista Arbitration.**",
+    "contract_id": "local7_safeway_pueblo_clerks_2022",
+    "cross_references": [],
+    "doc_type": "lou",
+    "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+    "hire_date_sensitive": false,
+    "is_definition": false,
+    "is_exception": false,
+    "is_high_stakes": false,
+    "parent_context": "Article 29 (LAYOFFS) > Section 83 (Courtesy Clerk Options) > Part 7+",
+    "provenance": [
+      {
+        "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+        "pdf_page": 28,
+        "source_type": "base"
+      }
+    ],
+    "region_id": "region-pueblo",
+    "section_num": 83,
+    "source_type": "base",
+    "span_id": "c000459860f1e437351afefb47dce7e4b9847e64affe8b0c623b5fe35fd1ebb1",
+    "subsection": null,
+    "subsection_title": null,
+    "summary": null,
+    "table_refs": [],
+    "topics": [
+      "grievance",
+      "scheduling"
+    ],
+    "worker_questions": [
+      "how do i file a grievance",
+      "can they change my schedule like this"
+    ]
+  },
+  {
+    "alternative_names": [
+      "dispute procedure",
+      "grievance",
+      "dispute",
+      "arbitration",
+      "appeal",
+      "discipline",
+      "warning",
+      "write up",
+      "written up",
+      "discharge",
+      "termination",
+      "fired",
+      "schedule",
+      "scheduling"
+    ],
+    "amendments_applied": [
+      "local7_safeway_moa_2025_07_05"
+    ],
+    "anchor_id": "a46_s141_p5",
+    "applies_to": [
+      "all"
+    ],
+    "article_num": 46,
+    "article_title": "DISPUTE PROCEDURE",
+    "char_count": 2301,
+    "chunk_id": "art46_sec141_seg_005",
+    "citation": "Article 46, Section 141, Part 5",
+    "content": "5. Grievances referred to arbitration shall be placed in the scheduling queue and scheduled for hearing as follows:\n\na. Cases shall be scheduled from the scheduling queue in order of their respective grievance filing date with the understanding termination or demotion cases shall move to the front of the scheduling queue in date order.\n\nb. The party requesting arbitration shall promptly request a panel of arbitrators from FMCS for each case placed in the scheduling queue.\n\nc. Within sixty (60) days after a final settlement meeting decision, the parties will select an arbitrator.\n\nd. The parties will use best efforts to schedule the hearing in the matter for which an arbitrator has been appointed within six (6) months following a final settlement meeting decision with the understanding that the parties may schedule a hearing a date later than six (6) months upon mutual agreement or as the result of 6(e) below.\n\ne. Notwithstanding the provisions of 6(d) above, neither party shall be required or obligated to schedule more than three (3) cases per calendar month except by mutual agreement.\n\nf. In all disciplinary cases referred to arbitration, as a condition to accepting appointment, the arbitrator must agree to render a decision and award no later than thirty (30) days after receipt of the parties' post hearing statements. Unless otherwise agreed by the parties, such statements must be filed no later than fourteen (14) days following the close of the hearing (or receipt of transcript where applicable) and must be limited to no more than ten (10) single space letter size pages. It is specifically agreed and understood that any such case resolved under this procedure shall be deemed \"nonprecedential\" and will not be cited by either party in any future proceeding. The provisions of this subsection (e) may be modified on a case by case basis by mutual agreement of the parties.\n\nThe Company's Director of Labor Relations and the Union President will retain jurisdiction over this letter of understanding and may, by mutual agreement, modify this letter of understanding as they deem necessary and appropriate to improve the efficiency and effectiveness of the agreements' grievance and arbitration process. Any such modifications must be in writing and signed by both parties.",
+    "content_with_tables": "5. Grievances referred to arbitration shall be placed in the scheduling queue and scheduled for hearing as follows:\n\na. Cases shall be scheduled from the scheduling queue in order of their respective grievance filing date with the understanding termination or demotion cases shall move to the front of the scheduling queue in date order.\n\nb. The party requesting arbitration shall promptly request a panel of arbitrators from FMCS for each case placed in the scheduling queue.\n\nc. Within sixty (60) days after a final settlement meeting decision, the parties will select an arbitrator.\n\nd. The parties will use best efforts to schedule the hearing in the matter for which an arbitrator has been appointed within six (6) months following a final settlement meeting decision with the understanding that the parties may schedule a hearing a date later than six (6) months upon mutual agreement or as the result of 6(e) below.\n\ne. Notwithstanding the provisions of 6(d) above, neither party shall be required or obligated to schedule more than three (3) cases per calendar month except by mutual agreement.\n\nf. In all disciplinary cases referred to arbitration, as a condition to accepting appointment, the arbitrator must agree to render a decision and award no later than thirty (30) days after receipt of the parties' post hearing statements. Unless otherwise agreed by the parties, such statements must be filed no later than fourteen (14) days following the close of the hearing (or receipt of transcript where applicable) and must be limited to no more than ten (10) single space letter size pages. It is specifically agreed and understood that any such case resolved under this procedure shall be deemed \"nonprecedential\" and will not be cited by either party in any future proceeding. The provisions of this subsection (e) may be modified on a case by case basis by mutual agreement of the parties.\n\nThe Company's Director of Labor Relations and the Union President will retain jurisdiction over this letter of understanding and may, by mutual agreement, modify this letter of understanding as they deem necessary and appropriate to improve the efficiency and effectiveness of the agreements' grievance and arbitration process. Any such modifications must be in writing and signed by both parties.",
+    "contract_id": "local7_safeway_pueblo_clerks_2022",
+    "cross_references": [],
+    "doc_type": "lou",
+    "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+    "hire_date_sensitive": false,
+    "is_definition": false,
+    "is_exception": false,
+    "is_high_stakes": false,
+    "parent_context": "Article 46 (DISPUTE PROCEDURE) > Section 141 (EXPEDITED ARBITRATION PROCEDURES) > Part 5",
+    "provenance": [
+      {
+        "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+        "pdf_page": 50,
+        "source_type": "base"
+      }
+    ],
+    "region_id": "region-pueblo",
+    "section_num": 141,
+    "source_type": "base",
+    "span_id": "43ef8e9fe14eb6854ba18eee0dee6ab1cd7151fa046387059013e4999f68bf12",
+    "subsection": null,
+    "subsection_title": null,
+    "summary": null,
+    "table_refs": [],
+    "topics": [
+      "discipline",
+      "grievance",
+      "scheduling"
+    ],
+    "worker_questions": [
+      "how do i file a grievance",
+      "can i be written up or fired for this",
       "can they change my schedule like this"
     ]
   },

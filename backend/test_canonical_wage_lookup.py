@@ -13,6 +13,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from backend.ingest.extract_wages import lookup_wage
+from backend.wage_files import resolve_wage_file
 
 
 def _load_wages(contract_id: str) -> dict:
@@ -58,9 +59,52 @@ def _test_fallback_without_canonical_rows() -> None:
     assert result.get("table_evidence") == [], "Fallback lookup should not include table evidence rows."
 
 
+def _test_contract_scoped_effective_wage_lookup_prefers_latest_snapshot() -> None:
+    path = resolve_wage_file(
+        contract_id="local7_safeway_pueblo_clerks_2022",
+        allow_shared_fallback=False,
+    )
+    assert path is not None and path.exists(), "Expected contract-scoped wage artifact to resolve."
+    normalized = str(path).replace("\\", "/")
+    assert "effective_local7_safeway_moa_2025_07_05" in normalized, (
+        "Expected latest effective wage snapshot to be preferred for contract-scoped lookup."
+    )
+    with open(path, "r", encoding="utf-8") as f:
+        wages = json.load(f)
+
+    result = lookup_wage(
+        wages_data=wages,
+        classification="courtesy_clerk",
+        hours_worked=0,
+        months_employed=1,
+    )
+    assert result is not None, "Expected contract-scoped effective wage lookup result."
+    assert result.get("effective_date") == "2025-07-05", "Expected latest effective date from resolved artifact."
+    assert float(result.get("rate") or 0.0) == 17.25, "Expected Courtesy Clerk start rate to resolve from FSAR, not pre-ratification Current."
+    assert str(result.get("selected_schedule_label") or "") == "FSAR", (
+        "Expected effective wage lookup to preserve the selected MOA schedule label."
+    )
+    source_schedule = dict(result.get("source_rate_schedule") or {})
+    assert float(source_schedule.get("Current") or 0.0) == 17.0, "Expected source schedule to preserve the pre-ratification Current column."
+    assert float(source_schedule.get("FSAR") or 0.0) == 17.25, "Expected source schedule to preserve the ratified FSAR column."
+    evidence = result.get("table_evidence") or []
+    assert evidence, "Expected table evidence rows for effective wage lookup."
+    assert any(str((row or {}).get("table_id") or "").strip() == "tbl_art58_3" for row in evidence), (
+        "Expected Courtesy Clerk evidence to retain Appendix table id."
+    )
+    assert any(str((row or {}).get("source_type") or "").strip().lower() == "moa" for row in evidence), (
+        "Expected effective wage evidence to expose MOA provenance."
+    )
+    assert any(
+        str((row or {}).get("source_doc_id") or "").strip() == "albertsons_safeway_moa_2025_07_05"
+        for row in evidence
+    ), "Expected effective wage evidence to carry MOA source_doc_id."
+
+
 def main() -> None:
     _test_canonical_lookup_includes_table_evidence()
     _test_fallback_without_canonical_rows()
+    _test_contract_scoped_effective_wage_lookup_prefers_latest_snapshot()
     print("[OK] Canonical wage lookup checks passed")
 
 

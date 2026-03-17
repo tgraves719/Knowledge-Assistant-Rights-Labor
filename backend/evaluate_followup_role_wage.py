@@ -69,6 +69,8 @@ async def _run_async(payload: dict, bm25_only: bool) -> dict:
         appendix_citation_passes = 0
         intent_wage_passes = 0
         not_unavailable_passes = 0
+        clarification_passes = 0
+        clarification_total = 0
 
         for case in test_cases:
             case_id = str(case.get("id") or "")
@@ -78,6 +80,12 @@ async def _run_async(payload: dict, bm25_only: bool) -> dict:
             expected_target = str(case.get("expected_target_classification") or "").strip().lower()
             expectation = str(case.get("expectation") or "explicit_role_override").strip().lower()
             min_rows = int(case.get("min_table_evidence_rows") or 1)
+            expected_role_family = str(case.get("expected_role_family") or "").strip().lower()
+            expected_clarification_values = [
+                str(v or "").strip().lower()
+                for v in (case.get("expected_clarification_values") or [])
+                if str(v or "").strip()
+            ]
 
             manifest = _load_manifest(contract_id)
             contract_version = str(
@@ -99,6 +107,7 @@ async def _run_async(payload: dict, bm25_only: bool) -> dict:
             response = await query_contract(request)
             wage_info = dict(response.wage_info or {})
             citations = list(response.citations or [])
+            role_clarification = dict(response.role_clarification or {})
 
             intent_is_wage = str(response.intent_type or "").strip().lower() == "wage"
             target_key = str(wage_info.get("classification_key") or "").strip().lower()
@@ -108,15 +117,40 @@ async def _run_async(payload: dict, bm25_only: bool) -> dict:
             appendix_ok = any("appendix a" in str(c or "").lower() for c in citations)
             not_unavailable = not api_module._is_unavailable_answer(response.answer)
             escalation_ok = not bool(response.escalation_required)
+            clarification_values = {
+                str(opt.get("value") or "").strip().lower()
+                for opt in (role_clarification.get("options") or [])
+                if str(opt.get("value") or "").strip()
+            }
+            clarification_ok = (
+                bool(role_clarification.get("needs_clarification"))
+                and (not expected_role_family or str(role_clarification.get("role_family") or "").strip().lower() == expected_role_family)
+                and (
+                    not expected_clarification_values
+                    or set(expected_clarification_values).issubset(clarification_values)
+                )
+                and not wage_info
+                and not citations
+            )
 
-            passed = all([
-                intent_is_wage,
-                target_ok,
-                table_ok,
-                appendix_ok,
-                not_unavailable,
-                escalation_ok,
-            ])
+            if expectation == "needs_role_clarification":
+                clarification_total += 1
+                clarification_passes += int(clarification_ok)
+                passed = all([
+                    intent_is_wage,
+                    clarification_ok,
+                    not_unavailable,
+                    escalation_ok,
+                ])
+            else:
+                passed = all([
+                    intent_is_wage,
+                    target_ok,
+                    table_ok,
+                    appendix_ok,
+                    not_unavailable,
+                    escalation_ok,
+                ])
 
             by_contract[contract_id]["total"] += 1
             by_expectation[expectation]["total"] += 1
@@ -145,6 +179,10 @@ async def _run_async(payload: dict, bm25_only: bool) -> dict:
                     "table_evidence_count": table_count,
                     "table_evidence_ok": table_ok,
                     "appendix_citation_present": appendix_ok,
+                    "role_clarification_required": bool(role_clarification.get("needs_clarification")),
+                    "role_clarification_ok": clarification_ok,
+                    "role_clarification_family": str(role_clarification.get("role_family") or "").strip().lower(),
+                    "role_clarification_values": sorted(clarification_values),
                     "contains_unavailable_language": not not_unavailable,
                     "escalation_required": bool(response.escalation_required),
                     "pass": passed,
@@ -157,6 +195,9 @@ async def _run_async(payload: dict, bm25_only: bool) -> dict:
         explicit_passed = int(by_expectation["explicit_role_override"]["passed"])
         profile_total = int(by_expectation["profile_fallback"]["total"])
         profile_passed = int(by_expectation["profile_fallback"]["passed"])
+        clarification_expectation_total = int(by_expectation["needs_role_clarification"]["total"])
+        clarification_expectation_passed = int(by_expectation["needs_role_clarification"]["passed"])
+        resolved_case_total = max(0, total - clarification_expectation_total)
 
         def _rate(num: int, den: int) -> float:
             return round((num / den) if den else 0.0, 4)
@@ -181,9 +222,13 @@ async def _run_async(payload: dict, bm25_only: bool) -> dict:
                 "passed": passed,
                 "total": total,
                 "pass_rate": _rate(passed, total),
+                "resolved_case_total": resolved_case_total,
                 "target_resolution_rate": _rate(target_resolution_passes, total),
+                "resolved_target_resolution_rate": _rate(target_resolution_passes, resolved_case_total),
                 "table_evidence_presence_rate": _rate(table_evidence_passes, total),
+                "resolved_table_evidence_presence_rate": _rate(table_evidence_passes, resolved_case_total),
                 "appendix_citation_rate": _rate(appendix_citation_passes, total),
+                "resolved_appendix_citation_rate": _rate(appendix_citation_passes, resolved_case_total),
                 "intent_wage_rate": _rate(intent_wage_passes, total),
                 "no_unavailable_rate": _rate(not_unavailable_passes, total),
                 "explicit_override_passed": explicit_passed,
@@ -192,6 +237,9 @@ async def _run_async(payload: dict, bm25_only: bool) -> dict:
                 "profile_fallback_passed": profile_passed,
                 "profile_fallback_total": profile_total,
                 "profile_fallback_rate": _rate(profile_passed, profile_total),
+                "role_clarification_passed": clarification_expectation_passed,
+                "role_clarification_total": clarification_expectation_total,
+                "role_clarification_rate": _rate(clarification_expectation_passed, clarification_expectation_total),
             },
             "by_contract": by_contract_summary,
             "results": rows,
@@ -246,6 +294,8 @@ def main() -> int:
     print(f"Table evidence presence rate: {overall.get('table_evidence_presence_rate', 0.0):.1%}")
     print(f"Explicit override rate: {overall.get('explicit_override_rate', 0.0):.1%}")
     print(f"Profile fallback rate: {overall.get('profile_fallback_rate', 0.0):.1%}")
+    if overall.get("role_clarification_total", 0):
+        print(f"Role clarification rate: {overall.get('role_clarification_rate', 0.0):.1%}")
     print(f"Results: {out_path}")
     return 0
 

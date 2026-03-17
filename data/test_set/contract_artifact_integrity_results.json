@@ -47,12 +47,12 @@
       "missing_artifacts": [],
       "pass": true,
       "paths": {
-        "base_chunks": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_enriched_local7_kingsoopers_loveland_meat_2019.json",
-        "base_wages": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\wages\\wage_tables_local7_kingsoopers_loveland_meat_2019.json",
+        "base_chunks": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_enriched_local7_kingsoopers_loveland_meat_2019.json",
+        "base_wages": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\wages\\wage_tables_local7_kingsoopers_loveland_meat_2019.json",
         "effective_chunks": null,
         "effective_wages": null,
-        "pdf_nav_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\pdf_nav_index_local7_kingsoopers_loveland_meat_2019.json",
-        "table_nav_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\table_nav_index_local7_kingsoopers_loveland_meat_2019.json"
+        "pdf_nav_index": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\pdf_nav_index_local7_kingsoopers_loveland_meat_2019.json",
+        "table_nav_index": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\table_nav_index_local7_kingsoopers_loveland_meat_2019.json"
       },
       "pdf_nav": {
         "article_pages_count": 57,
@@ -99,8 +99,8 @@
         "chunk_total": 315,
         "doc_type_counts": {
           "appendix": 4,
-          "cba": 274,
-          "lou": 37
+          "cba": 271,
+          "lou": 40
         },
         "loa_text_hits": 1,
         "lou_text_hits": 41,
@@ -129,8 +129,8 @@
         "chunk_total": 315,
         "doc_type_counts": {
           "appendix": 4,
-          "cba": 274,
-          "lou": 37
+          "cba": 271,
+          "lou": 40
         },
         "loa_text_hits": 1,
         "lou_text_hits": 41,
@@ -146,25 +146,25 @@
       },
       "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
       "effective_wages": {
-        "canonical_wage_row_total": 156,
-        "rows_with_provenance": 156,
-        "rows_with_row_index": 156,
-        "rows_with_row_key": 156,
-        "rows_with_table_id": 156
+        "canonical_wage_row_total": 208,
+        "rows_with_provenance": 208,
+        "rows_with_row_index": 208,
+        "rows_with_row_key": 208,
+        "rows_with_table_id": 208
       },
       "missing_artifacts": [],
       "pass": true,
       "paths": {
-        "base_chunks": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
-        "base_wages": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\base\\wage_tables.json",
-        "effective_chunks": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
-        "effective_wages": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
-        "pdf_nav_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\pdf_nav_index_local7_safeway_pueblo_clerks_2022.json",
-        "table_nav_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\table_nav_index_local7_safeway_pueblo_clerks_2022.json"
+        "base_chunks": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+        "base_wages": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\base\\wage_tables.json",
+        "effective_chunks": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+        "effective_wages": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
+        "pdf_nav_index": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\pdf_nav_index_local7_safeway_pueblo_clerks_2022.json",
+        "table_nav_index": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\table_nav_index_local7_safeway_pueblo_clerks_2022.json"
       },
       "pdf_nav": {
         "article_pages_count": 55,
-        "pdf_filename": "SW+Pueblo+Clerks+2022.2025.pdf",
+        "pdf_filename": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
         "section_page_entries": 162,
         "section_pages_count": 55,
         "stats": {
@@ -178,7 +178,7 @@
       "side_letter_policy": {
         "doc_type_side_letter_counts": {
           "loa": 0,
-          "lou": 37
+          "lou": 40
         },
         "side_letter_bucket_ok": true,
         "side_letter_bucket_required": true,
@@ -224,6 +224,7 @@
         "rows_with_table_id": 153
       },
       "checks": {
+        "effective_has_missing_doc_types": true,
         "has_base_chunks": true,
         "has_base_wages": true,
         "has_pdf_nav": true,
@@ -232,19 +233,42 @@
         "wage_rows_have_table_id": true
       },
       "contract_id": "local7_safeway_pueblo_meat_2022",
-      "effective_chunks": null,
-      "effective_integrity": null,
-      "effective_version_id": null,
-      "effective_wages": null,
+      "effective_chunks": {
+        "chunk_total": 259,
+        "doc_type_counts": {
+          "appendix": 2,
+          "cba": 256,
+          "lou": 1
+        },
+        "loa_text_hits": 0,
+        "lou_text_hits": 2,
+        "with_anchor_count": 259,
+        "with_provenance_count": 259,
+        "with_provenance_page_count": 259
+      },
+      "effective_integrity": {
+        "base_chunk_total": 259,
+        "effective_chunk_total": 259,
+        "missing_doc_types_vs_base": [],
+        "reduced_doc_types_vs_base": []
+      },
+      "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+      "effective_wages": {
+        "canonical_wage_row_total": 153,
+        "rows_with_provenance": 153,
+        "rows_with_row_index": 153,
+        "rows_with_row_key": 153,
+        "rows_with_table_id": 153
+      },
       "missing_artifacts": [],
       "pass": true,
       "paths": {
-        "base_chunks": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_meat_2022.json",
-        "base_wages": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\base\\wage_tables.json",
-        "effective_chunks": null,
-        "effective_wages": null,
-        "pdf_nav_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\pdf_nav_index_local7_safeway_pueblo_meat_2022.json",
-        "table_nav_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\table_nav_index_local7_safeway_pueblo_meat_2022.json"
+        "base_chunks": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_meat_2022.json",
+        "base_wages": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\base\\wage_tables.json",
+        "effective_chunks": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_meat_2022.json",
+        "effective_wages": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\wage_tables_local7_safeway_pueblo_meat_2022.json",
+        "pdf_nav_index": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\pdf_nav_index_local7_safeway_pueblo_meat_2022.json",
+        "table_nav_index": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\table_nav_index_local7_safeway_pueblo_meat_2022.json"
       },
       "pdf_nav": {
         "article_pages_count": 57,
@@ -288,5 +312,5 @@
     }
   ],
   "schema_version": "contract_artifact_integrity_v1",
-  "timestamp_utc": "2026-02-22T05:45:03.001691+00:00"
+  "timestamp_utc": "2026-03-09T10:32:55.201285+00:00"
 }

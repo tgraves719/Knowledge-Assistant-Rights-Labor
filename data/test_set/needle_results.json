@@ -1,7 +1,7 @@
 {
   "schema_version": "needle_eval_v1",
-  "timestamp_utc": "2026-02-22T05:32:01.736764+00:00",
-  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\needle_test.json",
+  "timestamp_utc": "2026-03-09T10:33:28.306520+00:00",
+  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\needle_test.json",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "n_results": 8,
   "bm25_only": true,

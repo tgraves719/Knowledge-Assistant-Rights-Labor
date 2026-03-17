@@ -129,7 +129,7 @@ def _check_tools(profile: str) -> list[CheckResult]:
     return checks
 
 
-def _check_python_interpreter(python_exe: str) -> list[CheckResult]:
+def _check_python_interpreter(python_exe: str, profile: str) -> list[CheckResult]:
     checks: list[CheckResult] = []
     if not shutil.which(python_exe) and not Path(python_exe).exists():
         return [_err("python.exec", f"Python interpreter not found: {python_exe}")]
@@ -158,6 +158,14 @@ def _check_python_interpreter(python_exe: str) -> list[CheckResult]:
         )
     else:
         checks.append(_ok("python.version", f"Python {major}.{minor}.{patch} is in validated range (3.10-3.13)"))
+        if os.name == "nt" and profile in {"backend", "full", "demo", "ingest"} and (major, minor) == (3, 13):
+            checks.append(
+                _warn(
+                    "python.version.windows",
+                    "Python 3.13 on Windows may require native builds for chroma-hnswlib; Python 3.11 is the safest setup path",
+                    recommended="3.11",
+                )
+            )
 
     rc, out, err2 = _run([python_exe, "-m", "pip", "--version"])
     if rc == 0:
@@ -169,7 +177,7 @@ def _check_python_interpreter(python_exe: str) -> list[CheckResult]:
 
 def _check_python_imports(python_exe: str, check_heavy_imports: bool) -> list[CheckResult]:
     checks: list[CheckResult] = []
-    modules = ["fastapi", "uvicorn", "pydantic", "httpx", "dotenv"]
+    modules = ["fastapi", "uvicorn", "pydantic", "httpx", "dotenv", "google.genai"]
     heavy = ["chromadb", "sentence_transformers"]
     if check_heavy_imports:
         modules.extend(heavy)
@@ -348,7 +356,7 @@ def build_report(
     checks: list[CheckResult] = []
     checks.extend(_check_repo_structure())
     checks.extend(_check_tools(profile))
-    checks.extend(_check_python_interpreter(python_exe))
+    checks.extend(_check_python_interpreter(python_exe, profile))
     if check_imports:
         checks.extend(_check_python_imports(python_exe, check_heavy_imports))
     checks.extend(_check_data_artifacts(profile))

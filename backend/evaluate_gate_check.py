@@ -1060,9 +1060,15 @@ def _check_followup_role_wage(
     dataset_schema_version = str(results.get("dataset_schema_version") or "")
     total_cases = overall.get("total")
     pass_rate = overall.get("pass_rate")
-    target_resolution_rate = overall.get("target_resolution_rate")
-    table_evidence_rate = overall.get("table_evidence_presence_rate")
-    appendix_citation_rate = overall.get("appendix_citation_rate")
+    target_resolution_rate = overall.get("resolved_target_resolution_rate")
+    if target_resolution_rate is None:
+        target_resolution_rate = overall.get("target_resolution_rate")
+    table_evidence_rate = overall.get("resolved_table_evidence_presence_rate")
+    if table_evidence_rate is None:
+        table_evidence_rate = overall.get("table_evidence_presence_rate")
+    appendix_citation_rate = overall.get("resolved_appendix_citation_rate")
+    if appendix_citation_rate is None:
+        appendix_citation_rate = overall.get("appendix_citation_rate")
     intent_wage_rate = overall.get("intent_wage_rate")
     no_unavailable_rate = overall.get("no_unavailable_rate")
     explicit_override_rate = overall.get("explicit_override_rate")

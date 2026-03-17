@@ -3,24 +3,24 @@
     "local7_safeway_moa_2025_07_05"
   ],
   "base_snapshot": {
-    "base_chunks_sha256": "0ff3ac956ac3258195793b0879e89eda362b025660a2a4db809ed1978fd8c216",
+    "base_chunks_sha256": "44accac90d0099d3a33e5c9deaf8bac7c741ced66f4d334acf76ff5b3a390178",
     "base_version_id": "base_snapshot_v0_9_0",
-    "base_wages_sha256": "2771bb54d195134df161e3e1ba3e9b94b1e601a22b21b9189990f9161cd711f9"
+    "base_wages_sha256": "1ee86a7d6c0258f136503c1d368fe538953a959fd3b3debff852a5cb5681911b"
   },
   "contract_id": "local7_safeway_pueblo_clerks_2022",
-  "effective_content_hash": "eab219af59eff62dc840e29305d38e9fcb2dd78b25a8dfb1e774db1efa4e5e3f",
+  "effective_content_hash": "c7ac70517a0e90b86d26aa4d5bae069a207ed900f16199ebe6d8fbdab0c87800",
   "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
   "patch_count": 1,
   "patches": [
     {
-      "approved_operation_count": 3,
+      "approved_operation_count": 54,
       "effective_date": "2025-07-05",
-      "operation_count": 3,
+      "operation_count": 54,
       "parent_effective_version_id": "base_snapshot_v0_9_0",
       "patch_file_name": "local7_safeway_moa_2025_07_05.json",
-      "patch_file_sha256": "135b7a93aa091aa095ae000f5ac12ddb08878eb6c6a353ebd7870a29235dbd69",
+      "patch_file_sha256": "b11b164de91267bebce4a6770661207a606bc50af13155229882eebe98ca9704",
       "patch_id": "local7_safeway_moa_2025_07_05",
-      "patch_payload_sha256": "5bb1948948da7b672e36148a853ad4344ac29477240efdd589e1596bf370b03e",
+      "patch_payload_sha256": "5e263eeba32a97372e885c0721cb7218724112baff3468403aeb6df92dd47512",
       "ratified_date": "2025-07-05",
       "source_doc_id": "albertsons_safeway_moa_2025_07_05",
       "source_pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf"

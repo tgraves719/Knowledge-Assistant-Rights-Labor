@@ -22,11 +22,13 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
         const API_BASE = resolveApiBase();
         const ACTIVE_CONTRACT_STORAGE_KEY = 'karl_active_contract_id';
+        const CONTRACT_VIEW_MODE_STORAGE_KEY = 'karl_contract_view_mode';
         const CONTRACT_PDF_SOURCE_MODE_STORAGE_KEY = 'karl_contract_pdf_source_mode';
         const CONTRACT_TEXT_SOURCE_MODE_STORAGE_KEY = 'karl_contract_text_source_mode';
         const SESSION_ID_STORAGE_KEY = 'karl_session_id';
         const SESSION_META_STORAGE_KEY = 'karl_session_meta';
         const ONBOARDING_FLOW_STORAGE_KEY = 'karl_onboarding_flow';
+        const KARL_VERSION_FALLBACK = '0.8.110';
         let isHealthy = false;
         let userProfile = null;
         let availableContracts = [];
@@ -61,11 +63,15 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         let contractTextCompareOpen = false;
         let pdfNavRequestSeq = 0;
         let pendingPdfFrameSwapTimer = null;
+        let pendingEdgePdfSecondPassTimer = null;
         let stewardOnboarding = null;
         let memberOnboarding = null;
         let preferences = JSON.parse(localStorage.getItem('karl_preferences') || '{}');
+        let karlInfo = null;
+        let currentKarlDocId = null;
         let contractHistoryById = {};
         let activeContractHistory = null;
+        let contractViewerMode = String(localStorage.getItem(CONTRACT_VIEW_MODE_STORAGE_KEY) || 'effective_text').trim().toLowerCase() || 'effective_text';
         let contractPdfSourceMode = String(localStorage.getItem(CONTRACT_PDF_SOURCE_MODE_STORAGE_KEY) || 'effective').trim().toLowerCase() || 'effective';
         let contractPdfSourcePdf = null;
         let contractTextSourceMode = String(localStorage.getItem(CONTRACT_TEXT_SOURCE_MODE_STORAGE_KEY) || 'effective').trim().toLowerCase() || 'effective';
@@ -233,9 +239,24 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             return 'effective';
         }
 
+        function normalizeContractViewerMode(value) {
+            return String(value || '').trim().toLowerCase() === 'original_pdf'
+                ? 'original_pdf'
+                : 'effective_text';
+        }
+
+        function isOriginalPdfViewMode() {
+            return normalizeContractViewerMode(contractViewerMode) === 'original_pdf';
+        }
+
         function saveContractPdfSourceMode(mode) {
             contractPdfSourceMode = normalizeContractPdfSourceMode(mode);
             localStorage.setItem(CONTRACT_PDF_SOURCE_MODE_STORAGE_KEY, contractPdfSourceMode);
+        }
+
+        function saveContractViewerMode(mode) {
+            contractViewerMode = normalizeContractViewerMode(mode);
+            localStorage.setItem(CONTRACT_VIEW_MODE_STORAGE_KEY, contractViewerMode);
         }
 
         function normalizeContractTextSourceMode(value) {
@@ -562,9 +583,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             const history = getActiveContractHistory();
             const sourceMode = normalizeContractTextSourceMode(contractTextSourceMode);
             const sourceLabel = sourceMode === 'base' ? 'Previous/Base Text' : 'Materialized Effective Text';
+            const viewerLabel = isOriginalPdfViewMode() ? 'Original PDF reader' : 'Primary reader';
 
             if (provenanceEl) {
-                const bits = [`Text Source: ${sourceLabel}`];
+                const bits = [`Viewer: ${viewerLabel}`, `Text Source: ${sourceLabel}`];
                 if (target) {
                     bits.push(`Target: ${_contractTextTargetLabel(target)}`);
                 }
@@ -668,26 +690,140 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 .replace(/\n/g, ' ');
         }
 
+        function normalizeRoleClarificationPayload(payload) {
+            if (!payload || typeof payload !== 'object' || payload.needs_clarification !== true) {
+                return null;
+            }
+            const options = Array.isArray(payload.options)
+                ? payload.options
+                    .map((opt) => ({
+                        value: safeText(opt?.value),
+                        label: safeText(opt?.label) || safeText(opt?.value),
+                        role_family: safeText(opt?.role_family),
+                    }))
+                    .filter((opt) => opt.value && opt.label)
+                : [];
+            return {
+                needs_clarification: true,
+                role_family: safeText(payload.role_family),
+                matched_label: safeText(payload.matched_label),
+                message: safeText(payload.message),
+                options,
+            };
+        }
+
+        function buildRoleClarificationChoicesHtml(payload, options = {}) {
+            const normalized = normalizeRoleClarificationPayload(payload);
+            if (!normalized || !normalized.options.length) return '';
+            const retryQuestion = safeText(options?.retryQuestion);
+            const compact = options?.compact === true;
+            return `
+                <div class="flex flex-wrap gap-2 mt-2">
+                    ${normalized.options.map((option) => {
+                        const label = escapeHtml(option.label);
+                        const value = escapeJsSingleQuoted(option.value);
+                        const retryArg = retryQuestion ? `'${escapeJsSingleQuoted(retryQuestion)}'` : 'null';
+                        const classes = compact
+                            ? 'inline-flex items-center rounded-full border border-amber-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-amber-900 hover:bg-amber-100 transition-colors'
+                            : 'inline-flex items-center rounded-full border border-amber-300 bg-white px-3 py-1.5 text-xs font-semibold text-amber-900 hover:bg-amber-100 transition-colors';
+                        return `<button type="button" class="${classes}" onclick="handleRoleClarificationChoice('${value}', ${retryArg})">${label}</button>`;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function renderRoleClarificationPanel(targetId, payload, options = {}) {
+            const node = document.getElementById(targetId);
+            if (!node) return;
+
+            const normalized = normalizeRoleClarificationPayload(payload);
+            if (!normalized) {
+                node.innerHTML = '';
+                node.classList.add('hidden');
+                return;
+            }
+
+            const title = options?.title || 'Choose your exact classification';
+            node.innerHTML = `
+                <div class="flex items-start gap-2">
+                    <div class="mt-0.5 h-2.5 w-2.5 rounded-full bg-amber-500 shrink-0"></div>
+                    <div class="min-w-0">
+                        <p class="font-semibold">${escapeHtml(title)}</p>
+                        <p class="mt-1">${escapeHtml(normalized.message || 'I need your exact classification before I can apply the right contract rules.')}</p>
+                        ${buildRoleClarificationChoicesHtml(normalized, { compact: targetId === 'mo-role-clarification' })}
+                    </div>
+                </div>
+            `;
+            node.classList.remove('hidden');
+        }
+
+        function syncRoleClarificationPanels() {
+            const clarification = normalizeRoleClarificationPayload(userProfile?.role_clarification);
+            renderRoleClarificationPanel('onboard-role-clarification', clarification);
+            renderRoleClarificationPanel('settings-role-clarification', clarification);
+            renderRoleClarificationPanel('mo-role-clarification', clarification, { title: 'Pick the exact role Karl should use' });
+        }
+
+        async function handleRoleClarificationChoice(classificationValue, retryQuestion = null) {
+            const classification = safeText(classificationValue);
+            if (!classification) return false;
+
+            const payload = { classification };
+            const contractId = safeText(userProfile?.contract_id) || safeText(activeContract?.contract_id);
+            if (contractId) payload.contract_id = contractId;
+
+            const saved = await saveProfile(payload, {
+                allowIncomplete: true,
+                source: 'clarification',
+                suppressSuccessAlert: true,
+            });
+            if (saved && safeText(retryQuestion)) {
+                await sendQuery(safeText(retryQuestion));
+            }
+            return saved;
+        }
+
         function choosePreferredProvenanceRef(provenance, preferredMode = null) {
             const refs = Array.isArray(provenance) ? provenance.filter((row) => row && typeof row === 'object') : [];
             if (!refs.length) return null;
 
             const normalizedMode = normalizeContractPdfSourceMode(preferredMode);
-            const moaRefs = refs.filter((row) => {
-                const sourceType = safeText(row.source_type).toLowerCase();
-                const pdf = safeText(row.pdf).toLowerCase();
-                return sourceType.includes('moa') || sourceType.includes('amend') || pdf.includes('moa');
-            });
-            const baseRefs = refs.filter((row) => {
-                const sourceType = safeText(row.source_type).toLowerCase();
-                return sourceType.includes('base') || sourceType.includes('cba') || sourceType.includes('contract');
-            });
+            const rankRef = (row) => {
+                const sourceType = safeText(row?.source_type).toLowerCase();
+                const pdf = safeText(row?.pdf).toLowerCase();
+                const isMoa = sourceType.includes('moa') || sourceType.includes('amend') || pdf.includes('moa');
+                const isBase = sourceType.includes('base') || sourceType.includes('cba') || sourceType.includes('contract') || (!!pdf && !isMoa);
+                const page = Number.isFinite(Number(row?.pdf_page)) ? Number(row.pdf_page) : null;
+                const hasPage = page !== null && page > 0;
+                if (normalizedMode === 'moa') {
+                    if (isMoa && hasPage) return 0;
+                    if (hasPage) return 1;
+                    if (isMoa) return 2;
+                    if (isBase) return 3;
+                    return 9;
+                }
+                if (normalizedMode === 'base') {
+                    if (isBase && hasPage) return 0;
+                    if (hasPage) return 1;
+                    if (isBase) return 2;
+                    if (isMoa) return 3;
+                    return 9;
+                }
+                if (normalizedMode === 'effective') {
+                    if (isMoa && hasPage) return 0;
+                    if (isBase && hasPage) return 1;
+                    if (isMoa) return 2;
+                    if (isBase) return 3;
+                    if (hasPage) return 4;
+                    return 9;
+                }
+                if (hasPage) return 0;
+                if (isMoa) return 1;
+                if (isBase) return 2;
+                return 9;
+            };
 
-            if (normalizedMode === 'moa' && moaRefs.length) return moaRefs[0];
-            if (normalizedMode === 'base' && baseRefs.length) return baseRefs[0];
-            if (moaRefs.length && normalizedMode === 'effective') return moaRefs[0];
-            if (baseRefs.length) return baseRefs[0];
-            return refs[0];
+            return [...refs].sort((a, b) => rankRef(a) - rankRef(b))[0];
         }
 
         function resolveCitationSourceHint(source, preferredMode = null) {
@@ -710,6 +846,24 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             if (sourcePage !== null && sourcePage <= 0) sourcePage = null;
 
             return { sourceType, sourcePdf, sourceDocId, sourcePage };
+        }
+
+        function resolvePdfSourceHintFromPayload(payload, preferredMode = null) {
+            const row = payload && typeof payload === 'object' ? payload : {};
+            const directHint = resolveCitationSourceHint(row, preferredMode);
+            if (directHint.sourceType || directHint.sourcePdf || directHint.sourceDocId || directHint.sourcePage) {
+                return directHint;
+            }
+
+            const sections = Array.isArray(row.sections) ? row.sections : [];
+            for (const section of sections) {
+                const sectionHint = resolveCitationSourceHint(section, preferredMode);
+                if (sectionHint.sourceType || sectionHint.sourcePdf || sectionHint.sourceDocId || sectionHint.sourcePage) {
+                    return sectionHint;
+                }
+            }
+
+            return { sourceType: null, sourcePdf: null, sourceDocId: null, sourcePage: null };
         }
 
         function summarizeCitationProvenance(source) {
@@ -739,10 +893,69 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 }
             }
 
-            if (hasMoa && hasBase) return 'MOA+Base';
-            if (hasMoa) return 'MOA';
-            if (hasBase) return 'Base';
+            if (hasMoa && hasBase) return 'MOA + Base PDFs';
+            if (hasMoa) return 'MOA PDF';
+            if (hasBase) return 'Base PDF';
             return '';
+        }
+
+        function describePdfSourceType(sourceType, sourcePdf = null) {
+            const normalizedType = safeText(sourceType).toLowerCase();
+            const normalizedPdf = safeText(sourcePdf).toLowerCase();
+            if (normalizedType === 'moa' || normalizedType.includes('amend') || normalizedPdf.includes('moa')) {
+                return 'MOA PDF';
+            }
+            if (normalizedType === 'base' || normalizedType.includes('cba') || normalizedType.includes('contract')) {
+                return 'Base PDF';
+            }
+            if (normalizedPdf) {
+                return isMoaPdfName(normalizedPdf) ? 'MOA PDF' : 'Base PDF';
+            }
+            return 'Effective Auto';
+        }
+
+        function describePdfSourceChoice(choice = null) {
+            const row = choice && typeof choice === 'object' ? choice : {};
+            const bits = [describePdfSourceType(row.sourceType, row.sourcePdf)];
+            const page = Number.isFinite(Number(row.sourcePage)) ? Number(row.sourcePage) : null;
+            const pdf = safeText(row.sourcePdf) || null;
+            if (page && page > 0) bits.push(`p.${page}`);
+            if (pdf) bits.push(pdf);
+            return bits.join(' | ');
+        }
+
+        function describeTargetSourceOption(choice = null) {
+            const row = choice && typeof choice === 'object' ? choice : {};
+            const explicitLabel = safeText(row.label);
+            if (explicitLabel) return explicitLabel;
+            const key = safeText(row.key);
+            const sourceType = safeText(row.source_type || row.sourceType).toLowerCase();
+            const isPrevious = row.is_previous === true || sourceType === 'base';
+            const pdf = safeText(row.source_pdf || row.sourcePdf) || null;
+            const page = Number.isFinite(Number(row.page_number ?? row.sourcePage)) ? Number(row.page_number ?? row.sourcePage) : null;
+            if (key === 'effective_auto') {
+                return 'Latest article version (Auto)';
+            }
+            const bits = [isPrevious ? 'Original / base PDF' : 'Latest amended PDF'];
+            if (page && page > 0) bits.push(`p.${page}`);
+            if (pdf) bits.push(pdf);
+            return bits.join(' | ');
+        }
+
+        function describeResolvedPdfLocation(loc = null, sourceContext = null) {
+            const candidates = Array.isArray(loc?.source_candidates) ? loc.source_candidates : [];
+            const selectedKey = safeText(loc?.selected_source_key) || null;
+            const selected = selectedKey
+                ? (candidates.find((row) => safeText(row?.key) === selectedKey) || null)
+                : null;
+            if (selected) return describePdfSourceChoice({
+                sourceType: selected.source_type,
+                sourcePdf: selected.source_pdf,
+                sourcePage: selected.page_number,
+            });
+            const sourceType = safeText(sourceContext?.sourceType).toLowerCase() || null;
+            const sourcePdf = safeText(sourceContext?.sourcePdf) || null;
+            return describePdfSourceChoice({ sourceType, sourcePdf, sourcePage: null });
         }
 
         function getActiveContractHistory() {
@@ -815,10 +1028,14 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 };
             }
 
+            if (!isDeveloperModeEnabled()) {
+                return { sourceType: null, sourcePdf: null, sourceDocId: null, sourcePage: null };
+            }
+
             const mode = normalizeContractPdfSourceMode(contractPdfSourceMode);
             const history = getActiveContractHistory();
             if (mode === 'effective') {
-                return { sourceType: null, sourcePdf: null, sourcePage: null };
+                return { sourceType: null, sourcePdf: null, sourceDocId: null, sourcePage: null };
             }
 
             let sourcePdf = safeText(contractPdfSourcePdf) || null;
@@ -833,6 +1050,72 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             };
         }
 
+        function updateContractViewerModeUI() {
+            const content = document.getElementById('content-contract');
+            const pdfDevControls = document.getElementById('contract-pdf-dev-controls');
+            const textSourceControls = document.getElementById('contract-text-source-controls');
+            const mobileModeSelect = document.getElementById('contract-viewer-mode-select-mobile');
+            const desktopModeSelect = document.getElementById('contract-viewer-mode-select-desktop');
+            const developerOnlyControls = document.querySelectorAll('.contract-dev-only');
+            const isDeveloper = isDeveloperModeEnabled();
+            const mode = normalizeContractViewerMode(contractViewerMode);
+            const originalPdfMode = mode === 'original_pdf';
+
+            if (content) {
+                content.classList.toggle('contract-viewer-effective', !originalPdfMode);
+                content.classList.toggle('contract-viewer-original', originalPdfMode);
+            }
+            if (mobileModeSelect) mobileModeSelect.value = mode;
+            if (desktopModeSelect) desktopModeSelect.value = mode;
+            developerOnlyControls.forEach((el) => {
+                el.classList.toggle('hidden', !isDeveloper);
+            });
+            if (pdfDevControls) {
+                pdfDevControls.classList.toggle('hidden', !isDeveloper);
+            }
+            if (textSourceControls) {
+                textSourceControls.classList.toggle('hidden', !isDeveloper);
+            }
+            const comparePanel = document.getElementById('contract-text-compare-panel');
+            if (comparePanel) {
+                comparePanel.classList.toggle('hidden', originalPdfMode || !contractTextCompareOpen || !lastContractTextContext?.target);
+            }
+            renderCurrentTargetSourceControls();
+            if (currentPopover && typeof currentPopover === 'object') {
+                renderPopoverSourceControls();
+            }
+        }
+
+        async function ensureContractViewerSelection() {
+            const selectionKind = safeText(currentTocSelection?.kind).toLowerCase() || null;
+            const selectionKey = safeText(currentTocSelection?.key) || null;
+            if (selectionKind && selectionKey) {
+                return refreshCurrentContractTextPane();
+            }
+            const hasManifest = await ensureManifestLoaded();
+            if (!hasManifest) return false;
+            const firstArticle = getSortedArticleNumbers()[0] ?? null;
+            if (firstArticle === null) return false;
+            return loadArticle(firstArticle, { openPdf: false });
+        }
+
+        async function handleContractViewerModeChange(mode) {
+            saveContractViewerMode(mode);
+            if (!isDeveloperModeEnabled()) {
+                saveContractPdfSourceMode('effective');
+                contractPdfSourcePdf = null;
+                saveContractTextSourceMode('effective');
+            }
+            updateContractViewerModeUI();
+            renderContractHistoryPanel();
+            if (currentActiveTab !== 'contract') return;
+            if (isOriginalPdfViewMode()) {
+                await openContractPdfFromContractTab();
+                return;
+            }
+            await ensureContractViewerSelection();
+        }
+
         function renderContractHistoryPanel() {
             const panel = document.getElementById('contract-history-banner');
             const versionEl = document.getElementById('contract-history-version');
@@ -844,6 +1127,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             const modeSelect = document.getElementById('contract-source-mode-select');
             const sourceDocSelect = document.getElementById('contract-source-doc-select');
             const history = getActiveContractHistory();
+            const isDeveloper = isDeveloperModeEnabled();
 
             if (!panel || !versionEl || !hashEl || !amendmentsEl || !coverageEl || !timelineEl || !patchListEl || !modeSelect || !sourceDocSelect) {
                 return;
@@ -851,26 +1135,35 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
             if (!history) {
                 panel.classList.add('hidden');
-                coverageEl.textContent = 'Chunk coverage: --';
+                versionEl.textContent = 'Current Contract: --';
+                amendmentsEl.textContent = 'No applied amendments';
+                hashEl.textContent = 'Content ID: --';
+                coverageEl.textContent = 'Artifact coverage: --';
                 timelineEl.innerHTML = '';
+                patchListEl.innerHTML = '';
                 modeSelect.innerHTML = '<option value="effective">Effective</option>';
                 sourceDocSelect.innerHTML = '<option value="">Auto</option>';
                 sourceDocSelect.disabled = true;
+                updateContractViewerModeUI();
                 return;
             }
 
-            panel.classList.remove('hidden');
+            if (!isDeveloper) {
+                panel.classList.add('hidden');
+            } else {
+                panel.classList.remove('hidden');
+            }
 
             const effectiveVersion = safeText(history.effective_version_id);
             versionEl.textContent = effectiveVersion
-                ? `Effective Snapshot: ${effectiveVersion}`
-                : 'Effective Snapshot: Base Only';
+                ? `Current Contract: ${effectiveVersion}`
+                : 'Current Contract: Base agreement';
             const hash = safeText(history.effective_content_hash);
-            hashEl.textContent = hash ? `Content Hash: ${hash.slice(0, 16)}...` : 'Content Hash: unavailable';
+            hashEl.textContent = hash ? `Content ID: ${hash.slice(0, 16)}...` : 'Content ID: unavailable';
 
             const patchIds = Array.isArray(history.applied_patch_ids) ? history.applied_patch_ids : [];
             amendmentsEl.textContent = patchIds.length
-                ? `${patchIds.length} amendment${patchIds.length === 1 ? '' : 's'} applied`
+                ? `Includes ${patchIds.length} amendment${patchIds.length === 1 ? '' : 's'}`
                 : 'No applied amendments';
             const baseChunkTotal = Number.isFinite(Number(history.base_chunk_total))
                 ? Number(history.base_chunk_total)
@@ -890,11 +1183,11 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 const effectiveCount = Number(effectiveCounts[docType] || 0);
                 return `${docType}:${effectiveCount}/${baseCount}`;
             }).join(', ');
-            coverageEl.textContent = `Chunks base/effective: ${baseChunkTotal}/${effectiveChunkTotal}${typeCoverage ? ` | ${typeCoverage}` : ''}`;
+            coverageEl.textContent = `Artifacts current/base: ${effectiveChunkTotal}/${baseChunkTotal}${typeCoverage ? ` | ${typeCoverage}` : ''}`;
 
             const patches = Array.isArray(history.patches) ? history.patches : [];
             const timelinePills = [
-                `<span class="inline-flex items-center rounded border border-slate-300 bg-white px-2 py-0.5 text-[10px] font-medium text-slate-700">Base${safeText(history.base_pdf) ? `: ${escapeHtml(safeText(history.base_pdf))}` : ''}</span>`
+                `<span class="inline-flex items-center rounded border border-slate-300 bg-white px-2 py-0.5 text-[10px] font-medium text-slate-700">Base Agreement</span>`
             ];
             patches.forEach((patch) => {
                 const patchId = escapeHtml(safeText(patch.patch_id) || 'patch');
@@ -902,9 +1195,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 timelinePills.push('<span class="text-slate-400 text-[10px]">-></span>');
                 timelinePills.push(`<span class="inline-flex items-center rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-800">MOA ${patchId} (${date})</span>`);
             });
-            const effectiveLabel = escapeHtml(safeText(history.effective_version_id) || 'base_only');
+            const effectiveLabel = escapeHtml(safeText(history.effective_version_id) || 'Current Version');
             timelinePills.push('<span class="text-slate-400 text-[10px]">-></span>');
-            timelinePills.push(`<span class="inline-flex items-center rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-800">Effective ${effectiveLabel}</span>`);
+            timelinePills.push(`<span class="inline-flex items-center rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-800">Current Version ${effectiveLabel}</span>`);
             timelineEl.innerHTML = timelinePills.join('');
 
             patchListEl.innerHTML = patches.length
@@ -914,7 +1207,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                     const pdf = escapeHtml(safeText(patch.source_pdf) || '');
                     return `<span class="inline-flex items-center rounded border border-slate-200 bg-white px-2 py-0.5 text-[10px] text-slate-700">${patchId} (${date}${pdf ? `, ${pdf}` : ''})</span>`;
                 }).join('')
-                : '<span class="text-[10px] text-slate-500">No patch chain metadata available.</span>';
+                : '<span class="text-[10px] text-slate-500">No patch metadata available.</span>';
 
             const supportedModes = Array.isArray(history.source_modes) && history.source_modes.length
                 ? history.source_modes.map((v) => normalizeContractPdfSourceMode(v))
@@ -942,6 +1235,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 sourceDocSelect.innerHTML = '<option value="">Auto by citation provenance</option>';
                 sourceDocSelect.disabled = true;
                 contractPdfSourcePdf = null;
+                updateContractViewerModeUI();
                 return;
             }
 
@@ -949,6 +1243,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 sourceDocSelect.innerHTML = '<option value="">No source PDF available</option>';
                 sourceDocSelect.disabled = true;
                 contractPdfSourcePdf = null;
+                updateContractViewerModeUI();
                 return;
             }
 
@@ -958,6 +1253,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 contractPdfSourcePdf = uniqueSourceOptions[0];
             }
             sourceDocSelect.value = contractPdfSourcePdf;
+            updateContractViewerModeUI();
         }
 
         function handleContractSourceModeChange(mode) {
@@ -1077,11 +1373,19 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                     const option = document.createElement('option');
                     option.value = c.value;
                     const hasWage = c.wage_available !== false;
-                    option.textContent = hasWage
-                        ? c.label
-                        : `${c.label} (no Appendix A wage row)`;
+                    const needsClarification = c.requires_role_clarification === true;
+                    option.textContent = needsClarification
+                        ? `${c.label} (clarify exact role)`
+                        : (
+                            hasWage
+                                ? c.label
+                                : `${c.label} (no Appendix A wage row)`
+                        );
                     if (!hasWage) {
                         option.dataset.wageAvailable = 'false';
+                    }
+                    if (needsClarification) {
+                        option.dataset.requiresRoleClarification = 'true';
                     }
                     select.appendChild(option);
                 });
@@ -1102,7 +1406,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             }
 
             try {
-                const res = await fetch(`${API_BASE}/api/classifications?contract_id=${encodeURIComponent(contractId)}`);
+                const res = await fetch(`${API_BASE}/api/classifications?contract_id=${encodeURIComponent(contractId)}&include_unmapped=true`);
                 if (!res.ok) throw new Error(`Failed to load classifications: ${res.status}`);
                 const data = await res.json();
                 const classifications = data.classifications || [];
@@ -1168,18 +1472,29 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                     clearTimeout(pendingPdfFrameSwapTimer);
                     pendingPdfFrameSwapTimer = null;
                 }
+                if (pendingEdgePdfSecondPassTimer) {
+                    clearTimeout(pendingEdgePdfSecondPassTimer);
+                    pendingEdgePdfSecondPassTimer = null;
+                }
                 const overlay = document.getElementById('contract-pdf-overlay');
                 const frame = document.getElementById('contract-pdf-frame');
                 const label = document.getElementById('contract-pdf-location-label');
                 overlay?.classList.add('hidden');
                 if (frame) frame.src = '';
+                _setEdgePdfFallbackVisible(false);
                 if (label) label.textContent = 'Loading PDF location...';
                 renderContractHistoryPanel();
                 if (currentActiveTab === 'contract') {
                     initContractViewer();
-                    openContractPdfFromContractTab().catch((err) => {
-                        console.warn('Unable to reset contract PDF for new contract:', err);
-                    });
+                    if (isOriginalPdfViewMode()) {
+                        openContractPdfFromContractTab().catch((err) => {
+                            console.warn('Unable to reset contract PDF for new contract:', err);
+                        });
+                    } else {
+                        ensureContractViewerSelection().catch((err) => {
+                            console.warn('Unable to reset effective contract view for new contract:', err);
+                        });
+                    }
                 }
             }
         }
@@ -1272,6 +1587,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 mobileList?.classList.add('hidden');
                 chevron?.classList.remove('rotate-180');
             }
+            scheduleShellLayoutMetricsSync();
         }
 
         // Initialize TOC collapsed state
@@ -1283,6 +1599,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             mobileList?.classList.add('hidden');
             chevron?.classList.remove('rotate-180');
             tocExpanded = false;
+            scheduleShellLayoutMetricsSync();
         }
 
         // Handle window resize for tab bar active state
@@ -1301,7 +1618,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 btn.classList.remove('tab-active');
             });
 
-            const activeBtn = document.getElementById(`tab-${tab}`);
+            const activeBtn = document.getElementById(`tab-${tab}`) || (tab === 'karl' ? document.getElementById('tab-settings') : null);
             if (activeBtn) {
                 activeBtn.classList.add('tab-active');
             }
@@ -1333,11 +1650,18 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                         renderContractHistoryPanel();
                     }
                 }
-                // PDF-first contract reader: open on tab enter when profile context is available.
-                if (hasCompleteProfileContext() && !isContractPdfOverlayOpen()) {
-                    openContractPdfFromContractTab().catch((err) => {
-                        console.warn('Unable to open default contract PDF view:', err);
-                    });
+                if (hasCompleteProfileContext()) {
+                    if (isOriginalPdfViewMode()) {
+                        if (!isContractPdfOverlayOpen()) {
+                            openContractPdfFromContractTab().catch((err) => {
+                                console.warn('Unable to open default contract PDF view:', err);
+                            });
+                        }
+                    } else {
+                        ensureContractViewerSelection().catch((err) => {
+                            console.warn('Unable to load effective contract view:', err);
+                        });
+                    }
                 }
 
                 // Auto-open TOC on first visit to Contract tab (mobile only)
@@ -1410,6 +1734,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             if (Number.isFinite(Number(pageNumber)) && Number(pageNumber) > 0) {
                 params.push(`page=${Number(pageNumber)}`);
             }
+            params.push('view=FitH,0');
             // Hide default PDF viewer UI chrome when embedded.
             params.push('toolbar=0');
             params.push('navpanes=0');
@@ -1420,10 +1745,80 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         function _buildFullPdfViewerUrl(baseUrl, pageNumber = null) {
             const cleanBaseUrl = String(baseUrl || '').split('#')[0].trim();
             if (!cleanBaseUrl) return '';
+            const params = [];
             if (Number.isFinite(Number(pageNumber)) && Number(pageNumber) > 0) {
-                return `${cleanBaseUrl}#page=${Number(pageNumber)}`;
+                params.push(`page=${Number(pageNumber)}`);
             }
-            return cleanBaseUrl;
+            return `${cleanBaseUrl}#${params.join('&')}`;
+        }
+
+        function _buildEmbeddedPdfNavigationUrl(baseUrl, pageNumber = null) {
+            const cleanBaseUrl = String(baseUrl || '').split('#')[0].trim();
+            if (!cleanBaseUrl) return '';
+            const navUrl = new URL(cleanBaseUrl, window.location.origin);
+            navUrl.searchParams.set('_viewer_nav', String(Date.now()));
+            return _buildContractPdfUrl(navUrl.toString(), pageNumber);
+        }
+
+        function _isEdgeBrowser() {
+            const ua = String(window.navigator?.userAgent || '');
+            return ua.includes('Edg/');
+        }
+
+        function _replaceContractPdfFrame(nextSrc, options = {}) {
+            const currentFrame = document.getElementById('contract-pdf-frame');
+            if (!currentFrame) return null;
+            const replacement = currentFrame.cloneNode(false);
+            replacement.removeAttribute('src');
+            currentFrame.replaceWith(replacement);
+            const requestToken = Number.isFinite(Number(options?.requestToken))
+                ? Number(options.requestToken)
+                : null;
+            const baseUrl = safeText(options?.baseUrl) || null;
+            const pageNumber = Number.isFinite(Number(options?.pageNumber))
+                ? Number(options.pageNumber)
+                : null;
+            if (_isEdgeBrowser() && baseUrl) {
+                replacement.addEventListener('load', () => {
+                    if (pendingEdgePdfSecondPassTimer) {
+                        clearTimeout(pendingEdgePdfSecondPassTimer);
+                        pendingEdgePdfSecondPassTimer = null;
+                    }
+                    pendingEdgePdfSecondPassTimer = setTimeout(() => {
+                        if (requestToken !== null && requestToken !== pdfNavRequestSeq) return;
+                        if (replacement !== document.getElementById('contract-pdf-frame')) return;
+                        replacement.src = _buildEmbeddedPdfNavigationUrl(baseUrl, pageNumber);
+                    }, 180);
+                }, { once: true });
+            }
+            replacement.src = nextSrc;
+            return replacement;
+        }
+
+        function _setEdgePdfFallbackVisible(isVisible) {
+            const frame = document.getElementById('contract-pdf-frame');
+            const fallback = document.getElementById('contract-pdf-edge-fallback');
+            if (frame) frame.classList.toggle('hidden', !!isVisible);
+            if (fallback) {
+                fallback.classList.toggle('hidden', !isVisible);
+                fallback.classList.toggle('flex', !!isVisible);
+            }
+        }
+
+        function _openEdgePdfFallback(baseUrl, pageNumber = null, locationLabel = 'Contract PDF') {
+            const overlay = document.getElementById('contract-pdf-overlay');
+            const label = document.getElementById('contract-pdf-location-label');
+            currentPdfBaseUrl = String(baseUrl || '').trim() || null;
+            currentPdfPage = Number.isFinite(Number(pageNumber)) ? Number(pageNumber) : null;
+            if (overlay) overlay.classList.remove('hidden');
+            if (label) label.textContent = locationLabel;
+            _setEdgePdfFallbackVisible(true);
+            const viewerUrl = _buildFullPdfViewerUrl(currentPdfBaseUrl, currentPdfPage);
+            try {
+                window.open(viewerUrl, '_blank', 'noopener,noreferrer');
+            } catch (_) {
+                // Keep the in-pane fallback visible even if popup open fails.
+            }
         }
 
         function nextPdfNavToken() {
@@ -1475,10 +1870,29 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             const wrap = document.getElementById('contract-target-source-controls');
             const select = document.getElementById('contract-target-source-select');
             if (!wrap || !select) return;
+            if (!isOriginalPdfViewMode()) {
+                wrap.classList.add('hidden');
+                select.innerHTML = '';
+                return;
+            }
 
             const ctx = lastPdfNavigationContext;
             const target = ctx?.target || null;
-            const candidates = Array.isArray(ctx?.sourceCandidates) ? ctx.sourceCandidates : [];
+            const rawCandidates = Array.isArray(ctx?.sourceCandidates) ? ctx.sourceCandidates : [];
+
+            const candidateRank = (candidate = null) => {
+                const key = safeText(candidate?.key);
+                const sourceType = safeText(candidate?.source_type).toLowerCase();
+                if (key === 'effective_auto') return 0;
+                if (sourceType === 'moa') return 1;
+                if (sourceType === 'base') return 2;
+                return 3;
+            };
+            const candidates = [...rawCandidates].sort((a, b) => {
+                const rankDiff = candidateRank(a) - candidateRank(b);
+                if (rankDiff !== 0) return rankDiff;
+                return safeText(a?.label).localeCompare(safeText(b?.label));
+            });
 
             if (!target || candidates.length <= 1) {
                 wrap.classList.add('hidden');
@@ -1493,7 +1907,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
             select.innerHTML = candidates.map((candidate) => {
                 const key = escapeHtml(String(candidate?.key || ''));
-                const label = escapeHtml(String(candidate?.label || 'Source'));
+                const label = escapeHtml(describeTargetSourceOption(candidate));
                 const selectedAttr = String(candidate?.key || '') === selectedKey ? ' selected' : '';
                 return `<option value="${key}"${selectedAttr}>${label}</option>`;
             }).join('');
@@ -1501,28 +1915,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         }
 
         function updatePreviousPdfButtonState() {
-            const button = document.getElementById('contract-view-previous-btn');
-            const hint = document.getElementById('contract-view-previous-hint');
             renderCurrentTargetSourceControls();
-            if (!button) return;
-
-            const ctx = lastPdfNavigationContext;
-            const candidate = _findPreviousPdfSourceCandidate(ctx);
-            const hasPrevious = !!candidate;
-            button.disabled = !hasPrevious;
-            button.classList.toggle('opacity-50', !hasPrevious);
-            button.classList.toggle('cursor-not-allowed', !hasPrevious);
-
-            if (hint) {
-                if (!ctx?.target) {
-                    hint.textContent = '';
-                } else if (hasPrevious) {
-                    const page = Number.isFinite(Number(candidate?.page_number)) ? Number(candidate.page_number) : null;
-                    hint.textContent = page ? `Previous available (p.${page})` : 'Previous available';
-                } else {
-                    hint.textContent = 'No previous source for current selection';
-                }
-            }
         }
 
         function _rememberPdfNavigationContext(target, loc = null) {
@@ -1577,19 +1970,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             await openSourceChoiceForCurrentSelection(value);
         }
 
-        async function openPreviousForCurrentSelection() {
-            const ctx = lastPdfNavigationContext;
-            const target = ctx?.target;
-            const candidate = _findPreviousPdfSourceCandidate(ctx);
-            if (!target || !candidate) return false;
-            return openSourceChoiceForCurrentSelection(safeText(candidate.key) || 'previous_base');
-        }
-
         function _showContractPdfOverlay(baseUrl, pageNumber = null, locationLabel = 'Contract PDF', options = {}) {
             const overlay = document.getElementById('contract-pdf-overlay');
-            const frame = document.getElementById('contract-pdf-frame');
             const label = document.getElementById('contract-pdf-location-label');
-            if (!overlay || !frame || !baseUrl) return;
+            if (!overlay || !baseUrl) return;
             const requestToken = Number.isFinite(Number(options?.requestToken))
                 ? Number(options.requestToken)
                 : null;
@@ -1607,29 +1991,48 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 rememberPinnedPdfLocation(baseUrl, currentPdfPage, locationLabel);
             }
 
-            const nextSrc = _buildContractPdfUrl(currentPdfBaseUrl, currentPdfPage);
-            const previousSrc = String(frame.getAttribute('src') || '').trim();
-            const previousDoc = previousSrc.split('#')[0];
-            const nextDoc = nextSrc.split('#')[0];
+            if (_isEdgeBrowser() && isOriginalPdfViewMode()) {
+                _openEdgePdfFallback(currentPdfBaseUrl, currentPdfPage, locationLabel);
+                return;
+            }
+
+            _setEdgePdfFallbackVisible(false);
+
+            const nextSrc = _buildEmbeddedPdfNavigationUrl(currentPdfBaseUrl, currentPdfPage);
+            const frame = document.getElementById('contract-pdf-frame');
+            const previousSrc = String(frame?.getAttribute('src') || '').trim();
             if (pendingPdfFrameSwapTimer) {
                 clearTimeout(pendingPdfFrameSwapTimer);
                 pendingPdfFrameSwapTimer = null;
             }
+            if (pendingEdgePdfSecondPassTimer) {
+                clearTimeout(pendingEdgePdfSecondPassTimer);
+                pendingEdgePdfSecondPassTimer = null;
+            }
             if (forceReload) {
-                frame.src = 'about:blank';
                 pendingPdfFrameSwapTimer = setTimeout(() => {
                     if (requestToken !== null && requestToken !== pdfNavRequestSeq) return;
-                    frame.src = nextSrc;
-                }, 30);
-            } else if (previousSrc && previousDoc === nextDoc && previousSrc !== nextSrc) {
-                // Chromium's built-in PDF viewer can ignore hash-only changes in iframe.
-                frame.src = 'about:blank';
+                    _replaceContractPdfFrame(nextSrc, {
+                        requestToken,
+                        baseUrl: currentPdfBaseUrl,
+                        pageNumber: currentPdfPage,
+                    });
+                }, 60);
+            } else if (previousSrc && previousSrc !== nextSrc) {
                 pendingPdfFrameSwapTimer = setTimeout(() => {
                     if (requestToken !== null && requestToken !== pdfNavRequestSeq) return;
-                    frame.src = nextSrc;
-                }, 30);
+                    _replaceContractPdfFrame(nextSrc, {
+                        requestToken,
+                        baseUrl: currentPdfBaseUrl,
+                        pageNumber: currentPdfPage,
+                    });
+                }, 60);
             } else {
-                frame.src = nextSrc;
+                _replaceContractPdfFrame(nextSrc, {
+                    requestToken,
+                    baseUrl: currentPdfBaseUrl,
+                    pageNumber: currentPdfPage,
+                });
             }
         }
 
@@ -1730,6 +2133,14 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             const { preferSection = true } = options;
             const requestToken = nextPdfNavToken();
 
+            const openedAtArticleLevel = await openContractInPdf(
+                normalizedArticleNum,
+                null,
+                null,
+                { ...options, requestToken }
+            );
+            if (openedAtArticleLevel) return true;
+
             if (preferSection) {
                 const locator = await getFirstSectionLocator(normalizedArticleNum);
                 if (requestToken !== pdfNavRequestSeq) return false;
@@ -1739,12 +2150,12 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                         normalizedArticleNum,
                         normalizedSection,
                         locator?.partNum || null,
-                        { requestToken }
+                        { ...options, requestToken }
                     );
                     if (openedBySection) return true;
                 }
             }
-            return openContractInPdf(normalizedArticleNum, null, null, { requestToken });
+            return false;
         }
 
         async function openContractInPdf(articleNum, sectionNum = null, partNum = null, options = {}) {
@@ -1845,7 +2256,11 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                             ? `Table ${tableId} -> Contract PDF`
                             : (browseKind && browseKey)
                                 ? `${browseKind.toUpperCase()} ${browseKey} -> Contract PDF`
-                            : `Article ${normalizedArticleNum} -> Contract PDF`;
+                                : `Article ${normalizedArticleNum} -> Contract PDF`;
+                        if (_isEdgeBrowser() && isOriginalPdfViewMode()) {
+                            _openEdgePdfFallback(baseUrl, null, fallbackLabel);
+                            return true;
+                        }
                         _showContractPdfOverlay(baseUrl, null, fallbackLabel, { requestToken });
                         return true;
                     }
@@ -1885,11 +2300,16 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 const matchedBy = matchedByMap[String(loc?.matched_by || '')] || 'best effort';
                 const pageNumber = Number.isFinite(Number(loc?.page_number)) ? Number(loc.page_number) : null;
                 const pageLabel = pageNumber ? `Page ${pageNumber}` : 'Top of document';
-                const label = `${sectionLabel} -> ${pageLabel} (${matchedBy})`;
+                const sourceLabel = describeResolvedPdfLocation(loc, sourceContext);
+                const label = `${sectionLabel} -> ${pageLabel} (${matchedBy}${sourceLabel ? ` | ${sourceLabel}` : ''})`;
                 const rawPdfUrl = String(loc.pdf_url || '').trim();
                 const resolvedPdfUrl = /^https?:\/\//i.test(rawPdfUrl)
                     ? rawPdfUrl
                     : `${API_BASE}${rawPdfUrl.startsWith('/') ? '' : '/'}${rawPdfUrl}`;
+                if (_isEdgeBrowser() && isOriginalPdfViewMode()) {
+                    _openEdgePdfFallback(resolvedPdfUrl, pageNumber, label);
+                    return true;
+                }
                 _showContractPdfOverlay(resolvedPdfUrl, pageNumber, label, { requestToken });
                 return true;
             } catch (e) {
@@ -2142,7 +2562,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         }
 
         async function loadContractBrowseItem(kind, key, options = {}) {
-            const { openPdf = true } = options;
+            const { openPdf = isOriginalPdfViewMode() } = options;
             const contractId = getActiveContractId();
             const normalizedKind = safeText(kind).toLowerCase() || null;
             const normalizedKey = safeText(key) || null;
@@ -2155,9 +2575,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 toggleTOC();
             }
 
+            let data = null;
             try {
                 const textMode = normalizeContractTextSourceMode(contractTextSourceMode);
-                const data = await fetchContractBrowseItemForTextSource(normalizedKind, normalizedKey, textMode);
+                data = await fetchContractBrowseItemForTextSource(normalizedKind, normalizedKey, textMode);
                 renderNonArticleContent(data);
                 _rememberContractTextPayload(
                     { kind: normalizedKind, key: normalizedKey },
@@ -2178,6 +2599,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 {
                     browseKind: normalizedKind,
                     browseKey: normalizedKey,
+                    ...resolvePdfSourceHintFromPayload(data, normalizeContractTextSourceMode(contractTextSourceMode)),
                 }
             );
         }
@@ -2195,16 +2617,16 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                     data,
                     textMode,
                 );
-                return true;
+                return data;
             } catch (err) {
                 console.error('Failed to load article text:', err);
                 renderNonArticleContent(null, { error: 'Failed to load article text.' });
-                return false;
+                return null;
             }
         }
 
         async function loadArticle(articleNum, options = {}) {
-            const { openPdf = true } = options;
+            const { openPdf = isOriginalPdfViewMode() } = options;
             const contractId = getActiveContractId();
             const normalizedArticleNum = toPositiveIntOrNull(articleNum);
             if (!contractId || normalizedArticleNum === null) return false;
@@ -2216,10 +2638,13 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 toggleTOC();
             }
 
-            await loadArticleTextForCurrentMode(normalizedArticleNum);
+            const articleData = await loadArticleTextForCurrentMode(normalizedArticleNum);
 
             if (!openPdf) return true;
-            return openArticleInPdf(normalizedArticleNum, { preferSection: true });
+            return openArticleInPdf(normalizedArticleNum, {
+                preferSection: true,
+                ...resolvePdfSourceHintFromPayload(articleData, normalizeContractTextSourceMode(contractTextSourceMode)),
+            });
         }
 
         function _isMarkdownTableSeparator(line) {
@@ -2289,6 +2714,13 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 return `%%PH${idx}%%`;
             });
 
+            // Convert ### Headings to placeholder
+            processed = processed.replace(/^### (.+)$/gm, (match, content) => {
+                const idx = placeholders.length;
+                placeholders.push(`<h4 class="text-sm font-semibold text-slate-800 mt-3 mb-2">${escapeHtml(content)}</h4>`);
+                return `%%PH${idx}%%`;
+            });
+
             // Convert ## Headings to placeholder
             processed = processed.replace(/^## (.+)$/gm, (match, content) => {
                 const idx = placeholders.length;
@@ -2323,6 +2755,130 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             processed = processed.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>');
             processed = processed.replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-slate-100 text-[11px]">$1</code>');
             return processed;
+        }
+
+        function getPreferredResponseTone() {
+            return safeText(preferences.responseTone).toLowerCase() || 'calm';
+        }
+
+        function getPreferredResponseVerbosity() {
+            return safeText(preferences.responseVerbosity).toLowerCase() || 'balanced';
+        }
+
+        function updateKarlVersionUI() {
+            const version = safeText(karlInfo?.version) || KARL_VERSION_FALLBACK;
+            const releaseChannel = safeText(karlInfo?.release_channel);
+            const versionLabel = `KARL v${version}`;
+            const settingsVersion = document.getElementById('settings-karl-version');
+            const metaLine = document.getElementById('karl-meta-line');
+            if (settingsVersion) settingsVersion.textContent = versionLabel;
+            if (metaLine) {
+                metaLine.textContent = releaseChannel ? `${versionLabel} · ${releaseChannel}` : versionLabel;
+            }
+        }
+
+        function populateKarlDocSelect() {
+            const select = document.getElementById('karl-doc-select');
+            if (!select) return;
+            const docs = Array.isArray(karlInfo?.documents) ? karlInfo.documents : [];
+            const previousValue = currentKarlDocId || select.value || '';
+            const options = ['<option value="">Select a document...</option>'];
+            docs.forEach((doc) => {
+                const id = safeText(doc?.id);
+                const title = safeText(doc?.title) || id;
+                if (!id) return;
+                options.push(`<option value="${escapeHtml(id)}">${escapeHtml(title)}</option>`);
+            });
+            select.innerHTML = options.join('');
+            if (previousValue && docs.some((doc) => safeText(doc?.id) === previousValue)) {
+                select.value = previousValue;
+            }
+        }
+
+        async function loadKarlInfo(force = false) {
+            if (karlInfo && !force) {
+                updateKarlVersionUI();
+                populateKarlDocSelect();
+                return karlInfo;
+            }
+            const res = await fetch(`${API_BASE}/api/karl/info`);
+            if (!res.ok) {
+                throw new Error(`Unable to load KARL info (${res.status})`);
+            }
+            karlInfo = await res.json();
+            updateKarlVersionUI();
+            populateKarlDocSelect();
+            return karlInfo;
+        }
+
+        function renderKarlDoc(doc) {
+            const viewer = document.getElementById('karl-doc-viewer');
+            if (!viewer) return;
+            if (!doc) {
+                viewer.innerHTML = '<p class="text-slate-500">Document unavailable.</p>';
+                return;
+            }
+            const title = safeText(doc.title) || 'KARL Document';
+            const path = safeText(doc.path);
+            viewer.innerHTML = `
+                <article class="max-w-none">
+                    <header class="mb-6 border-b border-slate-200 pb-4">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">KARL Library</p>
+                        <h1 class="mt-1 text-2xl font-semibold text-slate-900">${escapeHtml(title)}</h1>
+                        ${path ? `<p class="mt-2 text-xs text-slate-500">${escapeHtml(path)}</p>` : ''}
+                    </header>
+                    <div class="text-sm leading-relaxed text-slate-700 whitespace-pre-wrap">${renderMarkdown(doc.content || '')}</div>
+                </article>
+            `;
+        }
+
+        async function loadKarlDoc(docId) {
+            const normalizedId = safeText(docId);
+            if (!normalizedId) return;
+            currentKarlDocId = normalizedId;
+            const viewer = document.getElementById('karl-doc-viewer');
+            if (viewer) {
+                viewer.innerHTML = '<p class="text-slate-500">Loading KARL document...</p>';
+            }
+            const res = await fetch(`${API_BASE}/api/karl/doc/${encodeURIComponent(normalizedId)}`);
+            if (!res.ok) {
+                throw new Error(`Unable to load KARL document (${res.status})`);
+            }
+            const doc = await res.json();
+            renderKarlDoc(doc);
+            const select = document.getElementById('karl-doc-select');
+            if (select) select.value = normalizedId;
+        }
+
+        async function handleKarlDocChange(docId) {
+            if (!safeText(docId)) return;
+            try {
+                await loadKarlDoc(docId);
+            } catch (error) {
+                const viewer = document.getElementById('karl-doc-viewer');
+                if (viewer) {
+                    viewer.innerHTML = `<p class="text-red-600">${escapeHtml(error.message || 'Unable to load KARL document.')}</p>`;
+                }
+            }
+        }
+
+        async function openKarlTab(docId = null) {
+            setActiveTab('karl');
+            try {
+                await loadKarlInfo();
+                const fallbackDocId = safeText(docId) || currentKarlDocId || safeText(karlInfo?.documents?.[0]?.id);
+                if (fallbackDocId) {
+                    await loadKarlDoc(fallbackDocId);
+                } else {
+                    renderKarlDoc(null);
+                }
+            } catch (error) {
+                const viewer = document.getElementById('karl-doc-viewer');
+                updateKarlVersionUI();
+                if (viewer) {
+                    viewer.innerHTML = `<p class="text-red-600">${escapeHtml(error.message || 'Unable to load KARL materials.')}</p>`;
+                }
+            }
         }
 
         function renderNonArticleContent(data, options = {}) {
@@ -2424,8 +2980,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         async function navigateToArticle(articleNum, sectionNum = null, partNum = null) {
             setActiveTab('contract');
             const normalizedSectionNum = toPositiveIntOrNull(sectionNum);
-            const openedArticle = await loadArticle(articleNum, { openPdf: normalizedSectionNum === null });
+            const openedArticle = await loadArticle(articleNum, { openPdf: normalizedSectionNum === null && isOriginalPdfViewMode() });
             if (sectionNum) {
+                if (!isOriginalPdfViewMode()) return openedArticle;
                 const openedSection = await openContractInPdf(articleNum, sectionNum, partNum);
                 return openedSection || openedArticle;
             }
@@ -2492,19 +3049,28 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 if (normalizedArticleNum !== null) {
                     setActiveArticleInToc(normalizedArticleNum);
                 }
-                openContractInPdf(
-                    normalizedArticleNum,
-                    normalizedSectionNum,
-                    partNum,
-                    {
-                        tableId: normalizedTableId,
-                        rowIndex: normalizedRowIndex,
-                        sourceType: normalizedSourceType,
-                        sourcePdf: normalizedSourcePdf,
-                        sourcePage: normalizedSourcePage,
-                        sourceDocId: normalizedSourceDocId,
-                    }
-                );
+                if (normalizedArticleNum !== null) {
+                    const shouldOpenArticlePdf =
+                        isOriginalPdfViewMode()
+                        && normalizedSectionNum === null
+                        && normalizedTableId === null;
+                    loadArticle(normalizedArticleNum, { openPdf: shouldOpenArticlePdf }).catch(() => {});
+                }
+                if (isOriginalPdfViewMode() || normalizedArticleNum === null || normalizedTableId) {
+                    openContractInPdf(
+                        normalizedArticleNum,
+                        normalizedSectionNum,
+                        partNum,
+                        {
+                            tableId: normalizedTableId,
+                            rowIndex: normalizedRowIndex,
+                            sourceType: normalizedSourceType,
+                            sourcePdf: normalizedSourcePdf,
+                            sourcePage: normalizedSourcePage,
+                            sourceDocId: normalizedSourceDocId,
+                        }
+                    );
+                }
             } else {
                 showPopover(
                     normalizedArticleNum,
@@ -2659,6 +3225,11 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             const wrap = document.getElementById('popover-source-controls');
             const select = document.getElementById('popover-source-select');
             if (!wrap || !select) return;
+            if (!isDeveloperModeEnabled() || !isOriginalPdfViewMode()) {
+                wrap.classList.add('hidden');
+                select.innerHTML = '';
+                return;
+            }
 
             const choices = Array.isArray(currentPopover.sourceChoices) ? currentPopover.sourceChoices : [];
             if (choices.length <= 1) {
@@ -2690,6 +3261,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             const loadingEl = document.getElementById('popover-loading');
             const textEl = document.getElementById('popover-text');
             const summaryEl = document.getElementById('popover-summary');
+            const openBtn = document.getElementById('popover-open-contract-btn');
             const tableId = String(options?.tableId || '').trim() || null;
             const rowIndex = Number.isFinite(Number(options?.rowIndex)) ? Number(options.rowIndex) : null;
             const citationLabel = options?.citationLabel ? String(options.citationLabel) : null;
@@ -2722,6 +3294,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 selectedSourceChoiceKey: sourceChoiceState.selectedKey,
             };
             renderPopoverSourceControls();
+            if (openBtn) {
+                openBtn.textContent = isOriginalPdfViewMode() ? 'Open In Original PDF' : 'Open In Contract Viewer';
+            }
 
             // Set title
             let title = citationLabel || '';
@@ -2736,7 +3311,20 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 }
             }
             titleEl.textContent = title;
-            subtitleEl.textContent = '';
+            const summaryBits = [];
+            const selectedSource = sourceChoiceState.choices.find((choice) => safeText(choice?.key) === sourceChoiceState.selectedKey) || null;
+            if (selectedSource && safeText(selectedSource.key) !== 'effective_auto') {
+                summaryBits.push(describePdfSourceChoice(selectedSource));
+            } else {
+                summaryBits.push(isOriginalPdfViewMode() ? 'Original PDF follows effective provenance by default.' : 'Effective contract view is the default reader.');
+            }
+            if (sourceChoiceState.choices.length > 1) {
+                summaryBits.push('Use the PDF Source menu in the contract viewer to switch between latest and original versions.');
+            }
+            subtitleEl.textContent = summaryBits[0] || '';
+            if (summaryEl) {
+                summaryEl.textContent = summaryBits.join(' ');
+            }
 
             // Show loading
             loadingEl.classList.remove('hidden');
@@ -2763,7 +3351,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
                 if (articleNum === null && tableId) {
                     textEl.innerHTML = renderPopoverMarkdown(
-                        'This citation points to a table reference. Use **Open In Contract PDF** to jump directly to the table.'
+                        'This citation points to a table reference. Use **Open In Contract Viewer** to jump directly to the table.'
                     );
                     summaryEl.innerHTML = renderInlineMarkdown(
                         rowIndex !== null ? `Table ${tableId}, Row ${rowIndex + 1}` : `Table ${tableId}`
@@ -2870,13 +3458,20 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 ? (sourceChoices.find((choice) => safeText(choice?.key) === selectedSourceChoiceKey) || null)
                 : null;
             if (articleNum === null && !tableId) return;
+            const shouldOpenPdf = isOriginalPdfViewMode() || articleNum === null || !!tableId;
+            const stayInCurrentTab = _isEdgeBrowser() && isOriginalPdfViewMode() && shouldOpenPdf;
 
-            setActiveTab('contract');
+            if (!stayInCurrentTab) {
+                setActiveTab('contract');
+            }
             if (articleNum !== null) {
                 currentArticleNum = articleNum;
                 setActiveArticleInToc(articleNum);
-                await loadArticle(articleNum, { openPdf: false });
+                if (!stayInCurrentTab) {
+                    await loadArticle(articleNum, { openPdf: false });
+                }
             }
+            if (!shouldOpenPdf) return true;
             const opened = await openContractInPdf(
                 articleNum,
                 sectionNum,
@@ -2932,12 +3527,17 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 }
 
                 userProfile = profile;
+                syncRoleClarificationPanels();
                 if (profile.contract_id) {
                     updateProfileDisplay();
                     ensureSessionMeta(SESSION_ID).contract_id = profile.contract_id || null;
                     ensureSessionMeta(SESSION_ID).classification = profile.classification || null;
                     saveSessionMetaStore();
-                    hideOnboarding();
+                    if (profile.role_clarification && !profile.classification) {
+                        showOnboarding();
+                    } else {
+                        hideOnboarding();
+                    }
                 } else {
                     const hydrated = await hydrateProfileFromCache();
                     if (!hydrated) {
@@ -2957,6 +3557,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
         async function saveProfile(data, options = {}) {
             const allowIncomplete = options?.allowIncomplete === true;
+            const source = safeText(options?.source).toLowerCase();
             try {
                 const payload = {};
                 Object.entries(data || {}).forEach(([key, value]) => {
@@ -2990,15 +3591,31 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
                 const currentContractId = (userProfile?.contract_id || '').trim().toLowerCase();
                 const currentClassification = (userProfile?.classification || '').trim().toLowerCase();
+                const currentEmploymentType = String(userProfile?.employment_type || '').trim().toLowerCase();
+                const currentHireMonth = String(userProfile?.hire_date || '').trim().slice(0, 7).toLowerCase();
                 const contractChanged = !!nextContractId && nextContractId.trim().toLowerCase() !== currentContractId;
                 const classificationChanged =
                     typeof nextClassification === 'string' &&
                     nextClassification.trim().toLowerCase() !== currentClassification;
+                const nextEmploymentType = typeof payload.employment_type === 'string'
+                    ? payload.employment_type.trim().toLowerCase()
+                    : currentEmploymentType;
+                const nextHireMonth = typeof payload.hire_date === 'string'
+                    ? payload.hire_date.trim().slice(0, 7).toLowerCase()
+                    : currentHireMonth;
+                const employmentTypeChanged =
+                    typeof payload.employment_type === 'string' &&
+                    nextEmploymentType !== currentEmploymentType;
+                const hireMonthChanged =
+                    typeof payload.hire_date === 'string' &&
+                    nextHireMonth !== currentHireMonth;
 
-                if ((contractChanged || classificationChanged) && hasSubmittedChatText()) {
+                if ((contractChanged || classificationChanged || employmentTypeChanged || hireMonthChanged) && hasSubmittedChatText()) {
                     const changedParts = [];
                     if (contractChanged) changedParts.push('contract/store');
                     if (classificationChanged) changedParts.push('job classification');
+                    if (employmentTypeChanged) changedParts.push('employment type');
+                    if (hireMonthChanged) changedParts.push('hire date');
                     const confirmed = confirm(
                         `Changing ${changedParts.join(' and ')} will start a new chat and clear current chat context. Continue?`
                     );
@@ -3022,10 +3639,20 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                     setActiveContract(userProfile.contract_id, { persist: true, refreshViewer: true, preserveClassification: false });
                     await loadClassificationsForContract(userProfile.contract_id, { preserveSelection: false });
                 }
+                syncRoleClarificationPanels();
                 updateProfileDisplay();
                 ensureSessionMeta(SESSION_ID).contract_id = userProfile.contract_id || null;
                 ensureSessionMeta(SESSION_ID).classification = userProfile.classification || null;
                 saveSessionMetaStore();
+                syncSettingsForm();
+                const hasRoleClarification = !!normalizeRoleClarificationPayload(userProfile?.role_clarification);
+                if (hasRoleClarification && !safeText(userProfile?.classification)) {
+                    if (source === 'member' || source === 'steward') {
+                        showOnboarding();
+                    }
+                    updateInteractionLock();
+                    return false;
+                }
                 hideOnboarding();
                 updateInteractionLock();
                 return true;
@@ -3045,7 +3672,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             }
 
             document.getElementById('display-classification').textContent =
-                userProfile.classification_display || userProfile.classification || 'Not set';
+                userProfile.classification_display
+                || userProfile.classification
+                || (normalizeRoleClarificationPayload(userProfile.role_clarification) ? 'Clarify role' : 'Not set');
 
             if (userProfile.months_employed) {
                 const years = Math.floor(userProfile.months_employed / 12);
@@ -3057,6 +3686,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             } else {
                 document.getElementById('display-tenure').textContent = '--';
             }
+            syncRoleClarificationPanels();
             updateInteractionLock();
         }
 
@@ -3070,6 +3700,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             if (userProfile.classification) {
                 document.getElementById('settings-classification').value = userProfile.classification;
                 document.getElementById('onboard-classification').value = userProfile.classification;
+            } else {
+                document.getElementById('settings-classification').value = '';
+                document.getElementById('onboard-classification').value = '';
             }
             if (userProfile.employment_type) {
                 const radio = document.querySelector(`input[name="settings_employment"][value="${userProfile.employment_type}"]`);
@@ -3084,7 +3717,11 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             // Sync preferences
             document.getElementById('pref-text-size').value = preferences.textSize || 'medium';
             document.getElementById('pref-citation-style').value = preferences.citationStyle || 'popover';
+            document.getElementById('pref-response-tone').value = getPreferredResponseTone();
+            document.getElementById('pref-response-verbosity').value = getPreferredResponseVerbosity();
+            updateKarlVersionUI();
             updateDeveloperModeUI(isDeveloperModeEnabled());
+            syncRoleClarificationPanels();
         }
 
         async function saveSettingsProfile() {
@@ -3126,6 +3763,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         function updateDeveloperModeUI(isEnabled) {
             const toggle = document.getElementById('developer-mode-toggle');
             const dot = document.getElementById('developer-mode-dot');
+            const pdfHeaderCopy = document.getElementById('contract-pdf-header-copy');
+            const textHeaderCopy = document.getElementById('contract-text-header-copy');
+            const historyBanner = document.getElementById('contract-history-banner');
             if (isEnabled) {
                 toggle?.classList.remove('bg-slate-200');
                 toggle?.classList.add('bg-ufcw-blue');
@@ -3135,6 +3775,16 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 toggle?.classList.remove('bg-ufcw-blue');
                 dot?.classList.remove('translate-x-5');
             }
+            if (!isEnabled) {
+                saveContractPdfSourceMode('effective');
+                contractPdfSourcePdf = null;
+                saveContractTextSourceMode('effective');
+            }
+            pdfHeaderCopy?.classList.toggle('hidden', !isEnabled);
+            textHeaderCopy?.classList.toggle('hidden', !isEnabled);
+            historyBanner?.classList.toggle('hidden', !isEnabled);
+            updateContractViewerModeUI();
+            renderContractHistoryPanel();
         }
 
         // Dark mode
@@ -3246,6 +3896,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             const root = document.documentElement;
             const header = document.getElementById('main-header');
             const tabBar = document.getElementById('tab-bar');
+            const tocHeaderMobile = document.getElementById('toc-header-mobile');
             const isDesktop = window.matchMedia('(min-width: 768px)').matches;
 
             if (header) {
@@ -3264,6 +3915,18 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                     } else {
                         root.style.setProperty('--mobile-tabbar-height', `${tabHeight}px`);
                     }
+                }
+            }
+
+            if (tocHeaderMobile && !isDesktop) {
+                const tocHeight = Math.ceil(tocHeaderMobile.getBoundingClientRect().height);
+                if (tocHeight > 0) {
+                    root.style.setProperty('--mobile-contract-toc-height', `${tocHeight}px`);
+                }
+                const firstRow = tocHeaderMobile.firstElementChild;
+                const bannerHeight = firstRow ? Math.ceil(firstRow.getBoundingClientRect().height) : 0;
+                if (bannerHeight > 0) {
+                    root.style.setProperty('--mobile-contract-toc-banner-height', `${bannerHeight}px`);
                 }
             }
         }
@@ -3469,6 +4132,28 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             return processed;
         }
 
+        function buildRoleClarificationCardHtml(payload, options = {}) {
+            const normalized = normalizeRoleClarificationPayload(payload);
+            if (!normalized) return '';
+            const retryQuestion = safeText(options?.retryQuestion);
+            return `
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3">
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 bg-amber-100 rounded-full flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M10.29 3.86l-7.5 13A1 1 0 003.66 18h16.68a1 1 0 00.87-1.5l-7.5-13a1 1 0 00-1.74 0z"/>
+                            </svg>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Need exact role</p>
+                            <p class="mt-1 text-sm text-amber-950">${escapeHtml(normalized.message || 'I need your exact classification before I can apply the right contract rules.')}</p>
+                            ${buildRoleClarificationChoicesHtml(normalized, { retryQuestion })}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         function addMessage(content, isUser = false, metadata = null) {
             const container = document.getElementById('chat-container');
             const msgDiv = document.createElement('div');
@@ -3498,7 +4183,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                             ${metadata.citations.map(c => {
                                 const source = sourceByCitation.get(String(c || '').trim().toLowerCase()) || {};
                                 const sourceRegistryKey = registerCitationSourceRecord(source);
-                                const hint = resolveCitationSourceHint(source, contractPdfSourceMode);
+                                const hint = resolveCitationSourceHint(source, isDeveloperModeEnabled() ? contractPdfSourceMode : 'effective');
                                 const provenanceLabel = summarizeCitationProvenance(source);
                                 const provenanceHtml = provenanceLabel
                                     ? `<span class="text-[9px] font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(provenanceLabel)}</span>`
@@ -3598,13 +4283,26 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                                         const rate = typeof row?.rate === 'number'
                                             ? `$${row.rate.toFixed(2)}`
                                             : '';
+                                        const hint = resolveCitationSourceHint(row, isDeveloperModeEnabled() ? contractPdfSourceMode : 'effective');
+                                        const provenanceLabel = summarizeCitationProvenance(row);
+                                        const rawTableId = row?.table_id ? escapeJsSingleQuoted(String(row.table_id)) : null;
+                                        const rowIndexArg = Number.isInteger(row?.row_index) ? row.row_index : 'null';
+                                        const sourceTypeArg = hint.sourceType ? `'${escapeJsSingleQuoted(hint.sourceType)}'` : 'null';
+                                        const sourcePdfArg = hint.sourcePdf ? `'${escapeJsSingleQuoted(hint.sourcePdf)}'` : 'null';
+                                        const sourceDocIdArg = hint.sourceDocId ? `'${escapeJsSingleQuoted(hint.sourceDocId)}'` : 'null';
+                                        const sourcePageArg = hint.sourcePage !== null ? hint.sourcePage : 'null';
+                                        const clickHandler = rawTableId
+                                            ? `onclick="handleCitationClick(event, null, null, null, '${rawTableId}', ${rowIndexArg}, 'Appendix A', ${sourceTypeArg}, ${sourcePdfArg}, ${sourcePageArg}, ${sourceDocIdArg}, null)"`
+                                            : '';
+                                        const tagName = rawTableId ? 'button' : 'div';
                                         return `
-                                            <div class="bg-white/70 border border-green-200 rounded px-2 py-1 text-[11px] text-green-800 flex flex-wrap items-center gap-x-2">
+                                            <${tagName} ${clickHandler} class="bg-white/70 border border-green-200 rounded px-2 py-1 text-[11px] text-green-800 flex flex-wrap items-center gap-x-2 ${rawTableId ? 'w-full text-left hover:bg-green-100 transition-colors cursor-pointer' : ''}">
                                                 <span class="font-semibold">${tableId}</span>
                                                 <span>${escapeHtml(rowLabel)}</span>
                                                 <span>${step}</span>
                                                 <span class="font-semibold">${rate}</span>
-                                            </div>
+                                                ${provenanceLabel ? `<span class="ml-auto text-[9px] font-semibold uppercase tracking-wide text-green-700">${escapeHtml(provenanceLabel)}</span>` : ''}
+                                            </${tagName}>
                                         `;
                                     }).join('')}
                                 </div>
@@ -3650,10 +4348,16 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                     `;
                 }
 
+                const roleClarificationHtml = buildRoleClarificationCardHtml(
+                    metadata?.role_clarification,
+                    { retryQuestion: metadata?.retry_question }
+                );
+
                 msgDiv.innerHTML = `
                     <div class="bg-white border border-slate-200 rounded-2xl rounded-bl-sm px-4 py-3 max-w-[95%] shadow-sm">
                         <div class="text-sm text-slate-700 leading-relaxed">${formatResponse(content)}</div>
                         ${wageHtml}
+                        ${roleClarificationHtml}
                         ${escalationHtml}
                         ${citationsHtml}
                     </div>
@@ -3721,7 +4425,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                         union_local_id: contract.union_local_id,
                         contract_id: contract.contract_id,
                         contract_version: contract.contract_version,
-                        session_id: SESSION_ID
+                        session_id: SESSION_ID,
+                        response_tone: getPreferredResponseTone(),
+                        response_verbosity: getPreferredResponseVerbosity(),
                     })
                 });
 
@@ -3744,8 +4450,12 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                     citations: data.citations,
                     sources: data.sources,
                     wage_info: data.wage_info,
+                    role_clarification: data.role_clarification,
+                    retry_question: question,
                     escalation_required: data.escalation_required,
-                    avatar_outcome: data.escalation_required ? 'question' : 'confirm'
+                    avatar_outcome: data.role_clarification
+                        ? 'question'
+                        : (data.escalation_required ? 'question' : 'confirm')
                 });
 
             } catch (error) {
@@ -3821,6 +4531,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             }
 
             // Initialize tab bar with correct active state
+            loadKarlInfo().catch(() => {
+                updateKarlVersionUI();
+            });
             setActiveTab('chat');
             scheduleShellLayoutMetricsSync();
             updateInteractionLock();
@@ -3831,12 +4544,14 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 Object.assign(window, {
     hidePopover,
     handlePopoverSourceChoiceChange,
+    handleRoleClarificationChoice,
     expandToContract,
     toggleDatePicker,
     changeYear,
     quickSelect,
     setActiveTab,
     toggleTOC,
+    handleContractViewerModeChange,
     openContractPdfFromContractTab,
     handleContractSourceModeChange,
     handleContractSourceDocChange,
@@ -3844,12 +4559,13 @@ Object.assign(window, {
     handleCurrentTargetSourceChange,
     toggleContractTextCompare,
     resetContractPdfView,
-    openPreviousForCurrentSelection,
     downloadContractPdf,
     openPdfInNewTab,
     closeContractPdfOverlay,
     askQuestion,
     saveSettingsProfile,
+    openKarlTab,
+    handleKarlDocChange,
     toggleDarkMode,
     toggleDeveloperMode,
     clearSession,

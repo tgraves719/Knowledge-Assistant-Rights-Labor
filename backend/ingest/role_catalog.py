@@ -17,7 +17,12 @@ from typing import Any
 from backend.ingest.extract_wages import normalize_classification_name
 
 
-ROLE_CATALOG_SCHEMA_VERSION = "role_catalog_v1"
+ROLE_CATALOG_SCHEMA_VERSION = "role_catalog_v2"
+_AMBIGUOUS_MANAGEMENT_VALUES = {
+    "assistant_manager",
+    "manager_trainee",
+    "other_assistant_managers",
+}
 
 
 def _prettify_role_label(value: str) -> str:
@@ -83,6 +88,21 @@ def _sorted_unique_nonempty(values: list[str]) -> list[str]:
         seen.add(value)
         out.append(value)
     return sorted(out)
+
+
+def _requires_role_clarification(role: dict) -> bool:
+    value = normalize_classification_name(str(role.get("value") or ""))
+    label = str(role.get("label") or "").strip().lower()
+    wage_key = normalize_classification_name(str(role.get("wage_key") or ""))
+    review_state = str(role.get("review_state") or "").strip().lower()
+    blob = " ".join(part for part in [value, label, wage_key] if part)
+    if review_state == "needs_clarification":
+        return True
+    if value in _AMBIGUOUS_MANAGEMENT_VALUES:
+        return True
+    if "assistant manager" in blob or "manager trainee" in blob:
+        return True
+    return False
 
 
 def _collapse_wage_equivalent_onboarding_roles(role_rows: list[dict]) -> list[dict]:
@@ -164,6 +184,7 @@ def build_role_catalog(
         role.setdefault("wage_key", None)
         role.setdefault("source", "manifest")
         role.setdefault("mapping_method", "unknown")
+        role.setdefault("review_state", "unresolved")
         role.setdefault("manifest_present", False)
         role.setdefault("onboarding_default", bool(role.get("wage_available")))
 
@@ -187,6 +208,10 @@ def build_role_catalog(
             merged["source"] = role.get("source")
         if merged.get("mapping_method") in {"unknown", "manifest_only"} and role.get("mapping_method"):
             merged["mapping_method"] = role.get("mapping_method")
+        if merged.get("review_state") in {"unknown", "unresolved"} and role.get("review_state"):
+            merged["review_state"] = role.get("review_state")
+        if not merged.get("clarification_wage_keys") and role.get("clarification_wage_keys"):
+            merged["clarification_wage_keys"] = list(role.get("clarification_wage_keys") or [])
         roles[key] = merged
 
     for wage_key, cls in sorted(wage_classes.items()):
@@ -206,6 +231,7 @@ def build_role_catalog(
                 "wage_key": norm_key,
                 "source": "wage_table",
                 "mapping_method": "exact_wage_key",
+                "review_state": "resolved",
                 "manifest_present": norm_key in manifest_labels,
                 "onboarding_default": True,
             }
@@ -215,20 +241,40 @@ def build_role_catalog(
         decision = decisions_by_source.get(source_key, {})
         mapped_key = normalize_classification_name(str(decision.get("mapped_wage_key") or ""))
         wage_available = bool(mapped_key and mapped_key in wage_classes)
+        review_state = str(decision.get("review_state") or ("resolved" if wage_available else "unresolved"))
+        clarification_wage_keys = [
+            normalize_classification_name(str(value or ""))
+            for value in (decision.get("clarification_wage_keys") or [])
+            if normalize_classification_name(str(value or ""))
+        ]
         _upsert(
             {
                 "value": source_key,
                 "label": label,
                 "wage_available": wage_available,
                 "wage_key": mapped_key if wage_available else None,
-                "source": "ontology_resolved" if wage_available else "ontology_unresolved",
+                "source": (
+                    "ontology_resolved"
+                    if wage_available
+                    else "ontology_reviewed_out_of_scope"
+                    if review_state == "out_of_scope"
+                    else "ontology_reviewed_clarification"
+                    if review_state == "needs_clarification"
+                    else "ontology_unresolved"
+                ),
                 "mapping_method": str(decision.get("mapping_method") or "manifest_only"),
+                "review_state": review_state,
+                "clarification_wage_keys": clarification_wage_keys,
                 "manifest_present": True,
                 "onboarding_default": wage_available,
             }
         )
 
     role_list = _collapse_wage_equivalent_onboarding_roles(list(roles.values()))
+    for role in role_list:
+        if _requires_role_clarification(role):
+            role["onboarding_default"] = False
+
     role_list = sorted(
         role_list,
         key=lambda r: (
@@ -241,7 +287,25 @@ def build_role_catalog(
     unresolved_manifest = sorted(
         r["value"]
         for r in role_list
-        if r.get("manifest_present") and not r.get("wage_available")
+        if (
+            r.get("manifest_present")
+            and not r.get("wage_available")
+            and str(r.get("review_state") or "unresolved") not in {"out_of_scope", "needs_clarification"}
+        )
+    )
+    clarification_manifest = sorted(
+        r["value"]
+        for r in role_list
+        if r.get("manifest_present") and str(r.get("review_state") or "") == "needs_clarification"
+    )
+    out_of_scope_manifest = sorted(
+        r["value"]
+        for r in role_list
+        if r.get("manifest_present") and str(r.get("review_state") or "") == "out_of_scope"
+    )
+    actionable_manifest_roles = max(
+        sum(1 for r in role_list if r.get("manifest_present")) - len(out_of_scope_manifest),
+        0,
     )
 
     return {
@@ -254,6 +318,9 @@ def build_role_catalog(
             "onboarding_default_roles": sum(1 for r in role_list if r.get("onboarding_default")),
             "wage_available_roles": sum(1 for r in role_list if r.get("wage_available")),
             "manifest_roles": sum(1 for r in role_list if r.get("manifest_present")),
+            "actionable_manifest_roles": actionable_manifest_roles,
+            "clarification_manifest_roles": clarification_manifest,
+            "out_of_scope_manifest_roles": out_of_scope_manifest,
             "unresolved_manifest_roles": unresolved_manifest,
         },
     }

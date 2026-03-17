@@ -31,11 +31,12 @@ from backend.ingest.smart_chunker import SmartChunker
 from backend.ingest.manifest import extract_manifest
 from backend.ingest.extract_wages import extract_wages
 from backend.ingest.extract_entitlements import extract_entitlements, save_entitlements
+from backend.ingest.backfill_side_letter_doc_types import normalize_side_letter_doc_types
 from backend.ingest.classification_ontology import (
     build_classification_ontology,
     apply_ontology_aliases,
     save_classification_ontology,
-    load_manual_classification_overrides,
+    load_manual_classification_review_overrides,
     write_manual_override_template,
 )
 from backend.ingest.review_queue import (
@@ -63,6 +64,8 @@ from backend.ingest.role_catalog import (
     build_role_catalog,
     save_role_catalog,
 )
+from backend.pdf_nav_index import build_pdf_nav_index, save_pdf_nav_index
+from backend.contract_outline import build_contract_outline, save_contract_outline
 from backend.ingest.pack_acceptance import evaluate_contract_pack
 
 
@@ -322,12 +325,18 @@ def _process_package(
         contract_id=contract_id,
         manifest=manifest,
     )
+    enriched_chunks, side_letter_doc_type_changes = normalize_side_letter_doc_types(
+        enriched_chunks,
+        max_changes=0,
+    )
 
     smart_path = chunks_dir / f"contract_chunks_smart_{contract_id}.json"
     enriched_path = chunks_dir / f"contract_chunks_enriched_{contract_id}.json"
     base_path = chunks_dir / f"contract_chunks_{contract_id}.json"
     concept_index_path = chunks_dir / f"concept_index_{contract_id}.json"
     language_lexicon_path = ontology_dir / "language_lexicon.json"
+    pdf_nav_index_path = ontology_dir / "pdf_nav_index.json"
+    contract_outline_path = package_dir / "outline" / "contract_outline.json"
 
     _write_json(smart_path, smart_chunks)
     _write_json(enriched_path, enriched_chunks)
@@ -348,6 +357,23 @@ def _process_package(
         with open(concept_index_path, "r", encoding="utf-8") as f:
             concept_index_data = json.load(f)
 
+    pdf_nav_index = build_pdf_nav_index(
+        contract_id=contract_id,
+        source_json_path=json_path,
+        pdf_path=_find_source_file(source_dir, ".pdf", preferred_stem=contract_id),
+    )
+    save_pdf_nav_index(pdf_nav_index_path, pdf_nav_index)
+    contract_outline = build_contract_outline(
+        contract_id=contract_id,
+        manifest=manifest,
+        chunks=enriched_chunks,
+        pdf_nav_index=pdf_nav_index,
+        manifest_path=manifest_path if manifest_path.exists() else None,
+        chunks_path=enriched_path,
+        pdf_nav_path=pdf_nav_index_path,
+    )
+    save_contract_outline(contract_outline_path, contract_outline)
+
     # Package-local compatibility aliases
     _write_json(chunks_dir / "contract_chunks_smart.json", smart_chunks)
     _write_json(chunks_dir / "contract_chunks_enriched.json", enriched_chunks)
@@ -366,9 +392,11 @@ def _process_package(
     review_queue_items = 0
     if build_wages:
         write_manual_override_template(manual_override_path, contract_id=contract_id)
-        manual_alias_overrides, manual_override_warnings = load_manual_classification_overrides(
+        manual_alias_overrides, manual_review_overrides, manual_override_warnings = (
+            load_manual_classification_review_overrides(
             path=manual_override_path,
             contract_id=contract_id,
+            )
         )
         wages_data = extract_wages(
             md_content=md_text,
@@ -381,6 +409,7 @@ def _process_package(
             manifest_classifications=manifest.get("classifications", []),
             wages_data=wages_data,
             manual_alias_overrides=manual_alias_overrides,
+            manual_review_overrides=manual_review_overrides,
         )
         ontology_path = ontology_dir / "classification_ontology.json"
         save_classification_ontology(ontology_path, ontology_data)
@@ -476,6 +505,8 @@ def _process_package(
             _sync(ontology_path, RUNTIME_ONTOLOGIES / f"classification_ontology_{contract_id}.json")
         if language_lexicon_path.exists():
             _sync(language_lexicon_path, RUNTIME_ONTOLOGIES / f"language_lexicon_{contract_id}.json")
+        if pdf_nav_index_path.exists():
+            _sync(pdf_nav_index_path, RUNTIME_ONTOLOGIES / f"pdf_nav_index_{contract_id}.json")
         if role_catalog_path.exists():
             _sync(role_catalog_path, RUNTIME_ONTOLOGIES / f"role_catalog_{contract_id}.json")
         if entitlement_path.exists():
@@ -492,6 +523,10 @@ def _process_package(
         "concept_index_path": str(concept_index_path),
         "language_lexicon_path": str(language_lexicon_path),
         "language_lexicon_entries": len(language_lexicon.get("entries", [])),
+        "side_letter_doc_type_changes": len(side_letter_doc_type_changes),
+        "pdf_nav_index_path": str(pdf_nav_index_path),
+        "pdf_nav_articles_mapped": int((pdf_nav_index.get("stats") or {}).get("articles_mapped", 0) or 0),
+        "contract_outline_path": str(contract_outline_path),
         "query_routing_stats": routing_stats,
         "language_enrichment_stats": language_enrichment_stats,
         "table_chunk_synthesis": table_chunk_synthesis,
