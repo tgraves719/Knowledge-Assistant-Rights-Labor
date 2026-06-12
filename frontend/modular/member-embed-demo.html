@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karl Member Embed Demo</title>
+    <style>
+        :root {
+            font-family: "Inter", system-ui, sans-serif;
+            color-scheme: light;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(212, 160, 41, 0.14), transparent 24%),
+                radial-gradient(circle at 80% 0%, rgba(27, 107, 138, 0.18), transparent 24%),
+                linear-gradient(135deg, #edf5f8 0%, #f7f4ec 42%, #e7eef5 100%);
+            color: #173246;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+        }
+
+        .hero {
+            margin-bottom: 20px;
+            padding: 24px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.76);
+            border: 1px solid rgba(23, 50, 70, 0.1);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 50px rgba(20, 33, 43, 0.08);
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: clamp(1.8rem, 2vw, 2.5rem);
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 56rem;
+            line-height: 1.6;
+            color: rgba(23, 50, 70, 0.78);
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <section class="hero">
+            <h1>Karl Member Widget Demo</h1>
+            <p>This page shows the union member experience as an embeddable component. The same widget can now power the hosted Karl route and a union website embed.</p>
+        </section>
+        <karl-member-widget
+            tenant-slug="__UNION_SLUG__"
+            api-base=""
+            height="1100"
+        ></karl-member-widget>
+    </main>
+    <script defer src="/static/embed/karl-member.js"></script>
+</body>
+</html>

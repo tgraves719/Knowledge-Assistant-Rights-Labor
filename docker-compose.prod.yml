@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-karl}
+      POSTGRES_USER: ${POSTGRES_USER:-karl}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-karl} -d ${POSTGRES_DB:-karl}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -lc "alembic upgrade head &&
+      python -m uvicorn backend.api:app --host 0.0.0.0 --port 8000"
+    environment:
+      PYTHONPATH: /app
+      KARL_POSTGRES_URL: postgresql+psycopg://${POSTGRES_USER:-karl}:${POSTGRES_PASSWORD:-change-me}@postgres:5432/${POSTGRES_DB:-karl}
+      KARL_AUTO_CREATE_TABLES: "false"
+      KARL_APPLY_RLS_POLICIES: "false"
+      KARL_STORAGE_ROOT: /var/lib/karl/storage
+      KARL_ALLOWED_ORIGINS: ${KARL_ALLOWED_ORIGINS:-http://localhost:8000}
+      KARL_SECRET_ENCRYPTION_KEY: ${KARL_SECRET_ENCRYPTION_KEY:-change-me}
+    ports:
+      - "8000:8000"
+    volumes:
+      - uploads_data:/var/lib/karl/storage
+
+volumes:
+  postgres_data:
+  uploads_data:

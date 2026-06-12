@@ -30,6 +30,7 @@ venv/
 env/
 ENV/
 .venv
+node_modules/
 
 # IDE
 .vscode/
@@ -42,11 +43,17 @@ ENV/
 
 # OS
 .DS_Store
+._*
 Thumbs.db
 
 # Project specific
 benchmark_results.json
 *.log
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
 
 # Chroma / vector DB
 data/chroma_db/
@@ -72,3 +79,14 @@ tmp_*.py
 # Real user data — never publish
 data/miss_records/
 data/test_set/real_user_regressions_results.json
+
+# Vendored LiteParse build/install artifacts
+vendor/liteparse/
+vendor/liteparse/node_modules/
+vendor/liteparse/dist/
+vendor/liteparse/packages/python/.venv/
+
+# Local test/sample files
+BadDataTest.txt
+ragtest.txt
+SW+Pueblo+Clerks+2022.2025-1.pdf

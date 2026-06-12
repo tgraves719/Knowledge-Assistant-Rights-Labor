@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 from datetime import datetime, timedelta
 
+from backend.platform.service_container import ServiceContainer, build_service_container
+
 
 @dataclass
 class ConversationTurn:
@@ -41,7 +43,8 @@ class ConversationContext:
     def __init__(
         self, 
         max_turns: int = 5,
-        session_timeout_minutes: int = 30
+        session_timeout_minutes: int = 30,
+        session_id: Optional[str] = None,
     ):
         """
         Initialize conversation context.
@@ -52,6 +55,7 @@ class ConversationContext:
         """
         self.max_turns = max_turns
         self.session_timeout = timedelta(minutes=session_timeout_minutes)
+        self.session_id = session_id or ""
         self.history: list[ConversationTurn] = []
         self.last_activity: datetime = datetime.now()
         
@@ -207,6 +211,13 @@ class SessionManager:
     def __init__(self, max_sessions: int = 1000):
         self.sessions: dict[str, ConversationContext] = {}
         self.max_sessions = max_sessions
+        self._platform: ServiceContainer | None = None
+
+    @property
+    def platform(self) -> ServiceContainer:
+        if self._platform is None:
+            self._platform = build_service_container()
+        return self._platform
     
     def get_context(self, session_id: str) -> ConversationContext:
         """Get or create a conversation context for a session."""
@@ -215,9 +226,55 @@ class SessionManager:
             if len(self.sessions) >= self.max_sessions:
                 self._cleanup_old_sessions()
             
-            self.sessions[session_id] = ConversationContext()
+            ctx = ConversationContext(session_id=session_id)
+            persisted = self.platform.chat_history.load_messages(session_id)
+            for pair_index in range(0, len(persisted), 2):
+                user_msg = persisted[pair_index]
+                assistant_msg = persisted[pair_index + 1] if pair_index + 1 < len(persisted) else None
+                if assistant_msg is None:
+                    continue
+                ctx.add_turn(
+                    question=str(user_msg.get("content") or ""),
+                    answer=str(assistant_msg.get("content") or ""),
+                    citations=list((assistant_msg.get("metadata") or {}).get("citations") or []),
+                    detected_entities=dict((assistant_msg.get("metadata") or {}).get("detected_entities") or {}),
+                    retrieval_context=dict((assistant_msg.get("metadata") or {}).get("retrieval_context") or {}),
+                )
+            self.sessions[session_id] = ctx
         
         return self.sessions[session_id]
+
+    def bind_session(
+        self,
+        session_id: str,
+        *,
+        union_local_id: str | None = None,
+        union_id: str | None = None,
+        user_id: str | None = None,
+        message_retention_enabled: bool = False,
+    ) -> None:
+        self.platform.chat_history.bind_session(
+            session_id=session_id,
+            union_local_id=union_local_id,
+            union_id=union_id,
+            user_id=user_id,
+            message_retention_enabled=message_retention_enabled,
+        )
+
+    def persist_turn(
+        self,
+        session_id: str,
+        *,
+        question: str,
+        answer: str,
+        metadata: dict | None = None,
+    ) -> None:
+        self.platform.chat_history.persist_turn(
+            session_id=session_id,
+            question=question,
+            answer=answer,
+            metadata=metadata,
+        )
     
     def _cleanup_old_sessions(self):
         """Remove oldest sessions to make room."""
@@ -251,6 +308,23 @@ def clear_session_context(session_id: str):
     _session_manager.clear_session(session_id)
 
 
+def bind_session_context(
+    session_id: str,
+    *,
+    union_local_id: str | None = None,
+    union_id: str | None = None,
+    user_id: str | None = None,
+    message_retention_enabled: bool = False,
+):
+    _session_manager.bind_session(
+        session_id,
+        union_local_id=union_local_id,
+        union_id=union_id,
+        user_id=user_id,
+        message_retention_enabled=message_retention_enabled,
+    )
+
+
 # =============================================================================
 # TESTING
 # =============================================================================
@@ -279,6 +353,4 @@ if __name__ == "__main__":
     
     print("\n=== Last Topic ===")
     print(ctx.get_last_topic())
-
-
 

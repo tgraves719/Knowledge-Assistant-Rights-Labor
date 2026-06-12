@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>__UNION_NAME__ | Karl</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: "Inter", system-ui, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(212, 160, 41, 0.16), transparent 28%),
+                radial-gradient(circle at 80% 0%, rgba(27, 107, 138, 0.18), transparent 26%),
+                linear-gradient(135deg, #edf5f8 0%, #f6f3eb 40%, #e8eef4 100%);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: #173246;
+            background: inherit;
+        }
+
+        .member-host-shell {
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .member-host-shell {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="member-host-shell">
+        <karl-member-widget
+            tenant-slug="__UNION_SLUG__"
+            api-base=""
+            height="1100"
+        ></karl-member-widget>
+    </main>
+    <script defer src="/static/embed/karl-member.js"></script>
+</body>
+</html>

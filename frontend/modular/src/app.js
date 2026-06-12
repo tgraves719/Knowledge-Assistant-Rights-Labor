@@ -1,5 +1,11 @@
-import { createStewardOnboardingController } from './modules/steward-onboarding.js';
-import { createMemberOnboardingController } from './modules/member-onboarding.js';
+let createStewardOnboardingController = null;
+let createMemberOnboardingController = null;
+const EMBED_THEME_OVERRIDES = (() => {
+    if (typeof window.__KARL_EMBED_THEME__ === 'object' && window.__KARL_EMBED_THEME__) {
+        return window.__KARL_EMBED_THEME__;
+    }
+    return {};
+})();
 
         function resolveApiBase() {
             const params = new URLSearchParams(window.location.search);
@@ -21,7 +27,30 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         }
 
         const API_BASE = resolveApiBase();
+        function resolveRouteContext() {
+            if (window.__KARL_ROUTE_CONTEXT__ && typeof window.__KARL_ROUTE_CONTEXT__ === 'object') {
+                const injectedMode = String(window.__KARL_ROUTE_CONTEXT__.mode || '').trim();
+                const injectedUnionSlug = String(window.__KARL_ROUTE_CONTEXT__.unionSlug || '').trim() || null;
+                if (injectedMode) {
+                    return { mode: injectedMode, unionSlug: injectedUnionSlug };
+                }
+            }
+            const path = String(window.location.pathname || '').replace(/\/+$/, '') || '/';
+            const tenantAdminMatch = path.match(/^\/u\/([^/]+)\/admin(?:\/index\.html)?$/i);
+            if (tenantAdminMatch) {
+                return { mode: 'tenant_admin', unionSlug: decodeURIComponent(tenantAdminMatch[1]) };
+            }
+            const tenantMemberMatch = path.match(/^\/u\/([^/]+)(?:\/index\.html)?$/i);
+            if (tenantMemberMatch) {
+                return { mode: 'tenant_member', unionSlug: decodeURIComponent(tenantMemberMatch[1]) };
+            }
+            if (path === '/karl' || path === '/karl/index.html') {
+                return { mode: 'superadmin', unionSlug: null };
+            }
+            return { mode: 'legacy_member', unionSlug: null };
+        }
         const ACTIVE_CONTRACT_STORAGE_KEY = 'karl_active_contract_id';
+        const MEMBER_AUTH_STORAGE_KEY = 'karl_member_auth_context';
         const CONTRACT_VIEW_MODE_STORAGE_KEY = 'karl_contract_view_mode';
         const CONTRACT_PDF_SOURCE_MODE_STORAGE_KEY = 'karl_contract_pdf_source_mode';
         const CONTRACT_TEXT_SOURCE_MODE_STORAGE_KEY = 'karl_contract_text_source_mode';
@@ -30,6 +59,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         const ONBOARDING_FLOW_STORAGE_KEY = 'karl_onboarding_flow';
         const KARL_VERSION_FALLBACK = '0.8.110';
         let isHealthy = false;
+        let onboardingFactoriesPromise = null;
         let userProfile = null;
         let availableContracts = [];
         let classificationOptionsByContract = {};
@@ -67,6 +97,14 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         let stewardOnboarding = null;
         let memberOnboarding = null;
         let preferences = JSON.parse(localStorage.getItem('karl_preferences') || '{}');
+        let memberAuth = loadMemberAuth();
+        let memberTrackingSettings = {
+            tracking_preference: 'system_default',
+            effective_policy: null,
+            member_choice_available: false,
+        };
+        let tenantBootstrap = null;
+        const routeContext = resolveRouteContext();
         let karlInfo = null;
         let currentKarlDocId = null;
         let contractHistoryById = {};
@@ -80,15 +118,809 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         let sessionMetaStore = loadSessionMetaStore();
         let SESSION_ID = getOrCreateSessionId();
         let shellLayoutSyncRaf = 0;
-        const HEADER_SUBTITLE_DEFAULT = 'Union Contract Assistant';
+        const HEADER_SUBTITLE_DEFAULT = 'Union Document Assistant';
         const HEADER_SUBTITLE_THINKING = 'Reviewing your contract...';
         const HEADER_SUBTITLE_SPEAKING = 'Answering with citations';
         const HEADER_SUBTITLE_QUESTION = 'Needs follow-up';
         const HEADER_SUBTITLE_ERROR = 'Something went wrong';
         let karlAvatarSpeakTimer = null;
+        let memberAuthMode = 'signin';
+        let appliedBrandingSignature = null;
+
+        function createNoopOnboardingController() {
+            return {
+                bind() {},
+                show() {},
+                hide() {},
+                isVisible() { return false; },
+                toggleDatePicker() {},
+                changeYear() {},
+                selectMonth() {},
+                quickSelect() {},
+                initDatePicker() {},
+            };
+        }
+
+        async function ensureOnboardingFactoriesLoaded() {
+            if (createStewardOnboardingController && createMemberOnboardingController) {
+                return;
+            }
+            if (!onboardingFactoriesPromise) {
+                onboardingFactoriesPromise = Promise.all([
+                    import('./modules/steward-onboarding.js'),
+                    import('./modules/member-onboarding.js'),
+                ]).then(([stewardModule, memberModule]) => {
+                    createStewardOnboardingController = stewardModule.createStewardOnboardingController;
+                    createMemberOnboardingController = memberModule.createMemberOnboardingController;
+                });
+            }
+            await onboardingFactoriesPromise;
+        }
 
         function generateSessionId() {
             return 'session_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+        }
+
+        function loadMemberAuth() {
+            try {
+                return JSON.parse(localStorage.getItem(MEMBER_AUTH_STORAGE_KEY) || '{}') || {};
+            } catch (_) {
+                return {};
+            }
+        }
+
+        function notifyMemberSessionExpired(message = 'Your session expired. Please sign in again.') {
+            clearMemberAuth({ preserveServerSession: true });
+            openMemberAuthModal();
+            window.alert(message);
+        }
+
+        function saveMemberAuth(auth) {
+            memberAuth = auth || {};
+            localStorage.setItem(MEMBER_AUTH_STORAGE_KEY, JSON.stringify(memberAuth));
+            renderMemberAuthSummary();
+            applyTenantUploadModeUI();
+        }
+
+        async function parseJsonResponse(response) {
+            const text = await response.text();
+            try {
+                return text ? JSON.parse(text) : {};
+            } catch (_) {
+                return { raw: text };
+            }
+        }
+
+        function togglePasswordVisibility(inputId, buttonId) {
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+            if (!input || !button) return;
+            const showing = input.type === 'text';
+            input.type = showing ? 'password' : 'text';
+            button.textContent = showing ? 'Show' : 'Hide';
+        }
+
+        function updateMemberAuthModeUI() {
+            const isRegister = memberAuthMode === 'register';
+            const eyebrow = document.getElementById('member-auth-modal-eyebrow');
+            const title = document.getElementById('member-auth-modal-title');
+            const copy = document.getElementById('member-auth-modal-copy');
+            const submit = document.getElementById('member-auth-submit');
+            const fullNameGroup = document.getElementById('member-auth-full-name-group');
+            const emailGroup = document.getElementById('member-auth-email-group');
+            const signInBtn = document.getElementById('member-auth-mode-signin');
+            const registerBtn = document.getElementById('member-auth-mode-register');
+
+            if (eyebrow) eyebrow.textContent = isRegister ? 'Create Account' : 'Sign In';
+            if (title) title.textContent = isRegister ? 'Create your union account' : 'Access your union workspace';
+            if (copy) {
+                copy.textContent = isRegister
+                    ? 'Create a member account for this union workspace and start with a clean conversation.'
+                    : 'Use your union account to chat with uploaded documents and open supporting sources.';
+            }
+            if (submit) submit.textContent = isRegister ? 'Create Account' : 'Sign In';
+            fullNameGroup?.classList.toggle('hidden', !isRegister);
+            emailGroup?.classList.toggle('hidden', !isRegister);
+
+            signInBtn?.classList.toggle('bg-white', !isRegister);
+            signInBtn?.classList.toggle('text-slate-900', !isRegister);
+            signInBtn?.classList.toggle('shadow-sm', !isRegister);
+            signInBtn?.classList.toggle('text-slate-600', isRegister);
+            registerBtn?.classList.toggle('bg-white', isRegister);
+            registerBtn?.classList.toggle('text-slate-900', isRegister);
+            registerBtn?.classList.toggle('shadow-sm', isRegister);
+            registerBtn?.classList.toggle('text-slate-600', !isRegister);
+        }
+
+        function setMemberAuthMode(mode) {
+            memberAuthMode = mode === 'register' ? 'register' : 'signin';
+            updateMemberAuthModeUI();
+        }
+
+        function setMemberAuthModalOpen(isOpen) {
+            const modal = document.getElementById('member-auth-modal');
+            if (!modal) return;
+            modal.classList.toggle('hidden', !isOpen);
+            document.body.classList.toggle('overflow-hidden', Boolean(isOpen));
+            if (isOpen) {
+                window.setTimeout(() => {
+                    document.getElementById('member-auth-username')?.focus();
+                }, 0);
+            }
+        }
+
+        function openMemberAuthModal() {
+            updateMemberAuthModeUI();
+            setMemberAuthModalOpen(true);
+            postTelemetryEvent('bug_journey', 'member_auth_modal_opened', {
+                mode: memberAuthMode,
+                authenticated: Boolean(memberAuth?.authenticated),
+            });
+        }
+
+        function closeMemberAuthModal() {
+            setMemberAuthModalOpen(false);
+            postTelemetryEvent('bug_journey', 'member_auth_modal_closed', {
+                mode: memberAuthMode,
+                authenticated: Boolean(memberAuth?.authenticated),
+            });
+        }
+
+        async function logoutMemberSession() {
+            try {
+                await fetch(`${API_BASE}/api/auth/session/logout`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    credentials: 'same-origin',
+                });
+            } catch (_) {
+                // Best-effort logout only.
+            }
+        }
+
+        function resetMemberWorkspaceState() {
+            localStorage.removeItem(SESSION_ID_STORAGE_KEY);
+            localStorage.removeItem(SESSION_META_STORAGE_KEY);
+            localStorage.removeItem(ACTIVE_CONTRACT_STORAGE_KEY);
+            SESSION_ID = generateSessionId();
+            localStorage.setItem(SESSION_ID_STORAGE_KEY, SESSION_ID);
+            sessionMetaStore = {};
+            ensureSessionMeta(SESSION_ID);
+            activeContract = null;
+            availableContracts = [];
+            userProfile = null;
+            articleCache = {};
+            articleFirstSectionCache = {};
+            articleTitles = {};
+            contractBrowseGroups = [];
+            currentTocSelection = { kind: null, key: null };
+            citationSourceRegistry = {};
+            citationSourceRegistrySeq = 0;
+            resetChatMessages();
+            populateContractSelects();
+            updateProfileDisplay();
+            hideOnboarding();
+            updateInteractionLock();
+        }
+
+        function clearMemberAuth(options = {}) {
+            resetMemberWorkspaceState();
+            saveMemberAuth({});
+            memberTrackingSettings = {
+                tracking_preference: 'system_default',
+                effective_policy: null,
+                member_choice_available: false,
+            };
+            updateMemberTrackingUI();
+            showOnboarding();
+            updateInteractionLock();
+            closeMemberAuthModal();
+        }
+
+        async function handleMemberLogout() {
+            await logoutMemberSession();
+            clearMemberAuth({ preserveServerSession: true });
+            checkHealth();
+        }
+
+        function isTenantUploadAuthMode() {
+            return Boolean(routeContext.unionSlug && memberAuth?.authenticated && (memberAuth?.user?.union_slug || memberAuth?.union_slug));
+        }
+
+        function isTenantRoute() {
+            return routeContext.mode === 'tenant_member' || routeContext.mode === 'tenant_admin';
+        }
+
+        function authHeaders(extra = {}) {
+            const headers = { ...extra };
+            if (routeContext.unionSlug) {
+                headers['X-Tenant-Slug'] = routeContext.unionSlug;
+            }
+            return headers;
+        }
+
+        async function postTelemetryEvent(category, eventType, metadata = {}, options = {}) {
+            const payload = {
+                category,
+                event_type: eventType,
+                route: window.location.pathname,
+                metadata,
+                session_id: options.sessionId || SESSION_ID || null,
+                union_slug: routeContext.unionSlug || memberAuth?.user?.union_slug || memberAuth?.union_slug || null,
+                surface: options.surface || 'member',
+            };
+            try {
+                await fetch(`${API_BASE}/api/telemetry/event`, {
+                    method: 'POST',
+                    headers: authHeaders({ 'Content-Type': 'application/json' }),
+                    credentials: 'same-origin',
+                    keepalive: true,
+                    body: JSON.stringify(payload),
+                });
+            } catch (_) {
+                // Telemetry should never interrupt the main UX.
+            }
+        }
+
+        async function fetchWithAuth(url, options = {}) {
+            const headers = authHeaders(options.headers || {});
+            const timeoutMs = Number(options.timeoutMs || 15000);
+            const controller = new AbortController();
+            const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+            let response;
+            try {
+                response = await fetch(url, {
+                    ...options,
+                    headers,
+                    credentials: 'same-origin',
+                    signal: controller.signal,
+                });
+            } catch (error) {
+                if (error?.name === 'AbortError') {
+                    throw new Error('The request took too long. Please try again.');
+                }
+                throw error;
+            } finally {
+                window.clearTimeout(timeoutId);
+            }
+            if (response.status === 401 && memberAuth?.authenticated) {
+                notifyMemberSessionExpired();
+                throw new Error('Session expired. Please sign in again.');
+            }
+            return response;
+        }
+
+        function getTenantUploadContract() {
+            if (!isTenantRoute()) return null;
+            const unionSlug = String(routeContext.unionSlug || memberAuth?.user?.union_slug || memberAuth?.union_slug || '').trim();
+            if (!unionSlug) return null;
+            return {
+                contract_id: 'tenant-upload',
+                contract_version: 'current',
+                union_local_id: unionSlug,
+                employer: 'Uploaded documents',
+                is_tenant_upload: true,
+            };
+        }
+
+        function renderMemberAuthSummary() {
+            const summary = document.getElementById('member-auth-summary');
+            const adminLink = document.getElementById('member-admin-link');
+            const headerAccount = document.getElementById('header-account-summary');
+            const headerAccountCompact = document.getElementById('header-account-compact');
+            const headerAccountCompactText = document.getElementById('header-account-compact-text');
+            const headerSignIn = document.getElementById('header-signin-btn');
+            const headerSignOut = document.getElementById('header-signout-btn');
+            const fullNameInput = document.getElementById('member-auth-full-name');
+            const emailInput = document.getElementById('member-auth-email');
+            const usernameInput = document.getElementById('member-auth-username');
+            const passwordInput = document.getElementById('member-auth-password');
+            const unionInput = document.getElementById('member-auth-union');
+            const unionGroup = document.getElementById('member-auth-union-group');
+            if (fullNameInput) fullNameInput.value = '';
+            if (emailInput) emailInput.value = '';
+            if (usernameInput) usernameInput.value = memberAuth?.username || '';
+            if (passwordInput) passwordInput.value = '';
+            if (unionInput) unionInput.value = memberAuth?.user?.union_slug || memberAuth?.union_slug || '';
+            if (unionGroup) unionGroup.classList.toggle('hidden', Boolean(routeContext.unionSlug));
+            if (adminLink) {
+                const role = safeText(memberAuth?.user?.role).toLowerCase();
+                const showAdminLink = role === 'union_admin' || role === 'super_admin' || role === 'steward_admin';
+                adminLink.classList.toggle('hidden', !showAdminLink);
+            }
+            if (!summary) return;
+            if (!isTenantUploadAuthMode()) {
+                summary.textContent = routeContext.unionSlug
+                    ? 'Sign in to access your union workspace.'
+                    : 'Not signed in.';
+                if (headerAccount) headerAccount.textContent = 'Not signed in';
+                if (headerAccountCompactText) headerAccountCompactText.textContent = 'Not signed in';
+                headerAccountCompact?.classList.add('hidden');
+                headerSignIn?.classList.remove('hidden');
+                headerSignOut?.classList.add('hidden');
+                return;
+            }
+            const user = memberAuth?.user || {};
+            const roleLabel = getMemberRoleLabel();
+            const displayName = user.full_name || memberAuth.username || user.email || 'user';
+            summary.textContent = `Signed in as ${displayName} • ${roleLabel}`;
+            if (headerAccount) headerAccount.textContent = `${displayName} • ${roleLabel}`;
+            if (headerAccountCompactText) headerAccountCompactText.textContent = displayName;
+            headerAccountCompact?.classList.remove('hidden');
+            headerSignIn?.classList.add('hidden');
+            headerSignOut?.classList.remove('hidden');
+        }
+
+        function humanizeTrackingMode(mode) {
+            const value = String(mode || '').trim().toLowerCase();
+            if (value === 'none') return 'No optional tracking';
+            if (value === 'bug_and_journey') return 'Bug and journey tracking';
+            if (value === 'usage_and_ux') return 'Usage and experience tracking';
+            if (value === 'both') return 'Bug, journey, and usage tracking';
+            return 'Bug and journey tracking';
+        }
+
+        function humanizePrivacyMode(mode) {
+            return String(mode || '').trim().toLowerCase() === 'identified'
+                ? 'identified'
+                : 'anonymized';
+        }
+
+        function describeMemberChoiceMode(mode) {
+            const value = String(mode || '').trim().toLowerCase();
+            if (value === 'none') return 'Members cannot change this workspace tracking choice.';
+            if (value === 'full_opt_out') return 'Members can choose bug-only, full tracking, or opt out of optional tracking.';
+            return 'Members can choose bug-only or full tracking.';
+        }
+
+        function setMemberTrackingStatus(message, tone = 'neutral') {
+            const status = document.getElementById('member-tracking-status');
+            if (!status) return;
+            status.textContent = message || '';
+            status.classList.remove('text-slate-500', 'text-green-700', 'text-red-600');
+            if (tone === 'success') {
+                status.classList.add('text-green-700');
+            } else if (tone === 'error') {
+                status.classList.add('text-red-600');
+            } else {
+                status.classList.add('text-slate-500');
+            }
+        }
+
+        function updateMemberTrackingUI() {
+            const section = document.getElementById('member-tracking-section');
+            const summary = document.getElementById('member-tracking-summary');
+            const select = document.getElementById('member-tracking-select');
+            const saveButton = document.getElementById('member-tracking-save');
+            const note = document.getElementById('member-tracking-note');
+            if (!section || !summary || !select || !saveButton || !note) return;
+
+            const bootstrapTracking = tenantBootstrap?.tracking || null;
+            const effective = memberTrackingSettings.effective_policy || bootstrapTracking;
+            const authenticated = Boolean(memberAuth?.authenticated);
+            const choiceAvailable = Boolean(memberTrackingSettings.member_choice_available && authenticated);
+            const memberChoiceMode = String(effective?.member_choice_mode || 'none').trim().toLowerCase();
+            const privacyMode = humanizePrivacyMode(effective?.privacy_mode);
+            const trackingMode = humanizeTrackingMode(effective?.tracking_mode);
+            const rawQueryMode = String(effective?.raw_query_storage_mode || 'disabled').trim().toLowerCase();
+
+            section.classList.toggle('hidden', !isTenantRoute());
+
+            const summaryBits = [
+                `${trackingMode} is currently enabled for this workspace.`,
+                `Data is handled in ${privacyMode} mode by default.`,
+                rawQueryMode === 'disabled'
+                    ? 'Raw question text is not being stored for analytics.'
+                    : `Raw question storage is ${rawQueryMode.replace(/_/g, ' ')}.`,
+            ];
+            summary.textContent = summaryBits.join(' ');
+
+            const offOption = select.querySelector('option[value="off"]');
+            if (offOption) {
+                offOption.hidden = memberChoiceMode !== 'full_opt_out';
+                offOption.disabled = memberChoiceMode !== 'full_opt_out';
+            }
+
+            const fullOption = select.querySelector('option[value="full"]');
+            if (fullOption) {
+                fullOption.hidden = memberChoiceMode === 'none';
+            }
+
+            const currentPreference = String(memberTrackingSettings.tracking_preference || 'system_default').trim().toLowerCase();
+            select.value = currentPreference;
+            select.disabled = !choiceAvailable;
+            saveButton.disabled = !choiceAvailable;
+            saveButton.classList.toggle('opacity-60', !choiceAvailable);
+            saveButton.classList.toggle('cursor-not-allowed', !choiceAvailable);
+
+            if (!authenticated) {
+                note.textContent = 'Sign in to choose how optional product tracking works for your member workspace.';
+                setMemberTrackingStatus('', 'neutral');
+                return;
+            }
+            note.textContent = describeMemberChoiceMode(effective?.member_choice_mode);
+            if (!choiceAvailable) {
+                setMemberTrackingStatus('This workspace is using a fixed tracking policy.', 'neutral');
+            }
+        }
+
+        async function loadMemberTrackingPreferences() {
+            if (!isTenantRoute()) return;
+            if (!memberAuth?.authenticated) {
+                memberTrackingSettings = {
+                    tracking_preference: 'system_default',
+                    effective_policy: null,
+                    member_choice_available: false,
+                };
+                updateMemberTrackingUI();
+                return;
+            }
+            try {
+                const res = await fetchWithAuth(`${API_BASE}/api/auth/session/preferences`, {
+                    headers: authHeaders(),
+                    timeoutMs: 10000,
+                });
+                const payload = await parseJsonResponse(res);
+                if (!res.ok) {
+                    throw new Error(payload.detail || payload.raw || 'Unable to load tracking settings.');
+                }
+                memberTrackingSettings = {
+                    tracking_preference: payload.tracking_preference || 'system_default',
+                    effective_policy: payload.effective_policy || null,
+                    member_choice_available: Boolean(payload.member_choice_available),
+                };
+                updateMemberTrackingUI();
+                setMemberTrackingStatus('', 'neutral');
+            } catch (error) {
+                console.warn('Tracking preference load failed:', error);
+                updateMemberTrackingUI();
+                setMemberTrackingStatus('Could not load tracking settings right now.', 'error');
+            }
+        }
+
+        async function saveMemberTrackingPreference() {
+            const select = document.getElementById('member-tracking-select');
+            if (!select || select.disabled) return;
+            setMemberTrackingStatus('Saving...', 'neutral');
+            try {
+                const res = await fetchWithAuth(`${API_BASE}/api/auth/session/preferences`, {
+                    method: 'PUT',
+                    headers: authHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify({ tracking_preference: select.value }),
+                    timeoutMs: 10000,
+                });
+                const payload = await parseJsonResponse(res);
+                if (!res.ok) {
+                    throw new Error(payload.detail || payload.raw || 'Unable to save tracking choice.');
+                }
+                memberTrackingSettings.tracking_preference = payload.tracking_preference || select.value;
+                await loadMemberTrackingPreferences();
+                setMemberTrackingStatus('Tracking choice saved.', 'success');
+            } catch (error) {
+                console.warn('Tracking preference save failed:', error);
+                setMemberTrackingStatus(error.message || 'Unable to save tracking choice.', 'error');
+            }
+        }
+
+        async function loadTenantBootstrap() {
+            if (!routeContext.unionSlug) return null;
+            const response = await fetch(`${API_BASE}/api/tenant/${encodeURIComponent(routeContext.unionSlug)}/bootstrap?page_mode=member`, {
+                headers: authHeaders(),
+                credentials: 'same-origin',
+            });
+            const payload = await response.json();
+            if (!response.ok) {
+                throw new Error(payload.detail || 'Unable to load tenant configuration.');
+            }
+            tenantBootstrap = payload;
+            applyMemberBranding({ ...(payload.branding || {}), ...EMBED_THEME_OVERRIDES });
+            document.title = `${payload.union?.name || routeContext.unionSlug} | Karl`;
+            const subtitle = document.getElementById('header-subtitle');
+            if (subtitle) {
+                subtitle.textContent = `${payload.union?.name || routeContext.unionSlug} member workspace`;
+            }
+            const unionInput = document.getElementById('member-auth-union');
+            if (unionInput) {
+                unionInput.value = payload.union?.slug || routeContext.unionSlug;
+                unionInput.readOnly = true;
+            }
+            const adminLink = document.getElementById('member-admin-link');
+            if (adminLink && payload.routes?.admin) {
+                adminLink.href = payload.routes.admin;
+            }
+            updateMemberTrackingUI();
+            return payload;
+        }
+
+        function normalizeHexColor(value, fallback) {
+            const raw = String(value || '').trim();
+            if (/^#[0-9a-f]{6}$/i.test(raw)) return raw;
+            if (/^#[0-9a-f]{3}$/i.test(raw)) {
+                return `#${raw[1]}${raw[1]}${raw[2]}${raw[2]}${raw[3]}${raw[3]}`;
+            }
+            return fallback;
+        }
+
+        function shiftHexColor(hex, amount) {
+            const normalized = normalizeHexColor(hex, '#0D3B54').slice(1);
+            const next = [0, 2, 4].map((offset) => {
+                const channel = parseInt(normalized.slice(offset, offset + 2), 16);
+                const shifted = Math.max(0, Math.min(255, channel + amount));
+                return shifted.toString(16).padStart(2, '0');
+            });
+            return `#${next.join('')}`;
+        }
+
+        function applyMemberBranding(branding = {}) {
+            const primary = normalizeHexColor(branding.theme_color, '#0D3B54');
+            const accent = normalizeHexColor(branding.accent_color, '#D4A029');
+            const surface = normalizeHexColor(branding.surface_tint, '#F8FAFC');
+            const heading = String(branding.welcome_heading || '').trim();
+            const signature = JSON.stringify({ primary, accent, surface, heading });
+            if (signature === appliedBrandingSignature) return;
+            appliedBrandingSignature = signature;
+
+            document.documentElement.style.setProperty('--karl-brand-primary', primary);
+            document.documentElement.style.setProperty('--karl-brand-primary-deep', shiftHexColor(primary, -18));
+            document.documentElement.style.setProperty('--karl-brand-primary-soft', shiftHexColor(primary, 24));
+            document.documentElement.style.setProperty('--karl-brand-accent', accent);
+            document.documentElement.style.setProperty('--karl-brand-accent-soft', shiftHexColor(accent, 22));
+            document.documentElement.style.setProperty('--karl-brand-surface', surface);
+
+            let styleEl = document.getElementById('karl-runtime-branding');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'karl-runtime-branding';
+                document.head.appendChild(styleEl);
+            }
+            styleEl.textContent = `
+                #main-header {
+                    background:
+                        radial-gradient(ellipse 80% 150% at 38% 50%, color-mix(in srgb, var(--karl-brand-primary-soft) 38%, transparent) 0%, transparent 50%),
+                        linear-gradient(-45deg, var(--karl-brand-primary-deep), var(--karl-brand-primary), var(--karl-brand-primary-soft), var(--karl-brand-primary), var(--karl-brand-primary-deep)) !important;
+                }
+                .bg-ufcw-blue,
+                #chat-input-area button,
+                #settings-profile-save,
+                #member-auth-submit {
+                    background-color: var(--karl-brand-primary) !important;
+                }
+                .hover\\:bg-ufcw-blue-mid:hover,
+                #chat-input-area button:hover,
+                #settings-profile-save:hover,
+                #member-auth-submit:hover {
+                    background-color: var(--karl-brand-primary-soft) !important;
+                }
+                .text-ufcw-blue,
+                #chat-profile-edit-btn,
+                #tab-contract:hover,
+                #tab-settings:hover {
+                    color: var(--karl-brand-primary) !important;
+                }
+                .bg-ufcw-gold,
+                .pulse-dot {
+                    background-color: var(--karl-brand-accent) !important;
+                }
+                .text-ufcw-gold-light,
+                .dark .text-ufcw-gold-light {
+                    color: var(--karl-brand-accent-soft) !important;
+                }
+                #content-settings,
+                body {
+                    background-color: var(--karl-brand-surface);
+                }
+                #member-auth-submit:focus,
+                #chat-input-area button:focus,
+                #user-input:focus {
+                    outline-color: var(--karl-brand-accent) !important;
+                }
+            `;
+
+            const welcomeCopy = document.getElementById('chat-welcome-copy');
+            if (welcomeCopy && heading) {
+                welcomeCopy.textContent = heading;
+            }
+        }
+
+        function showTenantPageFailure(message) {
+            const subtitle = document.getElementById('header-subtitle');
+            if (subtitle) {
+                subtitle.textContent = message;
+            }
+            const headerAccount = document.getElementById('header-account-summary');
+            if (headerAccount) {
+                headerAccount.textContent = 'Workspace unavailable';
+            }
+            const queryInput = document.getElementById('query');
+            if (queryInput) {
+                queryInput.disabled = true;
+                queryInput.placeholder = message;
+            }
+            const submitButton = document.getElementById('sendButton');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-60', 'cursor-not-allowed');
+            }
+            revealAppShell();
+        }
+
+        function getMemberRoleLabel() {
+            const rawRole = safeText(memberAuth?.user?.role || userProfile?.role || '');
+            if (!rawRole) return 'Union member';
+            return rawRole
+                .split('_')
+                .filter(Boolean)
+                .map(part => toTitleCase(part))
+                .join(' ');
+        }
+
+        function applyTenantUploadModeUI() {
+            const tenantMode = isTenantUploadAuthMode();
+            const note = document.getElementById('profile-settings-note');
+            const contractSelect = document.getElementById('settings-contract');
+            const classificationSelect = document.getElementById('settings-classification');
+            const hireInput = document.getElementById('settings-hire-date');
+            const saveButton = document.getElementById('settings-profile-save');
+            const tenantProfileSummary = document.getElementById('tenant-profile-summary');
+            const legacyProfileFields = document.getElementById('legacy-profile-fields');
+            const chatProfileEditBtn = document.getElementById('chat-profile-edit-btn');
+            const profileSettingsSection = document.getElementById('profile-settings-section');
+            const employmentInputs = document.querySelectorAll('input[name="settings_employment"]');
+
+            if (note) {
+                if (tenantMode) {
+                    note.textContent = 'Your union sign-in already determines which documents this workspace uses.';
+                    note.classList.remove('hidden');
+                } else {
+                    note.textContent = '';
+                    note.classList.add('hidden');
+                }
+            }
+
+            if (tenantProfileSummary) {
+                tenantProfileSummary.classList.toggle('hidden', !tenantMode);
+            }
+            if (legacyProfileFields) {
+                legacyProfileFields.classList.toggle('hidden', tenantMode);
+            }
+            if (profileSettingsSection) {
+                profileSettingsSection.classList.toggle('hidden', tenantMode);
+            }
+            if (chatProfileEditBtn) {
+                chatProfileEditBtn.innerHTML = tenantMode
+                    ? `
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"/>
+                        </svg>
+                        Workspace
+                    `
+                    : `
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Edit
+                    `;
+            }
+
+            [contractSelect, classificationSelect, hireInput].forEach(field => {
+                if (!field) return;
+                field.disabled = tenantMode;
+            });
+            employmentInputs.forEach(field => {
+                field.disabled = tenantMode;
+            });
+
+            if (saveButton) {
+                saveButton.textContent = tenantMode ? 'Profile managed by union sign-in' : 'Save Profile';
+                saveButton.disabled = tenantMode;
+                saveButton.classList.toggle('opacity-60', tenantMode);
+                saveButton.classList.toggle('cursor-not-allowed', tenantMode);
+            }
+        }
+
+        async function refreshMemberAuth() {
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/session/me`, {
+                    headers: authHeaders(),
+                    credentials: 'same-origin',
+                });
+                if (res.status === 401) {
+                    notifyMemberSessionExpired();
+                    return false;
+                }
+                if (!res.ok) throw new Error(`Auth refresh failed: ${res.status}`);
+                const payload = await res.json();
+                if (!payload.authenticated) {
+                    saveMemberAuth({});
+                    return false;
+                }
+                saveMemberAuth({
+                    ...memberAuth,
+                    authenticated: true,
+                    user: {
+                        ...(memberAuth.user || {}),
+                        role: payload.role,
+                        union_id: payload.union_id,
+                        union_slug: payload.union_slug,
+                        email: payload.email,
+                        full_name: payload.full_name,
+                    },
+                    union_slug: payload.union_slug,
+                });
+                if (payload.tracking) {
+                    memberTrackingSettings.effective_policy = payload.tracking;
+                }
+                updateMemberTrackingUI();
+                return true;
+            } catch (error) {
+                console.warn('Member auth refresh failed:', error);
+                saveMemberAuth({});
+                memberTrackingSettings = {
+                    tracking_preference: 'system_default',
+                    effective_policy: null,
+                    member_choice_available: false,
+                };
+                updateMemberTrackingUI();
+                return false;
+            }
+        }
+
+        async function loginMemberAuth(event) {
+            event?.preventDefault?.();
+            const username = document.getElementById('member-auth-username')?.value.trim() || '';
+            const password = document.getElementById('member-auth-password')?.value || '';
+            const fullName = document.getElementById('member-auth-full-name')?.value.trim() || '';
+            const email = document.getElementById('member-auth-email')?.value.trim() || '';
+            const unionSlug = routeContext.unionSlug || document.getElementById('member-auth-union')?.value.trim() || '';
+            const endpoint = memberAuthMode === 'register'
+                ? `${API_BASE}/api/auth/session/register`
+                : `${API_BASE}/api/auth/session/login`;
+            const payloadBody = memberAuthMode === 'register'
+                ? {
+                    username,
+                    password,
+                    full_name: fullName,
+                    email,
+                    union_slug: unionSlug || null,
+                }
+                : {
+                    username,
+                    password,
+                    union_slug: unionSlug || null,
+                };
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: authHeaders({ 'Content-Type': 'application/json' }),
+                credentials: 'same-origin',
+                body: JSON.stringify(payloadBody),
+            });
+            const payload = await parseJsonResponse(res);
+            if (!res.ok) {
+                throw new Error(payload.detail || payload.raw || 'Unable to sign in.');
+            }
+            resetMemberWorkspaceState();
+            saveMemberAuth({
+                authenticated: true,
+                username,
+                union_slug: payload.user?.union_slug || unionSlug,
+                user: payload.user || {},
+            });
+            if (payload.tracking) {
+                memberTrackingSettings.effective_policy = payload.tracking;
+            }
+            closeMemberAuthModal();
+            localStorage.setItem(ACTIVE_CONTRACT_STORAGE_KEY, 'tenant-upload');
+            const tenantContract = getTenantUploadContract();
+            if (tenantContract) {
+                availableContracts = [tenantContract];
+                activeContract = tenantContract;
+                populateContractSelects();
+                updateProfileDisplay();
+                syncSettingsForm();
+                hideOnboarding();
+                updateInteractionLock();
+            }
+            await loadMemberTrackingPreferences();
         }
 
         function loadSessionMetaStore() {
@@ -157,11 +989,53 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             resetChatMessages();
         }
 
+        function startNewConversation() {
+            if (hasSubmittedChatText()) {
+                const confirmed = confirm('Start a new conversation and clear the current chat context?');
+                if (!confirmed) return;
+            }
+            startNewChatSession();
+            postTelemetryEvent('bug_journey', 'conversation_reset', {
+                trigger: 'new_conversation',
+            }, { sessionId: SESSION_ID });
+            const input = document.getElementById('user-input');
+            if (input) {
+                input.value = '';
+                input.placeholder = isTenantUploadAuthMode()
+                    ? 'Ask a new question about your union documents...'
+                    : 'Ask about your agreement...';
+                input.focus();
+            }
+        }
+
+        function focusQuestionInput(prefill = '', options = {}) {
+            const input = document.getElementById('user-input');
+            if (!input) return;
+            if (!hasCompleteProfileContext()) {
+                if (!memberAuth?.authenticated) {
+                    openMemberAuthModal();
+                } else {
+                    showOnboarding();
+                }
+                return;
+            }
+            if (prefill) {
+                input.value = prefill;
+            }
+            input.placeholder = options.followUp
+                ? 'Ask a follow-up about the last answer...'
+                : (isTenantUploadAuthMode() ? 'Ask a question about your union documents...' : 'Ask about your agreement...');
+            input.focus();
+        }
+
         function hasSubmittedChatText() {
             return (ensureSessionMeta(SESSION_ID).submitted_count || 0) > 0;
         }
 
         function hasCompleteProfileContext() {
+            if (isTenantUploadAuthMode()) {
+                return Boolean(getTenantUploadContract());
+            }
             const contractId = String(userProfile?.contract_id || activeContract?.contract_id || '').trim();
             return Boolean(contractId);
         }
@@ -199,17 +1073,26 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             const locked = !hasCompleteProfileContext();
             const input = document.getElementById('user-input');
             const sendBtn = document.getElementById('send-btn');
+            const requiresSignIn = !memberAuth?.authenticated;
             if (input) {
                 input.disabled = locked;
                 input.placeholder = locked
-                    ? 'Select a contract in onboarding to start chat...'
-                    : 'Ask about your contract...';
+                    ? (requiresSignIn
+                        ? 'Sign in to start chat...'
+                        : (isTenantUploadAuthMode()
+                            ? 'Your union documents will appear here after upload and processing...'
+                            : 'Select a contract in onboarding to start chat...'))
+                    : (isTenantUploadAuthMode() ? 'Ask a question about your union documents...' : 'Ask about your agreement...');
             }
             if (sendBtn) sendBtn.disabled = locked;
 
             document.querySelectorAll('[data-requires-profile="true"]').forEach(btn => {
                 btn.disabled = locked;
             });
+            const contractTab = document.getElementById('tab-contract');
+            if (contractTab && isTenantRoute()) {
+                contractTab.classList.add('hidden');
+            }
         }
 
         function markChatSubmitted() {
@@ -220,6 +1103,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         }
 
         function getActiveContract() {
+            if (isTenantUploadAuthMode()) {
+                return getTenantUploadContract();
+            }
             return activeContract;
         }
 
@@ -673,7 +1559,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             if (!row) return null;
             citationSourceRegistrySeq += 1;
             const key = `src_${citationSourceRegistrySeq}`;
-            citationSourceRegistry[key] = row;
+            citationSourceRegistry[key] = JSON.parse(JSON.stringify(row));
             return key;
         }
 
@@ -1324,6 +2210,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
         function getContractLabel(contract) {
             if (!contract) return 'Not set';
+            if (contract.is_tenant_upload) {
+                const unionLabel = safeText(contract.union_local_id) || 'Union';
+                return `${unionLabel} uploaded documents`;
+            }
             const contractId = (contract.contract_id || '').toLowerCase();
             const parts = contractId.split('_').filter(Boolean);
             const cleanParts = parts[0]?.match(/^local\d+$/i) ? parts.slice(1) : parts.slice();
@@ -1420,19 +2310,36 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         function updateContractDisplay() {
             const contract = getActiveContract();
             const subtitle = document.getElementById('header-subtitle');
+            const unionName = tenantBootstrap?.union?.name || contract?.union_local_id || 'Union Documents';
             if (subtitle) {
                 subtitle.textContent = contract
-                    ? `${getContractLabel(contract)} | ${contract.union_local_id || 'Union Contract'}`
-                    : 'Union Contract Assistant';
+                    ? `${getContractLabel(contract)} | ${unionName}`
+                    : 'Union Document Assistant';
             }
             const displayContract = document.getElementById('display-contract');
             if (displayContract) {
-                displayContract.textContent = getContractLabel(contract);
+                displayContract.textContent = isTenantUploadAuthMode()
+                    ? (tenantBootstrap?.union?.name || contract?.union_local_id || 'Union documents')
+                    : getContractLabel(contract);
             }
         }
 
         function setActiveContract(contractId, options = {}) {
             const { persist = true, refreshViewer = true, preserveClassification = true } = options;
+            if (isTenantUploadAuthMode()) {
+                const tenantContract = getTenantUploadContract();
+                if (!tenantContract) return;
+                activeContract = tenantContract;
+                if (persist) {
+                    localStorage.setItem(ACTIVE_CONTRACT_STORAGE_KEY, tenantContract.contract_id);
+                }
+                const onboardSelect = document.getElementById('onboard-contract');
+                const settingsSelect = document.getElementById('settings-contract');
+                if (onboardSelect) onboardSelect.value = tenantContract.contract_id;
+                if (settingsSelect) settingsSelect.value = tenantContract.contract_id;
+                updateContractDisplay();
+                return;
+            }
             if (!contractId) return;
 
             const contract = availableContracts.find(c => c.contract_id === contractId);
@@ -1523,6 +2430,15 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         }
 
         async function loadContracts() {
+            if (isTenantRoute()) {
+                const tenantContract = getTenantUploadContract();
+                availableContracts = tenantContract ? [tenantContract] : [];
+                activeContract = tenantContract;
+                populateContractSelects();
+                updateContractDisplay();
+                applyTenantUploadModeUI();
+                return;
+            }
             try {
                 const res = await fetch(`${API_BASE}/api/contracts`);
                 if (!res.ok) throw new Error(`Failed to load contracts: ${res.status}`);
@@ -1535,11 +2451,13 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
                 populateContractSelects();
                 updateContractDisplay();
+                applyTenantUploadModeUI();
             } catch (e) {
                 console.error('Failed to load contracts:', e);
                 availableContracts = [];
                 activeContract = null;
                 updateContractDisplay();
+                applyTenantUploadModeUI();
             }
         }
 
@@ -3509,6 +4427,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         // =============================================================================
 
         async function loadOnboardingOptions() {
+            if (isTenantRoute()) {
+                return;
+            }
             try {
                 const res = await fetch(`${API_BASE}/api/onboard/options`);
                 await res.json();
@@ -3518,6 +4439,33 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         }
 
         async function loadProfile() {
+            if (!memberAuth?.authenticated) {
+                userProfile = null;
+                syncRoleClarificationPanels();
+                updateProfileDisplay();
+                updateInteractionLock();
+                return;
+            }
+            if (isTenantRoute()) {
+                const tenantContract = getTenantUploadContract();
+                userProfile = {
+                    role: memberAuth?.user?.role || 'user',
+                    union_slug: routeContext.unionSlug || memberAuth?.user?.union_slug || memberAuth?.union_slug || '',
+                    contract_id: tenantContract?.contract_id || null,
+                    classification_display: getMemberRoleLabel(),
+                    months_employed: null,
+                };
+                if (tenantContract) {
+                    activeContract = tenantContract;
+                    populateContractSelects();
+                }
+                syncRoleClarificationPanels();
+                updateProfileDisplay();
+                syncSettingsForm();
+                hideOnboarding();
+                updateInteractionLock();
+                return;
+            }
             try {
                 const res = await fetch(`${API_BASE}/api/profile/${SESSION_ID}`);
                 const profile = await res.json();
@@ -3547,6 +4495,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 updateInteractionLock();
             } catch (e) {
                 console.error('Failed to load profile:', e);
+                if (!memberAuth?.authenticated) {
+                    updateInteractionLock();
+                    return;
+                }
                 const hydrated = await hydrateProfileFromCache();
                 if (!hydrated) {
                     showOnboarding();
@@ -3725,6 +4677,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         }
 
         async function saveSettingsProfile() {
+            if (isTenantUploadAuthMode()) {
+                alert('Your union sign-in already sets your access context. Profile settings are not needed for uploaded-document chat.');
+                return;
+            }
             const contractId = document.getElementById('settings-contract')?.value;
             const classification = document.getElementById('settings-classification').value;
             const employmentType = document.querySelector('input[name="settings_employment"]:checked')?.value;
@@ -3940,11 +4896,15 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         }
 
         function clearSession() {
-            if (confirm('This will clear your profile and conversation history. Continue?')) {
+            if (confirm('This will clear local conversation history and browser preferences for this workspace. Continue?')) {
+                postTelemetryEvent('bug_journey', 'workspace_reset', {
+                    has_member_auth: Boolean(memberAuth?.authenticated),
+                }, { sessionId: SESSION_ID });
                 localStorage.removeItem(SESSION_ID_STORAGE_KEY);
                 localStorage.removeItem(SESSION_META_STORAGE_KEY);
                 localStorage.removeItem('karl_preferences');
                 localStorage.removeItem(ACTIVE_CONTRACT_STORAGE_KEY);
+                localStorage.removeItem(MEMBER_AUTH_STORAGE_KEY);
                 localStorage.removeItem(CONTRACT_PDF_SOURCE_MODE_STORAGE_KEY);
                 localStorage.removeItem(ONBOARDING_FLOW_STORAGE_KEY);
                 location.reload();
@@ -3997,6 +4957,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
         function ensureStewardOnboardingController() {
             if (stewardOnboarding) return stewardOnboarding;
+            if (!createStewardOnboardingController) {
+                stewardOnboarding = createNoopOnboardingController();
+                return stewardOnboarding;
+            }
             stewardOnboarding = createStewardOnboardingController({
                 modalId: 'steward-onboarding-modal',
                 formId: 'steward-onboarding-form',
@@ -4019,6 +4983,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
         function ensureMemberOnboardingController() {
             if (memberOnboarding) return memberOnboarding;
+            if (!createMemberOnboardingController) {
+                memberOnboarding = createNoopOnboardingController();
+                return memberOnboarding;
+            }
             memberOnboarding = createMemberOnboardingController({
                 modalId: 'member-onboarding-modal',
                 setModalOpenState: () => refreshOnboardingModalOpenState(),
@@ -4043,6 +5011,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         }
 
         function showOnboarding() {
+            if (isTenantRoute()) {
+                hideOnboarding();
+                return;
+            }
             const preferred = getOnboardingFlowPreference();
             if (preferred === 'steward') {
                 ensureMemberOnboardingController().hide();
@@ -4073,12 +5045,12 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 if (!contractId) {
                     statusEl.innerHTML = `
                         <span class="w-2 h-2 rounded-full bg-slate-300"></span>
-                        <span class="text-xs text-blue-100">Select contract</span>
+                        <span class="text-xs text-blue-100">${isTenantRoute() ? 'Sign in to access union documents' : 'Select contract'}</span>
                     `;
                     return;
                 }
                 const suffix = contractId ? `?contract_id=${encodeURIComponent(contractId)}` : '';
-                const res = await fetch(`${API_BASE}/api/health${suffix}`);
+                const res = await fetchWithAuth(`${API_BASE}/api/health${suffix}`);
                 const data = await res.json();
                 isHealthy = data.status === 'healthy';
                 const sectionCount = data.contract_chunks ?? data.chunks_loaded ?? 0;
@@ -4154,6 +5126,263 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             `;
         }
 
+        function buildProviderWarningHtml(providerWarning) {
+            if (!providerWarning?.message) return '';
+            const detail = safeText(providerWarning?.detail);
+            return `
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="w-4 h-4 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-7.938 4h15.876c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L2.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Model Provider Warning</p>
+                            <p class="mt-1 text-sm text-amber-950">${escapeHtml(providerWarning.message)}</p>
+                            ${detail ? `<p class="mt-1 text-xs text-amber-800/80">${escapeHtml(detail)}</p>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function isUploadedSourceRecord(source) {
+            return safeText(source?.source_type).toLowerCase() === 'upload' && !!safeText(source?.document_id);
+        }
+
+        function resolveUploadedSourcePageLabel(source) {
+            const page = Number.isFinite(Number(source?.page_number)) ? Number(source.page_number) : null;
+            const pageStart = Number.isFinite(Number(source?.page_start)) ? Number(source.page_start) : null;
+            const pageEnd = Number.isFinite(Number(source?.page_end)) ? Number(source.page_end) : null;
+            const chunkIndex = Number.isFinite(Number(source?.chunk_index)) ? Number(source.chunk_index) + 1 : null;
+            const articleNum = safeText(source?.article_num);
+            const sectionNum = safeText(source?.section_num);
+            const bits = [];
+            if (articleNum) bits.push(`Article ${articleNum}`);
+            if (sectionNum) bits.push(`Section ${sectionNum}`);
+            if (page && page > 0) bits.push(`Page ${page}`);
+            else if (pageStart && pageEnd && pageStart > 0 && pageEnd >= pageStart) bits.push(pageStart === pageEnd ? `Page ${pageStart}` : `Pages ${pageStart}-${pageEnd}`);
+            else if (pageStart && pageStart > 0) bits.push(`Page ${pageStart}`);
+            if (chunkIndex && chunkIndex > 0) bits.push(`Chunk ${chunkIndex}`);
+            return bits.join(' • ');
+        }
+
+        function buildUploadedSourceEvidenceHtml(sources) {
+            const uploadedSources = Array.isArray(sources)
+                ? sources.filter((source) => isUploadedSourceRecord(source))
+                : [];
+            if (!uploadedSources.length) return '';
+
+            return `
+                <div class="uploaded-source-viewer hidden mt-3 rounded-2xl border border-slate-200 bg-slate-50"></div>
+                <details class="mt-3 border-t border-slate-200 pt-3 group">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100">
+                        <span>Supporting Sources (${uploadedSources.length})</span>
+                        <span class="text-xs text-slate-500 group-open:hidden">Show</span>
+                        <span class="hidden text-xs text-slate-500 group-open:inline">Hide</span>
+                    </summary>
+                    <div class="mt-3 space-y-3">
+                        ${uploadedSources.map((source, idx) => {
+                            const sourceRegistryKey = registerCitationSourceRecord(source);
+                            const label = safeText(source?.citation) || safeText(source?.document_title) || `Source ${idx + 1}`;
+                            const subtitle = resolveUploadedSourcePageLabel(source);
+                            const excerpt = safeText(source?.excerpt) || 'No preview excerpt available for this source yet.';
+                            const buttonLabel = subtitle ? `Open In Document (${subtitle})` : 'Open In Document';
+                            return `
+                                <div class="rounded-xl border border-slate-200 bg-white px-3 py-3 shadow-sm">
+                                    <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                                        <div class="min-w-0">
+                                            <p class="text-sm font-semibold text-slate-900">${escapeHtml(label)}</p>
+                                            ${subtitle ? `<p class="mt-0.5 text-xs text-slate-500">${escapeHtml(subtitle)}</p>` : ''}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            class="inline-flex items-center justify-center rounded-lg bg-ufcw-blue px-3 py-2 text-xs font-medium text-white hover:bg-ufcw-blue-mid transition-colors"
+                                            onclick="openUploadedSourceViewer(this, '${escapeJsSingleQuoted(sourceRegistryKey)}')"
+                                        >
+                                            ${escapeHtml(buttonLabel)}
+                                        </button>
+                                    </div>
+                                    <p class="mt-3 text-sm leading-relaxed text-slate-700">${escapeHtml(excerpt)}</p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </details>
+            `;
+        }
+
+        function buildUploadedSourceViewerHtml(source, objectUrl) {
+            const citation = safeText(source?.citation) || safeText(source?.document_title) || 'Uploaded document';
+            const excerpt = safeText(source?.selected_excerpt || source?.excerpt);
+            const summary = safeText(source?.selected_summary || source?.summary);
+            const articleTitle = safeText(source?.selected_article_title || source?.article_title);
+            const sectionTitle = safeText(source?.selected_section_title || source?.section_title);
+            const page = Number.isFinite(Number(source?.page_number)) ? Number(source.page_number) : null;
+            const pageStart = Number.isFinite(Number(source?.selected_page_start ?? source?.page_start)) ? Number(source?.selected_page_start ?? source?.page_start) : null;
+            const contentType = safeText(source?.content_type).toLowerCase();
+            const effectivePage = page || pageStart || null;
+            const fileLocationLabel = resolveUploadedSourcePageLabel({
+                ...source,
+                page_number: effectivePage,
+            }) || 'Selected evidence';
+
+            return `
+                <div class="border-b border-slate-200 bg-white px-4 py-3">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold text-slate-900">${escapeHtml(citation)}</p>
+                            <p class="mt-0.5 text-xs text-slate-500">
+                                ${escapeHtml(resolveUploadedSourcePageLabel(source) || 'Uploaded source')}
+                            ${contentType ? ` • ${escapeHtml(contentType)}` : ''}
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button
+                                type="button"
+                                class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors"
+                                onclick="openUploadedSourceInNewTab('${escapeJsSingleQuoted(objectUrl)}', ${effectivePage ?? 'null'})"
+                            >
+                                Open In New Tab
+                            </button>
+                            <button
+                                type="button"
+                                class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors"
+                                onclick="closeUploadedSourceViewer(this)"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                    ${articleTitle || sectionTitle ? `<p class="mt-2 text-xs font-medium text-slate-600">${escapeHtml([articleTitle, sectionTitle].filter(Boolean).join(' • '))}</p>` : ''}
+                    ${summary ? `<p class="mt-2 rounded-xl bg-blue-50 px-3 py-2 text-sm leading-relaxed text-slate-700"><span class="font-semibold text-slate-900">Matched section:</span> ${escapeHtml(summary)}</p>` : ''}
+                </div>
+                <div class="p-3">
+                    <div class="rounded-xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Selected Evidence</p>
+                        <p class="mt-1 text-xs text-slate-500">${escapeHtml(fileLocationLabel)}</p>
+                        <p class="mt-3 whitespace-pre-wrap leading-relaxed">${escapeHtml(excerpt || summary || 'The selected evidence could not be loaded.')}</p>
+                        <div class="mt-4 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                            The exact matched article or section is shown above. Use “Open In New Tab” to inspect the original uploaded file.
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function openUploadedSourceViewer(trigger, sourceRegistryKey) {
+            const source = getCitationSourceRecord(sourceRegistryKey);
+            const card = trigger?.closest('.assistant-message-card');
+            const viewer = card?.querySelector('.uploaded-source-viewer');
+            if (!source || !viewer) return;
+
+            viewer.classList.remove('hidden');
+            viewer.innerHTML = '<div class="px-4 py-6 text-sm text-slate-500">Loading source document...</div>';
+            viewer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            const priorObjectUrl = safeText(viewer.dataset.objectUrl);
+            if (priorObjectUrl) {
+                URL.revokeObjectURL(priorObjectUrl);
+                delete viewer.dataset.objectUrl;
+            }
+            delete viewer.dataset.sourceRegistryKey;
+
+            const documentContentUrl = safeText(source?.document_content_url);
+            const documentUrl = safeText(source?.document_access_url || documentContentUrl);
+            if (!documentUrl) {
+                viewer.innerHTML = `
+                    <div class="px-4 py-6 text-sm text-slate-600">
+                        This source does not have a document viewer URL yet.
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                let selectedEvidence = null;
+                const selectionUrl = safeText(source?.document_selection_url);
+                if (selectionUrl) {
+                    const selectionResponse = await fetch(new URL(selectionUrl, API_BASE).toString(), { credentials: 'same-origin' });
+                    if (selectionResponse.ok) {
+                        selectedEvidence = await selectionResponse.json();
+                    }
+                }
+                const resolvedUrl = new URL(documentUrl, API_BASE).toString();
+                let response = safeText(source?.document_access_url)
+                    ? await fetch(resolvedUrl, { credentials: 'same-origin' })
+                    : await fetchWithAuth(resolvedUrl);
+                if (!response.ok && documentContentUrl) {
+                    const fallbackUrl = new URL(documentContentUrl, API_BASE).toString();
+                    response = await fetchWithAuth(fallbackUrl);
+                }
+                if (!response.ok) {
+                    let detail = `Unable to load source document (${response.status}).`;
+                    try {
+                        const err = await response.json();
+                        if (err?.detail) detail = String(err.detail);
+                    } catch (_) {
+                        // Ignore parse failure.
+                    }
+                    throw new Error(detail);
+                }
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                viewer.dataset.objectUrl = objectUrl;
+                viewer.dataset.sourceRegistryKey = safeText(sourceRegistryKey);
+                viewer.innerHTML = buildUploadedSourceViewerHtml(
+                    {
+                        ...source,
+                        selected_excerpt: safeText(selectedEvidence?.excerpt),
+                        selected_summary: safeText(selectedEvidence?.summary),
+                        selected_article_title: safeText(selectedEvidence?.article_title),
+                        selected_section_title: safeText(selectedEvidence?.section_title),
+                        selected_page_start: selectedEvidence?.page_start,
+                        content_type: source?.content_type || blob.type || '',
+                    },
+                    objectUrl
+                );
+                const iframe = viewer.querySelector('iframe');
+                if (iframe) {
+                    iframe.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                postTelemetryEvent('usage_ux', 'source_opened', {
+                    document_id: source?.document_id || null,
+                    citation: source?.citation || null,
+                    page_number: source?.page_number || source?.page_start || null,
+                });
+            } catch (error) {
+                postTelemetryEvent('bug_journey', 'source_open_failed', {
+                    document_id: source?.document_id || null,
+                    reason: error?.message || 'unknown_error',
+                });
+                viewer.innerHTML = `
+                    <div class="px-4 py-6 text-sm text-red-700">
+                        ${escapeHtml(error?.message || 'Unable to load the source document.')}
+                    </div>
+                `;
+            }
+        }
+
+        function closeUploadedSourceViewer(trigger) {
+            const viewer = trigger?.closest('.uploaded-source-viewer');
+            if (!viewer) return;
+            const priorObjectUrl = safeText(viewer.dataset.objectUrl);
+            if (priorObjectUrl) {
+                URL.revokeObjectURL(priorObjectUrl);
+            }
+            viewer.innerHTML = '';
+            viewer.classList.add('hidden');
+            delete viewer.dataset.objectUrl;
+            delete viewer.dataset.sourceRegistryKey;
+        }
+
+        function openUploadedSourceInNewTab(objectUrl, pageNumber = null) {
+            const page = Number.isFinite(Number(pageNumber)) ? Number(pageNumber) : null;
+            const targetUrl = page ? `${objectUrl}#page=${page}` : objectUrl;
+            window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        }
+
         function addMessage(content, isUser = false, metadata = null) {
             const container = document.getElementById('chat-container');
             const msgDiv = document.createElement('div');
@@ -4168,8 +5397,9 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                     </div>
                 `;
             } else {
+                const hasUploadedEvidence = Array.isArray(metadata?.sources) && metadata.sources.some((source) => isUploadedSourceRecord(source));
                 let citationsHtml = '';
-                if (metadata?.citations?.length > 0) {
+                if (!hasUploadedEvidence && metadata?.citations?.length > 0) {
                     const sourceByCitation = new Map();
                     if (Array.isArray(metadata?.sources)) {
                         for (const src of metadata.sources) {
@@ -4265,6 +5495,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                         </div>
                     `;
                 }
+                const uploadedEvidenceHtml = hasUploadedEvidence
+                    ? buildUploadedSourceEvidenceHtml(metadata?.sources)
+                    : '';
+                const providerWarningHtml = buildProviderWarningHtml(metadata?.provider_warning);
 
                 let wageHtml = '';
                 if (metadata?.wage_info) {
@@ -4354,11 +5588,13 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 );
 
                 msgDiv.innerHTML = `
-                    <div class="bg-white border border-slate-200 rounded-2xl rounded-bl-sm px-4 py-3 max-w-[95%] shadow-sm">
+                    <div class="assistant-message-card bg-white border border-slate-200 rounded-2xl rounded-bl-sm px-4 py-3 max-w-[95%] shadow-sm">
                         <div class="text-sm text-slate-700 leading-relaxed">${formatResponse(content)}</div>
                         ${wageHtml}
                         ${roleClarificationHtml}
                         ${escalationHtml}
+                        ${providerWarningHtml}
+                        ${uploadedEvidenceHtml}
                         ${citationsHtml}
                     </div>
                 `;
@@ -4386,7 +5622,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                         <span class="w-2 h-2 bg-ufcw-blue rounded-full animate-bounce" style="animation-delay: 100ms"></span>
                         <span class="w-2 h-2 bg-ufcw-blue rounded-full animate-bounce" style="animation-delay: 200ms"></span>
                     </div>
-                    <span class="text-xs">Searching contract...</span>
+                    <span class="text-xs">${isTenantUploadAuthMode() ? 'Searching union documents...' : 'Searching contract...'}</span>
                 </div>
             `;
             container.appendChild(loadingDiv);
@@ -4400,13 +5636,30 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         async function sendQuery(question) {
             const sendBtn = document.getElementById('send-btn');
             if (!hasCompleteProfileContext()) {
+                if (!memberAuth?.authenticated) {
+                    openMemberAuthModal();
+                    addMessage('Sign in to your union account before asking questions.', false, { avatar_outcome: 'question' });
+                    return;
+                }
                 showOnboarding();
-                addMessage('Select your contract and role in onboarding before asking questions.', false, { avatar_outcome: 'question' });
+                addMessage(
+                    isTenantUploadAuthMode()
+                        ? 'Upload documents in the admin workspace before asking questions.'
+                        : 'Select your agreement and role in onboarding before asking questions.',
+                    false,
+                    { avatar_outcome: 'question' }
+                );
                 return;
             }
             const contract = getActiveContract();
             if (!contract) {
-                addMessage('Please select your contract in Settings before asking a question.', false, { avatar_outcome: 'question' });
+                addMessage(
+                    isTenantUploadAuthMode()
+                        ? 'Sign in and upload documents before asking a question.'
+                        : 'Please select your agreement in Settings before asking a question.',
+                    false,
+                    { avatar_outcome: 'question' }
+                );
                 return;
             }
 
@@ -4415,11 +5668,17 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             markChatSubmitted();
             showLoading();
             startThinking();  // Animated gradient
+            postTelemetryEvent('bug_journey', 'query_submitted', {
+                question_length: String(question || '').length,
+                authenticated: Boolean(memberAuth?.authenticated),
+                tenant_mode: isTenantUploadAuthMode(),
+            });
 
             try {
-                const res = await fetch(`${API_BASE}/api/query`, {
+                const res = await fetchWithAuth(`${API_BASE}/api/query`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    timeoutMs: 25000,
                     body: JSON.stringify({
                         question: question,
                         union_local_id: contract.union_local_id,
@@ -4449,6 +5708,7 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 addMessage(data.answer, false, {
                     citations: data.citations,
                     sources: data.sources,
+                    provider_warning: data.provider_warning,
                     wage_info: data.wage_info,
                     role_clarification: data.role_clarification,
                     retry_question: question,
@@ -4459,6 +5719,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                 });
 
             } catch (error) {
+                postTelemetryEvent('bug_journey', 'query_failed', {
+                    reason: error?.message || 'unknown_error',
+                    tenant_mode: isTenantUploadAuthMode(),
+                });
                 hideLoading();
                 stopThinking();  // Stop animated gradient
                 addMessage(`Unable to process this request: ${error.message}`, false, { avatar_outcome: 'error' });
@@ -4470,6 +5734,10 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
 
         function askQuestion(q) {
             if (!hasCompleteProfileContext()) {
+                if (!memberAuth?.authenticated) {
+                    openMemberAuthModal();
+                    return;
+                }
                 showOnboarding();
                 return;
             }
@@ -4491,8 +5759,18 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
         // =============================================================================
 
         async function init() {
-            ensureStewardOnboardingController();
-            ensureMemberOnboardingController();
+            if (routeContext.mode === 'legacy_member') {
+                await ensureOnboardingFactoriesLoaded();
+                ensureStewardOnboardingController();
+                ensureMemberOnboardingController();
+                window.location.replace('/karl/');
+                return;
+            }
+            if (!isTenantRoute()) {
+                await ensureOnboardingFactoriesLoaded();
+                ensureStewardOnboardingController();
+                ensureMemberOnboardingController();
+            }
             initDarkMode();  // Apply dark mode if saved
             updateDeveloperModeUI(isDeveloperModeEnabled());
             saveContractTextSourceMode(contractTextSourceMode);
@@ -4506,10 +5784,31 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
             setKarlAvatarState('idle');
             setHeaderSubtitle(HEADER_SUBTITLE_DEFAULT);
             refreshOnboardingModalOpenState();
+            if (routeContext.unionSlug) {
+                try {
+                    await loadTenantBootstrap();
+                } catch (error) {
+                    showTenantPageFailure(error.message || 'Unable to load tenant page.');
+                    alert(error.message || 'Unable to load tenant page.');
+                    return;
+                }
+            }
+            renderMemberAuthSummary();
+            applyTenantUploadModeUI();
+            await refreshMemberAuth();
+            await loadMemberTrackingPreferences();
             updateInteractionLock();
             await loadContracts();
             await loadOnboardingOptions();
             await loadProfile();
+            postTelemetryEvent('bug_journey', 'member_workspace_loaded', {
+                route_mode: routeContext.mode,
+                signed_in: Boolean(memberAuth?.authenticated),
+                tenant_slug: routeContext.unionSlug || null,
+            });
+            if (routeContext.unionSlug && !memberAuth?.authenticated) {
+                hideOnboarding();
+            }
             checkHealth();
             setInterval(checkHealth, 30000);
 
@@ -4527,6 +5826,60 @@ import { createMemberOnboardingController } from './modules/member-onboarding.js
                     if (e.target.value) {
                         await loadClassificationsForContract(e.target.value, { preserveSelection: false });
                     }
+                });
+            }
+            const memberAuthForm = document.getElementById('member-auth-form');
+            if (memberAuthForm) {
+                memberAuthForm.addEventListener('submit', async (e) => {
+                    try {
+                        await loginMemberAuth(e);
+                        await loadProfile();
+                        checkHealth();
+                    } catch (error) {
+                        alert(error.message || 'Unable to sign in.');
+                    }
+                });
+            }
+            const memberAuthLogout = document.getElementById('member-auth-logout');
+            if (memberAuthLogout) {
+                memberAuthLogout.addEventListener('click', () => {
+                    handleMemberLogout().catch((error) => {
+                        console.warn('Member logout failed:', error);
+                        clearMemberAuth({ preserveServerSession: true });
+                        checkHealth();
+                    });
+                });
+            }
+            document.getElementById('member-auth-modal-close')?.addEventListener('click', () => closeMemberAuthModal());
+            document.getElementById('member-auth-modal-cancel')?.addEventListener('click', () => closeMemberAuthModal());
+            document.getElementById('member-auth-mode-signin')?.addEventListener('click', () => setMemberAuthMode('signin'));
+            document.getElementById('member-auth-mode-register')?.addEventListener('click', () => setMemberAuthMode('register'));
+            document.getElementById('member-auth-password-toggle')?.addEventListener('click', () => togglePasswordVisibility('member-auth-password', 'member-auth-password-toggle'));
+            document.getElementById('member-tracking-save')?.addEventListener('click', () => {
+                saveMemberTrackingPreference().catch((error) => {
+                    console.warn('Tracking preference save failed:', error);
+                    setMemberTrackingStatus(error.message || 'Unable to save tracking choice.', 'error');
+                });
+            });
+            document.getElementById('member-auth-modal')?.addEventListener('click', (event) => {
+                if (event.target?.id === 'member-auth-modal') {
+                    closeMemberAuthModal();
+                }
+            });
+            const headerSignIn = document.getElementById('header-signin-btn');
+            if (headerSignIn) {
+                headerSignIn.addEventListener('click', () => {
+                    openMemberAuthModal();
+                });
+            }
+            const headerSignOut = document.getElementById('header-signout-btn');
+            if (headerSignOut) {
+                headerSignOut.addEventListener('click', () => {
+                    handleMemberLogout().catch((error) => {
+                        console.warn('Member logout failed:', error);
+                        clearMemberAuth({ preserveServerSession: true });
+                        checkHealth();
+                    });
                 });
             }
 
@@ -4569,9 +5922,13 @@ Object.assign(window, {
     toggleDarkMode,
     toggleDeveloperMode,
     clearSession,
+    startNewConversation,
+    focusQuestionInput,
     loadArticle,
     loadContractBrowseItem,
     handleCitationClick,
+    openUploadedSourceViewer,
+    openUploadedSourceInNewTab,
     selectMonth,
 });
 

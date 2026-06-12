@@ -3,27 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karl - Union Contract Assistant</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Karl - Union Document Assistant</title>
+    <link rel="stylesheet" href="/static/modular/styles/generated.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        ufcw: {
-                            blue: '#0D3B54',
-                            'blue-mid': '#14506E',
-                            'blue-light': '#1B6B8A',
-                            gold: '#D4A029',
-                            'gold-light': '#E8B84A',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         :root {
             --mobile-header-offset: 72px;
@@ -1612,12 +1594,26 @@
                     </div>
                     <div>
                         <h1 class="font-bold text-base md:text-lg tracking-tight">Karl</h1>
-                        <p id="header-subtitle" class="text-ufcw-gold-light text-[10px] md:text-xs">Union Contract Assistant</p>
+                        <p id="header-subtitle" class="text-ufcw-gold-light text-[10px] md:text-xs">Union Document Assistant</p>
                     </div>
                 </div>
                 <div id="status" class="flex items-center gap-1.5 md:gap-2 bg-black/20 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full">
                     <span class="w-2 h-2 rounded-full bg-ufcw-gold pulse-dot"></span>
                     <span class="text-[10px] md:text-xs text-ufcw-gold-light">Connecting...</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="hidden md:block rounded-full bg-black/20 px-3 py-1.5 text-[10px] md:text-xs text-ufcw-gold-light">
+                        <span id="header-account-summary">Not signed in</span>
+                    </div>
+                    <div id="header-account-compact" class="hidden rounded-full bg-white/10 px-3 py-1.5 text-[10px] md:text-xs text-white/90">
+                        <span id="header-account-compact-text">Not signed in</span>
+                    </div>
+                    <button id="header-signin-btn" class="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[10px] md:text-xs font-medium text-white hover:bg-white/20 transition-colors">
+                        Sign In
+                    </button>
+                    <button id="header-signout-btn" class="hidden rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[10px] md:text-xs font-medium text-white hover:bg-white/20 transition-colors">
+                        Sign Out
+                    </button>
                 </div>
             </div>
         </header>
@@ -1810,7 +1806,7 @@
                             </div>
                             <div class="w-px h-6 md:h-8 bg-slate-300"></div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-[9px] md:text-[10px] font-medium text-slate-500 uppercase tracking-wider">Contract</p>
+                                <p class="text-[9px] md:text-[10px] font-medium text-slate-500 uppercase tracking-wider">Workspace</p>
                                 <p id="display-contract" class="text-xs md:text-sm font-semibold text-slate-800 truncate w-full pr-1">Not set</p>
                             </div>
                         </div>
@@ -1827,27 +1823,26 @@
                 <div id="chat-container" class="md:flex-1 fixed md:relative top-[100px] md:top-auto left-0 right-0 bottom-[130px] md:bottom-auto overflow-y-auto p-4 md:p-5 space-y-4 bg-white dark:bg-gray-900">
                     <!-- Welcome Card -->
                     <div class="bg-gradient-to-br from-ufcw-blue via-ufcw-blue-mid to-ufcw-blue-light rounded-2xl p-4 md:p-5 text-white fade-up">
-                        <h2 class="font-semibold text-base md:text-lg mb-2">Welcome to Karl</h2>
-                        <p class="text-ufcw-gold-light text-xs md:text-sm leading-relaxed mb-3 md:mb-4">
-                            I answer questions about your union contract with specific citations.
-                            Click any citation to view the full contract text.
+                        <h2 id="chat-welcome-title" class="font-semibold text-base md:text-lg mb-2">Welcome to Karl</h2>
+                        <p id="chat-welcome-copy" class="text-ufcw-gold-light text-xs md:text-sm leading-relaxed mb-3 md:mb-4">
+                            Ask questions about your union documents and follow the supporting citations back to the source.
                         </p>
                         <div class="grid grid-cols-2 gap-2">
-                            <button data-requires-profile="true" onclick="askQuestion('How much should I be making?')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
-                                <p class="text-xs md:text-sm font-medium">My Wages</p>
-                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Based on your tenure</p>
+                            <button onclick="focusQuestionInput('What does this agreement say about scheduling?')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">Start With A Question</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Prefill a common question</p>
                             </button>
-                            <button data-requires-profile="true" onclick="askQuestion('How much vacation do I get per year?')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
-                                <p class="text-xs md:text-sm font-medium">Time Off</p>
-                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Vacation, sick, holidays</p>
+                            <button onclick="focusQuestionInput('', { followUp: true })" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">Follow Up</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Keep going on the current topic</p>
                             </button>
-                            <button data-requires-profile="true" onclick="askQuestion('When do I get a break?')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
-                                <p class="text-xs md:text-sm font-medium">Breaks</p>
-                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Rest & meal periods</p>
+                            <button onclick="startNewConversation()" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">New Conversation</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Clear the current chat context</p>
                             </button>
-                            <button data-requires-profile="true" onclick="askQuestion('What are my rights if I am being disciplined?')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
-                                <p class="text-xs md:text-sm font-medium">Your Rights</p>
-                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Representation</p>
+                            <button onclick="setActiveTab('settings')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">Workspace Settings</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Theme and account controls</p>
                             </button>
                         </div>
                     </div>
@@ -1855,11 +1850,19 @@
 
                 <!-- Input Area - Fixed above bottom nav on mobile -->
                 <div id="chat-input-area" class="md:relative fixed left-0 right-0 bottom-[60px] md:bottom-auto z-20 border-t border-slate-200 bg-white p-3 md:p-4 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+                    <div id="chat-action-bar" class="max-w-4xl mx-auto mb-3 flex flex-wrap items-center gap-2">
+                        <button type="button" onclick="focusQuestionInput('', { followUp: true })" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+                            Continue This Conversation
+                        </button>
+                        <button type="button" onclick="startNewConversation()" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+                            Start New Conversation
+                        </button>
+                    </div>
                     <form id="chat-form" class="flex gap-2 md:gap-3 max-w-4xl mx-auto">
                         <input
                             type="text"
                             id="user-input"
-                            placeholder="Ask about your contract..."
+                            placeholder="Ask about your union documents..."
                             class="flex-1 bg-slate-100 border-0 rounded-xl px-3 md:px-4 py-2.5 md:py-3 text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-ufcw-gold focus:bg-white transition-all"
                             autocomplete="off"
                         >
@@ -1883,12 +1886,28 @@
                 <div class="max-w-lg mx-auto space-y-6">
                     <h2 class="text-xl font-semibold text-slate-800">Settings</h2>
 
-                    <!-- Profile Section -->
                     <section class="bg-white rounded-xl border border-slate-200 p-5">
-                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Your Profile</h3>
-
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Account</h3>
                         <div class="space-y-4">
-                            <div>
+                            <div id="member-auth-summary" class="text-sm text-slate-600">Not signed in.</div>
+                            <p class="text-xs leading-relaxed text-slate-500">Use the header session controls to sign in or out. Your workspace access is tied to this union page automatically.</p>
+                        </div>
+                        <a id="member-admin-link" href="/static/modular/admin.html" class="hidden mt-3 inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+                            Open Admin Console
+                        </a>
+                    </section>
+
+                    <!-- Profile Section -->
+                    <section id="profile-settings-section" class="bg-white rounded-xl border border-slate-200 p-5">
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Workspace Access</h3>
+                        <p id="profile-settings-note" class="hidden mb-4 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs leading-relaxed text-blue-900"></p>
+                        <div id="tenant-profile-summary" class="hidden rounded-xl border border-slate-200 bg-slate-50 p-4">
+                            <p class="text-sm font-medium text-slate-800">Your union access is already set by sign-in.</p>
+                            <p class="mt-1 text-sm text-slate-600">This workspace uses the documents for the union tied to your account. You can ask a new question at any time or continue the current conversation in chat.</p>
+                        </div>
+
+                        <div id="legacy-profile-fields" class="space-y-4">
+                            <div id="settings-contract-group">
                                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Contract/Store</label>
                                 <select id="settings-contract" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700">
                                     <option value="">Select your contract...</option>
@@ -1958,7 +1977,7 @@
                                 </div>
                             </div>
 
-                            <button onclick="saveSettingsProfile()" class="w-full bg-ufcw-blue hover:bg-blue-800 text-white font-medium py-2.5 px-4 rounded-lg transition-colors">
+                            <button id="settings-profile-save" onclick="saveSettingsProfile()" class="w-full bg-ufcw-blue hover:bg-blue-800 text-white font-medium py-2.5 px-4 rounded-lg transition-colors">
                                 Save Profile
                             </button>
                         </div>
@@ -1982,7 +2001,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="font-medium text-slate-700">Text Size</p>
-                                    <p class="text-xs text-slate-500">Adjust contract viewer text</p>
+                                    <p class="text-xs text-slate-500">Adjust document viewer text</p>
                                 </div>
                                 <select id="pref-text-size" onchange="savePreference('textSize', this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm">
                                     <option value="small">Small</option>
@@ -2038,6 +2057,31 @@
                         </div>
                     </section>
 
+                    <section id="member-tracking-section" class="bg-white rounded-xl border border-slate-200 p-5">
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Tracking And Privacy</h3>
+                        <div class="space-y-4">
+                            <div id="member-tracking-summary" class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">
+                                Loading tracking policy...
+                            </div>
+                            <div>
+                                <label for="member-tracking-select" class="block text-sm font-medium text-slate-700 mb-1.5">Your tracking choice</label>
+                                <select id="member-tracking-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700">
+                                    <option value="system_default">Use workspace default</option>
+                                    <option value="bug_only">Bug and journey tracking only</option>
+                                    <option value="full">Full tracking for bugs and product improvement</option>
+                                    <option value="off">Opt out of optional tracking</option>
+                                </select>
+                            </div>
+                            <p id="member-tracking-note" class="text-xs leading-relaxed text-slate-500">This workspace uses privacy-safe defaults. Security and session records still run separately from optional product analytics.</p>
+                            <div class="flex items-center gap-3">
+                                <button id="member-tracking-save" type="button" class="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition-colors">
+                                    Save Tracking Choice
+                                </button>
+                                <div id="member-tracking-status" class="text-sm text-slate-500"></div>
+                            </div>
+                        </div>
+                    </section>
+
                     <section class="bg-white rounded-xl border border-slate-200 p-5">
                         <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">KARL</h3>
                         <div class="flex items-start justify-between gap-4">
@@ -2054,10 +2098,10 @@
 
                     <!-- Danger Zone -->
                     <section class="bg-red-50 rounded-xl border border-red-200 p-5">
-                        <h3 class="text-sm font-semibold text-red-700 uppercase tracking-wider mb-2">Clear Data</h3>
-                        <p class="text-sm text-red-600 mb-3">Reset your profile and start fresh. This cannot be undone.</p>
+                        <h3 class="text-sm font-semibold text-red-700 uppercase tracking-wider mb-2">Reset Workspace</h3>
+                        <p class="text-sm text-red-600 mb-3">Clear local conversation history and preferences for this browser.</p>
                         <button onclick="clearSession()" class="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors">
-                            Clear Session
+                            Reset Local Workspace
                         </button>
                     </section>
                 </div>
@@ -2101,7 +2145,54 @@
         </main>
     </div>
 
-    <script type="module" src="/static/modular/main.js"></script>
+    <div id="member-auth-modal" class="hidden fixed inset-0 z-[80] bg-slate-950/50 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-md items-center justify-center">
+            <div class="w-full rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p id="member-auth-modal-eyebrow" class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sign In</p>
+                        <h2 id="member-auth-modal-title" class="mt-2 text-2xl font-semibold text-slate-900">Access your union workspace</h2>
+                        <p id="member-auth-modal-copy" class="mt-2 text-sm leading-6 text-slate-600">Use your union-issued account to chat with uploaded documents and open supporting sources.</p>
+                    </div>
+                    <button id="member-auth-modal-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <div class="mt-5 flex items-center gap-2 rounded-full bg-slate-100 p-1">
+                    <button id="member-auth-mode-signin" type="button" class="flex-1 rounded-full bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm">Sign In</button>
+                    <button id="member-auth-mode-register" type="button" class="flex-1 rounded-full px-3 py-2 text-sm font-medium text-slate-600">Create Account</button>
+                </div>
+                <form id="member-auth-form" class="mt-6 space-y-4">
+                    <div id="member-auth-full-name-group" class="hidden">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
+                        <input id="member-auth-full-name" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700" placeholder="Full name">
+                    </div>
+                    <div id="member-auth-email-group" class="hidden">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+                        <input id="member-auth-email" type="email" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700" placeholder="Email">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Username</label>
+                        <input id="member-auth-username" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700" placeholder="Username">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                        <div class="flex gap-2">
+                            <input id="member-auth-password" type="password" class="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700" placeholder="Password">
+                            <button id="member-auth-password-toggle" type="button" class="rounded-lg border border-slate-300 px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors">Show</button>
+                        </div>
+                    </div>
+                    <div id="member-auth-union-group">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Union</label>
+                        <input id="member-auth-union" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700" placeholder="Union">
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="member-auth-submit" type="submit" class="flex-1 rounded-lg bg-ufcw-blue px-4 py-2.5 text-sm font-medium text-white hover:bg-ufcw-blue-mid transition-colors">Sign In</button>
+                        <button id="member-auth-modal-cancel" type="button" class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="/static/modular/src/app.js"></script>
 </body>
 </html>
-
