@@ -664,6 +664,53 @@ def test_super_admin_can_manage_global_and_union_tracking_policy(tmp_path):
     assert union_delete.json()["override_enabled"] is False
 
 
+def test_enabling_identified_raw_query_emits_single_security_event(tmp_path):
+    app, SessionLocal = _build_app(tmp_path)
+
+    with SessionLocal() as db:
+        union = Union(slug="local-1", name="Local 1", union_local_id="local-1")
+        super_user = User(email="super@example.com", full_name="Super Admin")
+        db.add_all([union, super_user])
+        db.flush()
+        db.add(UnionMembership(union_id=union.id, user_id=super_user.id, role=Role.SUPER_ADMIN))
+        app.state.platform.local_auth.create_or_update_credential(db, user=super_user, username="superadmin", password="demo_password")
+        db.commit()
+
+    client = TestClient(app)
+    login = client.post("/api/auth/local/login", json={"username": "superadmin", "password": "demo_password", "union_slug": "local-1"})
+    headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+
+    identified_payload = {
+        "tracking_mode": "both",
+        "privacy_mode": "identified",
+        "member_choice_mode": "bug_only_or_full",
+        "raw_query_storage_mode": "enabled_identified",
+        "default_member_preference": "bug_only",
+        "allow_union_override": True,
+    }
+
+    # First enable → exactly one warning-severity SecurityEvent.
+    assert client.put("/api/admin/tracking-policy/global", headers=headers, json=identified_payload).status_code == 200
+    with SessionLocal() as db:
+        events = db.scalars(select(SecurityEvent).where(SecurityEvent.event_type == "raw_query_identified_enabled")).all()
+        assert len(events) == 1
+        assert events[0].severity == SecuritySeverity.WARNING
+
+    # Re-saving while already identified → no additional event.
+    assert client.put("/api/admin/tracking-policy/global", headers=headers, json=identified_payload).status_code == 200
+    with SessionLocal() as db:
+        events = db.scalars(select(SecurityEvent).where(SecurityEvent.event_type == "raw_query_identified_enabled")).all()
+        assert len(events) == 1
+
+    # Turning it back off then on again → a second event on the new enable transition.
+    disabled_payload = {**identified_payload, "raw_query_storage_mode": "disabled"}
+    assert client.put("/api/admin/tracking-policy/global", headers=headers, json=disabled_payload).status_code == 200
+    assert client.put("/api/admin/tracking-policy/global", headers=headers, json=identified_payload).status_code == 200
+    with SessionLocal() as db:
+        events = db.scalars(select(SecurityEvent).where(SecurityEvent.event_type == "raw_query_identified_enabled")).all()
+        assert len(events) == 2
+
+
 def test_member_telemetry_endpoint_honors_preference_and_policy(tmp_path):
     app, SessionLocal = _build_app(tmp_path)
 

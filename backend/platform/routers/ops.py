@@ -9,8 +9,8 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import select
 
-from backend.platform.deps import get_auth_context, get_db, require_roles
-from backend.platform.models import AuthSession, Document, IngestionJob, Notification, NotificationStatus, Role, SecurityEvent, TelemetryEvent, Union, UsageEvent
+from backend.platform.deps import get_auth_context, get_container, get_db, require_roles
+from backend.platform.models import AuditEvent, AuthSession, Document, IngestionJob, Notification, NotificationStatus, Role, SecurityEvent, TelemetryEvent, Union, UsageEvent
 
 
 router = APIRouter(prefix="/api/ops", tags=["ops"])
@@ -41,7 +41,12 @@ def _serialize_dashboard(
     since_24h = now - timedelta(hours=24)
     since_7d = now - timedelta(days=7)
     day_keys = [(now - timedelta(days=offset)).strftime("%Y-%m-%d") for offset in range(6, -1, -1)]
-    day_labels = [(now - timedelta(days=offset)).strftime("%b %-d") for offset in range(6, -1, -1)]
+    # Portable "Mon D" label — the platform-specific strftime flag (%-d / %#d) is avoided so the
+    # dashboard renders on Windows as well as POSIX hosts.
+    day_labels = [
+        f"{(now - timedelta(days=offset)).strftime('%b')} {(now - timedelta(days=offset)).day}"
+        for offset in range(6, -1, -1)
+    ]
 
     request_series = defaultdict(int)
     active_users_series: dict[str, set[str]] = {key: set() for key in day_keys}
@@ -597,6 +602,31 @@ def acknowledge_notification(
             "acknowledged_at": datetime.utcnow().isoformat(),
         }
     }
+
+
+@router.post("/maintenance/purge-sessions")
+def purge_expired_sessions(
+    request: Request,
+    older_than_days: int = Query(default=90, ge=1, le=3650),
+    _auth=Depends(require_roles(Role.SUPER_ADMIN.value)),
+):
+    """Delete expired/revoked auth sessions (and their IP/UA metadata) past the retention window."""
+    db = get_db(request)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database is not configured.")
+    container = get_container(request)
+    auth = get_auth_context(request)
+    deleted = container.session_auth.purge_expired_sessions(db, older_than_days=older_than_days)
+    db.add(
+        AuditEvent(
+            union_id=None,
+            actor_user_id=auth.user_id,
+            event_type="auth_sessions_purged",
+            event_payload={"older_than_days": int(older_than_days), "deleted_count": int(deleted)},
+        )
+    )
+    db.flush()
+    return {"ok": True, "deleted_count": int(deleted), "older_than_days": int(older_than_days)}
 
 
 @router.get("/usage")

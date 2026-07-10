@@ -32,6 +32,85 @@ TENANT_RLS_TABLES = (
     "notifications",
 )
 
+# Tracking/telemetry tables with a *legitimately* nullable union_id (the global tracking
+# policy row, anonymous public telemetry, and super-admin-scoped preferences). A naive
+# ``union_id = current_union_id`` predicate would hide those null-union rows from everyone and
+# break effective-policy resolution under member context, so null-union rows resolve here for
+# any tenant while non-null rows stay isolated to their union (or super-admin).
+NULLABLE_UNION_RLS_TABLES = (
+    "tracking_policies",
+    "user_tracking_preferences",
+    "telemetry_events",
+    "raw_query_records",
+)
+
+# Append-only event/session tables are written by the application under contexts that are not
+# yet (or never) tenant-scoped — e.g. telemetry recorded during an unauthenticated/failed login,
+# or an auth_session created mid-login before a user context exists. For these we keep a
+# restrictive read predicate (USING) but a permissive write predicate (WITH CHECK true): the
+# privacy-relevant control is cross-tenant *read* isolation, and writes are fully app-controlled.
+PERMISSIVE_WRITE_RLS_TABLES = frozenset(
+    {"telemetry_events", "raw_query_records", "auth_sessions"}
+)
+
+# auth_sessions carries no global/config rows that tenants should see: super-admin sessions
+# (union_id IS NULL) must remain invisible to union tenants, so its read predicate excludes the
+# null-union escape hatch used by the tracking tables.
+SESSION_RLS_TABLES = ("auth_sessions",)
+
+_SUPER_ADMIN_PREDICATE = "current_setting('app.current_role', true) = 'super_admin'"
+_UNION_MATCH_PREDICATE = "union_id::text = current_setting('app.current_union_id', true)"
+
+
+def _nullable_union_read_predicate() -> str:
+    return f"{_SUPER_ADMIN_PREDICATE} OR union_id IS NULL OR {_UNION_MATCH_PREDICATE}"
+
+
+def _session_read_predicate() -> str:
+    return f"{_SUPER_ADMIN_PREDICATE} OR (union_id IS NOT NULL AND {_UNION_MATCH_PREDICATE})"
+
+
+def _policy_statement(table: str, *, using_expr: str, check_expr: str) -> str:
+    """Idempotently create the tenant-isolation policy for ``table`` (matches existing style)."""
+    return f"""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM pg_policies WHERE policyname = 'tenant_isolation_{table}'
+            ) THEN
+                CREATE POLICY tenant_isolation_{table} ON {table}
+                USING (
+                    {using_expr}
+                )
+                WITH CHECK (
+                    {check_expr}
+                );
+            END IF;
+        END $$;
+        """
+
+
+def tracking_and_session_rls_statements() -> list[str]:
+    """RLS enable/force + policy statements for the tracking + session tables.
+
+    Kept separate from :func:`get_rls_statements` so the Alembic migration that introduces this
+    control can apply exactly the same SQL to existing databases.
+    """
+    tables = (*NULLABLE_UNION_RLS_TABLES, *SESSION_RLS_TABLES)
+    statements: list[str] = []
+    for table in tables:
+        statements.append(f"ALTER TABLE {table} ENABLE ROW LEVEL SECURITY")
+        statements.append(f"ALTER TABLE {table} FORCE ROW LEVEL SECURITY")
+    for table in NULLABLE_UNION_RLS_TABLES:
+        using_expr = _nullable_union_read_predicate()
+        check_expr = "true" if table in PERMISSIVE_WRITE_RLS_TABLES else using_expr
+        statements.append(_policy_statement(table, using_expr=using_expr, check_expr=check_expr))
+    for table in SESSION_RLS_TABLES:
+        using_expr = _session_read_predicate()
+        check_expr = "true" if table in PERMISSIVE_WRITE_RLS_TABLES else using_expr
+        statements.append(_policy_statement(table, using_expr=using_expr, check_expr=check_expr))
+    return statements
+
 
 def create_session_factory(settings: PlatformSettings) -> tuple[Engine | None, sessionmaker[Session] | None]:
     if not settings.db_enabled:
@@ -51,7 +130,13 @@ def create_all(engine: Engine) -> None:
     Base.metadata.create_all(engine)
 
 
-def get_rls_statements() -> list[str]:
+def foundation_rls_statements() -> list[str]:
+    """RLS statements for the migration-0001 foundation tables only.
+
+    Migration 20260320_0001 iterates this list. It must never grow statements for tables
+    created by later migrations (a fresh-database upgrade would fail at 0001) — later RLS
+    additions belong in their own migration, like 20260613_0005.
+    """
     tenant_tables_sql = ", ".join(f"'{table}'" for table in TENANT_RLS_TABLES)
     return [
         "CREATE EXTENSION IF NOT EXISTS vector",
@@ -122,6 +207,18 @@ def get_rls_statements() -> list[str]:
             END LOOP;
         END $$;
         """,
+    ]
+
+
+def get_rls_statements() -> list[str]:
+    """The complete RLS statement set for a database whose schema is at head.
+
+    Used by the app-startup path (``apply_rls_policies``), where every table already exists.
+    Migrations must NOT use this aggregate — each migration pins its own statement list.
+    """
+    return [
+        *foundation_rls_statements(),
+        *tracking_and_session_rls_statements(),
     ]
 
 

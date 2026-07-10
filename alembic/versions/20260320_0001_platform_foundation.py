@@ -11,7 +11,7 @@ from alembic import op
 import sqlalchemy as sa
 from pgvector.sqlalchemy import Vector
 
-from backend.platform.db import get_rls_statements
+from backend.platform.db import foundation_rls_statements
 
 
 revision = "20260320_0001"
@@ -276,7 +276,9 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_notifications_union_id"), "notifications", ["union_id"], unique=False)
 
-    for statement in get_rls_statements():
+    # Only the foundation tables exist at this revision; RLS for tables created by later
+    # migrations ships with those migrations (e.g. 20260613_0005).
+    for statement in foundation_rls_statements():
         op.execute(statement)
 
 

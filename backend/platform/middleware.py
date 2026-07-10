@@ -83,6 +83,10 @@ class PlatformContextMiddleware(BaseHTTPMiddleware):
             ):
                 try:
                     with container.session_factory() as touch_session:
+                        # Session sliding is a system maintenance write keyed by an
+                        # already-authenticated session id. Run it under the service bootstrap
+                        # context so it remains visible/updatable once auth_sessions enforces RLS.
+                        apply_service_bootstrap_context(touch_session)
                         container.session_auth.touch_session(
                             touch_session,
                             session_id=auth.session_id,

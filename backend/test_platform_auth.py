@@ -269,3 +269,62 @@ def test_session_auth_service_clears_cookie_for_expired_session():
         assert resolved.is_authenticated is False
         assert resolved.clear_cookie is True
         assert db.get(AuthSession, session_row.id).revoked_at is not None
+
+
+def test_purge_expired_sessions_removes_terminated_rows_past_window():
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+        future=True,
+    )
+    Base.metadata.create_all(engine)
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+    service = SessionAuthService(
+        secret_key="session-secret",
+        cookie_name="karl_session",
+        member_idle_seconds=604800,
+        union_admin_idle_seconds=259200,
+        super_admin_idle_seconds=3600,
+    )
+
+    now = datetime.utcnow()
+    with SessionLocal() as db:
+        union = Union(slug="local-1", name="Local 1", union_local_id="local-1")
+        user = User(email="member@example.com", full_name="Member")
+        db.add_all([union, user])
+        db.flush()
+
+        def _make(secret_hash, *, expires_at, revoked_at=None):
+            row = AuthSession(
+                user_id=user.id,
+                union_id=union.id,
+                session_secret_hash=secret_hash,
+                session_type=SessionType.MEMBER,
+                created_at=now - timedelta(days=200),
+                last_seen_at=now - timedelta(days=200),
+                expires_at=expires_at,
+                revoked_at=revoked_at,
+            )
+            db.add(row)
+            db.flush()
+            return row.id
+
+        active_id = _make("active", expires_at=now + timedelta(days=1))
+        recently_expired_id = _make("recent-expired", expires_at=now - timedelta(days=10))
+        old_expired_id = _make("old-expired", expires_at=now - timedelta(days=120))
+        recently_revoked_id = _make("recent-revoked", expires_at=now + timedelta(days=1), revoked_at=now - timedelta(days=10))
+        old_revoked_id = _make("old-revoked", expires_at=now + timedelta(days=1), revoked_at=now - timedelta(days=120))
+        db.commit()
+
+        deleted = service.purge_expired_sessions(db, older_than_days=90)
+        db.commit()
+
+        assert deleted == 2
+        # Active and recently-terminated sessions are retained.
+        assert db.get(AuthSession, active_id) is not None
+        assert db.get(AuthSession, recently_expired_id) is not None
+        assert db.get(AuthSession, recently_revoked_id) is not None
+        # Sessions terminated longer ago than the window are deleted (IP/UA removed with them).
+        assert db.get(AuthSession, old_expired_id) is None
+        assert db.get(AuthSession, old_revoked_id) is None

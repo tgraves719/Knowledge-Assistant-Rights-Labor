@@ -2,15 +2,21 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 from sqlalchemy import select
 
 from backend.platform.auth import AuthContext
 from backend.platform.db import apply_request_context, apply_service_bootstrap_context
 from backend.platform.deps import get_auth_context, get_container, get_db
-from backend.platform.models import ChunkEmbedding, Document, Role
+from backend.platform.models import AuditEvent, ChunkEmbedding, Document, Role, UnionMembership
+from backend.platform.routers.admin import _purge_user_records
 
 
 router = APIRouter(prefix="/api/member", tags=["member"])
+
+
+class MemberDataDeletionRequest(BaseModel):
+    confirm: bool = False
 
 
 def _member_document_safety_state(document: Document) -> dict:
@@ -154,3 +160,43 @@ def get_member_document_selection(
         "chunk_index": selected.chunk_index,
         "safety_redacted": bool(redacted.reasons),
     }
+
+
+@router.delete("/me/data")
+def delete_my_data(payload: MemberDataDeletionRequest, request: Request):
+    """Member self-service erasure of their personal data within their current union.
+
+    Removes the member's chats, messages, usage, notifications, sessions, telemetry,
+    raw-query records, and tracking preference for the union they are signed into. Full
+    cross-union account deletion remains an admin-driven action (see DEPLOYMENT-POLICY.md
+    deletion SLA). Member account login is left intact; only the personal data is purged.
+    """
+    db = get_db(request)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database is not configured.")
+    auth = get_auth_context(request)
+    if auth is None or not auth.is_authenticated or not auth.user_id:
+        raise HTTPException(status_code=401, detail="Authentication required.")
+    if not auth.union_id:
+        raise HTTPException(status_code=400, detail="A union context is required to delete member data.")
+    if not payload.confirm:
+        raise HTTPException(status_code=400, detail="Set confirm=true to delete your personal data.")
+
+    container = get_container(request)
+    _purge_user_records(
+        db,
+        user_id=auth.user_id,
+        union_id=auth.union_id,
+        global_scope=False,
+        telemetry=container.telemetry,
+    )
+    db.add(
+        AuditEvent(
+            union_id=auth.union_id,
+            actor_user_id=auth.user_id,
+            event_type="member_self_service_data_deleted",
+            event_payload={"user_id": auth.user_id, "union_id": auth.union_id, "scope": "union"},
+        )
+    )
+    db.flush()
+    return {"ok": True, "deleted": True, "scope": "union", "union_id": auth.union_id}

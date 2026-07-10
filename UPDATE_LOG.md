@@ -5955,3 +5955,77 @@ Validated:
 Result:
 - canonical `track all` is green again
 - `release_090` is green at `9/9`
+
+## v0.8.102 - Privacy & Governance Hardening For Production Merge (June 13, 2026)
+
+Closed the platform-layer privacy/governance gaps tracked in
+`docs/PRIVACY_GOVERNANCE_REMEDIATION_PLAN.md` so the multi-tenant platform layer can merge to a
+production branch and receive Data Stewardship Council sign-off. Work spans telemetry, data
+deletion, and surveillance/session metadata.
+
+**P1 — Complete user-data deletion path**
+- `backend/platform/routers/admin.py` `_purge_user_records` now also deletes `TelemetryEvent`,
+  `RawQueryRecord`, and `UserTrackingPreference`. Anonymized telemetry rows (which store no
+  `user_id`) are removed by reconstructing the member's `anonymized_user_key` set from their
+  unions and sessions, and by matching plaintext `session_id`.
+- Added member self-service erasure: `DELETE /api/member/me/data` (`routers/member.py`),
+  scoped to the member's current union, audited as `member_self_service_data_deleted`.
+- Documented a 24h deletion SLA and both request paths in `legal/DEPLOYMENT-POLICY.md`.
+- New `backend/test_platform_data_deletion.py` pins zero residual telemetry/raw-query/preference
+  rows by both `user_id` and `anonymized_user_key`, and that other members are untouched.
+
+**P1 — Session metadata retention**
+- Added `SessionAuthService.purge_expired_sessions(db, *, older_than_days=90)` deleting
+  expired/revoked sessions (and their IP/UA) past the window while keeping active sessions.
+- Exposed it via super-admin `POST /api/ops/maintenance/purge-sessions` (audited as
+  `auth_sessions_purged`).
+- Documented the 90-day full-deletion window in `legal/DEPLOYMENT-POLICY.md`.
+- Coverage in `backend/test_platform_auth.py` and `backend/test_platform_data_deletion.py`.
+
+**P2 — Message non-retention regression test**
+- New `backend/test_platform_chat_history_retention.py`: `persist_turn()` writes zero `Message`
+  rows when `message_retention_enabled` is false, and the user+assistant pair when true.
+
+**P3 — Dedicated audit signal for identified mode**
+- A tracking-policy update transitioning `raw_query_storage_mode` to `enabled_identified` now
+  emits a warning-severity `SecurityEvent` (`raw_query_identified_enabled`) in addition to the
+  existing `AuditEvent`, only on the enable transition. Covered in
+  `backend/test_platform_admin_routes.py`.
+
+**P3 — HMAC key-rotation note**
+- Documented in `legal/DEPLOYMENT-POLICY.md` that rotating `secret_encryption_key` breaks
+  `anonymized_user_key` continuity (analytics only, not privacy), with the per-user analytics
+  salt option.
+
+**P1 — RLS for tracking + session tables** *(code complete; live-Postgres verification pending)*
+- `backend/platform/db.py` adds RLS for `tracking_policies`, `user_tracking_preferences`,
+  `telemetry_events`, `raw_query_records`, and `auth_sessions`. Nullable-`union_id` rows (global
+  tracking policy, anonymous telemetry) resolve under any tenant; `auth_sessions` excludes the
+  null-union escape hatch so super-admin sessions stay hidden from tenants. Event/session tables
+  use restrictive read (`USING`) with permissive write (`WITH CHECK true`) because their inserts
+  occur under not-yet-tenant-scoped contexts (failed-login telemetry, mid-login session create).
+- New migration `alembic/versions/20260613_0005_tracking_session_rls.py` (head; chains from
+  0004) applies the same SQL to existing databases.
+- `backend/platform/middleware.py` runs the best-effort session-touch under the service
+  bootstrap context so expiry-sliding survives `auth_sessions` RLS.
+- `backend/test_platform_postgres_rls.py` extended with cross-tenant read-isolation and
+  null-union-resolution assertions for the new tables.
+- **Not yet verified on live Postgres** — no Postgres target in the dev environment. Run
+  `KARL_TEST_POSTGRES_ADMIN_URL=... python -m pytest backend/test_platform_postgres_rls.py`
+  before sign-off. This is the sole remaining merge-readiness item.
+
+**Sign-off readiness**
+- `legal/DATA-STEWARDSHIP-COUNCIL-SIGNOFF.md` drafted (readiness package; approval pending the
+  live-Postgres RLS verification). Merge-readiness checklist in the remediation plan updated.
+
+Validation (lightweight `.venv`; platform deps only):
+- `.venv\Scripts\python.exe -m pytest backend\test_platform_data_deletion.py backend\test_platform_auth.py backend\test_platform_chat_history_retention.py -q` → green
+- `.venv\Scripts\python.exe -m pytest backend\test_platform_admin_routes.py -k "tracking_policy or identified_raw_query or purge or delete_union" -q` → green
+- `.venv\Scripts\python.exe -m pytest backend\test_platform_postgres_rls.py -q` → skipped (no Postgres target)
+- `.venv\Scripts\python.exe -m alembic history` → `20260613_0005` is head
+- Broad platform suite: 75 passed, 6 Postgres-gated skips, 0 failures.
+
+Adjacent fix while here: `routers/ops.py` used the POSIX-only `strftime("%-d")` for dashboard
+day labels, which crashed the telemetry/ops dashboard on Windows hosts. Replaced with a
+portable label; both dashboard tests now pass. One unrelated pre-existing failure remains (stale
+`PlatformSettings` constructor in `test_platform_worker.py`), tracked separately.

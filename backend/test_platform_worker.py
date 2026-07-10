@@ -56,6 +56,7 @@ def _settings(tmp_path: Path) -> PlatformSettings:
         embedding_dimensions=384,
         google_embedding_model="text-embedding-004",
         google_embedding_api_key="",
+        inference_request_timeout_seconds=8,
         legacy_contract_pipeline_enabled=False,
         inline_parse_max_bytes=1_000_000,
         ocr_auto_retry_enabled=True,
@@ -65,6 +66,10 @@ def _settings(tmp_path: Path) -> PlatformSettings:
         sentinel_email_from="sentinel@example.com",
         sentinel_email_enabled=False,
         bootstrap_super_admin_emails=[],
+        session_cookie_name="karl_session",
+        member_session_idle_seconds=604800,
+        union_admin_session_idle_seconds=259200,
+        super_admin_session_idle_seconds=3600,
     )
 
 

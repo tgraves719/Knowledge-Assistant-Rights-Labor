@@ -32,13 +32,18 @@ from backend.platform.models import (
     NotificationStatus,
     ProviderConfig,
     QuotaPolicy,
+    RawQueryRecord,
+    RawQueryStorageMode,
     Role,
     SecurityEvent,
+    SecuritySeverity,
+    TelemetryEvent,
     TrackingPolicy,
     Union,
     UnionMembership,
     User,
     UsageEvent,
+    UserTrackingPreference,
 )
 from backend.platform.queueing import estimate_ingestion_runtime_seconds, ingestion_job_priority
 from backend.platform.worker import process_pending_ingestion_jobs
@@ -86,9 +91,84 @@ def _serialize_user_row(user: User, membership: UnionMembership, credential: Loc
     }
 
 
-def _purge_user_records(db, *, user_id: str, union_id: str | None = None, global_scope: bool = False) -> None:
+def _user_anonymized_keys(telemetry, *, user_id: str, union_ids, session_ids) -> set[str]:
+    """Reconstruct every ``anonymized_user_key`` that could have been written for a user.
+
+    In anonymized tracking mode telemetry/raw-query rows store no ``user_id`` — only the
+    HMAC ``anonymized_user_key`` keyed on ``(user_id, union_id, session_id)`` and the plaintext
+    ``session_id`` (the ``AuthSession.id`` for server-issued events). To delete those rows on
+    purge we recompute the candidate keys from the user's known unions and sessions.
+    """
+    if telemetry is None:
+        return set()
+    candidate_union_ids = set(union_ids) | {None}
+    candidate_session_ids = set(session_ids) | {None}
+    keys: set[str] = set()
+    for candidate_union_id in candidate_union_ids:
+        for candidate_session_id in candidate_session_ids:
+            key = telemetry.anonymized_user_key(
+                user_id=user_id,
+                union_id=candidate_union_id,
+                session_id=candidate_session_id,
+            )
+            if key:
+                keys.add(key)
+    return keys
+
+
+def _emit_identified_raw_query_signal_if_enabled(db, *, union_id, actor_user_id, prior_mode, new_mode) -> None:
+    """Emit a dedicated SecurityEvent when raw-query storage transitions to identified mode.
+
+    ``enabled_identified`` is the single most sensitive tracking setting (raw member queries
+    stored against a real ``user_id``). It already writes an AuditEvent; this adds an
+    unmistakable warning-severity SecurityEvent on the *enable transition* so it stands out in
+    the security trail. Re-saving an already-identified policy emits nothing.
+    """
+    identified = RawQueryStorageMode.ENABLED_IDENTIFIED.value
+    if new_mode == identified and prior_mode != identified:
+        db.add(
+            SecurityEvent(
+                union_id=union_id,
+                user_id=actor_user_id,
+                event_type="raw_query_identified_enabled",
+                severity=SecuritySeverity.WARNING,
+                response_action="audit",
+                details_json={
+                    "scope": "global" if union_id is None else "union_override",
+                    "union_id": union_id,
+                    "prior_raw_query_storage_mode": prior_mode,
+                },
+            )
+        )
+
+
+def _purge_user_records(db, *, user_id: str, union_id: str | None = None, global_scope: bool = False, telemetry=None) -> None:
+    scoped = bool(union_id) and not global_scope
+
+    # Capture the user's sessions and unions *before* deleting anything so we can reconstruct
+    # the anonymized telemetry keys that no longer carry a user_id.
+    session_stmt = select(AuthSession).where(AuthSession.user_id == user_id)
+    if scoped:
+        session_stmt = session_stmt.where(AuthSession.union_id == union_id)
+    user_sessions = list(db.scalars(session_stmt).all())
+    session_ids = {session.id for session in user_sessions}
+    if scoped:
+        candidate_union_ids = {union_id}
+    else:
+        candidate_union_ids = set(
+            db.scalars(select(UnionMembership.union_id).where(UnionMembership.user_id == user_id)).all()
+        )
+        candidate_union_ids |= {session.union_id for session in user_sessions}
+        candidate_union_ids |= {union_id}
+    anonymized_keys = _user_anonymized_keys(
+        telemetry,
+        user_id=user_id,
+        union_ids=candidate_union_ids,
+        session_ids=session_ids,
+    )
+
     chat_stmt = select(Chat.id).where(Chat.user_id == user_id)
-    if union_id and not global_scope:
+    if scoped:
         chat_stmt = chat_stmt.where(Chat.union_id == union_id)
     chat_ids = list(db.scalars(chat_stmt).all())
     if chat_ids:
@@ -98,15 +178,17 @@ def _purge_user_records(db, *, user_id: str, union_id: str | None = None, global
     security_delete = db.query(SecurityEvent).filter(SecurityEvent.user_id == user_id)
     notification_delete = db.query(Notification).filter(Notification.user_id == user_id)
     session_delete = db.query(AuthSession).filter(AuthSession.user_id == user_id)
+    preference_delete = db.query(UserTrackingPreference).filter(UserTrackingPreference.user_id == user_id)
     document_update = db.query(Document).filter(Document.uploaded_by_user_id == user_id)
     ingestion_update = db.query(IngestionJob).filter(IngestionJob.requested_by_user_id == user_id)
 
-    if union_id and not global_scope:
+    if scoped:
         chat_delete = chat_delete.filter(Chat.union_id == union_id)
         usage_delete = usage_delete.filter(UsageEvent.union_id == union_id)
         security_delete = security_delete.filter(SecurityEvent.union_id == union_id)
         notification_delete = notification_delete.filter(Notification.union_id == union_id)
         session_delete = session_delete.filter(AuthSession.union_id == union_id)
+        preference_delete = preference_delete.filter(UserTrackingPreference.union_id == union_id)
         document_update = document_update.filter(Document.union_id == union_id)
         ingestion_update = ingestion_update.filter(IngestionJob.union_id == union_id)
 
@@ -115,8 +197,22 @@ def _purge_user_records(db, *, user_id: str, union_id: str | None = None, global
     security_delete.delete(synchronize_session=False)
     notification_delete.delete(synchronize_session=False)
     session_delete.delete(synchronize_session=False)
+    preference_delete.delete(synchronize_session=False)
     document_update.update({Document.uploaded_by_user_id: None}, synchronize_session=False)
     ingestion_update.update({IngestionJob.requested_by_user_id: None}, synchronize_session=False)
+
+    # Telemetry and raw-query rows: match by direct user_id (identified mode), by reconstructed
+    # anonymized key, and by plaintext session_id (server-issued anonymized events).
+    for model in (TelemetryEvent, RawQueryRecord):
+        conditions = [model.user_id == user_id]
+        if session_ids:
+            conditions.append(model.session_id.in_(session_ids))
+        if anonymized_keys:
+            conditions.append(model.anonymized_user_key.in_(anonymized_keys))
+        telemetry_delete = db.query(model).filter(or_(*conditions))
+        if scoped:
+            telemetry_delete = telemetry_delete.filter(model.union_id == union_id)
+        telemetry_delete.delete(synchronize_session=False)
 
     if global_scope:
         db.query(AuditEvent).filter(AuditEvent.actor_user_id == user_id).delete(synchronize_session=False)
@@ -1130,7 +1226,13 @@ def remove_union_user(
         global_scope = auth.is_super_admin or other_membership_count == 0
         if not global_scope:
             db.delete(membership)
-        _purge_user_records(db, user_id=user_id, union_id=union_id, global_scope=global_scope)
+        _purge_user_records(
+            db,
+            user_id=user_id,
+            union_id=union_id,
+            global_scope=global_scope,
+            telemetry=get_container(request).telemetry,
+        )
     else:
         db.delete(membership)
     db.add(
@@ -1257,14 +1359,24 @@ def update_global_tracking_policy(
     if db is None:
         raise HTTPException(status_code=503, detail="Database is not configured.")
     container = get_container(request)
+    existing = db.scalar(select(TrackingPolicy).where(TrackingPolicy.union_id.is_(None)))
+    prior_mode = existing.raw_query_storage_mode.value if existing is not None else RawQueryStorageMode.DISABLED.value
+    actor_user_id = get_auth_context(request).user_id
     policy = container.telemetry.update_policy(db, union_id=None, payload=payload.model_dump())
     db.add(
         AuditEvent(
             union_id=None,
-            actor_user_id=get_auth_context(request).user_id,
+            actor_user_id=actor_user_id,
             event_type="global_tracking_policy_updated",
             event_payload=container.telemetry.serialize_policy(policy),
         )
+    )
+    _emit_identified_raw_query_signal_if_enabled(
+        db,
+        union_id=None,
+        actor_user_id=actor_user_id,
+        prior_mode=prior_mode,
+        new_mode=policy.raw_query_storage_mode.value,
     )
     db.flush()
     return {"policy": container.telemetry.serialize_policy(policy)}
@@ -1311,14 +1423,24 @@ def update_union_tracking_policy(
     global_policy = container.telemetry.get_or_create_global_policy(db)
     if not global_policy.allow_union_override:
         raise HTTPException(status_code=409, detail="Union-specific tracking overrides are disabled by the global policy.")
+    existing = db.scalar(select(TrackingPolicy).where(TrackingPolicy.union_id == union_id))
+    prior_mode = existing.raw_query_storage_mode.value if existing is not None else RawQueryStorageMode.DISABLED.value
+    actor_user_id = get_auth_context(request).user_id
     policy = container.telemetry.update_policy(db, union_id=union_id, payload=payload.model_dump(exclude={"allow_union_override"}))
     db.add(
         AuditEvent(
             union_id=union_id,
-            actor_user_id=get_auth_context(request).user_id,
+            actor_user_id=actor_user_id,
             event_type="union_tracking_policy_override_updated",
             event_payload=container.telemetry.serialize_policy(policy),
         )
+    )
+    _emit_identified_raw_query_signal_if_enabled(
+        db,
+        union_id=union_id,
+        actor_user_id=actor_user_id,
+        prior_mode=prior_mode,
+        new_mode=policy.raw_query_storage_mode.value,
     )
     db.flush()
     return {

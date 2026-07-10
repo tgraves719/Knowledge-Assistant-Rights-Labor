@@ -8,7 +8,7 @@ import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-from sqlalchemy import or_, select
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.orm import Session
 
 from backend.platform.models import AuthSession, Role, SessionType, Union, UnionMembership, User
@@ -87,6 +87,29 @@ class SessionAuthService:
         db.add(auth_session)
         db.flush()
         return auth_session, secret
+
+    def purge_expired_sessions(self, db: Session, *, older_than_days: int = 90) -> int:
+        """Delete expired or revoked sessions older than the retention window.
+
+        Session rows persist ``ip_address``/``user_agent`` (personal metadata). Expiry and
+        logout only set ``revoked_at``/``expires_at`` — the row, and its IP/UA, otherwise live
+        forever. This maintenance routine removes terminated sessions whose most recent
+        terminal timestamp is older than ``older_than_days``, while leaving every still-active
+        session intact. Returns the number of rows deleted.
+        """
+        window_days = max(1, int(older_than_days))
+        cutoff = datetime.utcnow() - timedelta(days=window_days)
+        # A session is eligible only if it is no longer usable (revoked or past expiry) AND
+        # its last terminal event is older than the cutoff. coalesce(revoked_at, expires_at)
+        # gives the effective end-of-life timestamp.
+        terminal_at = func.coalesce(AuthSession.revoked_at, AuthSession.expires_at)
+        result = db.execute(
+            delete(AuthSession)
+            .where(or_(AuthSession.revoked_at.is_not(None), AuthSession.expires_at <= datetime.utcnow()))
+            .where(terminal_at <= cutoff)
+        )
+        db.flush()
+        return int(result.rowcount or 0)
 
     def revoke_session(self, db: Session, session_id: str | None) -> None:
         if not session_id:
