@@ -1,44 +1,102 @@
-# KARL - Knowledge Assistant for Rights and Labor
+# KARL — Knowledge Assistant for Rights and Labor
 
-KARL is an AI-powered RAG system designed to help workers and unions understand, navigate, and enforce collective bargaining agreements.
+KARL helps union members and stewards understand, navigate, and enforce their collective
+bargaining agreements. Ask a question in plain language — *"what's the Sunday premium for a
+courtesy clerk?"* — and KARL answers from the contract itself, with citations to the article,
+section, and page it came from.
 
-Current deployment focus: **UFCW Local 7 - Safeway Pueblo Clerks (2022-2025)**.
+KARL is two things in one repository:
+
+1. **A contract-intelligence engine** — an amendment-aware retrieval and generation pipeline
+   over CBA text, wage tables, MOAs, and side letters, guarded by a release-gated evaluation
+   suite that blocks shipping when integrity checks fail.
+2. **A production platform** — a multi-tenant deployment layer for unions: per-local isolation
+   enforced by PostgreSQL row-level security, server-managed sessions, admin tooling, document
+   ingestion, and privacy governance designed so that the people running KARL cannot quietly
+   become the people surveilling its users.
+
+Current deployment focus: **UFCW Local 7**, with three onboarded contracts — Safeway Pueblo
+Clerks (2022–2025), Safeway Pueblo Meat (2022), and King Soopers Loveland Meat (2019–2022) —
+including the July 2025 Safeway MOA as a materialized effective contract.
 
 ## Core Principles
 
-- Union-first
-- Worker-controlled
-- Privacy-respecting
-- Anti-surveillance
-- Transparent by design
+- **Union-first.** Built by and for the labor side. Licensing, governance, and feature policy
+  all encode this (see [Licensing](#license) and `legal/ETHICAL-USE.md`).
+- **Worker-controlled.** Unions run their own instance, choose their own model provider, and
+  control their own data. Governance councils (`legal/GOVERNANCE-CHARTER.md`) hold release and
+  data-policy authority.
+- **Privacy-respecting, verified — not just claimed.** Message retention is **off by default**.
+  Telemetry defaults to anonymized with a real member opt-out that suppresses writes entirely.
+  Members can delete their own data (`DELETE /api/member/me/data`, 24-hour SLA). Tenant
+  isolation is enforced by Postgres row-level security and verified by an integration suite
+  against live Postgres — not just application-layer filtering.
+- **Anti-surveillance.** No employer-facing dashboards, no productivity scoring, no
+  management-side analytics. Contributions that enable them are rejected
+  (`legal/CONTRIBUTING.md`).
+- **Transparent by design.** This README states plainly what the benchmarks do and don't
+  measure, and where member questions travel.
 
-## Current Benchmark Status
+## Where Your Questions Go (Data Flow)
 
-KARL currently uses three benchmark labels in project planning:
+Honesty about this matters more than the marketing value of omitting it:
 
-1. **Benchmark v1 (legacy golden benchmark)**
-- Legacy benchmark used earlier in development
-- Historical result reached **100% (55/55)** on that benchmark
-- Script path: `python -m backend.evaluate`
-- Artifact: `data/test_set/evaluation_results.json`
+- **Answering a question calls an external LLM API.** In the default single-tenant
+  configuration, member questions and retrieved contract excerpts are sent to **Google's Gemini
+  API** for answer generation, query interpretation, and reranking. Google's API data-handling
+  terms apply to that traffic.
+- **In platform mode, each union chooses its own provider** — any OpenAI-compatible endpoint
+  (OpenRouter, a self-hosted model server, etc.) configured per-union with encrypted credentials.
+  A union that wants zero third-party exposure can point KARL at infrastructure it controls.
+- **KARL itself retains as little as possible.** Chat messages are not stored unless a union
+  explicitly enables retention. Raw query storage is disabled by default and gated behind
+  super-admin controls with audit and security events. Telemetry is anonymized by HMAC with no
+  stored user id, and members can opt out entirely.
+- **Deterministic paths stay local.** Wage lookups and entitlement lookups resolve from
+  structured tables on the server without any LLM call.
 
-2. **Benchmark v2 (harder comprehensive benchmark)**
-- Newer and more difficult benchmark track used to stress retrieval quality
-- This is where performance dropped from v1's 100% into the mid/high-80% range
-- Current checked-in comprehensive artifact is in this track
-- Script path: `python -m backend.evaluate_comprehensive --ablation-mode normal`
-- Artifact: `data/test_set/comprehensive_results.json`
+## Evaluation: What the Numbers Mean
 
-3. **Benchmark v3 (scaled multi-contract phase)**
-- Canonical multi-contract evaluation suite with deterministic isolation/robustness slices
-- Includes contamination checks and release-gated multi-contract integrity metrics
-- Script path: `python -m backend.evaluate_runner --track v3`
-- Artifact: `data/test_set/v3_results.json`
-- Planning doc: `Evaluation_Plan_v3.md`
+KARL's evaluation system is release infrastructure, not a scoreboard: CI runs the suites on
+every pull request, and `backend.evaluate_gate_check` blocks release when any gated metric
+falls below its floor. Read the numbers with these definitions:
 
-## Architecture (Current Runtime)
+- **Retrieval hit-rate** means the expected citation appeared in the retrieved context. It does
+  **not** mean the generated answer was correct, complete, or safe.
+- **Deterministic integrity checks** verify artifact and behavior invariants (isolation,
+  contamination, abstention, provenance) with exact assertions — these are the strongest
+  guarantees KARL makes.
+- **Graded answer quality** (LLM-judged generation evaluation) exists in the suite but is the
+  **least mature layer**. KARL does not currently claim a validated end-to-end answer-accuracy
+  number.
 
-KARL has a 5-phase CAG design, but currently runs a **lean configuration** by default:
+### Benchmark tracks
+
+1. **v1 (legacy, historical).** A 55-case golden set from early development. The historical
+   "100% (55/55)" result is a **development-set retrieval hit-rate**: the set was used while
+   building the system, several fixes were tuned against individual cases, and the metric is
+   retrieval, not answer quality. It is kept for continuity, and should not be quoted as an
+   accuracy claim. (`python -m backend.evaluate_runner --track v1`)
+2. **v2 (comprehensive).** A harder retrieval benchmark where v1's ceiling drops to the
+   mid/high-80% range — a more honest picture of retrieval quality under stress, same
+   hit-rate caveat. (`python -m backend.evaluate_runner --track v2 --ablation-mode normal`)
+3. **v3 (canonical, release-gated).** The multi-contract integrity suite that actually gates
+   releases: contract isolation and cross-contamination checks, unanswerable/abstention slices,
+   adversarial precedence, cross-contract mention abstention, false-unavailable recovery with
+   negative controls, needle retrieval, wage/entitlement table evidence, MOA
+   deleted-vs-updated regression, and role-catalog integrity — with per-slice thresholds
+   enforced in CI. (`python -m backend.evaluate_runner --track v3`; plan:
+   `Evaluation_Plan_v3.md`)
+
+Real-user misses are captured as structured records (`backend/miss_records.py`) and promoted
+into regression tests — the correction pathway is governed, not ad hoc.
+
+## Architecture
+
+### Contract-intelligence engine (single-tenant runtime)
+
+A 5-phase CAG design currently running a **lean configuration** by default
+(`backend/config.py`):
 
 - Phase 1 (intent routing): enabled
 - Phase 2 (hypothesis layer): disabled
@@ -47,47 +105,85 @@ KARL has a 5-phase CAG design, but currently runs a **lean configuration** by de
 - Phase 5 (LLM reranker): enabled
 - BM25 fusion: disabled in lean mode (vector-first retrieval)
 
-Key config file: `backend/config.py`.
+Feature highlights:
 
-## Features
-
-- Citation-focused responses
-- Deterministic wage lookups from structured wage tables
+- Citation-focused responses with interactive citation navigation and PDF page anchors
+- Amendment-aware retrieval: MOA patches materialize into effective contracts with full
+  base+MOA provenance per section
+- Deterministic wage and vacation-entitlement lookups from structured tables with
+  `table_evidence` metadata
 - Deterministic two-stage high-stakes routing (`high_stakes_topic` vs `active_urgent_context`)
-- Conditional/hypothetical escalation suppressors to reduce false positives
-- Query interpreter for vocabulary bridging
-- LLM reranker for relevance ordering
-- Manifest-driven routing metadata
-- Interactive citation navigation in UI
+  with conditional/hypothetical escalation suppressors
+- Query interpreter for vocabulary bridging (member slang → contract language) and an LLM
+  reranker for relevance ordering
+- Manifest-driven routing metadata, contract-scoped concept indexes and language lexicons
+
+### Production platform (multi-tenant)
+
+`backend/platform/` adds the deployment layer, with schema managed by Alembic
+(`alembic/versions/`):
+
+- **Tenant isolation:** PostgreSQL row-level security on all tenant tables, including
+  telemetry, raw-query, and session tables — verified end-to-end by
+  `backend/test_platform_postgres_rls.py` against live Postgres (migrated from an empty schema,
+  exercised as an unprivileged role)
+- **Auth:** server-managed cookie sessions with role-tiered idle windows (member / union admin
+  / super admin), revocation, login rate limits, and session-metadata retention purging
+- **Privacy governance:** tracking policies with anonymized defaults and member preference
+  tiers, message non-retention by default, complete user-data deletion (admin and member
+  self-service), PII redaction guardrails at prompt and document boundaries, audit and
+  security event trails
+- **Per-union model config:** encrypted provider credentials, any OpenAI-compatible endpoint
+- **Operations:** ingestion worker with job prioritization, document parsing/OCR retry,
+  quotas and hard caps, ops dashboard, maintenance endpoints
+- **Frontends:** member chat (`frontend/modular/`), embeddable member widget
+  (`frontend/embed/karl-member.js`), union admin and super-admin consoles
+
+Platform docs: `docs/PRODUCTION_FOUNDATION.md`, `docs/PRODUCTION_HANDOFF.md`,
+`docs/DEMO_RUNBOOK.md`. Privacy/governance posture and its verification record:
+`docs/PRIVACY_GOVERNANCE_REMEDIATION_PLAN.md`,
+`legal/DATA-STEWARDSHIP-COUNCIL-SIGNOFF.md`.
+
+## Model Stack
+
+Default single-tenant pipeline:
+
+| Component | Model |
+|---|---|
+| Answer generation | Gemini 2.5 Pro |
+| Query interpreter | Gemini 2.5 Flash |
+| Reranker | Gemini 2.5 Flash |
+| Enricher (ingestion) | Gemini 2.5 Flash |
+| Embeddings | all-MiniLM-L6-v2 (local) |
+
+Platform mode: per-union provider configuration (OpenRouter / OpenAI-compatible / self-hosted),
+with configurable embedding backends (`KARL_EMBEDDING_BACKEND`).
 
 ## Repository Structure
 
 ```text
 karl/
 ├── backend/
-│   ├── api.py
-│   ├── config.py
-│   ├── evaluate.py
-│   ├── evaluate_comprehensive.py
-│   ├── ingest/
-│   ├── retrieval/
-│   ├── generation/
-│   └── eval/
+│   ├── api.py                  # FastAPI app (engine + platform routers)
+│   ├── config.py               # engine configuration
+│   ├── ingest/                 # chunking, enrichment, indexing, MOA materialization
+│   ├── retrieval/              # vector store, interpreter, reranker, hypothesis
+│   ├── generation/             # prompts, context, citation verifier
+│   ├── eval/                   # graders, entailment, precedence
+│   ├── evaluate_*.py           # evaluation tracks (see Evaluation Commands)
+│   └── platform/               # multi-tenant platform layer (auth, RLS, telemetry, ingestion)
+├── alembic/                    # platform database migrations
 ├── data/
-│   ├── chunks/
-│   ├── wages/
-│   ├── manifests/
-│   ├── chroma_db/
-│   └── test_set/
+│   ├── contracts/              # per-contract packages (source, chunks, effective snapshots)
+│   ├── chunks/ wages/ manifests/ ontologies/ tables/
+│   └── test_set/               # evaluation datasets and result artifacts
 ├── frontend/
-│   └── index.html
-├── legal/
-│   ├── GOVERNANCE-CHARTER.md
-│   ├── DEPLOYMENT-POLICY.md
-│   ├── RELEASE-GATES.md
-│   ├── MODEL-UPDATE-POLICY.md
-│   └── ETHICAL-USE.md
+│   ├── modular/                # member app, admin and super-admin consoles
+│   └── embed/                  # embeddable member widget
+├── docs/                       # setup, demo runbook, production foundation/handoff
+├── legal/                      # licenses, CLA, governance charter, policies
 ├── Evaluation_Plan_v3.md
+├── CONTRACT_PACK_SPEC_v1.md
 └── UPDATE_LOG.md
 ```
 
@@ -129,8 +225,7 @@ Then validate runtime/API + Contract-tab endpoints:
 python scripts/karl.py smoke
 ```
 
-Detailed Windows setup + troubleshooting:
-- `docs/LOCAL_SETUP_WINDOWS.md`
+Detailed Windows setup + troubleshooting: `docs/LOCAL_SETUP_WINDOWS.md`
 
 ### 1. Install dependencies (manual path)
 
@@ -162,7 +257,8 @@ Set-Content -Path .env -Value "GEMINI_API_KEY=your_actual_api_key_here"
 printf "GEMINI_API_KEY=your_actual_api_key_here\n" > .env
 ```
 
-Without an API key, KARL can still retrieve chunks and perform wage lookups, but it cannot produce synthesized LLM answers.
+Without an API key, KARL can still retrieve chunks and perform wage lookups, but it cannot
+produce synthesized LLM answers. Never commit `.env`.
 
 ### 3. Build or refresh data (if needed)
 
@@ -187,10 +283,10 @@ python -m backend.ingest.materialize_effective --contract-id <contract_id>
 python -m backend.evaluate_effective_wage_coverage --contract-id <contract_id>
 ```
 
-This catches cases where an MOA wage patch was applied but no row was materialized at the patch effective date.
-For the Pueblo Clerks July 2025 MOA, the sync command expands the approved patch to all
-52 Appendix A rows using the structured `output.json` Denver Metro Clerks tables (`Current` column)
-before rematerialization.
+This catches cases where an MOA wage patch was applied but no row was materialized at the patch
+effective date. For the Pueblo Clerks July 2025 MOA, the sync command expands the approved
+patch to all 52 Appendix A rows using the structured `output.json` Denver Metro Clerks tables
+(`Current` column) before rematerialization.
 
 ### 4. Start server
 
@@ -201,6 +297,17 @@ python scripts/karl.py start
 ### 5. Open app
 
 Go to `http://127.0.0.1:8000`.
+
+### Platform mode (multi-tenant)
+
+Platform features activate when a PostgreSQL URL is configured
+(`KARL_POSTGRES_URL`; see `backend/platform/settings.py` for the full `KARL_*` variable set —
+origins, rate limits, storage, embeddings, session windows, encryption key). Run migrations
+with Alembic (`alembic upgrade head`). Setup, demo flow, and production checklists:
+`docs/PRODUCTION_FOUNDATION.md` and `docs/DEMO_RUNBOOK.md`.
+
+> Production note: set `KARL_ALLOWED_ORIGINS` explicitly and provide a real
+> `KARL_SECRET_ENCRYPTION_KEY` — the development defaults are not production-safe.
 
 ## Query Contract Context
 
@@ -213,7 +320,7 @@ Current manifest version format:
 - `contract_version = "<term_start>__<term_end>"`
 - Example: `January 23, 2022__January 18, 2025`
 
-Chunk artifact resolution now prefers per-contract files before shared fallback:
+Chunk artifact resolution prefers per-contract files before shared fallback:
 - `data/chunks/contract_chunks_enriched_<contract_id>.json`
 - `data/chunks/contract_chunks_smart_<contract_id>.json`
 - `data/chunks/contract_chunks_<contract_id>.json`
@@ -316,7 +423,7 @@ python -m backend.ingest.pack_acceptance --package <contract_id>
 python -m backend.ingest.pack_acceptance --package <contract_id> --strict
 ```
 
-Deterministic ingestion outputs now include:
+Deterministic ingestion outputs include:
 - Contract-scoped `concept_index_<contract_id>.json` with non-empty concept/question mappings
 - Contract-scoped `language_lexicon_<contract_id>.json` (frozen alias graph)
 - Contract-scoped `role_catalog_<contract_id>.json` (wage-availability-aware onboarding role catalog)
@@ -325,7 +432,7 @@ Deterministic ingestion outputs now include:
 - Contract-scoped manifest `query_routing` synthesized from ingestion artifacts (`topic_to_articles`, `topic_patterns`, `slang_to_contract`, `classification_to_articles`)
 - `region_id` on manifests/chunks for hard tenancy filtering (`contract_id` + `region_id`)
 
-Runtime wage lookup now resolves canonical rows first and includes structured
+Runtime wage lookup resolves canonical rows first and includes structured
 `table_evidence` metadata in wage responses when table source references exist.
 
 Runtime query expansion order is deterministic:
@@ -338,10 +445,10 @@ Runtime query expansion order is deterministic:
 ### Canonical runner (recommended)
 
 ```bash
-# Benchmark v1
+# Benchmark v1 (legacy retrieval hit-rate; historical)
 python -m backend.evaluate_runner --track v1
 
-# Benchmark v2
+# Benchmark v2 (comprehensive retrieval)
 python -m backend.evaluate_runner --track v2 --ablation-mode normal
 
 # Escalation precision slice
@@ -409,9 +516,9 @@ python -m backend.evaluate_runner --track real_user_regressions
 
 # v0.9.0 readiness scorecard (aggregated must-have gates)
 python -m backend.evaluate_runner --track release_090
-``` 
+```
 
-False-unavailable evaluation now includes both:
+False-unavailable evaluation includes both:
 - evidence-present recovery cases
 - evidence-absent negative controls that must preserve uncertainty
 
@@ -669,6 +776,17 @@ python backend/test_unavailability_recovery.py
 python -m backend.evaluate_cross_contamination
 ```
 
+### Platform test suites
+
+```bash
+# Default suite (SQLite in-memory; RLS is a no-op here)
+python -m pytest backend/test_platform_*.py -q
+
+# Live-Postgres RLS integration suite (the only place RLS is actually proven)
+KARL_TEST_POSTGRES_ADMIN_URL=postgresql+psycopg://<admin>@<host>/postgres \
+  python -m pytest backend/test_platform_postgres_rls.py -q
+```
+
 ### Archive benchmark snapshots for git
 
 ```bash
@@ -677,24 +795,21 @@ python scripts/archive_eval_snapshot.py --label v0_9_step1
 
 This creates timestamped copies under `data/test_set/history/` so you can review and commit/push them manually.
 
-## Model Stack
+## Governance
 
-| Component | Model |
-|---|---|
-| Answer generation | Gemini 2.5 Pro |
-| Query interpreter | Gemini 2.5 Flash |
-| Reranker | Gemini 2.5 Flash |
-| Enricher | Gemini 2.5 Flash |
-| Embeddings | all-MiniLM-L6-v2 |
+KARL's governance is written down and binding on releases (`legal/GOVERNANCE-CHARTER.md`):
 
-## Governance and Scaling Docs
+- **Mission Council** — union leadership, stewards, and the product owner hold authority over
+  product direction and mission boundaries.
+- **Model Risk Council** — owns release quality gates; can block release on benchmark
+  integrity or regression risk.
+- **Data Stewardship Council** — owns retention, deletion, and access policy; can block
+  deployment for non-compliant data practices. Its sign-off record for the platform layer:
+  `legal/DATA-STEWARDSHIP-COUNCIL-SIGNOFF.md`.
 
-- `legal/GOVERNANCE-CHARTER.md`
-- `legal/DEPLOYMENT-POLICY.md`
-- `legal/RELEASE-GATES.md`
-- `legal/MODEL-UPDATE-POLICY.md`
-- `Evaluation_Plan_v3.md`
-- `CONTRACT_PACK_SPEC_v1.md`
+Related docs: `legal/DEPLOYMENT-POLICY.md`, `legal/RELEASE-GATES.md`,
+`legal/MODEL-UPDATE-POLICY.md`, `legal/ETHICAL-USE.md`, `Evaluation_Plan_v3.md`,
+`CONTRACT_PACK_SPEC_v1.md`.
 
 ## License
 
@@ -708,7 +823,14 @@ under the commercial license as well. See `CONTRIBUTORS.md` and `legal/CONTRIBUT
 
 ## Status
 
-Active development:
-- Lean architecture is current baseline
-- v2 benchmark hardening is active
-- v3 multi-contract suite is implemented as canonical release-gated track
+Active development (see `UPDATE_LOG.md` for the full history):
+
+- **v0.9.0 shipped** — amendment-aware MOA handling end-to-end, real-user correction
+  infrastructure, effective contract materialization; all release gates green at ship time
+- **Production platform layer** merged lineage complete: multi-tenant isolation verified
+  against live Postgres, privacy/governance remediation done, Data Stewardship Council
+  sign-off awaiting signatures
+- **Three contracts onboarded** under UFCW Local 7; contract-pack onboarding is spec-driven
+  (`CONTRACT_PACK_SPEC_v1.md`)
+- **Next:** graded answer-quality evaluation maturity, section-level citation verification,
+  production hardening defaults
