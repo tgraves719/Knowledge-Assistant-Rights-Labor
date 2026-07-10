@@ -698,7 +698,13 @@ This creates timestamped copies under `data/test_set/history/` so you can review
 
 ## License
 
-KARL is AGPL-3.0 licensed with additional project legal docs in `legal/`.
+KARL is dual-licensed: **AGPL-3.0** for unions, workers, and non-commercial use, and a separate
+**commercial license** for management-side use (`legal/COMMERCIAL-LICENSE.md`). Additional
+project legal docs are in `legal/`.
+
+Contributors license their work to the public under AGPL-3.0 and sign the Contributor License
+Agreement (`legal/CLA.md`), which grants the Project Steward the right to offer contributions
+under the commercial license as well. See `CONTRIBUTORS.md` and `legal/CONTRIBUTING.md`.
 
 ## Status
 

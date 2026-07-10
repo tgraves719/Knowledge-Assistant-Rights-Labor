@@ -1,5 +1,55 @@
 # Karl Update Log
 
+## Unreleased - Live-Postgres RLS Verification, Licensing Correction & Contributor Governance (July 10, 2026)
+
+### Overview
+
+Closed the sole remaining merge-readiness item from v0.8.102 by verifying tracking/session
+row-level security against a live PostgreSQL instance, corrected the repository's top-level
+license to AGPL-3.0, and established the contributor-rights scaffolding the dual-license model
+requires. Prepares the production platform lineage for consolidation into the canonical repo.
+
+### Live-Postgres RLS Verification (closes the v0.8.102 pending gate)
+
+- Verified `backend/test_platform_postgres_rls.py` 6/6 green against PostgreSQL 16 + pgvector on a
+  database migrated from an empty schema through `20260613_0005`, exercised as an unprivileged
+  application role — cross-tenant read isolation, null-union resolution, super-admin visibility,
+  and cross-tenant insert blocking.
+- Fixed a fresh-database migration failure the verification surfaced: migration `20260320_0001`
+  iterated the live `get_rls_statements()` aggregate, which the 0005 work had grown to reference
+  tables that do not exist at revision 0001. Split into `foundation_rls_statements()` (pinned
+  per-migration) and a head-schema `get_rls_statements()` aggregate reserved for the app-startup
+  path (`backend/platform/db.py`).
+- Fixed two latent defects in the never-executed Postgres-gated tests: a missing
+  `datetime`/`timedelta` import and a test-seed gap (a union override asserted but not seeded).
+- Updated `docs/PRIVACY_GOVERNANCE_REMEDIATION_PLAN.md` and
+  `legal/DATA-STEWARDSHIP-COUNCIL-SIGNOFF.md`: technical gates closed; sign-off now awaits only
+  council signatures.
+
+### Licensing Correction
+
+- Replaced the root `LICENSE` (previously GPL-3.0 text, which silently disabled the AGPL
+  network-use clause the anti-enclosure strategy depends on) with the AGPL-3.0 text, matching
+  `legal/LICENSE.txt`, `README.md`, and `legal/NOTICE.txt`.
+
+### Contributor Governance (dual-license scaffolding)
+
+- `legal/CLA.md` — Individual Contributor License Agreement granting the Project Steward a
+  non-exclusive relicensing right (the grant AGPL alone does not provide), with a
+  successor-assignment clause for a future steward organization.
+- `legal/CLA-SIGNATURES.md` — signature ledger; notes that Michael Meiskey's foundation commit
+  (`9b15ef2`) requires a signed CLA before it can be offered commercially (AGPL use is
+  unaffected; the later privacy/governance hardening is the Steward's own work).
+- `CONTRIBUTORS.md` — recognition page, kept distinct from the license grant.
+- `legal/CONTRIBUTING.md`, `legal/NOTICE.txt`, `README.md` — updated to reflect the dual-license
+  model and CLA requirement.
+- Project Steward of record: Thomas Joseph Graves (Colorado, USA).
+
+### Notes
+
+- `legal/instruments/` (print-ready CLA/acceptance document) is prepared but intentionally left
+  uncommitted pending design review.
+
 ## v0.9.0 - MOA Amendment Handling, Real-User Correction Infrastructure, Effective Contract Materialization (March 17, 2026)
 
 ### Overview
