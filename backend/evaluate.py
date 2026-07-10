@@ -16,9 +16,10 @@ from typing import Optional
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from backend.config import DATA_DIR
+from backend.config import DATA_DIR, CONTRACT_ID
 from backend.retrieval.router import HybridRetriever, classify_intent
 from backend.retrieval.vector_store import ContractVectorStore
+from backend.contracts import get_contract_catalog_entry, resolve_default_contract_id
 
 
 @dataclass
@@ -82,7 +83,8 @@ def check_citation_in_results(expected: str, chunks: list[dict]) -> bool:
 
 def evaluate_test_case(
     test_case: dict,
-    retriever: HybridRetriever
+    retriever: HybridRetriever,
+    contract_id: str,
 ) -> TestResult:
     """Evaluate a single test case."""
     question = test_case['question']
@@ -92,14 +94,15 @@ def evaluate_test_case(
     should_refuse = test_case.get('should_refuse', False)
     
     # Run retrieval
-    intent = classify_intent(question)
+    intent = classify_intent(question, contract_id=contract_id)
     if classification:
         intent.classification = classification
     
     result = retriever.multi_angle_retrieve(
         query=question,
         intent=intent,
-        n_results=5
+        n_results=5,
+        contract_id=contract_id,
     )
     
     chunks = result['chunks']
@@ -156,9 +159,17 @@ def evaluate_test_case(
 
 def run_evaluation(test_cases: list[dict] = None) -> dict:
     """Run full evaluation and return metrics."""
+    configured_contract_id = CONTRACT_ID
+    catalog_entry = get_contract_catalog_entry(configured_contract_id)
+    if catalog_entry:
+        eval_contract_id = catalog_entry["contract_id"]
+    else:
+        eval_contract_id = resolve_default_contract_id() or configured_contract_id
+
     print("Initializing RAG system...")
     vector_store = ContractVectorStore()
     retriever = HybridRetriever(vector_store)
+    print(f"Eval contract_id: {eval_contract_id} (configured: {configured_contract_id})")
     
     if test_cases is None:
         test_cases = load_test_set()
@@ -169,7 +180,7 @@ def run_evaluation(test_cases: list[dict] = None) -> dict:
     category_results = {}
     
     for i, test_case in enumerate(test_cases, 1):
-        result = evaluate_test_case(test_case, retriever)
+        result = evaluate_test_case(test_case, retriever, eval_contract_id)
         results.append(result)
         
         # Track by category

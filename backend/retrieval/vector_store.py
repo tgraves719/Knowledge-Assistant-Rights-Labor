@@ -1,24 +1,33 @@
 """
-Vector Store - ChromaDB wrapper for contract chunk storage and retrieval.
+Vector Store abstraction.
 
-Uses sentence-transformers for local embeddings (no API key needed).
-Supports metadata filtering for contract, classification, and topic.
+Supports PostgreSQL/pgvector when available and falls back to ChromaDB for
+prototype or no-database environments.
 """
 
 import json
 from pathlib import Path
 from typing import Optional
+from dataclasses import dataclass
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from backend.config import (
     CHROMA_PERSIST_DIR, EMBEDDING_MODEL, COLLECTION_NAME,
-    CHUNKS_DIR, TOP_K_RESULTS, SIMILARITY_THRESHOLD
+    TOP_K_RESULTS, SIMILARITY_THRESHOLD, CONTRACT_ID
 )
+from backend.chunk_files import resolve_chunk_file
+from backend.contracts import resolve_contract_region_id
+from backend.platform.settings import get_platform_settings
 
 # Lazy imports for optional dependencies
 chromadb = None
 SentenceTransformer = None
+sqlalchemy_create_engine = None
+sqlalchemy_sessionmaker = None
+sqlalchemy_select = None
+sqlalchemy_func = None
+ChunkEmbedding = None
 
 
 def _load_dependencies():
@@ -32,8 +41,304 @@ def _load_dependencies():
         SentenceTransformer = _ST
 
 
+def _load_sqlalchemy():
+    global sqlalchemy_create_engine, sqlalchemy_sessionmaker, sqlalchemy_select, sqlalchemy_func, ChunkEmbedding
+    if sqlalchemy_create_engine is None:
+        from sqlalchemy import create_engine as _create_engine, func as _func, select as _select
+        from sqlalchemy.orm import sessionmaker as _sessionmaker
+
+        from backend.platform.models import ChunkEmbedding as _ChunkEmbedding
+
+        sqlalchemy_create_engine = _create_engine
+        sqlalchemy_sessionmaker = _sessionmaker
+        sqlalchemy_select = _select
+        sqlalchemy_func = _func
+        ChunkEmbedding = _ChunkEmbedding
+
+
+@dataclass
+class SearchFilters:
+    contract_id: str | None = None
+    region_id: str | None = None
+    classification: str | None = None
+    topic: str | None = None
+    urgency_tier: str | None = None
+    doc_type: str | None = None
+    boost_articles: list | None = None
+
+def _apply_result_boosts(
+    chunks: list[dict],
+    *,
+    query: str,
+    contract_id: str | None = None,
+    region_id: str | None = None,
+    classification: str | None = None,
+    topic: str | None = None,
+    urgency_tier: str | None = None,
+    boost_articles: list | None = None,
+    n_results: int = 5,
+) -> list[dict]:
+    import re
+
+    article_refs = re.findall(r'article\s*(\d+)', query.lower())
+    section_refs = re.findall(r'section\s*(\d+)', query.lower())
+    effective_region_id = str(region_id or resolve_contract_region_id(contract_id)) if contract_id else None
+    ranked = []
+    for chunk in chunks:
+        if contract_id and str(chunk.get("contract_id")) != str(contract_id):
+            continue
+        if effective_region_id:
+            chunk_region = chunk.get("region_id") or resolve_contract_region_id(str(chunk.get("contract_id") or contract_id))
+            if str(chunk_region) != str(effective_region_id):
+                continue
+        similarity = float(chunk.get("similarity", 0.0))
+        if article_refs and str(chunk.get("article_num", 0)) in article_refs:
+            similarity += 0.3
+        if section_refs and str(chunk.get("section_num", 0)) in section_refs:
+            similarity += 0.1
+        if boost_articles and chunk.get("article_num", 0) in boost_articles:
+            similarity += 0.2
+        if classification:
+            applies_to = str(chunk.get("applies_to") or "")
+            if classification in applies_to:
+                similarity += 0.15
+            elif "all" not in applies_to:
+                similarity -= 0.05
+        if topic and topic in str(chunk.get("topics") or ""):
+            similarity += 0.15
+        if urgency_tier == "high_stakes" and chunk.get("is_high_stakes"):
+            similarity += 0.1
+        chunk["similarity"] = similarity
+        ranked.append(chunk)
+    ranked.sort(key=lambda item: item["similarity"], reverse=True)
+    return ranked[:n_results]
+
+
+class PgVectorContractVectorStore:
+    def __init__(self, postgres_url: str):
+        _load_dependencies()
+        _load_sqlalchemy()
+        self.engine = sqlalchemy_create_engine(postgres_url, future=True, pool_pre_ping=True)
+        self.session_factory = sqlalchemy_sessionmaker(bind=self.engine, autoflush=False, autocommit=False, future=True)
+        print(f"Loading embedding model: {EMBEDDING_MODEL}")
+        self.embedder = SentenceTransformer(EMBEDDING_MODEL)
+
+    def reset_collection(self):
+        with self.session_factory() as db:
+            db.query(ChunkEmbedding).delete()
+            db.commit()
+
+    def add_chunks(self, chunks: list[dict], batch_size: int = 50) -> int:
+        if not chunks:
+            return 0
+        added = 0
+        with self.session_factory() as db:
+            for i in range(0, len(chunks), batch_size):
+                batch = chunks[i:i + batch_size]
+                for chunk in batch:
+                    embedding = self.embedder.encode(chunk["content"]).tolist()
+                    db.add(
+                        ChunkEmbedding(
+                            id=str(chunk.get("chunk_id") or ""),
+                            union_id=str(chunk.get("union_id")) if chunk.get("union_id") else None,
+                            document_id=str(chunk.get("document_id")) if chunk.get("document_id") else None,
+                            chunk_index=int(chunk.get("chunk_index") or chunk.get("section_num") or 0),
+                            chunk_text=chunk.get("content_with_tables", chunk["content"]),
+                            metadata_json={
+                                "contract_id": chunk.get("contract_id", ""),
+                                "region_id": chunk.get("region_id", ""),
+                                "article_num": chunk.get("article_num") or 0,
+                                "article_title": chunk.get("article_title", ""),
+                                "section_num": chunk.get("section_num") or 0,
+                                "subsection": chunk.get("subsection") or "",
+                                "citation": chunk.get("citation", ""),
+                                "parent_context": chunk.get("parent_context", ""),
+                                "doc_type": chunk.get("doc_type", "cba"),
+                                "applies_to": ",".join(chunk.get("applies_to", ["all"])) if isinstance(chunk.get("applies_to"), list) else str(chunk.get("applies_to") or "all"),
+                                "topics": ",".join(chunk.get("topics", chunk.get("topic_tags", []))) if isinstance(chunk.get("topics", chunk.get("topic_tags", [])), list) else str(chunk.get("topics", chunk.get("topic_tags", "")) or ""),
+                                "summary": chunk.get("summary") or "",
+                                "is_definition": chunk.get("is_definition", False),
+                                "is_exception": chunk.get("is_exception", False),
+                                "hire_date_sensitive": chunk.get("hire_date_sensitive", False),
+                                "is_high_stakes": chunk.get("is_high_stakes", False),
+                                "worker_questions": "|".join(chunk.get("worker_questions", [])) if isinstance(chunk.get("worker_questions"), list) else str(chunk.get("worker_questions") or ""),
+                                "alternative_names": "|".join(chunk.get("alternative_names", [])) if isinstance(chunk.get("alternative_names"), list) else str(chunk.get("alternative_names") or ""),
+                            },
+                            embedding=embedding,
+                        )
+                    )
+                db.commit()
+                added += len(batch)
+        return added
+
+    def search(
+        self,
+        query: str,
+        n_results: int = None,
+        contract_id: str = None,
+        region_id: str = None,
+        classification: str = None,
+        topic: str = None,
+        urgency_tier: str = None,
+        doc_type: str = None,
+        boost_articles: list = None,
+    ) -> list[dict]:
+        n_results = n_results or TOP_K_RESULTS
+        query_embedding = self.embedder.encode(query).tolist()
+        with self.session_factory() as db:
+            stmt = sqlalchemy_select(ChunkEmbedding)
+            if contract_id:
+                stmt = stmt.where(ChunkEmbedding.metadata_json["contract_id"].astext == str(contract_id))
+            if region_id:
+                stmt = stmt.where(ChunkEmbedding.metadata_json["region_id"].astext == str(region_id))
+            if doc_type:
+                stmt = stmt.where(ChunkEmbedding.metadata_json["doc_type"].astext == str(doc_type))
+            if topic:
+                stmt = stmt.where(ChunkEmbedding.metadata_json["topics"].astext.contains(str(topic)))
+
+            if hasattr(ChunkEmbedding.embedding, "cosine_distance"):
+                stmt = stmt.order_by(ChunkEmbedding.embedding.cosine_distance(query_embedding)).limit(max(n_results * 3, 15))
+                rows = db.execute(stmt).scalars().all()
+                chunks = []
+                for row in rows:
+                    metadata = dict(row.metadata_json or {})
+                    if not row.embedding:
+                        continue
+                    dot = sum(a * b for a, b in zip(query_embedding, row.embedding))
+                    query_norm = sum(a * a for a in query_embedding) ** 0.5
+                    row_norm = sum(a * a for a in row.embedding) ** 0.5
+                    similarity = dot / (query_norm * row_norm) if query_norm and row_norm else 0.0
+                    if similarity < SIMILARITY_THRESHOLD:
+                        continue
+                    chunks.append(
+                        {
+                            "chunk_id": row.id,
+                            "content": row.chunk_text,
+                            "content_with_tables": row.chunk_text,
+                            "similarity": similarity,
+                            **metadata,
+                        }
+                    )
+                return _apply_result_boosts(
+                    chunks,
+                    query=query,
+                    contract_id=contract_id,
+                    region_id=region_id,
+                    classification=classification,
+                    topic=topic,
+                    urgency_tier=urgency_tier,
+                    boost_articles=boost_articles,
+                    n_results=n_results,
+                )
+
+            rows = db.execute(stmt.limit(max(n_results * 5, 25))).scalars().all()
+            chunks = []
+            for row in rows:
+                if not row.embedding:
+                    continue
+                dot = sum(a * b for a, b in zip(query_embedding, row.embedding))
+                query_norm = sum(a * a for a in query_embedding) ** 0.5
+                row_norm = sum(a * a for a in row.embedding) ** 0.5
+                similarity = dot / (query_norm * row_norm) if query_norm and row_norm else 0.0
+                if similarity < SIMILARITY_THRESHOLD:
+                    continue
+                chunks.append(
+                    {
+                        "chunk_id": row.id,
+                        "content": row.chunk_text,
+                        "content_with_tables": row.chunk_text,
+                        "similarity": similarity,
+                        **dict(row.metadata_json or {}),
+                    }
+                )
+            return _apply_result_boosts(
+                chunks,
+                query=query,
+                contract_id=contract_id,
+                region_id=region_id,
+                classification=classification,
+                topic=topic,
+                urgency_tier=urgency_tier,
+                boost_articles=boost_articles,
+                n_results=n_results,
+            )
+
+    def get_chunk(self, chunk_id: str) -> Optional[dict]:
+        with self.session_factory() as db:
+            row = db.get(ChunkEmbedding, chunk_id)
+            if row is None:
+                return None
+            return {
+                "chunk_id": row.id,
+                "content": row.chunk_text,
+                **dict(row.metadata_json or {}),
+            }
+
+    def clear(self):
+        self.reset_collection()
+
+    def count(self) -> int:
+        with self.session_factory() as db:
+            return int(db.scalar(sqlalchemy_select(sqlalchemy_func.count()).select_from(ChunkEmbedding)) or 0)
+
+
 class ContractVectorStore:
-    """Vector store for union contract chunks using ChromaDB."""
+    """Vector store facade for PostgreSQL/pgvector or ChromaDB."""
+    
+    def __init__(self, persist_dir: Path = None, collection_name: str = None):
+        settings = get_platform_settings()
+        self._backend = None
+        if settings.db_enabled:
+            try:
+                self._backend = PgVectorContractVectorStore(settings.postgres_url)
+                print(f"Vector store initialized with PostgreSQL. Indexed chunks: {self._backend.count()}")
+                return
+            except Exception as exc:
+                print(f"Warning: pgvector backend unavailable, falling back to ChromaDB: {exc}")
+        self._backend = _ChromaContractVectorStore(persist_dir=persist_dir, collection_name=collection_name)
+    
+    def reset_collection(self):
+        return self._backend.reset_collection()
+    
+    def add_chunks(self, chunks: list[dict], batch_size: int = 50) -> int:
+        return self._backend.add_chunks(chunks, batch_size=batch_size)
+    
+    def search(
+        self,
+        query: str,
+        n_results: int = None,
+        contract_id: str = None,
+        region_id: str = None,
+        classification: str = None,
+        topic: str = None,
+        urgency_tier: str = None,
+        doc_type: str = None,
+        boost_articles: list = None,
+    ) -> list[dict]:
+        return self._backend.search(
+            query=query,
+            n_results=n_results,
+            contract_id=contract_id,
+            region_id=region_id,
+            classification=classification,
+            topic=topic,
+            urgency_tier=urgency_tier,
+            doc_type=doc_type,
+            boost_articles=boost_articles,
+        )
+
+    def get_chunk(self, chunk_id: str) -> Optional[dict]:
+        return self._backend.get_chunk(chunk_id)
+
+    def clear(self):
+        return self._backend.clear()
+
+    def count(self) -> int:
+        return self._backend.count()
+
+
+class _ChromaContractVectorStore:
+    """Chroma-backed fallback implementation."""
     
     def __init__(self, persist_dir: Path = None, collection_name: str = None):
         """Initialize the vector store."""
@@ -138,6 +443,7 @@ class ContractVectorStore:
 
                 metadata = {
                     'contract_id': chunk.get('contract_id', ''),
+                    'region_id': chunk.get('region_id', ''),
                     'article_num': chunk.get('article_num') or 0,
                     'article_title': chunk.get('article_title', ''),
                     'section_num': chunk.get('section_num') or 0,
@@ -181,6 +487,7 @@ class ContractVectorStore:
         query: str,
         n_results: int = None,
         contract_id: str = None,
+        region_id: str = None,
         classification: str = None,
         topic: str = None,
         urgency_tier: str = None,
@@ -215,8 +522,11 @@ class ContractVectorStore:
         where = None
         where_clauses = []
         
+        effective_region_id = None
         if contract_id:
+            effective_region_id = str(region_id or resolve_contract_region_id(contract_id))
             where_clauses.append({"contract_id": contract_id})
+            where_clauses.append({"region_id": effective_region_id})
         if urgency_tier:
             where_clauses.append({"urgency_tier": urgency_tier})
         if doc_type:
@@ -260,6 +570,14 @@ class ContractVectorStore:
                     'similarity': similarity,
                     **results['metadatas'][0][i]
                 }
+
+                # Defense-in-depth tenancy guard.
+                if contract_id and str(chunk.get("contract_id")) != str(contract_id):
+                    continue
+                if effective_region_id:
+                    chunk_region = chunk.get("region_id") or resolve_contract_region_id(str(chunk.get("contract_id") or contract_id))
+                    if str(chunk_region) != str(effective_region_id):
+                        continue
                 
                 # Boost score if chunk matches explicit article reference in query
                 if article_refs:
@@ -341,16 +659,17 @@ class ContractVectorStore:
         return self.collection.count()
 
 
-def load_chunks_from_file(chunks_file: Path = None) -> list[dict]:
+def load_chunks_from_file(chunks_file: Path = None, contract_id: str = CONTRACT_ID) -> list[dict]:
     """Load chunks from JSON file."""
     if chunks_file is None:
-        chunks_file = CHUNKS_DIR / "contract_chunks.json"
-    
+        chunks_file = resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+    if chunks_file is None:
+        raise FileNotFoundError("No chunk artifact found for vector index build")
     with open(chunks_file, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 
-def build_index(clear_existing: bool = False) -> ContractVectorStore:
+def build_index(clear_existing: bool = False, contract_id: str = CONTRACT_ID) -> ContractVectorStore:
     """Build or rebuild the vector index from chunks."""
     store = ContractVectorStore()
     
@@ -362,13 +681,13 @@ def build_index(clear_existing: bool = False) -> ContractVectorStore:
         return store
     
     # Load chunks
-    chunks_file = CHUNKS_DIR / "contract_chunks.json"
-    if not chunks_file.exists():
+    chunks_file = resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+    if not chunks_file or not chunks_file.exists():
         print(f"Error: Chunks file not found: {chunks_file}")
         print("Run parse_contract.py first to generate chunks.")
         return store
     
-    chunks = load_chunks_from_file(chunks_file)
+    chunks = load_chunks_from_file(chunks_file, contract_id=contract_id)
     print(f"Loaded {len(chunks)} chunks from {chunks_file}")
     
     # Add to index
@@ -404,4 +723,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -256,7 +256,7 @@ class ToolExecutor:
         reason = arguments.get("reason", "to answer your question accurately")
 
         prompts = {
-            "hire_date": "When did you start working at Safeway? (approximate date is fine)",
+            "hire_date": "When did you start working under this contract? (approximate date is fine)",
             "classification": "What is your job classification? (e.g., Courtesy Clerk, All-Purpose Clerk)",
             "hours_worked": "Approximately how many total hours have you worked?",
             "employment_type": "Are you full-time or part-time?",

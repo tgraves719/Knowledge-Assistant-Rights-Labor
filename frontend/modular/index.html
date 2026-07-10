@@ -1,0 +1,2198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karl - Union Document Assistant</title>
+    <link rel="stylesheet" href="/static/modular/styles/generated.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mobile-header-offset: 72px;
+            --mobile-tabbar-height: 60px;
+            --mobile-chat-profile-height: 44px;
+            --mobile-chat-input-height: 70px;
+            --mobile-contract-toc-height: 44px;
+            --mobile-contract-toc-banner-height: 52px;
+            --desktop-header-offset: 72px;
+            --desktop-tabbar-height: 68px;
+            --desktop-contract-workspace-height: calc(100vh - var(--desktop-header-offset) - var(--desktop-tabbar-height));
+        }
+
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Animated gradient background for thinking state */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Subtle idle gradient drift */
+        @keyframes idleGradientDrift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 30% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Interactive header with autonomous blue flow */
+        #main-header {
+            --header-flow-duration: 14s;
+            --header-flow-thinking-duration: 3.2s;
+            background:
+                radial-gradient(
+                    ellipse 80% 150% at 38% 50%,
+                    rgba(27, 107, 138, 0.34) 0%,
+                    transparent 50%
+                ),
+                linear-gradient(-45deg, #0D3B54, #14506E, #1B6B8A, #14506E, #0D3B54);
+            background-size: 100% 100%, 300% 300%;
+            animation: idleGradientDrift var(--header-flow-duration) linear infinite;
+            transition: background 0.3s ease;
+        }
+
+        .thinking-gradient {
+            background:
+                radial-gradient(
+                    ellipse 80% 150% at 38% 50%,
+                    rgba(27, 107, 138, 0.52) 0%,
+                    transparent 50%
+                ),
+                linear-gradient(-45deg, #0D3B54, #14506E, #1B6B8A, #14506E, #0D3B54) !important;
+            background-size: 100% 100%, 400% 400% !important;
+            animation: gradientShift var(--header-flow-thinking-duration) linear infinite !important;
+        }
+
+        /* Onboarding modal animated gradient */
+        .onboarding-gradient {
+            background: linear-gradient(-45deg, #0D3B54, #14506E, #1B6B8A, #0D3B54, #14506E);
+            background-size: 300% 300%;
+            animation: gradientShift 8s ease infinite;
+        }
+        .onboarding-gradient::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(212, 160, 41, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(27, 107, 138, 0.2) 0%, transparent 50%);
+            animation: pulseGlow 4s ease-in-out infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.25s ease-out; }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+
+        /* Karl avatar states: idle, thinking, outcomes */
+        @keyframes karlAvatarScannerDeliberate {
+            0% { transform: translate(-30px, -40px); }
+            16.6667% { transform: translate(30px, -40px); }
+            33.3333% { transform: translate(-30px, 0px); }
+            50% { transform: translate(30px, 0px); }
+            66.6667% { transform: translate(-30px, 40px); }
+            83.3333% { transform: translate(30px, 40px); }
+            100% { transform: translate(-30px, -40px); }
+        }
+        @keyframes karlAvatarPageFlip {
+            0%, 55%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            72% { transform: translate(-24px, -4px) rotate(-8deg); opacity: 0; }
+        }
+        @keyframes karlAvatarOutcomePop {
+            0% { transform: scale(0.2); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .karl-avatar-shell {
+            width: 46px;
+            height: 46px;
+            border-radius: 9999px;
+            filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.35));
+            animation: none;
+            transform-origin: center;
+            pointer-events: none;
+        }
+        .karl-avatar-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+        .karl-avatar-shell .karl-shield-left,
+        .karl-avatar-shell .karl-shield-right,
+        .karl-avatar-shell .karl-scanner,
+        .karl-avatar-shell .karl-scanner-mover,
+        .karl-avatar-shell .karl-paper-stack,
+        .karl-avatar-shell .karl-top-page,
+        .karl-avatar-shell .karl-outcome-icon {
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+        .karl-avatar-shell .karl-shield-left,
+        .karl-avatar-shell .karl-shield-right {
+            transition: transform 800ms cubic-bezier(0.2, 0, 0.2, 1);
+        }
+        .karl-avatar-shell .karl-paper-stack {
+            opacity: 0;
+            transform: translate(100px, 110px) scale(0.6);
+            transition: opacity 240ms ease, transform 900ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .karl-avatar-shell .karl-scanner {
+            opacity: 0;
+            transform: translate(100px, 110px) scale(0);
+            transition: opacity 220ms ease, transform 220ms ease;
+        }
+        .karl-avatar-shell .karl-scanner-mover {
+            animation: none;
+            transform: translate(-30px, -40px);
+        }
+        .karl-avatar-shell .karl-top-page {
+            animation: none;
+            transform-origin: 20% 50%;
+        }
+        .karl-avatar-shell .karl-outcome-icons {
+            opacity: 0;
+            transition: opacity 160ms ease;
+        }
+        .karl-avatar-shell .karl-outcome-icon {
+            opacity: 0;
+            transform: scale(0.2);
+        }
+        .karl-avatar-shell .karl-outcome-icon .karl-outcome-body {
+            animation: none;
+        }
+
+        .karl-avatar-shell[data-avatar-state="thinking"] .karl-shield-left {
+            transform: translateX(-65px);
+        }
+        .karl-avatar-shell[data-avatar-state="thinking"] .karl-shield-right {
+            transform: translateX(65px);
+        }
+        .karl-avatar-shell[data-avatar-state="thinking"] .karl-paper-stack {
+            opacity: 1;
+            transform: translate(100px, 110px) scale(1);
+        }
+        .karl-avatar-shell[data-avatar-state="thinking"] .karl-scanner {
+            opacity: 1;
+            transform: translate(100px, 110px) scale(1);
+        }
+        .karl-avatar-shell[data-avatar-state="thinking"] .karl-scanner-mover {
+            animation: karlAvatarScannerDeliberate 9000ms ease-in-out infinite;
+        }
+        .karl-avatar-shell[data-avatar-state="thinking"] .karl-top-page {
+            animation: karlAvatarPageFlip 2.2s ease-in-out infinite;
+        }
+
+        .karl-avatar-shell[data-avatar-state="confirm"] .karl-shield-left,
+        .karl-avatar-shell[data-avatar-state="confirm"] .karl-shield-right,
+        .karl-avatar-shell[data-avatar-state="question"] .karl-shield-left,
+        .karl-avatar-shell[data-avatar-state="question"] .karl-shield-right,
+        .karl-avatar-shell[data-avatar-state="error"] .karl-shield-left,
+        .karl-avatar-shell[data-avatar-state="error"] .karl-shield-right {
+            transform: translateX(0px);
+        }
+        .karl-avatar-shell[data-avatar-state="confirm"] .karl-paper-stack,
+        .karl-avatar-shell[data-avatar-state="question"] .karl-paper-stack,
+        .karl-avatar-shell[data-avatar-state="error"] .karl-paper-stack {
+            opacity: 0;
+            transform: translate(100px, 110px) scale(0.9);
+        }
+        .karl-avatar-shell[data-avatar-state="confirm"] .karl-scanner,
+        .karl-avatar-shell[data-avatar-state="question"] .karl-scanner,
+        .karl-avatar-shell[data-avatar-state="error"] .karl-scanner {
+            opacity: 0;
+            transform: translate(100px, 110px) scale(0);
+        }
+        .karl-avatar-shell[data-avatar-state="confirm"] .karl-outcome-icons,
+        .karl-avatar-shell[data-avatar-state="question"] .karl-outcome-icons,
+        .karl-avatar-shell[data-avatar-state="error"] .karl-outcome-icons {
+            opacity: 1;
+        }
+        .karl-avatar-shell[data-avatar-state="confirm"] .karl-outcome-confirm,
+        .karl-avatar-shell[data-avatar-state="question"] .karl-outcome-question,
+        .karl-avatar-shell[data-avatar-state="error"] .karl-outcome-error {
+            opacity: 1;
+            animation: karlAvatarOutcomePop 450ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        @media (min-width: 768px) {
+            .karl-avatar-shell {
+                width: 52px;
+                height: 52px;
+            }
+        }
+
+        /* Dark mode styles */
+        .dark body { background-color: #0a0a0a; }
+        .dark #app { background-color: #111827; }
+        .dark .bg-white { background-color: #1f2937 !important; }
+        .dark .bg-slate-50 { background-color: #111827 !important; }
+        .dark .bg-slate-100 { background-color: #1f2937 !important; }
+        .dark .text-slate-800 { color: #f3f4f6 !important; }
+        .dark .text-slate-700 { color: #e5e7eb !important; }
+        .dark .text-slate-600 { color: #d1d5db !important; }
+        .dark .text-slate-500 { color: #9ca3af !important; }
+        .dark .text-slate-400 { color: #6b7280 !important; }
+        .dark .border-slate-200 { border-color: #374151 !important; }
+        .dark .border-slate-300 { border-color: #4b5563 !important; }
+        .dark input, .dark select { background-color: #374151 !important; color: #f3f4f6 !important; border-color: #4b5563 !important; }
+        .dark input::placeholder { color: #9ca3af !important; }
+
+        /* Dark mode - Contract tab styles */
+        .dark #content-contract { background-color: #111827; }
+
+        /* Dark mode - TOC styles */
+        .dark #toc-list-container { background-color: #1a202c; }
+        .dark #article-list button { color: #c7d2e8; }
+        .dark #article-list button:hover { background-color: #2d3748; color: #E8B84A; }
+        .dark #article-list button.bg-blue-50 { background-color: #2d3748 !important; color: #E8B84A !important; }
+
+        /* Dark mode - Chat input area */
+        .dark #chat-input-area { background-color: #1e3a5f !important; border-color: #2d4a6f !important; }
+        .dark #chat-input-area input { background-color: #2a4a6a !important; border-color: #3d5a7a !important; color: #e8f0f8 !important; }
+        .dark #chat-input-area input::placeholder { color: #8ba3bf !important; }
+        .dark #chat-input-area button { background-color: #D4A029 !important; }
+
+        /* Dark mode - Employment status buttons (yellow only when selected) */
+        .dark input[type="radio"]:checked + div { border-color: #D4A029 !important; background-color: rgba(212, 160, 41, 0.15) !important; }
+        .dark input[type="radio"]:checked + div p { color: #E8B84A !important; }
+        .dark input[type="radio"]:not(:checked) + div { border-color: #4b5563 !important; background-color: transparent !important; }
+        .dark input[type="radio"]:not(:checked) + div p { color: #9ca3af !important; }
+
+        /* Dark mode - Dark mode toggle (yellow when active) */
+        .dark #dark-mode-toggle.bg-ufcw-blue { background-color: #D4A029 !important; }
+        .dark #developer-mode-toggle.bg-ufcw-blue { background-color: #D4A029 !important; }
+
+        /* Dark mode - Citation badges (yellow) */
+        .dark .citation-badge { background-color: rgba(212, 160, 41, 0.2) !important; color: #E8B84A !important; }
+        .dark .citation-badge:hover { background-color: rgba(212, 160, 41, 0.35) !important; }
+        .dark #chat-profile-edit-btn {
+            color: #E8B84A !important;
+            background-color: rgba(212, 160, 41, 0.15);
+            border: 1px solid rgba(232, 184, 74, 0.35);
+            border-radius: 8px;
+            padding: 4px 10px;
+        }
+        .dark #chat-profile-edit-btn:hover {
+            color: #f6d577 !important;
+            background-color: rgba(212, 160, 41, 0.24);
+            border-color: rgba(246, 213, 119, 0.5);
+        }
+
+        .quick-action[disabled] {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .contract-table-wrap {
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin: 12px 0;
+            background: #f8fafc;
+        }
+        .contract-table {
+            width: 100%;
+            min-width: 640px;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .contract-table th,
+        .contract-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .contract-table th {
+            background: #e2e8f0;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .dark .contract-table-wrap {
+            background: #1f2937;
+            border-color: #475569;
+        }
+        .dark .contract-table th,
+        .dark .contract-table td {
+            border-color: #475569;
+            color: #e5e7eb;
+        }
+        .dark .contract-table th {
+            background: #334155;
+        }
+
+        /* Custom date picker */
+        .date-picker-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .date-picker-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            margin-top: 4px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .dark .date-picker-dropdown {
+            background: #1f2937;
+            border-color: #374151;
+        }
+        /* Onboarding picker expands inline so it never clips against modal bounds. */
+        #onboard-date-picker.date-picker-dropdown {
+            position: relative;
+            top: auto;
+            left: auto;
+            right: auto;
+            z-index: 1;
+            margin-top: 8px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+        }
+        .dark #onboard-date-picker.date-picker-dropdown {
+            border-color: #475569;
+        }
+        .month-btn {
+            padding: 8px 4px;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: all 0.15s;
+            color: #334155;
+        }
+        .month-btn:hover { background: rgba(13, 59, 84, 0.1); }
+        .month-btn.selected { background: #D4A029; color: white; }
+        .dark .month-btn { color: #e2e8f0; }
+        .dark .month-btn:hover { background: rgba(212, 160, 41, 0.2); }
+        .dark .month-btn.selected { background: #D4A029; color: white; }
+        .year-nav-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.15s;
+        }
+        .year-nav-btn:hover { background: rgba(13, 59, 84, 0.1); }
+        .dark .year-nav-btn:hover { background: rgba(212, 160, 41, 0.2); }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 2px; }
+
+        /* Better focus states */
+        input:focus, button:focus:not(.tab-btn), select:focus { outline: 2px solid #F59E0B; outline-offset: 2px; }
+
+        /* Modal backdrop */
+        .modal-backdrop {
+            background: rgba(30, 58, 138, 0.8);
+            backdrop-filter: blur(4px);
+        }
+        html.onboarding-open,
+        body.onboarding-open {
+            overflow: hidden;
+        }
+        #steward-onboarding-modal {
+            overscroll-behavior: contain;
+        }
+        .onboarding-panel {
+            max-height: calc(100dvh - 1rem);
+        }
+        .onboarding-form-scroll {
+            overflow-y: auto;
+        }
+        @media (min-width: 768px) {
+            .onboarding-panel {
+                max-height: calc(100dvh - 3rem);
+            }
+        }
+
+        /* Member onboarding experience */
+        .member-onboarding {
+            background: #020617;
+            overflow: hidden;
+        }
+        .member-onboarding * {
+            box-sizing: border-box;
+        }
+        .member-onboarding .mo-mist-deep {
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(13, 59, 84, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(20, 80, 110, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(5, 25, 38, 0.8) 0%, transparent 60%);
+            filter: blur(60px);
+            animation: moDeepRotate 60s linear infinite;
+            z-index: 1;
+        }
+        .member-onboarding .mo-mist-fog {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(2, 6, 23, 0.8), transparent);
+            z-index: 2;
+        }
+        .member-onboarding {
+            --mo-shield-size: 340px;
+            --mo-shield-left-base-idle: #334155;
+            --mo-shield-right-base-idle: #475569;
+            --mo-piece-left-fill: #4a7a9f;
+            --mo-piece-right-fill: #e4c968;
+            --mo-piece-final: var(--mo-piece-right-fill);
+            font-family: 'Inter', sans-serif;
+        }
+        .member-onboarding .mo-shield-wrap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: var(--mo-shield-size);
+            height: var(--mo-shield-size);
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            opacity: 0;
+            animation: moShieldRise 2.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation-delay: 0.8s;
+        }
+        .member-onboarding #mo-shield-left,
+        .member-onboarding #mo-shield-right,
+        .member-onboarding #mo-paper-stack,
+        .member-onboarding #mo-top-page {
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+        .member-onboarding .mo-shield-base.left {
+            fill: var(--mo-shield-left-base-idle);
+        }
+        .member-onboarding .mo-shield-base.right {
+            fill: var(--mo-shield-right-base-idle);
+        }
+        .member-onboarding .mo-puzzle-piece {
+            fill: transparent;
+            stroke: none;
+            stroke-width: 0;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            transition: fill 280ms ease, stroke 280ms ease, filter 280ms ease;
+        }
+        .member-onboarding .mo-puzzle-piece.left {
+            fill: var(--mo-shield-left-base-idle);
+        }
+        .member-onboarding .mo-puzzle-piece.right {
+            fill: var(--mo-shield-right-base-idle);
+        }
+        .member-onboarding .mo-puzzle-piece.left.is-filled {
+            fill: var(--mo-piece-left-fill);
+            stroke: none;
+            filter: none;
+        }
+        .member-onboarding .mo-puzzle-piece.right.is-filled {
+            fill: var(--mo-piece-right-fill);
+            stroke: none;
+            filter: none;
+        }
+        .member-onboarding .mo-puzzle-piece.is-final-ready {
+            fill: var(--mo-piece-final) !important;
+            stroke: none !important;
+            filter: none !important;
+            animation: moFinalPiecePulse 260ms ease-in-out 1;
+        }
+        @keyframes moFinalPiecePulse {
+            0% { transform: scale(1); }
+            35% { transform: scale(1.06); }
+            100% { transform: scale(1); }
+        }
+        .member-onboarding .mo-shield-nav-btn {
+            position: absolute;
+            top: 56%;
+            z-index: 38;
+            pointer-events: auto;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(2, 6, 23, 0.62);
+            color: #e2e8f0;
+            border-radius: 999px;
+            height: 42px;
+            min-width: 42px;
+            padding: 0 0.8rem;
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+        .member-onboarding .mo-shield-nav-btn:hover {
+            background: rgba(13, 59, 84, 0.78);
+            border-color: rgba(212, 160, 41, 0.75);
+            color: #fff;
+        }
+        .member-onboarding .mo-shield-nav-btn.hidden {
+            display: none;
+        }
+        .member-onboarding .mo-shield-nav-btn.back {
+            left: calc(50% - (var(--mo-shield-size) / 2) + 20px);
+            transform: translate(-50%, -50%);
+        }
+        .member-onboarding .mo-shield-nav-btn.next {
+            left: calc(50% + (var(--mo-shield-size) / 2) - 20px);
+            transform: translate(-50%, -50%);
+        }
+        @media (min-width: 640px) {
+            .member-onboarding {
+                --mo-shield-size: 420px;
+            }
+        }
+        .member-onboarding .mo-scene {
+            display: none;
+            position: absolute;
+            inset: 0;
+            z-index: 30;
+            pointer-events: none;
+        }
+        .member-onboarding .mo-scene.active {
+            display: block;
+        }
+        .member-onboarding .mo-center-zone {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -56%);
+            width: min(440px, 92vw);
+            text-align: center;
+            pointer-events: auto;
+        }
+        .member-onboarding .mo-top-zone {
+            position: absolute;
+            top: 6vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(380px, 90vw);
+            text-align: center;
+            pointer-events: none;
+        }
+        .member-onboarding .mo-top-zone h2 {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 600 !important;
+            letter-spacing: 0.01em;
+        }
+        .member-onboarding .mo-center-zone h1 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600 !important;
+            letter-spacing: 0.01em;
+        }
+        .member-onboarding .mo-card-zone {
+            position: absolute;
+            top: calc(50vh - 93px);
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: auto;
+        }
+        @media (min-width: 640px) {
+            .member-onboarding .mo-card-zone {
+                top: calc(50vh - 116px);
+            }
+        }
+        .member-onboarding .mo-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+            width: 170px;
+            min-height: 221px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @media (min-width: 640px) {
+            .member-onboarding .mo-card {
+                width: 210px;
+                min-height: 273px;
+            }
+        }
+        .member-onboarding .mo-card-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.6rem;
+        }
+        .member-onboarding .mo-card-divider {
+            width: 100%;
+            height: 2px;
+            background: #e2e8f0;
+            margin-bottom: 0.6rem;
+        }
+        .member-onboarding .mo-card-divider-thin {
+            width: 100%;
+            height: 1px;
+            background: #e2e8f0;
+            margin-top: 0.4rem;
+        }
+        .member-onboarding .mo-card-hint {
+            font-size: 0.55rem;
+            color: #94a3b8;
+            margin-top: 0.35rem;
+        }
+        .member-onboarding .mo-skip-btn {
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-top: auto;
+            padding-top: 0.75rem;
+            transition: color 0.2s;
+        }
+        .member-onboarding .mo-skip-btn:hover {
+            color: #ef4444;
+        }
+        .member-onboarding .mo-drop-trigger {
+            width: 100%;
+            background: none;
+            border: none;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #0f172a;
+            cursor: pointer;
+            padding: 0.2rem 0;
+        }
+        .member-onboarding .mo-drop-list {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 170px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-height: 160px;
+            overflow-y: auto;
+            z-index: 200;
+        }
+        @media (min-width: 640px) {
+            .member-onboarding .mo-drop-list {
+                width: 210px;
+            }
+        }
+        .member-onboarding .mo-drop-list button {
+            display: block;
+            width: 100%;
+            padding: 0.6rem 1rem;
+            font-size: 0.82rem;
+            text-align: center;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+            background: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            text-transform: none;
+            color: #0f172a;
+        }
+        .member-onboarding .mo-drop-list button:last-child {
+            border-bottom: none;
+        }
+        .member-onboarding .mo-drop-list button:hover {
+            background: #f8fafc;
+        }
+        .member-onboarding .mo-shadow {
+            text-shadow: 0 1px 16px rgba(2, 6, 23, 1), 0 0 40px rgba(2, 6, 23, 0.9);
+        }
+        .member-onboarding .mo-dim {
+            color: rgba(219, 234, 254, 0.9);
+            font-weight: 300;
+            font-size: clamp(0.85rem, 2.2vw, 1rem);
+            line-height: 1.75;
+        }
+        .member-onboarding .mo-fade-up {
+            animation: moFadeUp 0.5s ease both;
+        }
+        .member-onboarding .mo-fade-up.d2 {
+            animation-delay: 0.2s;
+        }
+        .member-onboarding .mo-fade-up.d3 {
+            animation-delay: 0.4s;
+        }
+        .member-onboarding .mo-fade-up.d4 {
+            animation-delay: 0.6s;
+        }
+        .member-onboarding .mo-fade-up.d5 {
+            animation-delay: 2s;
+            animation-duration: 0.6s;
+        }
+        .member-onboarding .mo-role-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        .member-onboarding .mo-role-btn {
+            text-align: left;
+            padding: 1.1rem;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .member-onboarding .mo-role-btn:hover {
+            border-color: rgba(212, 160, 41, 0.55);
+            background: rgba(15, 23, 42, 0.75);
+        }
+        .member-onboarding .mo-date-nav {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        .member-onboarding .mo-month-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            width: 100%;
+        }
+        .member-onboarding .mo-month-btn {
+            font-size: 0.62rem;
+            padding: 0.35rem 0.1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background: none;
+            cursor: pointer;
+            color: #475569;
+        }
+        .member-onboarding .mo-month-btn:hover {
+            border-color: #0d3b54;
+            color: #0d3b54;
+        }
+        .member-onboarding .mo-month-btn.selected {
+            background: #0d3b54;
+            color: #fff;
+            border-color: #0d3b54;
+        }
+        .member-onboarding .mo-month-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .member-onboarding .mo-employment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            width: 100%;
+            margin-top: 0.25rem;
+        }
+        .member-onboarding .mo-employment-btn {
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            background: #f8fafc;
+            color: #334155;
+            cursor: pointer;
+            text-align: left;
+            padding: 0.65rem 0.7rem;
+            transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+        }
+        .member-onboarding .mo-employment-btn:hover {
+            border-color: #0d3b54;
+            background: #f1f5f9;
+        }
+        .member-onboarding .mo-employment-btn .title {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .member-onboarding .mo-employment-btn .sub {
+            display: block;
+            margin-top: 0.15rem;
+            font-size: 0.66rem;
+            color: #64748b;
+        }
+        .member-onboarding .mo-employment-btn.selected {
+            border-color: #0d3b54;
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        @keyframes moFadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes moDeepRotate {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        @keyframes moShieldRise {
+            from { opacity: 0; transform: translate(-50%, -46%) scale(0.85); filter: blur(8px); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .karl-avatar-shell,
+            .karl-avatar-shell * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* Tab transitions */
+        .tab-btn { transition: color 0.15s, border-color 0.15s, box-shadow 0.2s, background-color 0.2s; }
+        .tab-btn svg { transition: filter 0.25s ease, stroke 0.15s ease; }
+        .tab-btn span { transition: color 0.15s ease, text-shadow 0.25s ease; }
+
+        /* Active tab glow effect */
+        .tab-btn {
+            position: relative;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none;
+        }
+        .tab-btn:focus, .tab-btn:focus-visible, .tab-btn:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        .tab-btn.tab-active::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            background: rgba(212, 160, 41, 0.15);
+            border-radius: 8px;
+            z-index: -1;
+        }
+        .dark .tab-btn.tab-active::before {
+            background: rgba(212, 160, 41, 0.22);
+        }
+
+        /* Icon glow on active tab */
+        .tab-btn.tab-active svg {
+            filter: drop-shadow(0 0 6px rgba(212, 160, 41, 0.9)) drop-shadow(0 0 12px rgba(212, 160, 41, 0.6));
+            color: #D4A029;
+            stroke: #D4A029;
+        }
+        .dark .tab-btn.tab-active svg {
+            filter: drop-shadow(0 0 8px rgba(232, 184, 74, 1)) drop-shadow(0 0 16px rgba(232, 184, 74, 0.7));
+            color: #E8B84A;
+            stroke: #E8B84A;
+        }
+
+        /* Text glow on active tab */
+        .tab-btn.tab-active span {
+            color: #D4A029;
+            text-shadow: 0 0 8px rgba(212, 160, 41, 0.8), 0 0 16px rgba(212, 160, 41, 0.5);
+        }
+        .dark .tab-btn.tab-active span {
+            color: #E8B84A;
+            text-shadow: 0 0 10px rgba(232, 184, 74, 0.9), 0 0 20px rgba(232, 184, 74, 0.6);
+        }
+
+        /* Citation link styling */
+        .citation-link {
+            color: #0D3B54;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 3px;
+            cursor: pointer;
+        }
+        .citation-link:hover { color: #D4A029; }
+        .dark .citation-link { color: #E8B84A; }
+        .dark .citation-link:hover { color: #D4A029; }
+
+        /* Popover animation */
+        @keyframes popoverIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #citation-popover:not(.hidden) { animation: popoverIn 0.2s ease-out; }
+
+        #content-contract,
+        #contract-workspace {
+            min-height: 0;
+        }
+        #content-contract.contract-viewer-effective #contract-workspace {
+            background: linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(255, 255, 255, 1));
+        }
+        #tab-content {
+            min-height: 0;
+        }
+        #contract-pdf-overlay {
+            min-height: 0;
+            align-items: stretch;
+            justify-content: center;
+            padding: 0;
+        }
+        #contract-pdf-overlay:not(.hidden) {
+            display: flex;
+        }
+        .contract-pdf-panel {
+            width: 100%;
+            height: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.96);
+        }
+        .dark .contract-pdf-panel {
+            background: rgba(17, 24, 39, 0.96);
+        }
+        #contract-pdf-frame {
+            min-height: 520px;
+        }
+        #content-contract.contract-viewer-effective #contract-text-panel {
+            display: flex;
+            flex: 1 1 auto;
+            width: 100%;
+            border-left: none;
+        }
+        #content-contract.contract-viewer-effective #contract-pdf-overlay {
+            display: none !important;
+        }
+        #content-contract.contract-viewer-effective #contract-text-panel .contract-text-shell {
+            max-width: 940px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        #content-contract.contract-viewer-original #contract-text-panel {
+            display: none !important;
+        }
+        .contract-dev-only.hidden {
+            display: none !important;
+        }
+
+        /* Section highlight */
+        .section-highlight {
+            background-color: rgba(212, 160, 41, 0.2);
+            transition: background-color 2s ease-out;
+        }
+
+        /* TOC scrollbar - thin and subtle */
+        #toc-list-container::-webkit-scrollbar { width: 3px; }
+        #toc-list-container::-webkit-scrollbar-track { background: transparent; }
+        #toc-list-container::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 2px; }
+
+        /* Chat container scrollbar */
+        #chat-container::-webkit-scrollbar { width: 6px; }
+        #chat-container::-webkit-scrollbar-track { background: transparent; }
+        #chat-container::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+        #chat-container::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        /* Bottom nav safe area for iPhone */
+        .safe-area-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+
+        /* Add bottom padding on mobile to account for fixed nav */
+        @media (max-width: 767px) {
+            #chat-profile-bar {
+                top: var(--mobile-header-offset);
+                min-height: var(--mobile-chat-profile-height);
+            }
+            #chat-container {
+                top: calc(var(--mobile-header-offset) + var(--mobile-chat-profile-height));
+                bottom: calc(var(--mobile-tabbar-height) + var(--mobile-chat-input-height));
+            }
+            #chat-input-area { bottom: var(--mobile-tabbar-height); }
+            #toc-header-mobile { top: var(--mobile-header-offset); }
+            #tab-content { padding-bottom: var(--mobile-tabbar-height); }
+            #tab-bar { box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        }
+
+        #main-header-spacer { height: var(--mobile-header-offset); }
+        @media (min-width: 768px) {
+            #main-header-spacer { height: var(--desktop-header-offset); }
+            #tab-bar {
+                position: fixed;
+                top: var(--desktop-header-offset);
+                left: 0;
+                right: 0;
+                bottom: auto;
+                z-index: 45;
+                box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+            }
+            #tab-content {
+                padding-top: var(--desktop-tabbar-height);
+                min-height: 0;
+            }
+            #content-contract {
+                height: var(--desktop-contract-workspace-height);
+            }
+            #contract-workspace {
+                height: 100%;
+                min-height: 0;
+                overflow: hidden;
+            }
+            #contract-toc {
+                height: 100%;
+                min-height: 0;
+            }
+            #toc-list-container {
+                min-height: 0;
+                overflow-y: auto;
+            }
+            #contract-pdf-overlay {
+                position: relative;
+                inset: auto;
+                z-index: 10;
+                flex: 1 1 auto;
+                height: 100%;
+                min-height: 0;
+                width: auto;
+                padding: 0;
+                background: transparent;
+                backdrop-filter: none;
+                border-left: 1px solid #e2e8f0;
+            }
+            .dark #contract-pdf-overlay {
+                border-left-color: #334155;
+            }
+            .contract-pdf-panel {
+                width: 100%;
+                height: 100%;
+                min-height: 0;
+                border: none;
+                border-radius: 0;
+                overflow: hidden;
+                box-shadow: none;
+            }
+            .dark .contract-pdf-panel {
+                box-shadow: none;
+            }
+            #contract-pdf-frame {
+                min-height: 0;
+                height: 100%;
+            }
+            #content-contract.contract-viewer-effective #contract-text-panel {
+                order: 1;
+                flex: 1 1 auto;
+                border-right: none;
+            }
+            #content-contract.contract-viewer-effective #contract-pdf-overlay {
+                display: none !important;
+            }
+        }
+
+        /* Active tab indicator - top border on mobile */
+        @media (max-width: 767px) {
+            .tab-btn.active-mobile {
+                border-top-color: #1E3A8A;
+                color: #1E3A8A;
+            }
+            #toc-list-mobile {
+                max-height: calc(100vh - var(--mobile-header-offset) - var(--mobile-tabbar-height) - var(--mobile-contract-toc-banner-height));
+            }
+            #content-contract.contract-viewer-original #contract-pdf-overlay {
+                top: calc(var(--mobile-header-offset) + var(--mobile-contract-toc-height));
+                bottom: var(--mobile-tabbar-height);
+            }
+            #content-contract.contract-viewer-effective #contract-workspace {
+                display: block;
+            }
+            #content-contract.contract-viewer-effective #contract-pdf-overlay {
+                display: none !important;
+            }
+            #content-contract.contract-viewer-effective #contract-text-panel {
+                display: flex !important;
+                margin-top: var(--mobile-contract-toc-height);
+                height: calc(100% - var(--mobile-contract-toc-height));
+                width: 100%;
+                border-left: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- Citation Popover (floating) -->
+    <div id="citation-popover" class="hidden fixed z-50 max-w-md w-full mx-4">
+        <div class="bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-ufcw-blue to-blue-700 px-4 py-3 flex items-center justify-between">
+                <div>
+                    <h3 id="popover-title" class="text-white font-semibold text-sm">Article X, Section Y</h3>
+                    <p id="popover-subtitle" class="text-blue-200 text-xs">Article Title</p>
+                </div>
+                <button onclick="hidePopover()" class="text-white/70 hover:text-white p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="popover-content" class="max-h-64 overflow-y-auto p-4 text-sm text-slate-700 leading-relaxed">
+                <div id="popover-loading" class="flex items-center justify-center py-8 text-slate-400">
+                    <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                    </svg>
+                    Loading...
+                </div>
+                <div id="popover-text" class="hidden"></div>
+            </div>
+            <div class="border-t border-slate-200 px-4 py-3 bg-slate-50 space-y-2">
+                <div id="popover-source-controls" class="hidden">
+                    <label for="popover-source-select" class="text-[11px] font-medium text-slate-600 mr-2">Source View</label>
+                    <select id="popover-source-select" onchange="handlePopoverSourceChoiceChange(event)" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white text-slate-700 max-w-full">
+                        <option value="effective_auto">Current Effective (Auto)</option>
+                    </select>
+                </div>
+                <div class="flex justify-between items-center gap-3">
+                    <p id="popover-summary" class="text-xs text-slate-500 italic truncate max-w-[60%]"></p>
+                    <button id="popover-open-contract-btn" onclick="expandToContract()" class="text-sm font-medium text-ufcw-blue hover:text-blue-700 flex items-center gap-1 shrink-0">
+                        Open In Contract Viewer
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Member Onboarding Modal -->
+    <div id="member-onboarding-modal" data-onboarding-flow="member" class="member-onboarding hidden fixed inset-0 z-[72]">
+        <div class="mo-mist-deep"></div>
+        <div class="mo-mist-fog"></div>
+
+        <div class="mo-shield-wrap" id="mo-shield-wrap">
+            <svg viewBox="0 0 200 200" width="100%" height="100%" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <clipPath id="mo-shield-clip">
+                        <path d="M100 190C50 190,20 150,20 40Q60 40,100 30Q140 40,180 40C180 150,150 190,100 190Z"/>
+                    </clipPath>
+                    <clipPath id="mo-shield-left-clip">
+                        <path d="M100 190C50 190,20 150,20 40Q60 40,100 30Z"/>
+                    </clipPath>
+                    <clipPath id="mo-shield-right-clip">
+                        <path d="M100 190C150 190,180 150,180 40Q140 40,100 30Z"/>
+                    </clipPath>
+                    <g id="mo-paper-lines">
+                        <rect width="80" height="4" rx="2" fill="#cbd5e1" y="0"/>
+                        <rect width="60" height="4" rx="2" fill="#cbd5e1" y="10"/>
+                        <rect width="80" height="4" rx="2" fill="#cbd5e1" y="20"/>
+                        <rect width="50" height="4" rx="2" fill="#cbd5e1" y="30"/>
+                        <rect width="80" height="4" rx="2" fill="#cbd5e1" y="40"/>
+                    </g>
+                </defs>
+                <g clip-path="url(#mo-shield-clip)">
+                    <g id="mo-paper-stack" transform="translate(100,110)">
+                        <rect x="-50" y="-65" width="100" height="130" rx="4" fill="#64748b" transform="rotate(-6)" opacity=".5"/>
+                        <rect x="-50" y="-65" width="100" height="130" rx="4" fill="#94a3b8" transform="rotate(4)" opacity=".7"/>
+                        <g>
+                            <rect x="-50" y="-65" width="100" height="130" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+                            <g transform="translate(-40,-40)">
+                                <use href="#mo-paper-lines"/>
+                            </g>
+                        </g>
+                        <g id="mo-top-page" opacity="0">
+                            <rect x="-50" y="-65" width="100" height="130" rx="4" fill="#fff" stroke="#cbd5e1" stroke-width="1"/>
+                            <g transform="translate(-40,-40)">
+                                <use href="#mo-paper-lines"/>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+                <g id="mo-shield-left">
+                    <path id="mo-shield-left-base" class="mo-shield-base left" d="M100 190C50 190,20 150,20 40Q60 40,100 30Z"/>
+                    <g clip-path="url(#mo-shield-left-clip)">
+                        <rect id="mo-puzzle-piece-1" class="mo-puzzle-piece left" x="0" y="0" width="100" height="82"/>
+                        <rect id="mo-puzzle-piece-2" class="mo-puzzle-piece left" x="0" y="81.5" width="100" height="60"/>
+                        <rect id="mo-puzzle-piece-3" class="mo-puzzle-piece left" x="0" y="141" width="100" height="59"/>
+                    </g>
+                </g>
+                <g id="mo-shield-right">
+                    <path id="mo-shield-right-base" class="mo-shield-base right" d="M100 190C150 190,180 150,180 40Q140 40,100 30Z"/>
+                    <g clip-path="url(#mo-shield-right-clip)">
+                        <rect id="mo-puzzle-piece-4" class="mo-puzzle-piece right" x="100" y="0" width="100" height="82"/>
+                        <rect id="mo-puzzle-piece-5" class="mo-puzzle-piece right" x="100" y="81.5" width="100" height="60"/>
+                        <rect id="mo-puzzle-piece-6" class="mo-puzzle-piece right" x="100" y="141" width="100" height="59"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+        <button id="mo-shield-nav-back" class="mo-shield-nav-btn back hidden" type="button">Back</button>
+        <button id="mo-shield-nav-next" class="mo-shield-nav-btn next hidden" type="button">Skip</button>
+
+        <section id="mo-scene-init" class="mo-scene">
+            <div class="mo-center-zone">
+                <h1 class="mo-fade-up mo-shadow" style="font-size:clamp(2.5rem,8vw,4rem);font-weight:700;color:#fff;">Karl</h1>
+                <p class="mo-fade-up d2 mo-shadow" style="font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(147,197,253,.7);margin-top:.5rem;">Knowledge Assistant for Rights &amp; Labor</p>
+                <div class="mo-fade-up d3" style="display:flex;align-items:center;justify-content:center;gap:.75rem;margin:.9rem 0;">
+                    <div style="width:48px;height:1px;background:rgba(255,255,255,.15);"></div>
+                    <div style="width:6px;height:6px;border-radius:50%;background:rgba(212,160,41,.6);"></div>
+                    <div style="width:48px;height:1px;background:rgba(255,255,255,.15);"></div>
+                </div>
+                <p class="mo-fade-up d4 mo-shadow mo-dim">I'm here to help you navigate your contract.</p>
+                <button id="mo-begin-btn" class="mo-fade-up d5 mo-shadow" style="margin-top:2.5rem;padding:.75rem 2rem;border:1px solid rgba(255,255,255,.25);background:none;color:#fff;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background .2s;">
+                    Let's begin
+                </button>
+            </div>
+        </section>
+
+        <section id="mo-scene-role" class="mo-scene">
+            <div class="mo-center-zone">
+                <p class="mo-fade-up mo-shadow mo-dim" style="margin-bottom:1.5rem;">Are you a member looking up your own rights, or a steward doing a quick lookup?</p>
+                <div class="mo-role-grid">
+                    <button id="mo-role-member" class="mo-role-btn mo-fade-up d2">
+                        <div style="color:#fff;font-weight:600;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;">Member</div>
+                        <div style="color:#94a3b8;font-size:.7rem;line-height:1.5;">I want to know my own rights.</div>
+                    </button>
+                    <button id="mo-role-steward" class="mo-role-btn mo-fade-up d3">
+                        <div style="color:#fff;font-weight:600;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;">Steward</div>
+                        <div style="color:#94a3b8;font-size:.7rem;line-height:1.5;">I look up answers for others.</div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="mo-scene-transition" class="mo-scene">
+            <div id="mo-trans-text" style="position:absolute;left:50%;width:min(360px,88vw);text-align:center;pointer-events:none;opacity:0;">
+                <p class="mo-shadow mo-dim"><strong style="color:#fff;font-weight:500;">Perfect.</strong> I just need a few quick answers so I know which contract to pull up.</p>
+                <p class="mo-shadow mo-dim" style="margin-top:.75rem;">This won't take long.</p>
+            </div>
+        </section>
+
+        <section id="mo-scene-m1" class="mo-scene">
+            <div class="mo-top-zone">
+                <h2 class="mo-fade-up mo-shadow" style="font-size:clamp(1.2rem,3.5vw,1.75rem);font-weight:300;color:#fff;">Who is your employer?</h2>
+                <p class="mo-fade-up d2 mo-shadow" style="font-size:.8rem;color:rgba(147,197,253,.7);margin-top:.3rem;">We will narrow your contract in two quick steps.</p>
+            </div>
+            <div class="mo-card-zone">
+                <div id="mo-card-1" class="mo-card">
+                    <div class="mo-card-label">Employer</div>
+                    <div class="mo-card-divider"></div>
+                    <div style="position:relative;width:100%;">
+                        <button id="mo-employer-trigger" class="mo-drop-trigger">
+                            <span id="mo-employer-label">Select employer...</span>
+                        </button>
+                        <div id="mo-employer-list" class="mo-drop-list"></div>
+                    </div>
+                    <div class="mo-card-divider-thin"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mo-scene-m2" class="mo-scene">
+            <div class="mo-top-zone">
+                <h2 class="mo-fade-up mo-shadow" style="font-size:clamp(1.2rem,3.5vw,1.75rem);font-weight:300;color:#fff;">Which location or city?</h2>
+                <p class="mo-fade-up d2 mo-shadow" style="font-size:.8rem;color:rgba(147,197,253,.7);margin-top:.3rem;">Location helps us find the right contract family.</p>
+            </div>
+            <div class="mo-card-zone">
+                <div id="mo-card-2" class="mo-card">
+                    <div class="mo-card-label">Location</div>
+                    <div class="mo-card-divider"></div>
+                    <div style="position:relative;width:100%;">
+                        <button id="mo-location-trigger" class="mo-drop-trigger">
+                            <span id="mo-location-label">Select location...</span>
+                        </button>
+                        <div id="mo-location-list" class="mo-drop-list"></div>
+                    </div>
+                    <div class="mo-card-divider-thin"></div>
+                    <p class="mo-card-hint">Pick the closest match or skip</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="mo-scene-m3" class="mo-scene">
+            <div class="mo-top-zone">
+                <h2 class="mo-fade-up mo-shadow" style="font-size:clamp(1.2rem,3.5vw,1.75rem);font-weight:300;color:#fff;">Which department are you in?</h2>
+                <p class="mo-fade-up d2 mo-shadow" style="font-size:.8rem;color:rgba(147,197,253,.7);margin-top:.3rem;">For example: Clerks or Meat.</p>
+            </div>
+            <div class="mo-card-zone">
+                <div id="mo-card-3" class="mo-card" style="padding:.85rem;">
+                    <div class="mo-card-label">Department</div>
+                    <div class="mo-card-divider"></div>
+                    <div style="position:relative;width:100%;">
+                        <button id="mo-department-trigger" class="mo-drop-trigger">
+                            <span id="mo-department-label">Select department...</span>
+                        </button>
+                        <div id="mo-department-list" class="mo-drop-list"></div>
+                    </div>
+                    <div class="mo-card-divider-thin"></div>
+                    <p class="mo-card-hint">We'll map this to the right contract automatically</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="mo-scene-m4" class="mo-scene">
+            <div class="mo-top-zone">
+                <h2 class="mo-fade-up mo-shadow" style="font-size:clamp(1.2rem,3.5vw,1.75rem);font-weight:300;color:#fff;">What's your job classification?</h2>
+                <p class="mo-fade-up d2 mo-shadow" style="font-size:.8rem;color:rgba(147,197,253,.7);margin-top:.3rem;">This helps estimate wages and rights context.</p>
+            </div>
+            <div class="mo-card-zone">
+                <div id="mo-card-4" class="mo-card">
+                    <div class="mo-card-label">Classification</div>
+                    <div class="mo-card-divider"></div>
+                    <div style="position:relative;width:100%;">
+                        <button id="mo-class-trigger" class="mo-drop-trigger">
+                            <span id="mo-class-label">Select role...</span>
+                        </button>
+                        <div id="mo-class-list" class="mo-drop-list"></div>
+                    </div>
+                    <div id="mo-role-clarification" class="hidden mt-3 w-full rounded-2xl border border-amber-300/45 bg-amber-50/90 px-3 py-2 text-left text-[0.72rem] leading-relaxed text-amber-900 shadow-[0_10px_30px_rgba(180,83,9,0.12)]"></div>
+                    <div class="mo-card-divider-thin"></div>
+                    <p class="mo-card-hint">Optional, you can skip</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="mo-scene-m5" class="mo-scene">
+            <div class="mo-top-zone">
+                <h2 class="mo-fade-up mo-shadow" style="font-size:clamp(1.2rem,3.5vw,1.75rem);font-weight:300;color:#fff;">Are you full-time or part-time?</h2>
+                <p class="mo-fade-up d2 mo-shadow" style="font-size:.8rem;color:rgba(147,197,253,.7);margin-top:.3rem;">This helps me apply the right wage and benefit rules.</p>
+            </div>
+            <div class="mo-card-zone">
+                <div id="mo-card-5" class="mo-card">
+                    <div class="mo-card-label">Employment Type</div>
+                    <div class="mo-card-divider"></div>
+                    <div class="mo-employment-grid">
+                        <button id="mo-employment-full" type="button" class="mo-employment-btn">
+                            <span class="title">Full-Time</span>
+                            <span class="sub">32+ hrs/week</span>
+                        </button>
+                        <button id="mo-employment-part" type="button" class="mo-employment-btn">
+                            <span class="title">Part-Time</span>
+                            <span class="sub">Under 32 hrs</span>
+                        </button>
+                    </div>
+                    <div class="mo-card-divider-thin"></div>
+                    <p class="mo-card-hint">Pick one, or skip with shield arrows</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="mo-scene-m6" class="mo-scene">
+            <div class="mo-top-zone">
+                <h2 class="mo-fade-up mo-shadow" style="font-size:clamp(1.2rem,3.5vw,1.75rem);font-weight:300;color:#fff;">When was your first day?</h2>
+                <p class="mo-fade-up d2 mo-shadow" style="font-size:.8rem;color:rgba(147,197,253,.7);margin-top:.3rem;">Pick a month/year, or skip and continue.</p>
+            </div>
+            <div class="mo-card-zone">
+                <div id="mo-card-6" class="mo-card" style="padding:.85rem;">
+                    <div class="mo-card-label">Hire Date</div>
+                    <div class="mo-card-divider"></div>
+                    <div style="width:100%;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+                            <button id="mo-year-prev" class="mo-date-nav">&#8249;</button>
+                            <span id="mo-year-display" style="font-family:'Playfair Display',serif;font-size:.95rem;color:#1e293b;font-weight:600;">2026</span>
+                            <button id="mo-year-next" class="mo-date-nav">&#8250;</button>
+                        </div>
+                        <div id="mo-month-grid" class="mo-month-grid"></div>
+                    </div>
+                    <input type="hidden" id="mo-hire-date" value="">
+                    <button id="mo-finish-member" class="mo-skip-btn" style="color:#0d3b54;font-weight:700;">Submit</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Steward Onboarding Modal -->
+    <div id="steward-onboarding-modal" data-onboarding-flow="steward" class="hidden fixed inset-0 z-[70] flex items-start md:items-center justify-center modal-backdrop overflow-y-auto p-2 md:p-6">
+        <div class="onboarding-panel bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full mx-auto fade-up flex flex-col">
+            <div class="onboarding-gradient relative px-6 py-5 text-white overflow-hidden">
+                <div class="flex items-center gap-3 relative z-10">
+                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/25 flex items-center justify-center shadow-lg">
+                        <svg class="w-8 h-8" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M 100 190 C 50 190, 20 150, 20 40 Q 60 40, 100 30 Z" fill="#4a7a9f" />
+                            <path d="M 100 190 C 150 190, 180 150, 180 40 Q 140 40, 100 30 Z" fill="#eecf6d" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-xl">Steward Fast Setup</h2>
+                        <p class="text-ufcw-gold-light text-sm">Onboarding in under a minute</p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="steward-onboarding-form" class="onboarding-form-scroll p-5 md:p-6 space-y-5 flex-1">
+                <p class="text-sm text-slate-600">
+                    Tell me a bit about yourself so I can give you accurate information about your wages and benefits.
+                </p>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Which contract/store are you under?</label>
+                    <select id="onboard-contract" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
+                        <option value="">Select your contract...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">What's your job classification?</label>
+                    <select id="onboard-classification" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
+                        <option value="">Select your role...</option>
+                    </select>
+                    <div id="onboard-role-clarification" class="hidden mt-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900"></div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Full-time or Part-time?</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="relative">
+                            <input type="radio" name="employment_type" value="full_time" class="peer sr-only">
+                            <div class="border-2 border-slate-200 rounded-xl px-4 py-3 cursor-pointer transition-all peer-checked:border-ufcw-blue peer-checked:bg-blue-50">
+                                <p class="font-medium text-slate-700">Full-Time</p>
+                                <p class="text-xs text-slate-500">32+ hrs/week</p>
+                            </div>
+                        </label>
+                        <label class="relative">
+                            <input type="radio" name="employment_type" value="part_time" class="peer sr-only" checked>
+                            <div class="border-2 border-slate-200 rounded-xl px-4 py-3 cursor-pointer transition-all peer-checked:border-ufcw-blue peer-checked:bg-blue-50">
+                                <p class="font-medium text-slate-700">Part-Time</p>
+                                <p class="text-xs text-slate-500">Under 32 hrs</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">When did you start? (approximate is fine)</label>
+                    <div class="relative">
+                        <input type="hidden" id="onboard-hire-date" value="">
+                        <div id="onboard-date-trigger" onclick="toggleDatePicker('onboard')" class="date-picker-trigger w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
+                            <span id="onboard-date-display" class="text-slate-400">Select month & year</span>
+                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div id="onboard-date-picker" class="date-picker-dropdown hidden">
+                            <div class="p-3 border-b border-slate-200 dark:border-slate-600">
+                                <div class="flex items-center justify-between mb-3">
+                                    <button type="button" onclick="changeYear('onboard', -1)" class="year-nav-btn text-slate-600 dark:text-slate-300 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                                    </button>
+                                    <span id="onboard-year-display" class="text-lg font-semibold text-slate-800 dark:text-slate-200">2026</span>
+                                    <button type="button" onclick="changeYear('onboard', 1)" class="year-nav-btn text-slate-600 dark:text-slate-300 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                    </button>
+                                </div>
+                                <div id="onboard-months" class="grid grid-cols-4 gap-1 text-center"></div>
+                            </div>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800">
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 text-center">Quick select:</p>
+                                <div class="flex flex-wrap gap-1 justify-center">
+                                    <button type="button" onclick="quickSelect('onboard', 0)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">This year</button>
+                                    <button type="button" onclick="quickSelect('onboard', 1)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">1 yr ago</button>
+                                    <button type="button" onclick="quickSelect('onboard', 5)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">5 yrs ago</button>
+                                    <button type="button" onclick="quickSelect('onboard', 10)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">10 yrs ago</button>
+                                    <button type="button" onclick="quickSelect('onboard', 20)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">20 yrs ago</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">This helps me estimate your wage step</p>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-ufcw-blue hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-xl transition-colors">
+                        Get Started
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="app" class="max-w-4xl mx-auto min-h-screen flex flex-col bg-white shadow-xl opacity-0 pointer-events-none transition-opacity duration-200">
+
+        <!-- Header - Fixed at top with animated gradient when thinking -->
+        <header id="main-header" class="fixed top-0 left-0 right-0 z-50 text-white px-5 py-3 md:py-4 shadow-lg transition-all duration-300">
+            <div class="max-w-4xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-3 md:gap-3.5">
+                    <div id="karl-avatar" class="karl-avatar-shell" data-avatar-state="idle" aria-hidden="true">
+                        <svg class="karl-avatar-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="karl-avatar-gold-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#b45309;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="karl-avatar-error-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#b91c1c;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="karl-avatar-question-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#7e22ce;stop-opacity:1" />
+                                </linearGradient>
+                                <clipPath id="karl-avatar-clip">
+                                    <path d="M 100 190 C 50 190, 20 150, 20 40 Q 60 40, 100 30 Q 140 40, 180 40 C 180 150, 150 190, 100 190 Z" />
+                                </clipPath>
+                            </defs>
+
+                            <g>
+                                <g class="karl-paper-stack" transform="translate(100, 110)">
+                                    <rect x="-50" y="-65" width="100" height="130" fill="#dbe5ef" transform="rotate(-6)" />
+                                    <rect x="-50" y="-65" width="100" height="130" fill="#ebf1f8" transform="rotate(4)" />
+                                    <g class="karl-top-page">
+                                        <rect x="-50" y="-65" width="100" height="130" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+                                        <g transform="translate(-40,-42)" fill="#cbd5e1">
+                                            <rect width="80" height="4" rx="2" y="0" />
+                                            <rect width="62" height="4" rx="2" y="10" />
+                                            <rect width="80" height="4" rx="2" y="20" />
+                                            <rect width="52" height="4" rx="2" y="30" />
+                                            <rect width="74" height="4" rx="2" y="40" />
+                                            <rect width="46" height="4" rx="2" y="50" />
+                                        </g>
+                                    </g>
+                                </g>
+                                <g class="karl-scanner" transform="translate(100, 110) scale(0)">
+                                    <g class="karl-scanner-mover">
+                                        <rect x="14" y="14" width="20" height="6" rx="3" fill="#94a3b8" transform="rotate(45)" />
+                                        <circle cx="0" cy="0" r="22" stroke="#475569" stroke-width="4" fill="rgba(255,255,255,0.12)" />
+                                        <path d="M -10 -10 Q 0 -20 10 -10" fill="none" stroke="white" stroke-width="2" opacity="0.7" stroke-linecap="round" />
+                                    </g>
+                                </g>
+                            </g>
+
+                            <g>
+                                <path class="karl-shield-left" d="M 100 190 C 50 190, 20 150, 20 40 Q 60 40, 100 30 Z" fill="#4a7a9f" />
+                                <path class="karl-shield-right" d="M 100 190 C 150 190, 180 150, 180 40 Q 140 40, 100 30 Z" fill="#eecf6d" />
+                            </g>
+
+                            <g class="karl-outcome-icons">
+                                <g class="karl-outcome-icon karl-outcome-confirm">
+                                    <g class="karl-outcome-body" transform="translate(100,100)">
+                                        <circle cx="0" cy="0" r="32" fill="url(#karl-avatar-gold-grad)" stroke="white" stroke-width="2" />
+                                        <rect x="-14" y="-10" width="28" height="24" rx="2" fill="#78350f" />
+                                        <path d="M -8 -10 L -8 -18 A 8 8 0 0 1 8 -18 L 8 -10" fill="none" stroke="#78350f" stroke-width="4" />
+                                        <circle cx="0" cy="2" r="2" fill="#fbbf24" />
+                                        <rect x="-1" y="2" width="2" height="6" fill="#fbbf24" />
+                                    </g>
+                                </g>
+                                <g class="karl-outcome-icon karl-outcome-error">
+                                    <g class="karl-outcome-body" transform="translate(100,100)">
+                                        <circle cx="0" cy="0" r="32" fill="url(#karl-avatar-error-grad)" stroke="white" stroke-width="2" />
+                                        <path d="M -10 -10 L 10 10 M 10 -10 L -10 10" stroke="white" stroke-width="6" stroke-linecap="round" />
+                                    </g>
+                                </g>
+                                <g class="karl-outcome-icon karl-outcome-question">
+                                    <g class="karl-outcome-body" transform="translate(100,100)">
+                                        <circle cx="0" cy="0" r="32" fill="url(#karl-avatar-question-grad)" stroke="white" stroke-width="2" />
+                                        <path d="M -8 -8 C -8 -16, 8 -16, 8 -8 C 8 -2, -2 0, -2 6" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" />
+                                        <circle cx="-2" cy="14" r="3.5" fill="white" />
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base md:text-lg tracking-tight">Karl</h1>
+                        <p id="header-subtitle" class="text-ufcw-gold-light text-[10px] md:text-xs">Union Document Assistant</p>
+                    </div>
+                </div>
+                <div id="status" class="flex items-center gap-1.5 md:gap-2 bg-black/20 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-ufcw-gold pulse-dot"></span>
+                    <span class="text-[10px] md:text-xs text-ufcw-gold-light">Connecting...</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="hidden md:block rounded-full bg-black/20 px-3 py-1.5 text-[10px] md:text-xs text-ufcw-gold-light">
+                        <span id="header-account-summary">Not signed in</span>
+                    </div>
+                    <div id="header-account-compact" class="hidden rounded-full bg-white/10 px-3 py-1.5 text-[10px] md:text-xs text-white/90">
+                        <span id="header-account-compact-text">Not signed in</span>
+                    </div>
+                    <button id="header-signin-btn" class="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[10px] md:text-xs font-medium text-white hover:bg-white/20 transition-colors">
+                        Sign In
+                    </button>
+                    <button id="header-signout-btn" class="hidden rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[10px] md:text-xs font-medium text-white hover:bg-white/20 transition-colors">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Spacer for fixed header -->
+        <div id="main-header-spacer"></div>
+
+        <!-- Tab Navigation Bar - Fixed at bottom on mobile, top on desktop -->
+        <nav id="tab-bar" class="fixed bottom-0 left-0 right-0 z-40 md:relative md:bottom-auto bg-white border-t md:border-t-0 md:border-b border-slate-200 safe-area-bottom">
+            <div class="flex justify-around md:justify-center max-w-4xl mx-auto">
+                <button id="tab-contract" class="tab-btn flex-1 md:flex-none px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium text-slate-500 hover:text-ufcw-blue border-t-2 md:border-t-0 md:border-b-2 border-transparent flex flex-col items-center gap-0.5 md:gap-1" onclick="setActiveTab('contract')">
+                    <svg class="w-5 h-5 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>Contract</span>
+                </button>
+                <button id="tab-chat" class="tab-btn flex-1 md:flex-none px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium text-slate-500 border-t-2 md:border-t-0 md:border-b-2 border-transparent flex flex-col items-center gap-0.5 md:gap-1" onclick="setActiveTab('chat')">
+                    <svg class="w-5 h-5 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    <span>Chat</span>
+                </button>
+                <button id="tab-settings" class="tab-btn flex-1 md:flex-none px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium text-slate-500 hover:text-ufcw-blue border-t-2 md:border-t-0 md:border-b-2 border-transparent flex flex-col items-center gap-0.5 md:gap-1" onclick="setActiveTab('settings')">
+                    <svg class="w-5 h-5 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Tab Content Container -->
+        <main id="tab-content" class="flex-1 overflow-hidden flex flex-col">
+
+            <!-- Contract Tab -->
+            <div id="content-contract" class="hidden h-full relative">
+                <div id="contract-workspace" class="h-full md:flex md:flex-row">
+                <!-- TOC Header - Fixed below Karl header on mobile, entire bar is tappable -->
+                <div id="toc-header-mobile" class="md:hidden fixed top-14 left-0 right-0 z-30 bg-slate-100 border-b border-slate-200 shadow-sm">
+                    <div class="w-full max-w-4xl mx-auto px-3 py-2 flex items-center gap-2">
+                        <button onclick="toggleTOC()" class="min-w-0 flex-1 flex items-center justify-between cursor-pointer hover:bg-slate-200/50 transition-colors rounded px-1.5 py-1.5">
+                            <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Contract Contents</h2>
+                            <div class="text-slate-500 p-1 -mr-1 shrink-0">
+                                <svg id="toc-chevron" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </div>
+                        </button>
+                        <div id="contract-viewer-mobile" class="shrink-0">
+                            <label for="contract-viewer-mode-select-mobile" class="sr-only">Viewer</label>
+                            <select id="contract-viewer-mode-select-mobile" onchange="handleContractViewerModeChange(this.value)" class="text-[10px] px-2 py-1 rounded border border-slate-300 bg-white text-slate-700">
+                                <option value="effective_text">Effective</option>
+                                <option value="original_pdf">Original PDF</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Expandable article list on mobile -->
+                    <div id="toc-list-mobile" class="hidden overflow-y-auto bg-slate-50 border-t border-slate-200">
+                        <ul id="article-list-mobile" class="p-2 space-y-px">
+                            <li class="text-center text-slate-400 py-4 text-xs">Loading...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TOC Sidebar - Desktop only -->
+                <aside id="contract-toc" class="hidden md:flex md:w-52 lg:w-56 border-r border-slate-200 bg-slate-50 flex-shrink-0 flex-col h-full">
+                    <div class="p-3 border-b border-slate-200 bg-slate-100 flex items-center gap-2">
+                        <h2 class="min-w-0 flex-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Contract Contents</h2>
+                        <div id="contract-viewer-desktop" class="shrink-0">
+                            <label for="contract-viewer-mode-select-desktop" class="sr-only">Viewer</label>
+                            <select id="contract-viewer-mode-select-desktop" onchange="handleContractViewerModeChange(this.value)" class="text-[10px] px-2 py-1 rounded border border-slate-300 bg-white text-slate-700">
+                                <option value="effective_text">Effective</option>
+                                <option value="original_pdf">Original PDF</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="toc-list-container" class="overflow-y-auto flex-1">
+                        <ul id="article-list" class="p-3 space-y-px">
+                            <li class="text-center text-slate-400 py-4 text-xs">Loading...</li>
+                        </ul>
+                    </div>
+                </aside>
+
+                <!-- PDF Reader Surface (TOC-driven) -->
+                <section id="contract-pdf-overlay" class="hidden md:relative fixed left-0 right-0 bottom-[60px] md:top-auto md:left-auto md:right-auto md:bottom-auto md:flex-1 z-20 bg-white dark:bg-gray-900">
+                    <div class="contract-pdf-panel">
+                        <div class="px-3 md:px-4 py-2 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-gray-900/90 flex items-center justify-between gap-2">
+                            <div id="contract-pdf-header-copy" class="min-w-0">
+                                <p class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Original Contract PDF</p>
+                                <p id="contract-pdf-location-label" class="text-xs text-slate-700 dark:text-slate-200 truncate">Loading PDF location...</p>
+                                <div class="mt-1 flex flex-wrap items-center gap-1.5 contract-dev-only" id="contract-pdf-dev-controls">
+                                    <select id="contract-source-mode-select" onchange="handleContractSourceModeChange(this.value)" class="text-[10px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">
+                                        <option value="effective">Effective (Auto)</option>
+                                        <option value="base">Base PDF</option>
+                                        <option value="moa">MOA PDF</option>
+                                    </select>
+                                    <select id="contract-source-doc-select" onchange="handleContractSourceDocChange(this.value)" class="text-[10px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 max-w-[220px]">
+                                        <option value="">Auto by citation provenance</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <div id="contract-target-source-controls" class="hidden flex items-center gap-2 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 px-2 py-1">
+                                    <label for="contract-target-source-select" class="text-[10px] font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">PDF Source</label>
+                                    <select id="contract-target-source-select" onchange="handleCurrentTargetSourceChange(this.value)" class="text-[10px] px-2 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 min-w-[180px] max-w-[260px]">
+                                        <option value="effective_auto">Current Effective (Auto)</option>
+                                    </select>
+                                </div>
+                                <button type="button" onclick="resetContractPdfView()" class="text-xs px-2 py-1 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                                    Reset
+                                </button>
+                                <button type="button" onclick="downloadContractPdf()" class="text-xs px-2 py-1 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                                    Download
+                                </button>
+                                <button type="button" onclick="openPdfInNewTab()" class="text-xs px-2 py-1 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                                    Open Tab
+                                </button>
+                            </div>
+                        </div>
+                        <div id="contract-history-banner" class="hidden px-3 md:px-4 py-2 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60">
+                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                <p id="contract-history-version" class="text-[10px] text-slate-700 dark:text-slate-200 font-medium">Current Contract: --</p>
+                                <p id="contract-history-amendments" class="text-[10px] text-slate-500 dark:text-slate-400">No applied amendments</p>
+                                <p id="contract-history-hash" class="contract-dev-only text-[10px] text-slate-500 dark:text-slate-400">Content ID: --</p>
+                                <p id="contract-history-coverage" class="contract-dev-only text-[10px] text-slate-500 dark:text-slate-400">Artifact coverage: --</p>
+                            </div>
+                            <div id="contract-history-timeline" class="mt-1 flex flex-wrap items-center gap-1"></div>
+                            <div id="contract-history-patches" class="contract-dev-only mt-1 flex flex-wrap gap-1"></div>
+                        </div>
+                        <div id="contract-pdf-edge-fallback" class="hidden flex-1 items-center justify-center px-6 py-8 bg-slate-50 dark:bg-slate-950/40">
+                            <div class="max-w-md rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 text-center shadow-sm">
+                                <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">Edge opened this PDF in a new tab</p>
+                                <p class="mt-2 text-xs text-slate-600 dark:text-slate-300">
+                                    Embedded article-level PDF navigation is unreliable in Edge. Use <span class="font-medium">Open Tab</span> for the correct page and source.
+                                </p>
+                            </div>
+                        </div>
+                        <iframe id="contract-pdf-frame" class="w-full flex-1 border-0 bg-white" title="Contract PDF" loading="lazy"></iframe>
+                    </div>
+                </section>
+                <aside id="contract-text-panel" class="hidden lg:flex lg:w-[40%] xl:w-[38%] border-l border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-900 flex-col">
+                    <div class="px-3 py-2 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-gray-900/90 flex items-center justify-between gap-2">
+                        <div id="contract-text-header-copy" class="min-w-0">
+                            <p class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Effective Contract</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 truncate">Materialized markdown reader for the current contract state</p>
+                            <p id="contract-text-provenance" class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 truncate">Text Source: Materialized Effective Text</p>
+                        </div>
+                        <div id="contract-text-source-controls" class="contract-dev-only flex flex-col items-end gap-1">
+                            <div class="flex items-center gap-2">
+                                <label for="contract-text-source-mode-select" class="text-[10px] text-slate-500 dark:text-slate-400">Text Source</label>
+                                <select id="contract-text-source-mode-select" onchange="handleContractTextSourceModeChange(this.value)" class="text-[10px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">
+                                    <option value="effective">Effective</option>
+                                    <option value="base">Previous/Base</option>
+                                </select>
+                                <button id="contract-text-compare-btn" type="button" onclick="toggleContractTextCompare()" class="text-[10px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                    Compare to Base
+                                </button>
+                            </div>
+                            <p id="contract-text-compare-hint" class="text-[10px] text-slate-400 dark:text-slate-500"></p>
+                        </div>
+                    </div>
+                    <div id="contract-text-compare-panel" class="hidden border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-3 py-2">
+                        <div id="contract-text-compare-body"></div>
+                    </div>
+                    <div class="contract-text-shell flex-1 flex flex-col min-h-0">
+                        <div id="article-detail" class="flex-1 overflow-y-auto p-4 text-sm text-slate-700 dark:text-slate-200">
+                            <div class="text-xs text-slate-500 dark:text-slate-400">Select an article, LOU/LOA, or appendix item to load the effective contract text.</div>
+                        </div>
+                    </div>
+                </aside>
+                </div>
+            </div>
+
+            <!-- Chat Tab -->
+            <div id="content-chat" class="h-full relative">
+                <div class="h-full flex flex-col">
+                <!-- Profile Bar - Fixed below header on mobile -->
+                <div id="chat-profile-bar" class="md:relative fixed top-14 md:top-auto left-0 right-0 z-20 bg-slate-100 border-b border-slate-200 px-4 md:px-5 py-2 md:py-3">
+                    <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
+                        <div id="profile-display" class="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
+                            <div>
+                                <p class="text-[9px] md:text-[10px] font-medium text-slate-500 uppercase tracking-wider">Role</p>
+                                <p id="display-classification" class="text-xs md:text-sm font-semibold text-slate-800 truncate max-w-[96px] md:max-w-none">Not set</p>
+                            </div>
+                            <div class="w-px h-6 md:h-8 bg-slate-300"></div>
+                            <div>
+                                <p class="text-[9px] md:text-[10px] font-medium text-slate-500 uppercase tracking-wider">Tenure</p>
+                                <p id="display-tenure" class="text-xs md:text-sm font-semibold text-slate-800 truncate max-w-[64px] md:max-w-none">--</p>
+                            </div>
+                            <div class="w-px h-6 md:h-8 bg-slate-300"></div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-[9px] md:text-[10px] font-medium text-slate-500 uppercase tracking-wider">Workspace</p>
+                                <p id="display-contract" class="text-xs md:text-sm font-semibold text-slate-800 truncate w-full pr-1">Not set</p>
+                            </div>
+                        </div>
+                        <button id="chat-profile-edit-btn" onclick="setActiveTab('settings')" class="text-xs md:text-sm text-ufcw-blue hover:text-blue-700 dark:text-ufcw-gold-light dark:hover:text-ufcw-gold font-medium flex items-center gap-1 transition-colors shrink-0">
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Messages Area - Fixed between profile bar and input on mobile -->
+                <div id="chat-container" class="md:flex-1 fixed md:relative top-[100px] md:top-auto left-0 right-0 bottom-[130px] md:bottom-auto overflow-y-auto p-4 md:p-5 space-y-4 bg-white dark:bg-gray-900">
+                    <!-- Welcome Card -->
+                    <div class="bg-gradient-to-br from-ufcw-blue via-ufcw-blue-mid to-ufcw-blue-light rounded-2xl p-4 md:p-5 text-white fade-up">
+                        <h2 id="chat-welcome-title" class="font-semibold text-base md:text-lg mb-2">Welcome to Karl</h2>
+                        <p id="chat-welcome-copy" class="text-ufcw-gold-light text-xs md:text-sm leading-relaxed mb-3 md:mb-4">
+                            Ask questions about your union documents and follow the supporting citations back to the source.
+                        </p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="focusQuestionInput('What does this agreement say about scheduling?')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">Start With A Question</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Prefill a common question</p>
+                            </button>
+                            <button onclick="focusQuestionInput('', { followUp: true })" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">Follow Up</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Keep going on the current topic</p>
+                            </button>
+                            <button onclick="startNewConversation()" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">New Conversation</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Clear the current chat context</p>
+                            </button>
+                            <button onclick="setActiveTab('settings')" class="quick-action bg-white/10 hover:bg-ufcw-gold/30 backdrop-blur text-left px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-colors group border border-white/10">
+                                <p class="text-xs md:text-sm font-medium">Workspace Settings</p>
+                                <p class="text-[10px] md:text-[11px] text-ufcw-gold-light/70 group-hover:text-white">Theme and account controls</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area - Fixed above bottom nav on mobile -->
+                <div id="chat-input-area" class="md:relative fixed left-0 right-0 bottom-[60px] md:bottom-auto z-20 border-t border-slate-200 bg-white p-3 md:p-4 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+                    <div id="chat-action-bar" class="max-w-4xl mx-auto mb-3 flex flex-wrap items-center gap-2">
+                        <button type="button" onclick="focusQuestionInput('', { followUp: true })" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+                            Continue This Conversation
+                        </button>
+                        <button type="button" onclick="startNewConversation()" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+                            Start New Conversation
+                        </button>
+                    </div>
+                    <form id="chat-form" class="flex gap-2 md:gap-3 max-w-4xl mx-auto">
+                        <input
+                            type="text"
+                            id="user-input"
+                            placeholder="Ask about your union documents..."
+                            class="flex-1 bg-slate-100 border-0 rounded-xl px-3 md:px-4 py-2.5 md:py-3 text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-ufcw-gold focus:bg-white transition-all"
+                            autocomplete="off"
+                        >
+                        <button
+                            type="submit"
+                            id="send-btn"
+                            class="bg-ufcw-blue hover:bg-ufcw-blue-mid text-white px-4 md:px-5 py-2.5 md:py-3 rounded-xl font-medium transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <span class="hidden sm:inline">Send</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="content-settings" class="hidden h-full overflow-y-auto p-6 bg-slate-50">
+                <div class="max-w-lg mx-auto space-y-6">
+                    <h2 class="text-xl font-semibold text-slate-800">Settings</h2>
+
+                    <section class="bg-white rounded-xl border border-slate-200 p-5">
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Account</h3>
+                        <div class="space-y-4">
+                            <div id="member-auth-summary" class="text-sm text-slate-600">Not signed in.</div>
+                            <p class="text-xs leading-relaxed text-slate-500">Use the header session controls to sign in or out. Your workspace access is tied to this union page automatically.</p>
+                        </div>
+                        <a id="member-admin-link" href="/static/modular/admin.html" class="hidden mt-3 inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+                            Open Admin Console
+                        </a>
+                    </section>
+
+                    <!-- Profile Section -->
+                    <section id="profile-settings-section" class="bg-white rounded-xl border border-slate-200 p-5">
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Workspace Access</h3>
+                        <p id="profile-settings-note" class="hidden mb-4 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs leading-relaxed text-blue-900"></p>
+                        <div id="tenant-profile-summary" class="hidden rounded-xl border border-slate-200 bg-slate-50 p-4">
+                            <p class="text-sm font-medium text-slate-800">Your union access is already set by sign-in.</p>
+                            <p class="mt-1 text-sm text-slate-600">This workspace uses the documents for the union tied to your account. You can ask a new question at any time or continue the current conversation in chat.</p>
+                        </div>
+
+                        <div id="legacy-profile-fields" class="space-y-4">
+                            <div id="settings-contract-group">
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5">Contract/Store</label>
+                                <select id="settings-contract" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700">
+                                    <option value="">Select your contract...</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5">Job Classification</label>
+                                <select id="settings-classification" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700">
+                                    <option value="">Select your role...</option>
+                                </select>
+                                <div id="settings-role-clarification" class="hidden mt-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900"></div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5">Employment Type</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="relative">
+                                        <input type="radio" name="settings_employment" value="full_time" class="peer sr-only">
+                                        <div class="border border-slate-200 rounded-lg px-3 py-2 cursor-pointer transition-all peer-checked:border-ufcw-blue peer-checked:bg-blue-50 text-center">
+                                            <p class="font-medium text-slate-700 text-sm">Full-Time</p>
+                                        </div>
+                                    </label>
+                                    <label class="relative">
+                                        <input type="radio" name="settings_employment" value="part_time" class="peer sr-only" checked>
+                                        <div class="border border-slate-200 rounded-lg px-3 py-2 cursor-pointer transition-all peer-checked:border-ufcw-blue peer-checked:bg-blue-50 text-center">
+                                            <p class="font-medium text-slate-700 text-sm">Part-Time</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Hire Date</label>
+                                <div class="relative">
+                                    <input type="hidden" id="settings-hire-date" value="">
+                                    <div id="settings-date-trigger" onclick="toggleDatePicker('settings')" class="date-picker-trigger w-full bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-700 dark:text-slate-200">
+                                        <span id="settings-date-display" class="text-slate-400 dark:text-slate-400">Select month & year</span>
+                                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div id="settings-date-picker" class="date-picker-dropdown hidden">
+                                        <div class="p-3 border-b border-slate-200 dark:border-slate-600">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <button type="button" onclick="changeYear('settings', -1)" class="year-nav-btn text-slate-600 dark:text-slate-300 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                                                </button>
+                                                <span id="settings-year-display" class="text-lg font-semibold text-slate-800 dark:text-slate-200">2026</span>
+                                                <button type="button" onclick="changeYear('settings', 1)" class="year-nav-btn text-slate-600 dark:text-slate-300 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                                </button>
+                                            </div>
+                                            <div id="settings-months" class="grid grid-cols-4 gap-1 text-center"></div>
+                                        </div>
+                                        <div class="p-2 bg-slate-50 dark:bg-slate-800">
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 text-center">Quick select:</p>
+                                            <div class="flex flex-wrap gap-1 justify-center">
+                                                <button type="button" onclick="quickSelect('settings', 0)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">This year</button>
+                                                <button type="button" onclick="quickSelect('settings', 1)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">1 yr ago</button>
+                                                <button type="button" onclick="quickSelect('settings', 5)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">5 yrs ago</button>
+                                                <button type="button" onclick="quickSelect('settings', 10)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">10 yrs ago</button>
+                                                <button type="button" onclick="quickSelect('settings', 20)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">20 yrs ago</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button id="settings-profile-save" onclick="saveSettingsProfile()" class="w-full bg-ufcw-blue hover:bg-blue-800 text-white font-medium py-2.5 px-4 rounded-lg transition-colors">
+                                Save Profile
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Preferences Section -->
+                    <section class="bg-white rounded-xl border border-slate-200 p-5">
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Preferences</h3>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-700">Dark Mode</p>
+                                    <p class="text-xs text-slate-500">Easier on the eyes</p>
+                                </div>
+                                <button id="dark-mode-toggle" onclick="toggleDarkMode()" class="relative w-12 h-7 rounded-full bg-slate-200 transition-colors">
+                                    <span id="dark-mode-dot" class="absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-transform"></span>
+                                </button>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-700">Text Size</p>
+                                    <p class="text-xs text-slate-500">Adjust document viewer text</p>
+                                </div>
+                                <select id="pref-text-size" onchange="savePreference('textSize', this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm">
+                                    <option value="small">Small</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-700">Citation Style</p>
+                                    <p class="text-xs text-slate-500">How citations appear</p>
+                                </div>
+                                <select id="pref-citation-style" onchange="savePreference('citationStyle', this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm">
+                                    <option value="popover" selected>Popover</option>
+                                    <option value="navigate">Navigate to tab</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-700">Answer Tone</p>
+                                    <p class="text-xs text-slate-500">Guide how KARL sounds when the answer is not deterministic</p>
+                                </div>
+                                <select id="pref-response-tone" onchange="savePreference('responseTone', this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm">
+                                    <option value="calm" selected>Calm</option>
+                                    <option value="direct">Direct</option>
+                                    <option value="solidarity">Solidarity</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-700">Answer Detail</p>
+                                    <p class="text-xs text-slate-500">Tune how concise or detailed non-deterministic answers should be</p>
+                                </div>
+                                <select id="pref-response-verbosity" onchange="savePreference('responseVerbosity', this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm">
+                                    <option value="balanced" selected>Balanced</option>
+                                    <option value="concise">Concise</option>
+                                    <option value="detailed">Detailed</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-700">Developer Mode</p>
+                                    <p class="text-xs text-slate-500">Show diagnostic section counts in header</p>
+                                </div>
+                                <button id="developer-mode-toggle" onclick="toggleDeveloperMode()" class="relative w-12 h-7 rounded-full bg-slate-200 transition-colors">
+                                    <span id="developer-mode-dot" class="absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-transform"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="member-tracking-section" class="bg-white rounded-xl border border-slate-200 p-5">
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Tracking And Privacy</h3>
+                        <div class="space-y-4">
+                            <div id="member-tracking-summary" class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">
+                                Loading tracking policy...
+                            </div>
+                            <div>
+                                <label for="member-tracking-select" class="block text-sm font-medium text-slate-700 mb-1.5">Your tracking choice</label>
+                                <select id="member-tracking-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700">
+                                    <option value="system_default">Use workspace default</option>
+                                    <option value="bug_only">Bug and journey tracking only</option>
+                                    <option value="full">Full tracking for bugs and product improvement</option>
+                                    <option value="off">Opt out of optional tracking</option>
+                                </select>
+                            </div>
+                            <p id="member-tracking-note" class="text-xs leading-relaxed text-slate-500">This workspace uses privacy-safe defaults. Security and session records still run separately from optional product analytics.</p>
+                            <div class="flex items-center gap-3">
+                                <button id="member-tracking-save" type="button" class="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition-colors">
+                                    Save Tracking Choice
+                                </button>
+                                <div id="member-tracking-status" class="text-sm text-slate-500"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-white rounded-xl border border-slate-200 p-5">
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">KARL</h3>
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <p class="font-medium text-slate-700">Version</p>
+                                <p id="settings-karl-version" class="text-sm text-slate-600">KARL v0.8.110</p>
+                                <p class="text-xs text-slate-500 mt-1">Read KARL’s update log, governance documents, deployment policy, and release materials in a clean markdown viewer.</p>
+                            </div>
+                            <button onclick="openKarlTab()" class="shrink-0 inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 transition-colors">
+                                Open KARL
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Danger Zone -->
+                    <section class="bg-red-50 rounded-xl border border-red-200 p-5">
+                        <h3 class="text-sm font-semibold text-red-700 uppercase tracking-wider mb-2">Reset Workspace</h3>
+                        <p class="text-sm text-red-600 mb-3">Clear local conversation history and preferences for this browser.</p>
+                        <button onclick="clearSession()" class="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors">
+                            Reset Local Workspace
+                        </button>
+                    </section>
+                </div>
+            </div>
+
+            <div id="content-karl" class="hidden h-full overflow-y-auto p-6 bg-slate-50">
+                <div class="max-w-5xl mx-auto space-y-6">
+                    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">KARL</p>
+                            <h2 class="text-2xl font-semibold text-slate-900">Audit Trail And Governance</h2>
+                            <p id="karl-meta-line" class="text-sm text-slate-600 mt-1">KARL v0.8.110</p>
+                        </div>
+                        <button onclick="setActiveTab('settings')" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+                            Back To Settings
+                        </button>
+                    </div>
+
+                    <section class="rounded-2xl border border-slate-200 bg-white p-4 md:p-5 shadow-sm">
+                        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-slate-700">Document Library</p>
+                                <p class="text-xs text-slate-500">Open KARL’s update log, governance charter, release gates, and other legal materials.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label for="karl-doc-select" class="sr-only">KARL document</label>
+                                <select id="karl-doc-select" onchange="handleKarlDocChange(this.value)" class="min-w-[220px] rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                                    <option value="">Select a document...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <div id="karl-doc-viewer" class="prose prose-slate max-w-none text-sm leading-relaxed text-slate-700">
+                            <p class="text-slate-500">Loading KARL materials...</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="member-auth-modal" class="hidden fixed inset-0 z-[80] bg-slate-950/50 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-md items-center justify-center">
+            <div class="w-full rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p id="member-auth-modal-eyebrow" class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sign In</p>
+                        <h2 id="member-auth-modal-title" class="mt-2 text-2xl font-semibold text-slate-900">Access your union workspace</h2>
+                        <p id="member-auth-modal-copy" class="mt-2 text-sm leading-6 text-slate-600">Use your union-issued account to chat with uploaded documents and open supporting sources.</p>
+                    </div>
+                    <button id="member-auth-modal-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <div class="mt-5 flex items-center gap-2 rounded-full bg-slate-100 p-1">
+                    <button id="member-auth-mode-signin" type="button" class="flex-1 rounded-full bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm">Sign In</button>
+                    <button id="member-auth-mode-register" type="button" class="flex-1 rounded-full px-3 py-2 text-sm font-medium text-slate-600">Create Account</button>
+                </div>
+                <form id="member-auth-form" class="mt-6 space-y-4">
+                    <div id="member-auth-full-name-group" class="hidden">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
+                        <input id="member-auth-full-name" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700" placeholder="Full name">
+                    </div>
+                    <div id="member-auth-email-group" class="hidden">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+                        <input id="member-auth-email" type="email" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700" placeholder="Email">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Username</label>
+                        <input id="member-auth-username" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700" placeholder="Username">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                        <div class="flex gap-2">
+                            <input id="member-auth-password" type="password" class="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700" placeholder="Password">
+                            <button id="member-auth-password-toggle" type="button" class="rounded-lg border border-slate-300 px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors">Show</button>
+                        </div>
+                    </div>
+                    <div id="member-auth-union-group">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Union</label>
+                        <input id="member-auth-union" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-700" placeholder="Union">
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="member-auth-submit" type="submit" class="flex-1 rounded-lg bg-ufcw-blue px-4 py-2.5 text-sm font-medium text-white hover:bg-ufcw-blue-mid transition-colors">Sign In</button>
+                        <button id="member-auth-modal-cancel" type="button" class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="/static/modular/src/app.js"></script>
+</body>
+</html>

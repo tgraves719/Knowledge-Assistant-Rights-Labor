@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        KARL_REQ_PROFILE: ${KARL_REQ_PROFILE:-backend}
+    working_dir: /workspace
+    command: python -m uvicorn backend.api:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    environment:
+      PYTHONPATH: /workspace
+      KARL_HYBRID_VECTOR_WEIGHT: ${KARL_HYBRID_VECTOR_WEIGHT:-1.0}
+      KARL_HYBRID_KEYWORD_WEIGHT: ${KARL_HYBRID_KEYWORD_WEIGHT:-0.0}
+    volumes:
+      - ./:/workspace
+      - karl_pip_cache:/root/.cache/pip
+      - karl_hf_cache:/root/.cache/huggingface
+    stdin_open: true
+    tty: true
+
+volumes:
+  karl_pip_cache:
+  karl_hf_cache:

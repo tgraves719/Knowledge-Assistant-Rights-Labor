@@ -1,0 +1,149 @@
+{
+  "contract_id": "local7_safeway_pueblo_meat_2022",
+  "generated_at_utc": "2026-03-09T10:08:17.935283+00:00",
+  "operation_count": 7,
+  "patch_id": "draft_albertsons_safeway_moa_2025_07_05_local7_safeway_pueblo_meat_2022_2025_07_05",
+  "quality_flag_counts": {
+    "contains_ellipsis": 3,
+    "missing_section_header": 1,
+    "too_short": 2
+  },
+  "selected_candidate_count": 30,
+  "skipped": [
+    {
+      "article_num": 7,
+      "quality_flags": [
+        "contains_ellipsis",
+        "too_short"
+      ],
+      "reason": "low_quality_candidate",
+      "section_num": 15
+    },
+    {
+      "article_num": 8,
+      "reason": "target_not_found_in_base",
+      "section_num": 20
+    },
+    {
+      "article_num": 9,
+      "reason": "target_not_found_in_base",
+      "section_num": 20
+    },
+    {
+      "article_num": 10,
+      "reason": "target_not_found_in_base",
+      "section_num": 20
+    },
+    {
+      "article_num": 10,
+      "reason": "target_not_found_in_base",
+      "section_num": 21
+    },
+    {
+      "article_num": 10,
+      "reason": "target_not_found_in_base",
+      "section_num": 22
+    },
+    {
+      "article_num": 12,
+      "reason": "target_not_found_in_base",
+      "section_num": 28
+    },
+    {
+      "article_num": 13,
+      "reason": "target_not_found_in_base",
+      "section_num": 30
+    },
+    {
+      "article_num": 15,
+      "reason": "target_not_found_in_base",
+      "section_num": 34
+    },
+    {
+      "article_num": 17,
+      "reason": "ambiguous_target_multiple_base_sections",
+      "section_num": 49
+    },
+    {
+      "article_num": 17,
+      "reason": "target_not_found_in_base",
+      "section_num": 52
+    },
+    {
+      "article_num": 27,
+      "quality_flags": [
+        "contains_ellipsis"
+      ],
+      "reason": "low_quality_candidate",
+      "section_num": 68
+    },
+    {
+      "article_num": 28,
+      "quality_flags": [
+        "too_short",
+        "missing_section_header"
+      ],
+      "reason": "low_quality_candidate",
+      "section_num": 85
+    },
+    {
+      "article_num": 29,
+      "reason": "target_not_found_in_base",
+      "section_num": 84
+    },
+    {
+      "article_num": 36,
+      "reason": "target_not_found_in_base",
+      "section_num": 108
+    },
+    {
+      "article_num": 40,
+      "reason": "target_not_found_in_base",
+      "section_num": 116
+    },
+    {
+      "article_num": 42,
+      "reason": "target_not_found_in_base",
+      "section_num": 118
+    },
+    {
+      "article_num": 46,
+      "reason": "target_not_found_in_base",
+      "section_num": 20
+    },
+    {
+      "article_num": 46,
+      "quality_flags": [
+        "contains_ellipsis"
+      ],
+      "reason": "low_quality_candidate",
+      "section_num": 134
+    },
+    {
+      "article_num": 52,
+      "reason": "target_not_found_in_base",
+      "section_num": 158
+    },
+    {
+      "article_num": 57,
+      "reason": "target_not_found_in_base",
+      "section_num": 71
+    },
+    {
+      "article_num": 57,
+      "reason": "target_not_found_in_base",
+      "section_num": 126
+    },
+    {
+      "article_num": 57,
+      "reason": "target_not_found_in_base",
+      "section_num": 174
+    }
+  ],
+  "skipped_count": 23,
+  "skipped_reason_counts": {
+    "ambiguous_target_multiple_base_sections": 1,
+    "low_quality_candidate": 4,
+    "target_not_found_in_base": 18
+  }
+}

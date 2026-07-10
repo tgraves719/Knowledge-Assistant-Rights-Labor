@@ -1,0 +1,103 @@
+{
+  "schema_version": "unanswerable_multi_contract_test_v1",
+  "description": "Deterministic multi-contract unanswerable/abstention benchmark",
+  "purpose": "Ensure KARL preserves uncertainty for out-of-scope prompts and does not fabricate contract answers under tenant-scoped retrieval.",
+  "test_cases": [
+    {
+      "id": "UN-KG-01",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "scenario": "fictional_benefit",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "Do we get a blockchain equipment stipend each quarter?"
+    },
+    {
+      "id": "UN-KG-02",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "scenario": "fictional_benefit",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "What is the ZX91 cryptographic token allowance?"
+    },
+    {
+      "id": "UN-KG-03",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "scenario": "external_policy",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "What is the IRS Form 8938 reporting threshold for 2026?"
+    },
+    {
+      "id": "UN-KG-04",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "scenario": "cross_contract_reference",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "In the Safeway Pueblo clerks agreement, what is the Aurora kiosk stipend code?"
+    },
+    {
+      "id": "UN-CL-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "scenario": "fictional_benefit",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "What is the monthly drone commute subsidy amount?"
+    },
+    {
+      "id": "UN-CL-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "scenario": "fictional_benefit",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "Do we have a quantum scanner reimbursement code QSR-44?"
+    },
+    {
+      "id": "UN-CL-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "scenario": "external_policy",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "What was yesterday's S and P 500 closing value?"
+    },
+    {
+      "id": "UN-CL-04",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "scenario": "cross_contract_reference",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "In the King Soopers Loveland meat agreement, what is the Glacier overtime exception code?"
+    },
+    {
+      "id": "UN-ME-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "scenario": "fictional_benefit",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "What is the Neptune warehouse transit voucher amount?"
+    },
+    {
+      "id": "UN-ME-02",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "scenario": "fictional_benefit",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "Do we receive a holographic apron maintenance stipend?"
+    },
+    {
+      "id": "UN-ME-03",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "scenario": "external_policy",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "What is the Federal Register publication number for today's labor bulletin?"
+    },
+    {
+      "id": "UN-ME-04",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "scenario": "cross_contract_reference",
+      "expected_behavior": "uncertain",
+      "expected_escalation": false,
+      "question": "In the King Soopers contract, what is the Summit pension bridge rider amount?"
+    }
+  ]
+}

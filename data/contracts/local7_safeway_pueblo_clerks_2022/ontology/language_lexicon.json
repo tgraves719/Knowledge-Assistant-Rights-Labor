@@ -1,0 +1,1648 @@
+{
+  "schema_version": "language_lexicon_v1",
+  "generated_at_utc": "2026-03-08T21:43:31.372495+00:00",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "region_id": "region-pueblo",
+  "union_local_id": "UFCW Local 7",
+  "employer": "SAFEWAY INC.",
+  "entries": [
+    {
+      "canonical": "401k plan",
+      "aliases": [
+        "401k plan"
+      ]
+    },
+    {
+      "canonical": "bargaining unit work jurisdiction",
+      "aliases": [
+        "bargaining unit work jurisdiction",
+        "unit work",
+        "unit work jurisdiction",
+        "work jurisdiction"
+      ]
+    },
+    {
+      "canonical": "bereavement leave",
+      "aliases": [
+        "bereavement leave",
+        "days off for funeral",
+        "death in family",
+        "died",
+        "funeral",
+        "funeral leave"
+      ]
+    },
+    {
+      "canonical": "breaks",
+      "aliases": [
+        "break",
+        "breaks",
+        "lunch break",
+        "meal period",
+        "relief period",
+        "rest break"
+      ]
+    },
+    {
+      "canonical": "bulletin board",
+      "aliases": [
+        "bulletin board"
+      ]
+    },
+    {
+      "canonical": "check off",
+      "aliases": [
+        "check off"
+      ]
+    },
+    {
+      "canonical": "child care discount programs",
+      "aliases": [
+        "care discount",
+        "care discount programs",
+        "child care",
+        "child care discount",
+        "child care discount programs",
+        "discount programs"
+      ]
+    },
+    {
+      "canonical": "definitions of classifications",
+      "aliases": [
+        "definitions classifications",
+        "definitions of classifications"
+      ]
+    },
+    {
+      "canonical": "discharge and no discrimination",
+      "aliases": [
+        "discharge and no discrimination",
+        "discharge discrimination"
+      ]
+    },
+    {
+      "canonical": "discipline",
+      "aliases": [
+        "discharge",
+        "discipline",
+        "fired",
+        "termination",
+        "warning",
+        "write up",
+        "written up"
+      ]
+    },
+    {
+      "canonical": "dispute procedure",
+      "aliases": [
+        "dispute procedure"
+      ]
+    },
+    {
+      "canonical": "entire agreement",
+      "aliases": [
+        "entire agreement"
+      ]
+    },
+    {
+      "canonical": "grievance",
+      "aliases": [
+        "appeal",
+        "arbitration",
+        "dispute",
+        "grievance"
+      ]
+    },
+    {
+      "canonical": "health and welfare coverage",
+      "aliases": [
+        "health and welfare coverage",
+        "health welfare",
+        "health welfare coverage",
+        "welfare coverage"
+      ]
+    },
+    {
+      "canonical": "health_benefits",
+      "aliases": [
+        "health and welfare",
+        "health benefits",
+        "insurance",
+        "medical"
+      ]
+    },
+    {
+      "canonical": "holidays and holiday pay",
+      "aliases": [
+        "holiday pay",
+        "holidays and holiday pay",
+        "holidays holiday",
+        "holidays holiday pay"
+      ]
+    },
+    {
+      "canonical": "injury on job",
+      "aliases": [
+        "injury job",
+        "injury on job"
+      ]
+    },
+    {
+      "canonical": "jury duty",
+      "aliases": [
+        "jury duty"
+      ]
+    },
+    {
+      "canonical": "layoff",
+      "aliases": [
+        "bumping",
+        "displacement",
+        "laid off",
+        "layoff"
+      ]
+    },
+    {
+      "canonical": "layoffs",
+      "aliases": [
+        "layoffs"
+      ]
+    },
+    {
+      "canonical": "leaves of absence",
+      "aliases": [
+        "leaves absence",
+        "leaves of absence"
+      ]
+    },
+    {
+      "canonical": "lie detector tests",
+      "aliases": [
+        "detector tests",
+        "lie detector",
+        "lie detector tests"
+      ]
+    },
+    {
+      "canonical": "lunch breaks",
+      "aliases": [
+        "break between shifts",
+        "clopen",
+        "close and open",
+        "hours between shifts",
+        "lunch breaks",
+        "turnaround shift"
+      ]
+    },
+    {
+      "canonical": "minimum weekly schedule",
+      "aliases": [
+        "minimum weekly",
+        "minimum weekly schedule",
+        "weekly schedule"
+      ]
+    },
+    {
+      "canonical": "new employees transferred employees promoted or demoted",
+      "aliases": [
+        "new employees transferred employees promoted or demoted",
+        "new transferred",
+        "new transferred promoted",
+        "promoted demoted",
+        "transferred promoted",
+        "transferred promoted demoted"
+      ]
+    },
+    {
+      "canonical": "new store language",
+      "aliases": [
+        "new store",
+        "new store language",
+        "store language"
+      ]
+    },
+    {
+      "canonical": "night premiums",
+      "aliases": [
+        "extra money at night",
+        "graveyard pay",
+        "graveyard shift",
+        "night differential",
+        "night premium",
+        "night premiums",
+        "night shift pay"
+      ]
+    },
+    {
+      "canonical": "no free work",
+      "aliases": [
+        "free work",
+        "no free work"
+      ]
+    },
+    {
+      "canonical": "no reduction in pay",
+      "aliases": [
+        "no reduction in pay",
+        "reduction pay"
+      ]
+    },
+    {
+      "canonical": "no strike or lockout",
+      "aliases": [
+        "no strike or lockout",
+        "strike lockout"
+      ]
+    },
+    {
+      "canonical": "non duplication of benefits",
+      "aliases": [
+        "duplication benefits",
+        "non duplication",
+        "non duplication benefits",
+        "non duplication of benefits"
+      ]
+    },
+    {
+      "canonical": "overtime",
+      "aliases": [
+        "extra hours",
+        "ot",
+        "overtime",
+        "time and a half"
+      ]
+    },
+    {
+      "canonical": "pension",
+      "aliases": [
+        "pension",
+        "retirement"
+      ]
+    },
+    {
+      "canonical": "personal_holiday",
+      "aliases": [
+        "float day",
+        "float days",
+        "floater",
+        "personal holiday",
+        "personal holidays"
+      ]
+    },
+    {
+      "canonical": "pharmacy technicians",
+      "aliases": [
+        "pharmacy technicians"
+      ]
+    },
+    {
+      "canonical": "prior experience",
+      "aliases": [
+        "prior experience"
+      ]
+    },
+    {
+      "canonical": "probationary period",
+      "aliases": [
+        "probationary period"
+      ]
+    },
+    {
+      "canonical": "prodigy type shopping",
+      "aliases": [
+        "prodigy type",
+        "prodigy type shopping",
+        "type shopping"
+      ]
+    },
+    {
+      "canonical": "rates of pay",
+      "aliases": [
+        "rates of pay",
+        "rates pay"
+      ]
+    },
+    {
+      "canonical": "recognition and exclusions",
+      "aliases": [
+        "recognition and exclusions",
+        "recognition exclusions"
+      ]
+    },
+    {
+      "canonical": "relief periods",
+      "aliases": [
+        "break between shifts",
+        "clopen",
+        "close and open",
+        "hours between shifts",
+        "relief periods",
+        "turnaround shift"
+      ]
+    },
+    {
+      "canonical": "reporting pay",
+      "aliases": [
+        "reporting pay"
+      ]
+    },
+    {
+      "canonical": "rights of management",
+      "aliases": [
+        "rights management",
+        "rights of management"
+      ]
+    },
+    {
+      "canonical": "safety",
+      "aliases": [
+        "accident",
+        "injury",
+        "safety",
+        "unsafe"
+      ]
+    },
+    {
+      "canonical": "saving clause",
+      "aliases": [
+        "saving clause"
+      ]
+    },
+    {
+      "canonical": "scheduling",
+      "aliases": [
+        "hours",
+        "posting",
+        "schedule",
+        "scheduling",
+        "shift"
+      ]
+    },
+    {
+      "canonical": "scheduling and assignment of hours",
+      "aliases": [
+        "assignment hours",
+        "scheduling and assignment of hours",
+        "scheduling assignment",
+        "scheduling assignment hours"
+      ]
+    },
+    {
+      "canonical": "seniority",
+      "aliases": [
+        "seniority",
+        "service time",
+        "years of service"
+      ]
+    },
+    {
+      "canonical": "sick leave",
+      "aliases": [
+        "sick leave"
+      ]
+    },
+    {
+      "canonical": "sick_leave",
+      "aliases": [
+        "call in sick",
+        "sick day",
+        "sick leave",
+        "sick pay"
+      ]
+    },
+    {
+      "canonical": "split shifts",
+      "aliases": [
+        "split shifts"
+      ]
+    },
+    {
+      "canonical": "store closing",
+      "aliases": [
+        "severance",
+        "severance pay",
+        "store closes",
+        "store closing",
+        "store is shutting down",
+        "store shutting down"
+      ]
+    },
+    {
+      "canonical": "store meetings",
+      "aliases": [
+        "store meetings"
+      ]
+    },
+    {
+      "canonical": "sunday premium",
+      "aliases": [
+        "extra pay sunday",
+        "sunday differential",
+        "sunday pay",
+        "sunday premium",
+        "sundays",
+        "working sundays"
+      ]
+    },
+    {
+      "canonical": "technological changes",
+      "aliases": [
+        "technological changes"
+      ]
+    },
+    {
+      "canonical": "term of agreement",
+      "aliases": [
+        "contract term",
+        "effective date",
+        "end date",
+        "expiration date",
+        "start and end",
+        "start date",
+        "term of agreement",
+        "when does this contract end"
+      ]
+    },
+    {
+      "canonical": "time cards",
+      "aliases": [
+        "time cards"
+      ]
+    },
+    {
+      "canonical": "transfer from store to store",
+      "aliases": [
+        "store store",
+        "transfer from store to store",
+        "transfer store",
+        "transfer store store"
+      ]
+    },
+    {
+      "canonical": "travel pay",
+      "aliases": [
+        "travel pay"
+      ]
+    },
+    {
+      "canonical": "uniforms equipment",
+      "aliases": [
+        "uniforms equipment"
+      ]
+    },
+    {
+      "canonical": "union representation visitation",
+      "aliases": [
+        "representation visitation",
+        "union representation visitation"
+      ]
+    },
+    {
+      "canonical": "union security and conditions",
+      "aliases": [
+        "security conditions",
+        "union security and conditions"
+      ]
+    },
+    {
+      "canonical": "union steward",
+      "aliases": [
+        "union steward"
+      ]
+    },
+    {
+      "canonical": "union store cards",
+      "aliases": [
+        "store cards",
+        "union store cards"
+      ]
+    },
+    {
+      "canonical": "unscheduled overtime",
+      "aliases": [
+        "unscheduled overtime"
+      ]
+    },
+    {
+      "canonical": "vacation",
+      "aliases": [
+        "time off",
+        "vacation",
+        "vacation pay",
+        "vacation time"
+      ]
+    },
+    {
+      "canonical": "vacations",
+      "aliases": [
+        "vacations"
+      ]
+    },
+    {
+      "canonical": "wages",
+      "aliases": [
+        "hourly rate",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "wage",
+        "wages"
+      ]
+    }
+  ],
+  "alias_to_canonical": {
+    "401k plan": "401k plan",
+    "bargaining unit work jurisdiction": "bargaining unit work jurisdiction",
+    "unit work": "bargaining unit work jurisdiction",
+    "unit work jurisdiction": "bargaining unit work jurisdiction",
+    "work jurisdiction": "bargaining unit work jurisdiction",
+    "bereavement leave": "bereavement leave",
+    "days off for funeral": "bereavement leave",
+    "death in family": "bereavement leave",
+    "died": "bereavement leave",
+    "funeral": "bereavement leave",
+    "funeral leave": "bereavement leave",
+    "break": "breaks",
+    "breaks": "breaks",
+    "lunch break": "breaks",
+    "meal period": "breaks",
+    "relief period": "breaks",
+    "rest break": "breaks",
+    "bulletin board": "bulletin board",
+    "check off": "check off",
+    "care discount": "child care discount programs",
+    "care discount programs": "child care discount programs",
+    "child care": "child care discount programs",
+    "child care discount": "child care discount programs",
+    "child care discount programs": "child care discount programs",
+    "discount programs": "child care discount programs",
+    "definitions classifications": "definitions of classifications",
+    "definitions of classifications": "definitions of classifications",
+    "discharge and no discrimination": "discharge and no discrimination",
+    "discharge discrimination": "discharge and no discrimination",
+    "discharge": "discipline",
+    "discipline": "discipline",
+    "fired": "discipline",
+    "termination": "discipline",
+    "warning": "discipline",
+    "write up": "discipline",
+    "written up": "discipline",
+    "dispute procedure": "dispute procedure",
+    "entire agreement": "entire agreement",
+    "appeal": "grievance",
+    "arbitration": "grievance",
+    "dispute": "grievance",
+    "grievance": "grievance",
+    "health and welfare coverage": "health and welfare coverage",
+    "health welfare": "health and welfare coverage",
+    "health welfare coverage": "health and welfare coverage",
+    "welfare coverage": "health and welfare coverage",
+    "health and welfare": "health benefits",
+    "health benefits": "health benefits",
+    "insurance": "health benefits",
+    "medical": "health benefits",
+    "holiday pay": "holidays and holiday pay",
+    "holidays and holiday pay": "holidays and holiday pay",
+    "holidays holiday": "holidays and holiday pay",
+    "holidays holiday pay": "holidays and holiday pay",
+    "injury job": "injury on job",
+    "injury on job": "injury on job",
+    "jury duty": "jury duty",
+    "bumping": "layoff",
+    "displacement": "layoff",
+    "laid off": "layoff",
+    "layoff": "layoff",
+    "layoffs": "layoffs",
+    "leaves absence": "leaves of absence",
+    "leaves of absence": "leaves of absence",
+    "detector tests": "lie detector tests",
+    "lie detector": "lie detector tests",
+    "lie detector tests": "lie detector tests",
+    "break between shifts": "relief periods",
+    "clopen": "relief periods",
+    "close and open": "relief periods",
+    "hours between shifts": "relief periods",
+    "lunch breaks": "lunch breaks",
+    "turnaround shift": "relief periods",
+    "minimum weekly": "minimum weekly schedule",
+    "minimum weekly schedule": "minimum weekly schedule",
+    "weekly schedule": "minimum weekly schedule",
+    "new employees transferred employees promoted or demoted": "new employees transferred employees promoted or demoted",
+    "new transferred": "new employees transferred employees promoted or demoted",
+    "new transferred promoted": "new employees transferred employees promoted or demoted",
+    "promoted demoted": "new employees transferred employees promoted or demoted",
+    "transferred promoted": "new employees transferred employees promoted or demoted",
+    "transferred promoted demoted": "new employees transferred employees promoted or demoted",
+    "new store": "new store language",
+    "new store language": "new store language",
+    "store language": "new store language",
+    "extra money at night": "night premiums",
+    "graveyard pay": "night premiums",
+    "graveyard shift": "night premiums",
+    "night differential": "night premiums",
+    "night premium": "night premiums",
+    "night premiums": "night premiums",
+    "night shift pay": "night premiums",
+    "free work": "no free work",
+    "no free work": "no free work",
+    "no reduction in pay": "no reduction in pay",
+    "reduction pay": "no reduction in pay",
+    "no strike or lockout": "no strike or lockout",
+    "strike lockout": "no strike or lockout",
+    "duplication benefits": "non duplication of benefits",
+    "non duplication": "non duplication of benefits",
+    "non duplication benefits": "non duplication of benefits",
+    "non duplication of benefits": "non duplication of benefits",
+    "extra hours": "overtime",
+    "ot": "overtime",
+    "overtime": "overtime",
+    "time and a half": "overtime",
+    "pension": "pension",
+    "retirement": "pension",
+    "float day": "personal holiday",
+    "float days": "personal holiday",
+    "floater": "personal holiday",
+    "personal holiday": "personal holiday",
+    "personal holidays": "personal holiday",
+    "pharmacy technicians": "pharmacy technicians",
+    "prior experience": "prior experience",
+    "probationary period": "probationary period",
+    "prodigy type": "prodigy type shopping",
+    "prodigy type shopping": "prodigy type shopping",
+    "type shopping": "prodigy type shopping",
+    "rates of pay": "rates of pay",
+    "rates pay": "rates of pay",
+    "recognition and exclusions": "recognition and exclusions",
+    "recognition exclusions": "recognition and exclusions",
+    "relief periods": "relief periods",
+    "reporting pay": "reporting pay",
+    "rights management": "rights of management",
+    "rights of management": "rights of management",
+    "accident": "safety",
+    "injury": "safety",
+    "safety": "safety",
+    "unsafe": "safety",
+    "saving clause": "saving clause",
+    "hours": "scheduling",
+    "posting": "scheduling",
+    "schedule": "scheduling",
+    "scheduling": "scheduling",
+    "shift": "scheduling",
+    "assignment hours": "scheduling and assignment of hours",
+    "scheduling and assignment of hours": "scheduling and assignment of hours",
+    "scheduling assignment": "scheduling and assignment of hours",
+    "scheduling assignment hours": "scheduling and assignment of hours",
+    "seniority": "seniority",
+    "service time": "seniority",
+    "years of service": "seniority",
+    "sick leave": "sick leave",
+    "call in sick": "sick leave",
+    "sick day": "sick leave",
+    "sick pay": "sick leave",
+    "split shifts": "split shifts",
+    "severance": "store closing",
+    "severance pay": "store closing",
+    "store closes": "store closing",
+    "store closing": "store closing",
+    "store is shutting down": "store closing",
+    "store shutting down": "store closing",
+    "store meetings": "store meetings",
+    "extra pay sunday": "sunday premium",
+    "sunday differential": "sunday premium",
+    "sunday pay": "sunday premium",
+    "sunday premium": "sunday premium",
+    "sundays": "sunday premium",
+    "working sundays": "sunday premium",
+    "technological changes": "technological changes",
+    "contract term": "term of agreement",
+    "effective date": "term of agreement",
+    "end date": "term of agreement",
+    "expiration date": "term of agreement",
+    "start and end": "term of agreement",
+    "start date": "term of agreement",
+    "term of agreement": "term of agreement",
+    "when does this contract end": "term of agreement",
+    "time cards": "time cards",
+    "store store": "transfer from store to store",
+    "transfer from store to store": "transfer from store to store",
+    "transfer store": "transfer from store to store",
+    "transfer store store": "transfer from store to store",
+    "travel pay": "travel pay",
+    "uniforms equipment": "uniforms equipment",
+    "representation visitation": "union representation visitation",
+    "union representation visitation": "union representation visitation",
+    "security conditions": "union security and conditions",
+    "union security and conditions": "union security and conditions",
+    "union steward": "union steward",
+    "store cards": "union store cards",
+    "union store cards": "union store cards",
+    "unscheduled overtime": "unscheduled overtime",
+    "time off": "vacation",
+    "vacation": "vacation",
+    "vacation pay": "vacation",
+    "vacation time": "vacation",
+    "vacations": "vacations",
+    "hourly rate": "wages",
+    "pay": "wages",
+    "pay rate": "wages",
+    "rate of pay": "wages",
+    "wage": "wages",
+    "wages": "wages"
+  },
+  "article_aliases": {
+    "1": [
+      "recognition exclusions"
+    ],
+    "2": [
+      "bumping",
+      "displacement",
+      "hours",
+      "laid off",
+      "layoff",
+      "schedule",
+      "scheduling",
+      "seniority",
+      "service time",
+      "shift",
+      "unit work",
+      "unit work jurisdiction",
+      "work jurisdiction",
+      "years of service"
+    ],
+    "3": [
+      "discharge",
+      "discipline",
+      "fired",
+      "security conditions",
+      "termination",
+      "warning",
+      "write up",
+      "written up"
+    ],
+    "4": [
+      "check off",
+      "hourly rate",
+      "pay",
+      "pay rate",
+      "rate of pay",
+      "wage",
+      "wages"
+    ],
+    "5": [
+      "hourly rate",
+      "new transferred",
+      "new transferred promoted",
+      "pay",
+      "pay rate",
+      "promoted demoted",
+      "rate of pay",
+      "transferred promoted",
+      "transferred promoted demoted",
+      "wage",
+      "wages"
+    ],
+    "6": [
+      "discharge",
+      "discipline",
+      "fired",
+      "rights management",
+      "termination",
+      "warning",
+      "write up",
+      "written up"
+    ],
+    "7": [
+      "cake decorator",
+      "courtesy clerk",
+      "definitions classifications",
+      "hourly rate",
+      "hours",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "seniority",
+      "service time",
+      "shift",
+      "wage",
+      "wages",
+      "years of service"
+    ],
+    "8": [
+      "hourly rate",
+      "hours",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "rates pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "wage",
+      "wages"
+    ],
+    "9": [
+      "appeal",
+      "arbitration",
+      "discharge",
+      "discipline",
+      "dispute",
+      "fired",
+      "grievance",
+      "prior experience",
+      "schedule",
+      "scheduling",
+      "termination",
+      "warning",
+      "write up",
+      "written up"
+    ],
+    "10": [
+      "accident",
+      "assignment hours",
+      "bumping",
+      "courtesy clerk",
+      "discharge",
+      "discipline",
+      "displacement",
+      "extra hours",
+      "fired",
+      "head clerk",
+      "hourly rate",
+      "hours",
+      "injury",
+      "laid off",
+      "layoff",
+      "ot",
+      "overtime",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "safety",
+      "schedule",
+      "scheduling",
+      "scheduling assignment",
+      "scheduling assignment hours",
+      "seniority",
+      "service time",
+      "shift",
+      "termination",
+      "time and a half",
+      "time off",
+      "unsafe",
+      "vacation",
+      "vacation pay",
+      "vacation time",
+      "wage",
+      "wages",
+      "warning",
+      "write up",
+      "written up",
+      "years of service"
+    ],
+    "11": [
+      "hourly rate",
+      "pay",
+      "pay rate",
+      "rate of pay",
+      "reduction pay",
+      "wage",
+      "wages"
+    ],
+    "12": [
+      "extra hours",
+      "hourly rate",
+      "hours",
+      "ot",
+      "overtime",
+      "pay",
+      "pay rate",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "time and a half",
+      "wage",
+      "wages"
+    ],
+    "13": [
+      "hourly rate",
+      "hours",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "sunday premium",
+      "wage",
+      "wages"
+    ],
+    "14": [
+      "hourly rate",
+      "hours",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "travel pay",
+      "wage",
+      "wages"
+    ],
+    "15": [
+      "extra hours",
+      "hourly rate",
+      "night premiums",
+      "ot",
+      "overtime",
+      "pay",
+      "pay rate",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "time and a half",
+      "wage",
+      "wages"
+    ],
+    "16": [
+      "call in sick",
+      "extra hours",
+      "float day",
+      "float days",
+      "floater",
+      "holiday pay",
+      "holidays holiday",
+      "holidays holiday pay",
+      "hourly rate",
+      "hours",
+      "ot",
+      "overtime",
+      "pay",
+      "pay rate",
+      "personal holiday",
+      "personal holidays",
+      "posting",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "sick day",
+      "sick leave",
+      "sick pay",
+      "time and a half",
+      "time off",
+      "vacation",
+      "vacation pay",
+      "vacation time",
+      "wage",
+      "wages"
+    ],
+    "17": [
+      "appeal",
+      "arbitration",
+      "call in sick",
+      "discipline",
+      "dispute",
+      "grievance",
+      "health and welfare",
+      "health benefits",
+      "hourly rate",
+      "hours",
+      "insurance",
+      "medical",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "seniority",
+      "service time",
+      "shift",
+      "sick day",
+      "sick leave",
+      "sick pay",
+      "time off",
+      "vacation",
+      "vacation pay",
+      "vacation time",
+      "wage",
+      "wages",
+      "warning",
+      "write up",
+      "written up",
+      "years of service"
+    ],
+    "18": [
+      "hours",
+      "minimum weekly",
+      "minimum weekly schedule",
+      "posting",
+      "schedule",
+      "scheduling",
+      "shift",
+      "weekly schedule"
+    ],
+    "19": [
+      "discharge",
+      "discipline",
+      "fired",
+      "free work",
+      "schedule",
+      "scheduling",
+      "termination",
+      "time off",
+      "vacation",
+      "vacation pay",
+      "vacation time",
+      "warning",
+      "write up",
+      "written up"
+    ],
+    "20": [
+      "discharge",
+      "discipline",
+      "fired",
+      "termination",
+      "time cards",
+      "warning",
+      "write up",
+      "written up"
+    ],
+    "21": [
+      "break",
+      "breaks",
+      "lunch break",
+      "meal period",
+      "relief period",
+      "rest break",
+      "split shifts"
+    ],
+    "22": [
+      "hourly rate",
+      "hours",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "store meetings",
+      "wage",
+      "wages"
+    ],
+    "23": [
+      "courtesy clerk",
+      "hourly rate",
+      "hours",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "reporting pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "wage",
+      "wages"
+    ],
+    "24": [
+      "break",
+      "breaks",
+      "hours",
+      "lunch break",
+      "lunch breaks",
+      "meal period",
+      "posting",
+      "relief period",
+      "rest break",
+      "schedule",
+      "scheduling",
+      "shift"
+    ],
+    "25": [
+      "break",
+      "breaks",
+      "hours",
+      "lunch break",
+      "meal period",
+      "posting",
+      "relief period",
+      "relief periods",
+      "rest break",
+      "schedule",
+      "scheduling",
+      "shift"
+    ],
+    "26": [
+      "appeal",
+      "arbitration",
+      "discharge",
+      "discipline",
+      "dispute",
+      "fired",
+      "grievance",
+      "probationary period",
+      "termination",
+      "warning",
+      "write up",
+      "written up"
+    ],
+    "27": [
+      "accident",
+      "all purpose clerk",
+      "discharge",
+      "discipline",
+      "extra hours",
+      "fired",
+      "hours",
+      "injury",
+      "ot",
+      "overtime",
+      "posting",
+      "safety",
+      "schedule",
+      "scheduling",
+      "seniority",
+      "service time",
+      "shift",
+      "termination",
+      "time and a half",
+      "time off",
+      "unsafe",
+      "vacation",
+      "vacation pay",
+      "vacation time",
+      "warning",
+      "write up",
+      "written up",
+      "years of service"
+    ],
+    "28": [
+      "extra hours",
+      "hours",
+      "ot",
+      "overtime",
+      "posting",
+      "schedule",
+      "scheduling",
+      "seniority",
+      "service time",
+      "shift",
+      "time and a half",
+      "unscheduled overtime",
+      "years of service"
+    ],
+    "29": [
+      "all purpose clerk",
+      "appeal",
+      "arbitration",
+      "bakery manager",
+      "bumping",
+      "cake decorator",
+      "courtesy clerk",
+      "displacement",
+      "dispute",
+      "grievance",
+      "head clerk",
+      "health benefits",
+      "hourly rate",
+      "hours",
+      "laid off",
+      "layoff",
+      "pay",
+      "pay rate",
+      "posting",
+      "produce manager",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "seniority",
+      "service time",
+      "shift",
+      "wage",
+      "wages",
+      "years of service"
+    ],
+    "30": [
+      "store store",
+      "transfer store",
+      "transfer store store"
+    ],
+    "31": [
+      "bumping",
+      "displacement",
+      "laid off",
+      "layoff",
+      "new store",
+      "new store language",
+      "store language"
+    ],
+    "32": [
+      "health and welfare",
+      "health benefits",
+      "hourly rate",
+      "hours",
+      "injury",
+      "insurance",
+      "leaves absence",
+      "medical",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "safety",
+      "schedule",
+      "scheduling",
+      "seniority",
+      "service time",
+      "shift",
+      "unsafe",
+      "wage",
+      "wages",
+      "years of service"
+    ],
+    "33": [
+      "bereavement leave",
+      "hourly rate",
+      "hours",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "time off",
+      "vacation",
+      "vacation pay",
+      "vacation time",
+      "wage",
+      "wages"
+    ],
+    "34": [
+      "hourly rate",
+      "hours",
+      "jury duty",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "wage",
+      "wages"
+    ],
+    "35": [
+      "accident",
+      "call in sick",
+      "extra hours",
+      "float day",
+      "float days",
+      "floater",
+      "health and welfare",
+      "health benefits",
+      "hourly rate",
+      "hours",
+      "injury",
+      "insurance",
+      "medical",
+      "ot",
+      "overtime",
+      "pay",
+      "pay rate",
+      "personal holiday",
+      "personal holidays",
+      "posting",
+      "rate of pay",
+      "safety",
+      "schedule",
+      "scheduling",
+      "shift",
+      "sick day",
+      "sick leave",
+      "sick pay",
+      "time and a half",
+      "time off",
+      "unsafe",
+      "vacation",
+      "vacation pay",
+      "vacation time",
+      "wage",
+      "wages"
+    ],
+    "36": [
+      "accident",
+      "bumping",
+      "displacement",
+      "health and welfare",
+      "health benefits",
+      "injury",
+      "insurance",
+      "laid off",
+      "layoff",
+      "medical",
+      "safety",
+      "seniority",
+      "service time",
+      "unsafe",
+      "years of service"
+    ],
+    "37": [
+      "health and welfare",
+      "health benefits",
+      "hourly rate",
+      "injury",
+      "injury job",
+      "insurance",
+      "medical",
+      "pay",
+      "pay rate",
+      "rate of pay",
+      "safety",
+      "unsafe",
+      "wage",
+      "wages"
+    ],
+    "38": [
+      "care discount",
+      "care discount programs",
+      "child care",
+      "child care discount",
+      "discount programs"
+    ],
+    "39": [
+      "401k plan"
+    ],
+    "40": [
+      "appeal",
+      "arbitration",
+      "discipline",
+      "dispute",
+      "grievance",
+      "health and welfare",
+      "health benefits",
+      "health welfare",
+      "health welfare coverage",
+      "hourly rate",
+      "insurance",
+      "medical",
+      "pay",
+      "pay rate",
+      "rate of pay",
+      "schedule",
+      "seniority",
+      "service time",
+      "wage",
+      "wages",
+      "warning",
+      "welfare coverage",
+      "years of service"
+    ],
+    "41": [
+      "duplication benefits",
+      "health and welfare",
+      "health benefits",
+      "insurance",
+      "medical",
+      "non duplication",
+      "non duplication benefits",
+      "pension",
+      "retirement"
+    ],
+    "42": [
+      "courtesy clerk",
+      "hourly rate",
+      "hours",
+      "pay",
+      "pay rate",
+      "pension",
+      "posting",
+      "rate of pay",
+      "retirement",
+      "schedule",
+      "scheduling",
+      "seniority",
+      "service time",
+      "shift",
+      "time off",
+      "vacation",
+      "vacation pay",
+      "vacation time",
+      "wage",
+      "wages",
+      "years of service"
+    ],
+    "43": [
+      "discharge",
+      "discharge discrimination",
+      "discipline",
+      "fired",
+      "termination",
+      "warning",
+      "write up",
+      "written up"
+    ],
+    "44": [
+      "representation visitation"
+    ],
+    "45": [
+      "bumping",
+      "displacement",
+      "laid off",
+      "layoff",
+      "seniority",
+      "service time",
+      "years of service"
+    ],
+    "46": [
+      "appeal",
+      "arbitration",
+      "discharge",
+      "discipline",
+      "dispute",
+      "dispute procedure",
+      "extra hours",
+      "fired",
+      "grievance",
+      "hourly rate",
+      "hours",
+      "ot",
+      "overtime",
+      "pay",
+      "pay rate",
+      "posting",
+      "rate of pay",
+      "schedule",
+      "scheduling",
+      "shift",
+      "termination",
+      "time and a half",
+      "wage",
+      "wages",
+      "warning",
+      "write up",
+      "written up"
+    ],
+    "47": [
+      "strike lockout"
+    ],
+    "48": [
+      "appeal",
+      "arbitration",
+      "bumping",
+      "discharge",
+      "discipline",
+      "displacement",
+      "dispute",
+      "fired",
+      "grievance",
+      "health and welfare",
+      "health benefits",
+      "hourly rate",
+      "insurance",
+      "laid off",
+      "layoff",
+      "medical",
+      "pay",
+      "pay rate",
+      "rate of pay",
+      "seniority",
+      "service time",
+      "store closing",
+      "termination",
+      "wage",
+      "wages",
+      "warning",
+      "write up",
+      "written up",
+      "years of service"
+    ],
+    "49": [
+      "bulletin board",
+      "hours",
+      "posting",
+      "schedule",
+      "scheduling",
+      "shift"
+    ],
+    "50": [
+      "store cards"
+    ],
+    "51": [
+      "detector tests",
+      "lie detector",
+      "lie detector tests"
+    ],
+    "52": [
+      "uniforms equipment"
+    ],
+    "53": [
+      "saving clause"
+    ],
+    "54": [
+      "bumping",
+      "displacement",
+      "hourly rate",
+      "laid off",
+      "layoff",
+      "pay",
+      "pay rate",
+      "pension",
+      "rate of pay",
+      "retirement",
+      "schedule",
+      "scheduling",
+      "seniority",
+      "service time",
+      "shift",
+      "technological changes",
+      "wage",
+      "wages",
+      "years of service"
+    ],
+    "55": [
+      "courtesy clerk",
+      "prodigy type",
+      "prodigy type shopping",
+      "type shopping"
+    ],
+    "56": [
+      "appeal",
+      "arbitration",
+      "call in sick",
+      "dispute",
+      "extra hours",
+      "grievance",
+      "hours",
+      "ot",
+      "overtime",
+      "pharmacy technician",
+      "pharmacy technicians",
+      "posting",
+      "schedule",
+      "scheduling",
+      "seniority",
+      "service time",
+      "shift",
+      "sick day",
+      "sick leave",
+      "sick pay",
+      "time and a half",
+      "time off",
+      "vacation",
+      "vacation pay",
+      "vacation time",
+      "years of service"
+    ],
+    "58": [
+      "accident",
+      "all purpose clerk",
+      "bakery manager",
+      "cake decorator",
+      "courtesy clerk",
+      "deli clerk",
+      "discharge",
+      "discipline",
+      "fired",
+      "floral manager",
+      "head clerk",
+      "health and welfare",
+      "health benefits",
+      "hourly rate",
+      "hours",
+      "injury",
+      "insurance",
+      "meat cutter",
+      "medical",
+      "pay",
+      "pay rate",
+      "pharmacy technician",
+      "posting",
+      "produce department manager",
+      "rate of pay",
+      "safety",
+      "schedule",
+      "scheduling",
+      "shift",
+      "termination",
+      "unsafe",
+      "wage",
+      "wages",
+      "warning",
+      "write up",
+      "written up"
+    ]
+  }
+}

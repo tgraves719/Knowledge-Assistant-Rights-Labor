@@ -1,0 +1,286 @@
+{
+  "schema_version": "wage_table_evidence_eval_v1",
+  "dataset_schema_version": "wage_table_evidence_test_v1",
+  "timestamp_utc": "2026-03-09T10:33:30.542236+00:00",
+  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\wage_table_evidence_test.json",
+  "bm25_only": true,
+  "overall": {
+    "passed": 12,
+    "total": 12,
+    "pass_rate": 1.0,
+    "source_method_pass_rate": 1.0,
+    "table_evidence_presence_rate": 1.0,
+    "table_id_presence_rate": 1.0
+  },
+  "by_contract": {
+    "local7_kingsoopers_loveland_meat_2019": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_clerks_2022": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_meat_2022": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "WTE-CL-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "classification": "all_purpose_clerk",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art58_2"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-CL-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "classification": "head_clerk",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art58_2"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-CL-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "classification": "courtesy_clerk",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art58_3"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-CL-04",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "classification": "dug_shopper",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art58_3"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-ME-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification": "meat_cutter",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art57_2"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-ME-02",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification": "head_meat_cutter",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art57_2"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-ME-03",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification": "first_cutter",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art57_2"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-ME-04",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification": "deli_manager",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art57_2"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-KG-01",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification": "meat_cutter",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art57_3"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-KG-02",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification": "meat_manager",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art57_3"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-KG-03",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification": "seafood_manager",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art57_3"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    },
+    {
+      "id": "WTE-KG-04",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification": "deli_department_head",
+      "hours_worked": 0,
+      "months_employed": 0,
+      "expected_source_method": "canonical_rows",
+      "min_table_evidence_rows": 1,
+      "found": true,
+      "source_method": "canonical_rows",
+      "source_method_ok": true,
+      "table_evidence_count": 1,
+      "table_evidence_ok": true,
+      "table_ids": [
+        "tbl_art57_3"
+      ],
+      "table_id_ok": true,
+      "citation": "Appendix A",
+      "citation_ok": true,
+      "pass": true
+    }
+  ]
+}

@@ -18,7 +18,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 sys.stdout.reconfigure(encoding='utf-8')
 
-from backend.config import GEMINI_API_KEY, LLM_MODEL
+from backend.config import GEMINI_API_KEY, LLM_MODEL, CONTRACT_ID
 from backend.retrieval.router import HybridRetriever, classify_intent
 from backend.retrieval.vector_store import ContractVectorStore
 from backend.generation.prompts import build_prompt
@@ -138,11 +138,16 @@ def run_generation_test():
         print(f"Expected: {expected}")
         
         # Classify intent
-        intent = classify_intent(question)
+        intent = classify_intent(question, contract_id=CONTRACT_ID)
         print(f"Intent: {intent.intent_type} (escalation: {intent.requires_escalation})")
         
         # Retrieve context
-        retrieval = retriever.retrieve(question, intent, n_results=5)
+        retrieval = retriever.retrieve(
+            question,
+            intent,
+            n_results=5,
+            contract_id=CONTRACT_ID,
+        )
         chunks = retrieval["chunks"]
         wage_info = retrieval.get("wage_info")
         
@@ -227,8 +232,13 @@ def run_single_query(question: str):
     retriever = HybridRetriever(vector_store)
     
     # Process
-    intent = classify_intent(question)
-    retrieval = retriever.retrieve(question, intent, n_results=5)
+    intent = classify_intent(question, contract_id=CONTRACT_ID)
+    retrieval = retriever.retrieve(
+        question,
+        intent,
+        n_results=5,
+        contract_id=CONTRACT_ID,
+    )
     chunks = retrieval["chunks"]
     wage_info = retrieval.get("wage_info")
     

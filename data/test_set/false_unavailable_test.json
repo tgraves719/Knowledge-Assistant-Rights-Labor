@@ -1,0 +1,112 @@
+{
+  "schema_version": "false_unavailable_test_v1",
+  "description": "False-unavailable guard test set",
+  "purpose": "Ensures KARL recovers from false-unavailable responses when evidence exists and preserves proper uncertainty when evidence does not exist.",
+  "test_cases": [
+    {
+      "id": "FU-R-CL-01",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "When does this union contract start and end?",
+      "expected_citations": ["Article 58"]
+    },
+    {
+      "id": "FU-R-CL-02",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "What are the contractual requirements for minimum hours between the end of one shift and the start of the next?",
+      "expected_citations": ["Article 24", "Article 25"]
+    },
+    {
+      "id": "FU-R-CL-03",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "Under bereavement leave provisions, what is the paid leave entitlement for the death of an in-law grandparent?",
+      "expected_citations": ["Article 33"]
+    },
+    {
+      "id": "FU-R-CL-04",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "How many personal holidays do post-March 2005 hires get after four years of service?",
+      "expected_citations": ["Article 16"]
+    },
+    {
+      "id": "FU-R-ME-01",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What article covers the term of agreement for this contract?",
+      "expected_citations": ["Article 57"]
+    },
+    {
+      "id": "FU-R-ME-02",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "Where are overtime rules defined in this agreement?",
+      "expected_citations": ["Article 12"]
+    },
+    {
+      "id": "FU-R-ME-03",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "Where should I look for vacation rules in this contract?",
+      "expected_citations": ["Article 17"]
+    },
+    {
+      "id": "FU-R-ME-04",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What article governs holidays and holiday pay?",
+      "expected_citations": ["Article 16"]
+    },
+    {
+      "id": "FU-R-KG-01",
+      "expectation": "recover",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "How much vacation do I get per year?",
+      "expected_citations": ["Article 17", "Article 17, Section 42"]
+    },
+    {
+      "id": "FU-R-KG-02",
+      "expectation": "recover",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "What article covers the term of agreement for this contract?",
+      "expected_citations": ["Article 57"]
+    },
+    {
+      "id": "FU-R-KG-03",
+      "expectation": "recover",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "What article contains the grievance and arbitration procedure?",
+      "expected_citations": ["Article 48"]
+    },
+    {
+      "id": "FU-R-KG-04",
+      "expectation": "recover",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "Where are rates of pay described in this agreement?",
+      "expected_citations": ["Article 8"]
+    },
+    {
+      "id": "FU-U-CL-01",
+      "expectation": "uncertain",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "Do we get a blockchain equipment stipend each quarter?",
+      "expected_citations": []
+    },
+    {
+      "id": "FU-U-ME-01",
+      "expectation": "uncertain",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What is the ZX91 cryptographic token allowance?",
+      "expected_citations": []
+    },
+    {
+      "id": "FU-U-KG-01",
+      "expectation": "uncertain",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "What is the monthly drone commute subsidy amount?",
+      "expected_citations": []
+    }
+  ]
+}

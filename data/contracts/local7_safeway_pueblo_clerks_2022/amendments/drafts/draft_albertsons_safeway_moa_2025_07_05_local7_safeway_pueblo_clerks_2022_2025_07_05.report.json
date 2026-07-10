@@ -1,0 +1,129 @@
+{
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "generated_at_utc": "2026-03-09T10:08:17.852764+00:00",
+  "operation_count": 10,
+  "patch_id": "draft_albertsons_safeway_moa_2025_07_05_local7_safeway_pueblo_clerks_2022_2025_07_05",
+  "quality_flag_counts": {
+    "contains_ellipsis": 3,
+    "too_short": 1
+  },
+  "selected_candidate_count": 30,
+  "skipped": [
+    {
+      "article_num": 7,
+      "reason": "ambiguous_target_multiple_base_sections",
+      "section_num": 14
+    },
+    {
+      "article_num": 7,
+      "quality_flags": [
+        "contains_ellipsis",
+        "too_short"
+      ],
+      "reason": "low_quality_candidate",
+      "section_num": 15
+    },
+    {
+      "article_num": 8,
+      "reason": "target_not_found_in_base",
+      "section_num": 20
+    },
+    {
+      "article_num": 9,
+      "quality_flags": [
+        "contains_ellipsis"
+      ],
+      "reason": "low_quality_candidate",
+      "section_num": 20
+    },
+    {
+      "article_num": 10,
+      "reason": "target_not_found_in_base",
+      "section_num": 20
+    },
+    {
+      "article_num": 10,
+      "reason": "ambiguous_target_multiple_base_sections",
+      "section_num": 21
+    },
+    {
+      "article_num": 17,
+      "reason": "ambiguous_target_multiple_base_sections",
+      "section_num": 52
+    },
+    {
+      "article_num": 27,
+      "reason": "ambiguous_target_multiple_base_sections",
+      "section_num": 68
+    },
+    {
+      "article_num": 27,
+      "reason": "ambiguous_target_multiple_base_sections",
+      "section_num": 71
+    },
+    {
+      "article_num": 28,
+      "reason": "target_not_found_in_base",
+      "section_num": 85
+    },
+    {
+      "article_num": 29,
+      "reason": "target_not_found_in_base",
+      "section_num": 84
+    },
+    {
+      "article_num": 40,
+      "reason": "ambiguous_target_multiple_base_sections",
+      "section_num": 116
+    },
+    {
+      "article_num": 42,
+      "reason": "ambiguous_target_multiple_base_sections",
+      "section_num": 118
+    },
+    {
+      "article_num": 46,
+      "reason": "target_not_found_in_base",
+      "section_num": 20
+    },
+    {
+      "article_num": 46,
+      "quality_flags": [
+        "contains_ellipsis"
+      ],
+      "reason": "low_quality_candidate",
+      "section_num": 134
+    },
+    {
+      "article_num": 49,
+      "reason": "target_not_found_in_base",
+      "section_num": 143
+    },
+    {
+      "article_num": 50,
+      "reason": "target_not_found_in_base",
+      "section_num": 149
+    },
+    {
+      "article_num": 57,
+      "reason": "target_not_found_in_base",
+      "section_num": 71
+    },
+    {
+      "article_num": 57,
+      "reason": "target_not_found_in_base",
+      "section_num": 126
+    },
+    {
+      "article_num": 57,
+      "reason": "target_not_found_in_base",
+      "section_num": 174
+    }
+  ],
+  "skipped_count": 20,
+  "skipped_reason_counts": {
+    "ambiguous_target_multiple_base_sections": 7,
+    "low_quality_candidate": 3,
+    "target_not_found_in_base": 10
+  }
+}

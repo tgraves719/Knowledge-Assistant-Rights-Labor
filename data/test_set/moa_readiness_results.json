@@ -1,0 +1,171 @@
+{
+  "commands": [
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.test_moa_materializer",
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "[OK] MOA materializer and effective-routing checks passed\n"
+    },
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_effective_coverage",
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "========================================================================\nKARL Effective Snapshot Coverage\n========================================================================\nPass: 2/2 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_snapshot_coverage_results.json\n- local7_safeway_pueblo_clerks_2022: pass=True base=315 effective=315 missing_doc_types=[]\n- local7_safeway_pueblo_meat_2022: pass=True base=259 effective=259 missing_doc_types=[]\n"
+    },
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.test_topic_routing",
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n[OK] Topic routing checks passed\n"
+    },
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.test_false_unavailable_fallback",
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "[OK] False-unavailable fallback checks passed\n"
+    },
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_effective_wage_coverage --output C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_wage_snapshot_coverage_results.json",
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "========================================================================\nKARL Effective Wage Snapshot Coverage\n========================================================================\nPass: 2/2 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_wage_snapshot_coverage_results.json\n- local7_safeway_pueblo_clerks_2022: pass=True wage_patch_ops=52 missing_materializations=0\n- local7_safeway_pueblo_meat_2022: pass=True wage_patch_ops=0 missing_materializations=0\n"
+    },
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.test_contract_history_api",
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "[OK] contract history API checks passed\n"
+    },
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_moa_effective --bm25-only --output C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json",
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Effective Evaluation\n========================================================================\nPass: 4/4 (100.0%)\nCitation hit rate: 1.0\nSource-type match rate: 1.0\nIntent match rate: 1.0\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json\n"
+    },
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_moa_deleted_vs_updated --bm25-only --output C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json",
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Deleted-vs-Updated Eval\n========================================================================\nOverall: 4/4 (100.0%)\n- updated: 2/2 (100.0%)\n- deleted: 2/2 (100.0%)\nGate: True\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json\n"
+    },
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_moa_deleted_vs_updated_answer --bm25-only --output C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_answer_results.json",
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Deleted-vs-Updated Answer Evaluation\n========================================================================\nOverall: 4/4 (100.0%)\n- updated: 2/2 (100.0%)\n- deleted: 2/2 (100.0%)\nSource-type match rate: 1.0\nGate: True\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_answer_results.json\n"
+    },
+    {
+      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_moa_effective --bm25-only --input C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_test.json --output C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_results.json",
+      "return_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Effective Evaluation\n========================================================================\nPass: 17/18 (94.4%)\nCitation hit rate: 1.0\nSource-type match rate: 1.0\nIntent match rate: 1.0\n- local7_safeway_pueblo_clerks_2022: 17/18 (94.4%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_results.json\n"
+    }
+  ],
+  "effective_wage_snapshot_coverage_summary": {
+    "gate_pass": true,
+    "overall": {
+      "pass_rate": 1.0,
+      "passed": 2,
+      "total": 2
+    },
+    "results_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_wage_snapshot_coverage_results.json"
+  },
+  "gate_pass": true,
+  "gates": {
+    "effective_wage_snapshot_coverage": {
+      "detail": "MOA wage-row patches materialize rows at patch effective dates in effective snapshots.",
+      "observed": 1.0,
+      "pass": true,
+      "results_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\effective_wage_snapshot_coverage_results.json"
+    },
+    "moa_deleted_vs_updated_answer_gate": {
+      "detail": "End-to-end answer behavior for deleted-vs-updated MOA clauses.",
+      "pass": true,
+      "results_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_answer_results.json"
+    },
+    "moa_deleted_vs_updated_gate": {
+      "detail": "Deleted-vs-updated MOA regression slice gate.",
+      "pass": true,
+      "results_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json"
+    },
+    "moa_effective_deep_pass_rate": {
+      "input_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_test.json",
+      "observed": 0.9444,
+      "pass": true,
+      "passed": 17,
+      "results_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_results.json",
+      "threshold": 0.85,
+      "total": 18
+    },
+    "moa_effective_pass_rate": {
+      "detail": "MOA effective benchmark pass rate.",
+      "observed": 1.0,
+      "pass": true,
+      "threshold": 0.9
+    },
+    "tests_and_commands_ok": {
+      "detail": "All required test/eval commands returned 0.",
+      "pass": true
+    }
+  },
+  "moa_deleted_vs_updated_answer_summary": {
+    "by_bucket": {
+      "deleted": {
+        "pass_rate": 1.0,
+        "passed": 2,
+        "total": 2
+      },
+      "updated": {
+        "pass_rate": 1.0,
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "gate_pass": true,
+    "overall": {
+      "citation_hit_rate": 1.0,
+      "pass_rate": 1.0,
+      "passed": 4,
+      "source_type_match_rate": 1.0,
+      "total": 4,
+      "unavailable_rate": 0.5
+    },
+    "results_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_answer_results.json"
+  },
+  "moa_deleted_vs_updated_summary": {
+    "buckets": {
+      "deleted": {
+        "forbidden_ok_rate": 1.0,
+        "pass_rate": 1.0,
+        "passed": 2,
+        "total": 2
+      },
+      "updated": {
+        "citation_hit_rate": 1.0,
+        "moa_source_type_match_rate": 1.0,
+        "pass_rate": 1.0,
+        "passed": 2,
+        "source_type_cases": 2,
+        "total": 2
+      }
+    },
+    "gate_pass": true,
+    "overall": {
+      "citation_hit_rate": 1.0,
+      "intent_match_rate": 1.0,
+      "pass_rate": 1.0,
+      "passed": 4,
+      "source_type_match_rate": 1.0,
+      "total": 4
+    },
+    "results_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json"
+  },
+  "moa_effective_summary": {
+    "pass_rate": 1.0,
+    "passed": 4,
+    "results_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json",
+    "total": 4
+  },
+  "schema_version": "moa_readiness_eval_v1",
+  "timestamp_utc": "2026-03-09T10:32:22.226485+00:00"
+}

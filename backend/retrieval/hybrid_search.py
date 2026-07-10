@@ -19,28 +19,45 @@ from dataclasses import dataclass
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from backend.config import CHUNKS_DIR, TOP_K_RESULTS, BM25_K1, BM25_B
+from backend.config import TOP_K_RESULTS, BM25_K1, BM25_B, MANIFESTS_DIR
 from backend.retrieval.query_expansion import expand_query, get_keyword_variants
+from backend.chunk_files import resolve_chunk_file
+from backend.concept_index_files import resolve_concept_index_file
+from backend.contracts import resolve_contract_region_id
 
 # Phase 4: Concept index for vocabulary bridging
-_concept_index = None
+_concept_index_cache: dict[str, object] = {}
 
-def get_concept_index():
-    """Lazy-load the concept index."""
-    global _concept_index
-    if _concept_index is None:
-        try:
-            from backend.ingest.toc_index import ConceptIndex
-            _concept_index = ConceptIndex()
-            if _concept_index.load():
-                print(f"Loaded concept index with {len(_concept_index.concept_to_articles)} concepts")
-            else:
-                print("Concept index not found, will skip concept-based retrieval")
-                _concept_index = None
-        except Exception as e:
-            print(f"Could not load concept index: {e}")
-            _concept_index = None
-    return _concept_index
+
+def get_concept_index(contract_id: Optional[str] = None):
+    """Lazy-load concept index, preferring contract-scoped artifacts."""
+    cache_key = contract_id or "__shared__"
+    if cache_key in _concept_index_cache:
+        return _concept_index_cache[cache_key]
+
+    try:
+        from backend.ingest.toc_index import ConceptIndex
+        index_path = resolve_concept_index_file(
+            contract_id=contract_id,
+            allow_shared_fallback=True,
+        )
+        if not index_path:
+            _concept_index_cache[cache_key] = None
+            return None
+
+        concept_index = ConceptIndex(index_path=index_path)
+        if concept_index.load():
+            print(
+                f"Loaded concept index ({index_path.name}) with "
+                f"{len(concept_index.concept_to_articles)} concepts"
+            )
+            _concept_index_cache[cache_key] = concept_index
+            return concept_index
+    except Exception as e:
+        print(f"Could not load concept index: {e}")
+
+    _concept_index_cache[cache_key] = None
+    return None
 
 
 @dataclass
@@ -48,6 +65,7 @@ class SearchResult:
     """Container for a search result with score information."""
     chunk_id: str
     content: str
+    content_with_tables: str
     citation: str
     metadata: dict
     vector_score: float = 0.0
@@ -118,10 +136,14 @@ class BM25Index:
         
         for chunk in chunks:
             chunk_id = chunk['chunk_id']
-            content = chunk.get('content', '')
-            
+            content = chunk.get('content_with_tables') or chunk.get('content', '')
+            summary = chunk.get('summary', '')
+
             # Also include citation and title for matching
-            searchable_text = f"{content} {chunk.get('citation', '')} {chunk.get('article_title', '')}"
+            searchable_text = (
+                f"{content} {summary} "
+                f"{chunk.get('citation', '')} {chunk.get('article_title', '')}"
+            )
             
             self.documents[chunk_id] = chunk
             tokens = self._tokenize(searchable_text)
@@ -280,34 +302,169 @@ class HybridSearcher:
         """
         self.vector_store = vector_store
         self.bm25_index = BM25Index()
-        
-        # Load chunks for BM25 index - prefer enriched chunks
+        self.chunks_by_id = {}
+        self._bm25_by_contract: Dict[str, BM25Index] = {}
+        self._chunks_by_contract: Dict[str, Dict[str, dict]] = {}
+        self._source_chunks: Optional[List[dict]] = None
+        self._custom_chunks_source = chunks_file is not None
+
+        # Load default shared index (or explicit override file).
         if chunks_file is None:
-            # Try enriched first, then smart, then original
-            chunks_file = CHUNKS_DIR / "contract_chunks_enriched.json"
-            if not chunks_file.exists():
-                chunks_file = CHUNKS_DIR / "contract_chunks_smart.json"
-            if not chunks_file.exists():
-                chunks_file = CHUNKS_DIR / "contract_chunks.json"
-        
-        if chunks_file.exists():
+            chunks_file = resolve_chunk_file(contract_id=None, allow_shared_fallback=True)
+        if chunks_file and chunks_file.exists():
             with open(chunks_file, 'r', encoding='utf-8') as f:
                 chunks = json.load(f)
+            chunks = self._ensure_unique_chunk_ids(chunks)
+            if self._custom_chunks_source:
+                self._source_chunks = chunks
             self.bm25_index.build_index(chunks)
             self.chunks_by_id = {c['chunk_id']: c for c in chunks}
-        else:
-            self.chunks_by_id = {}
 
-        # Phase 4: Preload concept index for vocabulary bridging
-        self.concept_index = get_concept_index()
-    
     def _ensure_vector_store(self):
         """Lazy-load vector store if not provided."""
         if self.vector_store is None:
             from backend.retrieval.vector_store import ContractVectorStore
             self.vector_store = ContractVectorStore()
 
-    def get_concept_boost_articles(self, query: str) -> List[int]:
+    def _allow_legacy_unscoped_chunks(self) -> bool:
+        """Allow unscoped chunk fallback only in single-manifest mode."""
+        return len(list(MANIFESTS_DIR.glob("*.json"))) == 1
+
+    def _ensure_unique_chunk_ids(self, chunks: list[dict]) -> list[dict]:
+        """
+        Return chunks with collision-safe chunk IDs.
+
+        Some ingestion paths can emit duplicate `chunk_id` values, which causes
+        silent document loss in BM25 maps keyed by chunk_id.
+        """
+        seen: Dict[str, int] = defaultdict(int)
+        normalized: list[dict] = []
+        for idx, chunk in enumerate(chunks):
+            base_id = str(
+                chunk.get("chunk_id")
+                or chunk.get("citation")
+                or f"chunk_{idx}"
+            )
+            dup_index = seen[base_id]
+            seen[base_id] += 1
+            unique_id = base_id if dup_index == 0 else f"{base_id}__dup{dup_index}"
+
+            c = dict(chunk)
+            c["chunk_id"] = unique_id
+            normalized.append(c)
+        return normalized
+
+    def _get_bm25_resources(
+        self,
+        contract_id: Optional[str],
+        region_id: Optional[str] = None,
+    ) -> Tuple[BM25Index, Dict[str, dict]]:
+        """Get BM25 index/chunk map, preferring contract-specific artifacts."""
+        if not contract_id:
+            return self.bm25_index, self.chunks_by_id
+
+        effective_region_id = str(region_id or resolve_contract_region_id(contract_id))
+        cache_key = f"{contract_id}::{effective_region_id}"
+        if cache_key in self._bm25_by_contract:
+            return self._bm25_by_contract[cache_key], self._chunks_by_contract[cache_key]
+
+        chunks: list[dict] = []
+        raw_chunks: list[dict] = []
+        if self._custom_chunks_source and self._source_chunks is not None:
+            raw_chunks = self._source_chunks
+        else:
+            chunks_file = resolve_chunk_file(contract_id=contract_id, allow_shared_fallback=True)
+            if chunks_file and chunks_file.exists():
+                with open(chunks_file, "r", encoding="utf-8") as f:
+                    raw_chunks = json.load(f)
+        if raw_chunks:
+            allow_unscoped = self._allow_legacy_unscoped_chunks()
+            for c in raw_chunks:
+                chunk_contract_id = c.get("contract_id")
+                chunk_region = c.get("region_id") or resolve_contract_region_id(str(chunk_contract_id or contract_id))
+                if chunk_contract_id == contract_id and str(chunk_region) == effective_region_id:
+                    c_copy = dict(c)
+                    c_copy["region_id"] = effective_region_id
+                    chunks.append(c_copy)
+                elif allow_unscoped and chunk_contract_id in (None, ""):
+                    c_copy = dict(c)
+                    c_copy["contract_id"] = contract_id
+                    c_copy["region_id"] = effective_region_id
+                    chunks.append(c_copy)
+        chunks = self._ensure_unique_chunk_ids(chunks)
+
+        index = BM25Index()
+        if chunks:
+            index.build_index(chunks)
+            chunks_by_id = {c["chunk_id"]: c for c in chunks}
+        else:
+            chunks_by_id = {}
+
+        self._bm25_by_contract[cache_key] = index
+        self._chunks_by_contract[cache_key] = chunks_by_id
+        return index, chunks_by_id
+
+    @staticmethod
+    def _query_requests_structured_values(query: str) -> bool:
+        """
+        Detect queries that likely require table-backed values.
+
+        Used to boost chunks carrying explicit table references.
+        """
+        q = (query or "").lower()
+        signals = (
+            "wage", "rate", "hourly", "pay scale", "step", "progression",
+            "appendix", "accrual", "vacation schedule", "vacation accrual",
+            "holiday pay", "matrix", "table",
+        )
+        return any(s in q for s in signals)
+
+    @staticmethod
+    def _side_letter_query_mode(query: str) -> str:
+        """
+        Classify side-letter intent from lexical cues.
+
+        Returns:
+            - "explicit": direct LOA/LOU/side-letter mention
+            - "followup": agreement follow-up cues (cancel/discontinue/written notice)
+            - "none": no side-letter signals
+        """
+        q = (query or "").lower()
+        explicit_signals = (
+            "letter of agreement",
+            "letters of agreement",
+            "letter of understanding",
+            "letters of understanding",
+            " side letter",
+            "side-letter",
+            " sideletter",
+            " lou ",
+        )
+        if any(sig in f" {q} " for sig in explicit_signals):
+            return "explicit"
+
+        has_agreement_ref = any(
+            sig in q
+            for sig in ("that agreement", "this agreement", "the agreement", "agreement")
+        )
+        has_followup_cue = any(
+            sig in q
+            for sig in (
+                "written notice",
+                "30 days",
+                "cancel",
+                "discontinue",
+                "discontinued",
+                "discontinuing",
+                "either party",
+                "implement this procedure",
+            )
+        )
+        if has_agreement_ref and has_followup_cue:
+            return "followup"
+        return "none"
+
+    def get_concept_boost_articles(self, query: str, contract_id: Optional[str] = None) -> List[int]:
         """
         Phase 4: Find articles to boost based on concept index matching.
 
@@ -320,14 +477,15 @@ class HybridSearcher:
         Returns:
             List of article numbers to boost, ordered by match strength
         """
-        if self.concept_index is None:
+        concept_index = get_concept_index(contract_id=contract_id)
+        if concept_index is None:
             return []
 
         # Get articles matching by concept (alternative_names)
-        concept_articles = self.concept_index.find_articles_by_concept(query)
+        concept_articles = concept_index.find_articles_by_concept(query)
 
         # Get articles matching by question similarity
-        question_articles = self.concept_index.find_articles_by_question(query)
+        question_articles = concept_index.find_articles_by_question(query)
 
         # Combine with question matches taking priority (more precise)
         # then concept matches (broader substring matching)
@@ -353,6 +511,9 @@ class HybridSearcher:
         keyword_weight: float = 1.0,
         boost_articles: List[int] = None,
         concept_query: str = None,
+        contract_id: str = None,
+        region_id: str = None,
+        doc_type: str = None,
         **vector_kwargs
     ) -> List[SearchResult]:
         """
@@ -374,12 +535,23 @@ class HybridSearcher:
         if n_results is None:
             n_results = TOP_K_RESULTS
 
-        self._ensure_vector_store()
+        effective_region_id = None
+        if contract_id:
+            effective_region_id = str(region_id or resolve_contract_region_id(contract_id))
+
+        bm25_index, chunks_by_id = self._get_bm25_resources(contract_id, effective_region_id)
+
+        # Avoid loading vector models when vector ranking is explicitly disabled.
+        if vector_weight > 0:
+            self._ensure_vector_store()
 
         # Phase 4: Get concept-based article boosts (vocabulary bridging)
         # Use concept_query (original user question) for stable matching,
         # not the hypothesis-expanded query which varies per run
-        concept_boost_articles = self.get_concept_boost_articles(concept_query or query)
+        concept_boost_articles = self.get_concept_boost_articles(
+            concept_query or query,
+            contract_id=contract_id,
+        )
         if concept_boost_articles:
             if boost_articles:
                 # Combine with explicit boosts, concept-based first
@@ -396,20 +568,46 @@ class HybridSearcher:
         
         # 2. Vector/Semantic Search
         # Get more results than needed for better fusion
-        vector_results = self.vector_store.search(
-            query=semantic_query,
-            n_results=n_results * 2,
-            boost_articles=boost_articles,
-            **vector_kwargs
-        )
-        vector_ranking = [(r['chunk_id'], r.get('similarity', 0)) for r in vector_results]
+        if vector_weight > 0:
+            vector_results = self.vector_store.search(
+                query=semantic_query,
+                n_results=n_results * 2,
+                contract_id=contract_id,
+                region_id=effective_region_id,
+                boost_articles=boost_articles,
+                doc_type=doc_type,  # Pass doc_type filter if provided
+                **vector_kwargs
+            )
+            vector_ranking = [(r['chunk_id'], r.get('similarity', 0)) for r in vector_results]
+        else:
+            vector_results = []
+            vector_ranking = []
         
         # 3. BM25 Keyword Search
-        keyword_ranking = self.bm25_index.search(
+        keyword_ranking = bm25_index.search(
             query=query,
             n_results=n_results * 2,
             expand=use_expansion
         )
+        
+        # 3.5. Filter BM25 results by doc_type if specified
+        if doc_type:
+            filtered_keyword_ranking = []
+            for chunk_id, score in keyword_ranking:
+                chunk = chunks_by_id.get(chunk_id, {})
+                if chunk.get('doc_type') == doc_type:
+                    filtered_keyword_ranking.append((chunk_id, score))
+            keyword_ranking = filtered_keyword_ranking
+
+        # 3.6. Filter BM25 results by contract_id when provided
+        if contract_id:
+            filtered_keyword_ranking = []
+            for chunk_id, score in keyword_ranking:
+                chunk = chunks_by_id.get(chunk_id, {})
+                chunk_region = chunk.get("region_id") or resolve_contract_region_id(str(chunk.get("contract_id") or contract_id))
+                if chunk.get("contract_id") == contract_id and str(chunk_region) == str(effective_region_id):
+                    filtered_keyword_ranking.append((chunk_id, score))
+            keyword_ranking = filtered_keyword_ranking
         
         # 4. Reciprocal Rank Fusion
         rrf_ranking = reciprocal_rank_fusion(
@@ -421,14 +619,76 @@ class HybridSearcher:
         if boost_articles:
             boosted_ranking = []
             for chunk_id, rrf_score in rrf_ranking:
-                chunk = self.chunks_by_id.get(chunk_id, {})
+                chunk = chunks_by_id.get(chunk_id, {})
                 article_num = chunk.get('article_num', 0)
                 if article_num in boost_articles:
                     # Significant boost (doubles typical RRF score) to ensure
                     # topic-relevant articles appear in results
-                    rrf_score += 0.03
+                    rrf_score += 0.08
+                else:
+                    # Light penalty for non-topic articles when explicit topic boosts exist.
+                    rrf_score -= 0.01
                 boosted_ranking.append((chunk_id, rrf_score))
             rrf_ranking = sorted(boosted_ranking, key=lambda x: x[1], reverse=True)
+
+        # 4.6. Side-letter lexical boost for LOA/LOU prompts and follow-ups
+        side_letter_mode = self._side_letter_query_mode(query)
+        if side_letter_mode != "none":
+            side_letter_boosted = []
+            query_tokens = [
+                t for t in re.findall(r"[a-z0-9]+", (query or "").lower())
+                if len(t) >= 5 and t not in {"letter", "agreement", "understanding", "side"}
+            ]
+            for chunk_id, rrf_score in rrf_ranking:
+                chunk = chunks_by_id.get(chunk_id, {})
+                doc_type = str(chunk.get("doc_type") or "").strip().lower()
+                citation_lower = str(chunk.get("citation") or "").lower()
+                snippet = str(
+                    chunk.get("content_with_tables")
+                    or chunk.get("content")
+                    or ""
+                ).lower()[:1200]
+                blob = f"{citation_lower}\n{snippet}"
+
+                boost = 0.0
+                if doc_type in {"loa", "lou"}:
+                    boost += 0.08 if side_letter_mode == "explicit" else 0.06
+                if "letter of agreement" in blob or "letter of understanding" in blob:
+                    boost += 0.01
+                if query_tokens:
+                    focus_hits = sum(1 for tok in query_tokens if tok in blob)
+                    if focus_hits > 0:
+                        boost += min(0.08, 0.02 * focus_hits)
+                if side_letter_mode == "followup":
+                    if any(sig in blob for sig in ("written notice", "30 days", "either party", "discontinue")):
+                        boost += 0.05
+                side_letter_boosted.append((chunk_id, rrf_score + boost))
+            rrf_ranking = sorted(side_letter_boosted, key=lambda x: x[1], reverse=True)
+
+        # 4.7. Structured-table evidence boost for value-heavy queries
+        if self._query_requests_structured_values(query):
+            table_boosted_ranking = []
+            query_lower = (query or "").lower()
+            for chunk_id, rrf_score in rrf_ranking:
+                chunk = chunks_by_id.get(chunk_id, {})
+                table_refs = chunk.get("table_refs") or []
+                citation_lower = str(chunk.get("citation", "")).lower()
+                snippet = str(
+                    chunk.get("content_with_tables")
+                    or chunk.get("content")
+                    or ""
+                ).lower()[:800]
+
+                if table_refs:
+                    rrf_score += 0.06
+                if "appendix" in citation_lower:
+                    rrf_score += 0.03
+                if any(tok in query_lower for tok in ("wage", "rate", "hourly", "vacation", "accrual")):
+                    if "$" in snippet or "effective" in snippet or "after " in snippet:
+                        rrf_score += 0.02
+
+                table_boosted_ranking.append((chunk_id, rrf_score))
+            rrf_ranking = sorted(table_boosted_ranking, key=lambda x: x[1], reverse=True)
         
         # 5. Build SearchResult objects
         results = []
@@ -438,14 +698,18 @@ class HybridSearcher:
         keyword_scores = {chunk_id: score for chunk_id, score in keyword_ranking}
         
         for chunk_id, rrf_score in rrf_ranking[:n_results]:
-            chunk = self.chunks_by_id.get(chunk_id, {})
+            chunk = chunks_by_id.get(chunk_id, {})
             
             result = SearchResult(
                 chunk_id=chunk_id,
                 content=chunk.get('content', ''),
+                content_with_tables=chunk.get('content_with_tables', chunk.get('content', '')),
                 citation=chunk.get('citation', ''),
                 metadata={
                     'article_num': chunk.get('article_num'),
+                    'contract_id': chunk.get('contract_id'),
+                    'region_id': chunk.get('region_id'),
+                    'doc_type': chunk.get('doc_type', 'cba'),
                     'article_title': chunk.get('article_title', ''),
                     'section_num': chunk.get('section_num'),
                     'subsection': chunk.get('subsection', ''),
@@ -456,6 +720,13 @@ class HybridSearcher:
                     'is_exception': chunk.get('is_exception', False),
                     'hire_date_sensitive': chunk.get('hire_date_sensitive', False),
                     'is_high_stakes': chunk.get('is_high_stakes', False),
+                    'table_refs': chunk.get('table_refs', []),
+                    'anchor_id': chunk.get('anchor_id'),
+                    'span_id': chunk.get('span_id'),
+                    'provenance': chunk.get('provenance', []),
+                    'source_type': chunk.get('source_type', ''),
+                    'effective_version_id': chunk.get('effective_version_id'),
+                    'amendments_applied': chunk.get('amendments_applied', []),
                     # Phase 4: Concept-indexed fields
                     'worker_questions': chunk.get('worker_questions', []),
                     'alternative_names': chunk.get('alternative_names', []),
@@ -488,6 +759,7 @@ class HybridSearcher:
             {
                 'chunk_id': r.chunk_id,
                 'content': r.content,
+                'content_with_tables': r.content_with_tables,
                 'citation': r.citation,
                 'similarity': r.rrf_score,  # Use RRF as similarity for compatibility
                 **r.metadata
@@ -541,4 +813,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

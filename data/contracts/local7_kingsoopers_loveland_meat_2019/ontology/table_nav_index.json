@@ -1,0 +1,250 @@
+{
+  "schema_version": "table_nav_index_v1",
+  "contract_id": "local7_kingsoopers_loveland_meat_2019",
+  "generated_at": "2026-02-19T11:31:36.318535+00:00",
+  "source_json": "local7_kingsoopers_loveland_meat_2019.json",
+  "structured_tables": "structured_tables.json",
+  "total_pages": 96,
+  "table_pages": {
+    "tbl_art0_1": 2,
+    "tbl_art40_1": 36,
+    "tbl_art40_2": 37,
+    "tbl_art40_3": 42,
+    "tbl_art40_4": 43,
+    "tbl_art40_5": 43,
+    "tbl_art48_1": 50,
+    "tbl_art57_1": 58,
+    "tbl_art57_2": 61,
+    "tbl_art57_3": 62,
+    "tbl_art57_4": 63,
+    "tbl_art57_5": 64,
+    "tbl_art57_6": 66,
+    "tbl_art57_7": 82,
+    "tbl_art57_8": 95,
+    "tbl_art57_9": 96
+  },
+  "table_meta": {
+    "tbl_art0_1": {
+      "article_num": null,
+      "section_num": null,
+      "json_path": "pages[1].items[1]",
+      "heading_path": [
+        "TABLE OF CONTENTS"
+      ],
+      "heading_leaf": "TABLE OF CONTENTS",
+      "row_count": 34,
+      "is_perfect_table": false
+    },
+    "tbl_art40_1": {
+      "article_num": 40,
+      "section_num": 95,
+      "json_path": "pages[35].items[4]",
+      "heading_path": [
+        "HEALTH BENEFITS PLAN"
+      ],
+      "heading_leaf": "HEALTH BENEFITS PLAN",
+      "row_count": 5,
+      "is_perfect_table": false
+    },
+    "tbl_art40_2": {
+      "article_num": 40,
+      "section_num": 95,
+      "json_path": "pages[36].items[2]",
+      "heading_path": [
+        "HEALTH BENEFITS PLAN"
+      ],
+      "heading_leaf": "HEALTH BENEFITS PLAN",
+      "row_count": 12,
+      "is_perfect_table": false
+    },
+    "tbl_art40_3": {
+      "article_num": 40,
+      "section_num": 95,
+      "json_path": "pages[41].items[2]",
+      "heading_path": [
+        "Special Rules"
+      ],
+      "heading_leaf": "Special Rules",
+      "row_count": 1,
+      "is_perfect_table": false
+    },
+    "tbl_art40_4": {
+      "article_num": 40,
+      "section_num": 95,
+      "json_path": "pages[42].items[0]",
+      "heading_path": [
+        "Special Rules"
+      ],
+      "heading_leaf": "Special Rules",
+      "row_count": 1,
+      "is_perfect_table": false
+    },
+    "tbl_art40_5": {
+      "article_num": 40,
+      "section_num": 95,
+      "json_path": "pages[42].items[3]",
+      "heading_path": [
+        "Special Rules"
+      ],
+      "heading_leaf": "Special Rules",
+      "row_count": 7,
+      "is_perfect_table": false
+    },
+    "tbl_art48_1": {
+      "article_num": 48,
+      "section_num": 112,
+      "json_path": "pages[49].items[3]",
+      "heading_path": [
+        "<u>GRIEVANCE AND ARBITRATION PROCEDURE</u>"
+      ],
+      "heading_leaf": "<u>GRIEVANCE AND ARBITRATION PROCEDURE</u>",
+      "row_count": 2,
+      "is_perfect_table": false
+    },
+    "tbl_art57_1": {
+      "article_num": 57,
+      "section_num": 127,
+      "json_path": "pages[57].items[6]",
+      "heading_path": [
+        "TERM OF AGREEMENT"
+      ],
+      "heading_leaf": "TERM OF AGREEMENT",
+      "row_count": 3,
+      "is_perfect_table": false
+    },
+    "tbl_art57_2": {
+      "article_num": 57,
+      "section_num": 128,
+      "json_path": "pages[60].items[2]",
+      "heading_path": [
+        "UNION EXPERIENCE CREDIT MATRIX"
+      ],
+      "heading_leaf": "UNION EXPERIENCE CREDIT MATRIX",
+      "row_count": 6,
+      "is_perfect_table": false
+    },
+    "tbl_art57_3": {
+      "article_num": 57,
+      "section_num": 128,
+      "json_path": "pages[61].items[1]",
+      "heading_path": [
+        "KING SOOPERS APPENDIX \"A\" MEAT RATES"
+      ],
+      "heading_leaf": "KING SOOPERS APPENDIX \"A\" MEAT RATES",
+      "row_count": 29,
+      "is_perfect_table": false
+    },
+    "tbl_art57_4": {
+      "article_num": 57,
+      "section_num": 128,
+      "json_path": "pages[62].items[0]",
+      "heading_path": [
+        "KING SOOPERS APPENDIX \"A\" MEAT RATES"
+      ],
+      "heading_leaf": "KING SOOPERS APPENDIX \"A\" MEAT RATES",
+      "row_count": 9,
+      "is_perfect_table": false
+    },
+    "tbl_art57_5": {
+      "article_num": 57,
+      "section_num": 128,
+      "json_path": "pages[63].items[7]",
+      "heading_path": [
+        "MINIMUM WAGE"
+      ],
+      "heading_leaf": "MINIMUM WAGE",
+      "row_count": 2,
+      "is_perfect_table": false
+    },
+    "tbl_art57_6": {
+      "article_num": 57,
+      "section_num": 128,
+      "json_path": "pages[65].items[1]",
+      "heading_path": [
+        "LETTERS OF AGREEMENT"
+      ],
+      "heading_leaf": "LETTERS OF AGREEMENT",
+      "row_count": 3,
+      "is_perfect_table": false
+    },
+    "tbl_art57_7": {
+      "article_num": 57,
+      "section_num": 128,
+      "json_path": "pages[81].items[4]",
+      "heading_path": [
+        "DRESS REQUIREMENTS. DATED 3/25/19"
+      ],
+      "heading_leaf": "DRESS REQUIREMENTS. DATED 3/25/19",
+      "row_count": 2,
+      "is_perfect_table": false
+    },
+    "tbl_art57_8": {
+      "article_num": 57,
+      "section_num": 48,
+      "json_path": "pages[94].items[7]",
+      "heading_path": [
+        "#22"
+      ],
+      "heading_leaf": "#22",
+      "row_count": 2,
+      "is_perfect_table": false
+    },
+    "tbl_art57_9": {
+      "article_num": 57,
+      "section_num": 48,
+      "json_path": "pages[95].items[4]",
+      "heading_path": [
+        "JOINT LABOR MANAGEMENT COMMITTEE. DATED 3/25/19."
+      ],
+      "heading_leaf": "JOINT LABOR MANAGEMENT COMMITTEE. DATED 3/25/19.",
+      "row_count": 2,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art57_e8fbaf62": {
+      "article_num": 57,
+      "section_num": 128,
+      "json_path": "chunks[161].fallback_html_tables[0]",
+      "heading_path": [
+        "Article 57 (TERM OF AGREEMENT) > Section 128 (Effective May 4, 1986, there shall be a cost of living allowance based on the increase in the revised Consumer Price Index for Urban Wage Earners and Clerical workers, published b)",
+        "TERM OF AGREEMENT",
+        "Article 57, Section 128"
+      ],
+      "heading_leaf": "Article 57, Section 128",
+      "row_count": 6,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art57_8af5ae44": {
+      "article_num": 57,
+      "section_num": 128,
+      "json_path": "chunks[161].fallback_html_tables[1]",
+      "heading_path": [
+        "Article 57 (TERM OF AGREEMENT) > Section 128 (Effective May 4, 1986, there shall be a cost of living allowance based on the increase in the revised Consumer Price Index for Urban Wage Earners and Clerical workers, published b)",
+        "TERM OF AGREEMENT",
+        "Article 57, Section 128"
+      ],
+      "heading_leaf": "Article 57, Section 128",
+      "row_count": 30,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art57_94425d48": {
+      "article_num": 57,
+      "section_num": 128,
+      "json_path": "chunks[164].fallback_html_tables[0]",
+      "heading_path": [
+        "Article 57 (TERM OF AGREEMENT) > Section 128 (Effective May 4, 1986, there shall be a cost of living allowance based on the increase in the revised Consumer Price Index for Urban Wage Earners and Clerical workers, published b) > Part 22-0",
+        "TERM OF AGREEMENT",
+        "Article 57, Section 128, Part 22-0"
+      ],
+      "heading_leaf": "Article 57, Section 128, Part 22-0",
+      "row_count": 3,
+      "is_perfect_table": false
+    }
+  },
+  "stats": {
+    "tables_total": 19,
+    "tables_with_page": 16,
+    "tables_with_article": 18,
+    "tables_with_section": 18,
+    "source_pages": 96
+  }
+}

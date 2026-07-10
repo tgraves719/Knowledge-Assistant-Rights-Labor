@@ -1,10 +1,10 @@
 """
-System prompts for Karl, the Union Steward AI.
+System prompts for KARL.
 
 Citation-focused prompts that ensure grounded responses.
 """
 
-SYSTEM_PROMPT = """You are Karl, a calm and knowledgeable Union Steward AI assistant for UFCW Local 7 Pueblo Clerks. You help union members understand their contract rights.
+SYSTEM_PROMPT = """You are KARL, a calm and knowledgeable union contract assistant. You help workers understand their contract rights.
 
 ## WHO YOU ARE
 
@@ -69,7 +69,7 @@ For questions not about the contract (like "who are you?", "why are you named Ka
 - Don't pretend you don't know your own name or identity
 """
 
-SYSTEM_PROMPT_WITH_CONTEXT = """You are Karl, a calm and knowledgeable Union Steward AI assistant for UFCW Local 7 Pueblo Clerks.
+SYSTEM_PROMPT_WITH_CONTEXT = """You are KARL, a calm and knowledgeable union contract assistant.
 
 ## WHO YOU ARE
 
@@ -91,6 +91,7 @@ You have access to the following contract provisions:
 2. **STAY GROUNDED**: Only use information from the context above. If not found, say "I cannot find that in your contract."
 3. **NO SPECULATION**: Never guess or infer. When uncertain, admit it.
 4. **NO LEGAL ADVICE**: Provide contract information, not legal advice.
+5. **NO FALSE LIMITATION CLAIMS**: Do not say you only have "partial documents" or "not the full contract" unless the retrieved context is actually empty for the asked topic.
 
 ## SYNTHESIS ACROSS SECTIONS
 
@@ -144,7 +145,10 @@ def format_context(chunks: list[dict]) -> str:
 def format_wage_info(wage_info: dict, is_estimate: bool = False) -> str:
     """Format wage lookup result for the prompt."""
     if not wage_info:
-        return "No wage information available for this query."
+        return (
+            "No wage rate was resolved from profile context. "
+            "If the question is about personal pay, ask for the worker's classification first."
+        )
 
     base_info = f"""**Wage Rate (from Appendix A)**:
 - Classification: {wage_info.get('classification', 'Unknown')}
@@ -162,6 +166,30 @@ def format_wage_info(wage_info: dict, is_estimate: bool = False) -> str:
 """
 
     return base_info
+
+
+def format_contract_context(contract_context: dict | None) -> str:
+    """Format dynamic contract context from selected user preferences."""
+    if not contract_context:
+        return ""
+
+    lines = ["## ACTIVE CONTRACT CONTEXT"]
+    employer = (contract_context.get("employer") or "").strip()
+    union_local_id = (contract_context.get("union_local_id") or "").strip()
+    contract_id = (contract_context.get("contract_id") or "").strip()
+    contract_version = (contract_context.get("contract_version") or "").strip()
+
+    if employer:
+        lines.append(f"- Employer/store: **{employer}**")
+    if union_local_id:
+        lines.append(f"- Union local: **{union_local_id}**")
+    if contract_id:
+        lines.append(f"- Contract ID: `{contract_id}`")
+    if contract_version:
+        lines.append(f"- Contract version: `{contract_version}`")
+
+    lines.append("Use this context only to disambiguate which contract rules apply.")
+    return "\n".join(lines)
 
 
 def format_user_profile(profile: dict) -> str:
@@ -223,24 +251,13 @@ def format_user_context(classification: str = None) -> str:
     """Format user context to help LLM personalize the response."""
     if not classification:
         return ""
-    
-    # Map internal classification names to display names
-    display_names = {
-        "courtesy_clerk": "Courtesy Clerk",
-        "all_purpose_clerk": "All Purpose Clerk", 
-        "head_clerk": "Head Clerk",
-        "cake_decorator": "Cake Decorator",
-        "pharmacy_tech": "Pharmacy Technician",
-        "produce_manager": "Produce Manager",
-        "bakery_manager": "Bakery Manager",
-    }
-    
-    display_name = display_names.get(classification, classification)
-    
+
+    display_name = str(classification).replace("_", " ").strip().title()
+
     return f"""## USER CONTEXT
 The user is a **{display_name}**. When answering:
 - Highlight provisions that specifically apply to their classification
-- Note if certain benefits/rules differ for their role vs. other clerks
+- Note if certain benefits/rules differ for their role vs. other roles
 - If something doesn't apply to their classification, say so clearly"""
 
 
@@ -248,12 +265,15 @@ def build_prompt(
     query: str,
     chunks: list[dict],
     wage_info: dict = None,
+    contract_context: dict = None,
     requires_escalation: bool = False,
     query_expansions: list = None,
     user_classification: str = None,
     conversation_context: str = None,
     user_profile: dict = None,
-    is_wage_estimate: bool = False
+    is_wage_estimate: bool = False,
+    response_tone: str = None,
+    response_verbosity: str = None,
 ) -> str:
     """
     Build the full prompt with context for the LLM.
@@ -276,6 +296,17 @@ def build_prompt(
     wage_str = format_wage_info(wage_info, is_estimate=is_wage_estimate)
     escalation_note = ESCALATION_NOTE if requires_escalation else NO_ESCALATION_NOTE
     terminology_note = format_query_expansions(query_expansions)
+    contract_note = format_contract_context(contract_context)
+    response_style_lines: list[str] = []
+    normalized_tone = str(response_tone or "").strip().lower()
+    normalized_verbosity = str(response_verbosity or "").strip().lower()
+    if normalized_tone:
+        response_style_lines.append(f"- Tone preference: {normalized_tone}")
+    if normalized_verbosity:
+        response_style_lines.append(f"- Verbosity preference: {normalized_verbosity}")
+    response_style_note = ""
+    if response_style_lines:
+        response_style_note = "## RESPONSE STYLE\n" + "\n".join(response_style_lines)
 
     # Use profile if provided, otherwise fall back to classification
     if user_profile:
@@ -289,6 +320,9 @@ def build_prompt(
         escalation_note=escalation_note
     )
 
+    if contract_note:
+        system = system + "\n\n" + contract_note
+
     # Add user context if classification provided
     if user_context:
         system = system + "\n\n" + user_context
@@ -296,6 +330,9 @@ def build_prompt(
     # Add terminology note if there were expansions
     if terminology_note:
         system = system + "\n\n" + terminology_note
+
+    if response_style_note:
+        system = system + "\n\n" + response_style_note
 
     # Add conversation context for follow-up questions
     if conversation_context:

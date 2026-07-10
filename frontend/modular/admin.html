@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karl Admin Console</title>
+    <link rel="stylesheet" href="/static/modular/styles/generated.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #173246;
+            --panel: rgba(255, 255, 255, 0.86);
+            --line: rgba(23, 50, 70, 0.12);
+            --accent: #0d5c80;
+            --accent-deep: #0a4762;
+            --blue: #1b6b8a;
+            --gold: #d4a029;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--ink);
+            font-family: "Inter", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(212, 160, 41, 0.16), transparent 28%),
+                radial-gradient(circle at 80% 0%, rgba(27, 107, 138, 0.2), transparent 26%),
+                linear-gradient(135deg, #edf5f8 0%, #f6f3eb 40%, #e8eef4 100%);
+        }
+
+        .mono { font-family: "IBM Plex Mono", monospace; }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            box-shadow: 0 20px 50px rgba(20, 33, 43, 0.08);
+            backdrop-filter: blur(18px);
+        }
+
+        .hero-grid {
+            background:
+                radial-gradient(circle at 20% 20%, rgba(212, 160, 41, 0.14), transparent 24%),
+                linear-gradient(135deg, rgba(13, 59, 84, 0.98), rgba(20, 80, 110, 0.96), rgba(27, 107, 138, 0.94));
+            color: white;
+        }
+
+        .status-pill {
+            border: 1px solid rgba(20, 33, 43, 0.1);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .section-title {
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: rgba(20, 33, 43, 0.65);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 34px rgba(20, 33, 43, 0.12);
+        }
+    </style>
+</head>
+<body>
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <header class="hero-grid panel overflow-hidden rounded-[28px]">
+            <div class="grid gap-6 p-6 lg:grid-cols-[1.6fr_1fr] lg:p-8">
+                <div class="space-y-4">
+                    <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-white">
+                        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                        Karl Admin Console
+                    </div>
+                    <div class="space-y-2">
+                        <h1 class="max-w-3xl font-['Playfair_Display'] text-3xl font-semibold leading-tight text-white sm:text-4xl">
+                            Multi-tenant union operations, security, and model controls.
+                        </h1>
+                        <p class="max-w-2xl text-sm leading-6 text-white/85 sm:text-base">
+                            Manage your union workspace, uploaded documents, users, and policies from one place.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-3 text-xs text-white/90">
+                        <div class="status-pill rounded-full px-3 py-1">Tenant-scoped</div>
+                        <div class="status-pill rounded-full px-3 py-1">Document-first</div>
+                        <div class="status-pill rounded-full px-3 py-1">Policy-aware</div>
+                        <div class="status-pill rounded-full px-3 py-1">Audit-first</div>
+                    </div>
+                </div>
+                <div class="rounded-[24px] border border-white/15 bg-white/10 p-5 backdrop-blur-md">
+                    <div class="section-title">Session</div>
+                    <div class="mt-4 space-y-4">
+                        <div id="auth-summary" class="text-sm text-white/85">Not signed in.</div>
+                        <div class="grid gap-3 sm:grid-cols-2">
+                            <button id="auth-open-modal" class="w-full rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-white/90" type="button">Sign In</button>
+                            <button id="auth-logout" class="w-full rounded-2xl border border-white/20 bg-transparent px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10" type="button">Sign Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div id="signed-out-state" class="mt-6 panel rounded-[28px] p-8 text-center">
+            <h2 class="font-['Playfair_Display'] text-3xl font-semibold text-slate-900">Sign in to open the workspace</h2>
+            <p class="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-600">Once signed in, you’ll be able to upload documents, manage users, review alerts, and update union settings.</p>
+        </div>
+
+        <section id="union-directory-panel" class="mt-6 panel rounded-[28px] p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <div class="section-title">Tenants</div>
+                    <h2 class="mt-2 text-xl font-bold text-slate-900">Union directory</h2>
+                    <p class="mt-1 text-sm text-slate-600">This stays available only for superadmin workflows. Tenant admins stay locked to their own union.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button id="load-unions" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Load Unions</button>
+                    <button id="load-ops" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100">Load Ops</button>
+                </div>
+            </div>
+            <div id="platform-summary" class="mt-5"></div>
+            <form id="create-union-form" class="mt-5 grid gap-3 rounded-[24px] border border-slate-200 bg-white/70 p-4 md:grid-cols-3">
+                <input id="union-slug" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="slug">
+                <input id="union-name" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Union Name">
+                <input id="union-local-id" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="union_local_id">
+                <button class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white md:col-span-3 hover:bg-[color:var(--accent-deep)]" type="submit">Create Union</button>
+            </form>
+            <div id="union-list" class="mt-5 grid gap-4"></div>
+        </section>
+
+        <main id="workspace-shell" class="mt-6 hidden space-y-6">
+            <section class="panel rounded-[28px] p-6">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <div class="section-title">Workspace</div>
+                        <h2 id="detail-title" class="mt-2 text-2xl font-bold text-slate-900">Select a union</h2>
+                        <p id="detail-subtitle" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">This workspace is organized around the tasks a union admin handles most often: documents, members, union settings, quotas, and model setup.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel rounded-[28px] p-6">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <div class="section-title">Operations Snapshot</div>
+                        <h2 class="mt-2 text-2xl font-bold text-slate-900">Recent access and issues at a glance</h2>
+                        <p id="dashboard-scope-label" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Load a union to see usage, sign-ins, open review work, and issue trends.</p>
+                    </div>
+                    <button id="refresh-dashboard" class="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Refresh Snapshot</button>
+                </div>
+                <div id="dashboard-summary-cards" class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-5"></div>
+                <div id="dashboard-trend-cards" class="mt-5 grid gap-4 xl:grid-cols-3"></div>
+            </section>
+
+            <section class="grid gap-6 xl:grid-cols-2">
+                <div class="space-y-6">
+                    <div class="panel rounded-[28px] p-6">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Documents</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">Upload and manage union documents</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">This is the main day-to-day workspace. Upload files, confirm they are ready for member questions, and retry or remove items when needed.</p>
+                            </div>
+                            <button id="refresh-docs" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <form id="document-form" class="mt-5 grid gap-3">
+                            <input id="document-file" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="file">
+                            <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Upload Document</button>
+                        </form>
+                        <div id="document-list" class="mt-4 grid gap-3"></div>
+                    </div>
+
+                    <div class="panel rounded-[28px] p-6">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Users</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">Add members and open the user directory</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">Use the quick add form for new people, then open the user directory to search, edit, reset passwords, or remove access at scale.</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <button id="refresh-users" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                            </div>
+                        </div>
+                        <div id="user-summary" class="mt-4 rounded-[24px] border border-slate-200 bg-white/70 p-4 text-sm text-slate-600">Select a union to load member access.</div>
+                        <div class="mt-4">
+                            <button id="open-user-directory" class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="button">Open User Directory</button>
+                        </div>
+                        <form id="create-user-form" class="mt-5 grid gap-3 md:grid-cols-2">
+                            <input id="user-email" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Email address">
+                            <input id="user-name" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Full name">
+                            <select id="user-role" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm"></select>
+                            <input id="user-username" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Username for local sign-in (optional)">
+                            <input id="user-password" type="password" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2" placeholder="Password for local sign-in (optional)">
+                            <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700 md:col-span-2" type="submit">Add User</button>
+                        </form>
+                    </div>
+
+                    <section id="user-directory-panel" class="hidden panel rounded-[28px] p-6">
+                        <div class="flex flex-wrap items-start justify-between gap-4">
+                            <div>
+                                <div class="section-title">User Directory</div>
+                                <h3 class="mt-2 text-2xl font-bold text-slate-900">Search and manage member access</h3>
+                                <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Search by name, email, username, or role. Open a member to update their details, reset a password, or remove union access.</p>
+                            </div>
+                            <button id="close-user-directory" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Close Directory</button>
+                        </div>
+                        <form id="user-search-form" class="mt-5 grid gap-3">
+                            <div class="grid gap-3 xl:grid-cols-[minmax(0,1.4fr)_220px_220px_180px_auto_auto]">
+                                <input id="user-search-query" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Search users by name, email, username, or role">
+                                <select id="user-search-field" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    <option value="all">Search all fields</option>
+                                    <option value="name">Search names</option>
+                                    <option value="email">Search emails</option>
+                                    <option value="username">Search usernames</option>
+                                    <option value="role">Search roles</option>
+                                </select>
+                                <select id="user-sort" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    <option value="name">Sort by name</option>
+                                    <option value="email">Sort by email</option>
+                                    <option value="role">Sort by role</option>
+                                    <option value="created_at">Sort by newest</option>
+                                </select>
+                                <select id="user-direction" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    <option value="asc">Ascending</option>
+                                    <option value="desc">Descending</option>
+                                </select>
+                                <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Search</button>
+                                <button id="user-view-all" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">View All Users</button>
+                            </div>
+                        </form>
+                        <div class="mt-5 grid gap-6 xl:grid-cols-[1.25fr_0.95fr]">
+                            <div>
+                                <div class="mb-3 flex items-center justify-between gap-3">
+                                    <div id="user-pagination-summary" class="text-sm text-slate-600">Select a union to load users.</div>
+                                    <div class="flex gap-2">
+                                        <button id="user-page-prev" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Previous</button>
+                                        <button id="user-page-next" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Next</button>
+                                    </div>
+                                </div>
+                                <div id="user-directory-list" class="grid gap-3"></div>
+                            </div>
+                            <div class="rounded-[24px] border border-slate-200 bg-white/70 p-5">
+                                <div class="section-title">Selected User</div>
+                                <form id="user-edit-form" class="mt-4 grid gap-3">
+                                    <input id="user-edit-id" type="hidden">
+                                    <label class="grid gap-2 text-sm text-slate-700">
+                                        <span class="font-semibold text-slate-900">Full name</span>
+                                        <input id="user-edit-name" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Select a user first">
+                                    </label>
+                                    <label class="grid gap-2 text-sm text-slate-700">
+                                        <span class="font-semibold text-slate-900">Email</span>
+                                        <input id="user-edit-email" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    </label>
+                                    <label class="grid gap-2 text-sm text-slate-700">
+                                        <span class="font-semibold text-slate-900">Role</span>
+                                        <select id="user-edit-role" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm"></select>
+                                    </label>
+                                    <label class="grid gap-2 text-sm text-slate-700">
+                                        <span class="font-semibold text-slate-900">Username</span>
+                                        <input id="user-edit-username" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Local sign-in username">
+                                    </label>
+                                    <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+                                        <input id="user-edit-active" type="checkbox">
+                                        User is active in this union
+                                    </label>
+                                    <div class="grid gap-3 sm:grid-cols-2">
+                                        <button class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="submit">Save User</button>
+                                        <button id="user-password-button" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Reset Password</button>
+                                    </div>
+                                    <button id="user-delete-button" class="rounded-2xl border border-rose-300 bg-white px-4 py-3 text-sm font-semibold text-rose-700 hover:bg-rose-50" type="button">Delete User</button>
+                                    <div id="user-edit-status" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">Choose a user from the list to edit their access.</div>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="panel rounded-[28px] p-6">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Union Settings</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">How this union appears and behaves</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">Update the public display name, member login policy, message retention, and branding without editing raw configuration.</p>
+                            </div>
+                            <button id="refresh-union-settings" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <form id="union-settings-form" class="mt-5 grid gap-3">
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Union display name</span>
+                                <input id="union-settings-name" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Union name">
+                            </label>
+                            <div class="grid gap-3 md:grid-cols-2">
+                                <label class="grid gap-2 text-sm text-slate-700">
+                                    <span class="font-semibold text-slate-900">Theme color</span>
+                                    <input id="union-settings-theme-color" type="color" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-2 py-2">
+                                </label>
+                                <label class="grid gap-2 text-sm text-slate-700">
+                                    <span class="font-semibold text-slate-900">Accent color</span>
+                                    <input id="union-settings-accent-color" type="color" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-2 py-2">
+                                </label>
+                                <label class="grid gap-2 text-sm text-slate-700">
+                                    <span class="font-semibold text-slate-900">Surface tint</span>
+                                    <input id="union-settings-surface-tint" type="color" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-2 py-2">
+                                </label>
+                                <label class="grid gap-2 text-sm text-slate-700">
+                                    <span class="font-semibold text-slate-900">Welcome heading</span>
+                                    <input id="union-settings-welcome-heading" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Ask Karl about your union documents">
+                                </label>
+                            </div>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Welcome subcopy</span>
+                                <textarea id="union-settings-welcome-subcopy" class="min-h-[96px] rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Explain what members can do here."></textarea>
+                            </label>
+                            <div class="grid gap-3 md:grid-cols-3">
+                                <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700">
+                                    <input id="union-settings-login-required" type="checkbox" checked>
+                                    Require member login
+                                </label>
+                                <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700">
+                                    <input id="union-settings-retention" type="checkbox">
+                                    Save member conversations
+                                </label>
+                                <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700">
+                                    <input id="union-settings-active" type="checkbox" checked>
+                                    Union active
+                                </label>
+                            </div>
+                            <button class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="submit">Save Union Settings</button>
+                        </form>
+                    </div>
+
+                    <div class="panel rounded-[28px] p-6">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Quotas</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">Usage limits and safety thresholds</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">These limits help protect budget and service quality. The labels below show exactly what each number controls.</p>
+                            </div>
+                            <button id="refresh-quota" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <div id="quota-usage-summary" class="mt-4 rounded-[24px] border border-slate-200 bg-white/70 p-4 text-sm text-slate-600">Load a union to see current usage.</div>
+                        <form id="quota-form" class="mt-5 grid gap-3 md:grid-cols-2">
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Union requests per day</span>
+                                <input id="quota-requests" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="number">
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Union tokens per day</span>
+                                <input id="quota-tokens" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="number">
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Union estimated cost per day (USD)</span>
+                                <input id="quota-cost" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="number" step="0.01">
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Per-user requests per hour</span>
+                                <input id="quota-user-rate" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="number">
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700 md:col-span-2">
+                                <span class="font-semibold text-slate-900">Warning threshold ratio</span>
+                                <input id="quota-warn" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="number" step="0.01">
+                            </label>
+                            <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700 md:col-span-2">
+                                <input id="quota-paused" type="checkbox">
+                                Pause this union’s current activity
+                            </label>
+                            <button class="rounded-2xl bg-[color:var(--gold)] px-4 py-3 text-sm font-semibold text-slate-950 hover:brightness-95 md:col-span-2" type="submit">Save Quota Settings</button>
+                        </form>
+                    </div>
+
+                    <div class="panel rounded-[28px] p-6">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Model Provider</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">Connect the live model for member answers</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">Choose the provider, set the model name, and save the API key. Advanced transport details stay out of the tenant-admin view.</p>
+                            </div>
+                            <button id="refresh-provider" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <form id="provider-form" class="mt-5 grid gap-3">
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Provider</span>
+                                <select id="provider-name" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    <option value="openrouter">OpenRouter</option>
+                                    <option value="openai">OpenAI</option>
+                                    <option value="gemini">Google</option>
+                                    <option value="anthropic">Anthropic</option>
+                                </select>
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Model name</span>
+                                <input id="provider-model" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="qwen/qwen3.5-flash-02-23">
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">API key</span>
+                                <input id="provider-key" type="password" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Paste a new API key to save or replace it">
+                            </label>
+                            <div id="provider-key-status" class="rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-600">No saved API key yet.</div>
+                            <div id="provider-help" class="rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-600"></div>
+                            <div class="grid gap-3 md:grid-cols-2">
+                                <button class="rounded-2xl bg-[color:var(--blue)] px-4 py-3 text-sm font-semibold text-white hover:opacity-90" type="submit">Save Provider</button>
+                                <button id="test-provider" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Test Provider</button>
+                            </div>
+                        </form>
+                        <div id="provider-test-status" class="mt-3 hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel rounded-[28px] p-6">
+                <div class="section-title">Reviews And Alerts</div>
+                <p class="mt-2 text-sm leading-6 text-slate-600">This area keeps recent conversations, security signals, and notifications in one place. We’ll refine the workflow later, but the basic visibility should already be easy to read.</p>
+                <div class="mt-5 grid gap-5 xl:grid-cols-3">
+                    <div>
+                        <div class="mb-2 flex items-center justify-between">
+                            <h3 class="font-semibold text-slate-900">Retained chats</h3>
+                            <button id="refresh-chats" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <div id="chat-list" class="grid gap-3"></div>
+                        <pre id="chat-detail" class="mono mt-3 hidden overflow-x-auto rounded-2xl bg-slate-950 p-4 text-xs text-amber-300"></pre>
+                    </div>
+                    <div>
+                        <div class="mb-2 flex items-center justify-between">
+                            <h3 class="font-semibold text-slate-900">Security events</h3>
+                            <button id="refresh-security" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <div id="security-list" class="grid gap-3"></div>
+                    </div>
+                    <div>
+                        <div class="mb-2 flex items-center justify-between">
+                            <h3 class="font-semibold text-slate-900">Notifications</h3>
+                            <button id="refresh-notifications" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <div id="notification-list" class="grid gap-3"></div>
+                    </div>
+                </div>
+                <div id="telemetry-panel" class="mt-6 rounded-[24px] border border-slate-200 bg-white/70 p-4">
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <h3 class="font-semibold text-slate-900">Tracking And Observability</h3>
+                            <p class="mt-1 text-sm text-slate-600">Use this feed to follow the member and admin journey through the app, including query failures, source opens, resets, and other useful app events for this union.</p>
+                        </div>
+                        <button id="refresh-telemetry" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold" type="button">Refresh</button>
+                    </div>
+                    <form id="telemetry-form" class="mt-4 grid gap-3 lg:grid-cols-[180px_220px_1fr_220px_auto]">
+                        <select id="telemetry-category" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                            <option value="">All categories</option>
+                            <option value="bug_journey">Bug and journey</option>
+                            <option value="usage_ux">Usage and UX</option>
+                        </select>
+                        <input id="telemetry-event-type" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Event type">
+                        <input id="telemetry-query" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Search route, union, or details">
+                        <input id="telemetry-session-id" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Session ID">
+                        <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Apply</button>
+                    </form>
+                    <div id="telemetry-list" class="mt-4 grid gap-3"></div>
+                    <div class="mt-3 flex items-center justify-between gap-3">
+                        <button id="telemetry-prev" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Previous</button>
+                        <div id="telemetry-summary" class="text-sm text-slate-600">No telemetry loaded.</div>
+                        <button id="telemetry-next" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Next</button>
+                    </div>
+                </div>
+                <details class="mt-5 rounded-[24px] border border-slate-200 bg-white/70 p-4">
+                    <summary class="cursor-pointer font-semibold text-slate-900">Debug details</summary>
+                    <div class="mt-4">
+                        <div class="mb-2 flex items-center justify-between">
+                            <h3 class="font-semibold text-slate-900">Current session</h3>
+                            <button id="refresh-me" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Refresh</button>
+                        </div>
+                        <pre id="me-output" class="mono mt-4 overflow-x-auto rounded-2xl bg-slate-950 p-4 text-xs text-emerald-300">{}</pre>
+                    </div>
+                </details>
+            </section>
+        </main>
+    </div>
+
+    <div id="auth-modal" class="hidden fixed inset-0 z-[80] bg-slate-950/50 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-md items-center justify-center">
+            <div class="w-full rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sign In</p>
+                        <h2 class="mt-2 text-2xl font-semibold text-slate-900">Open the admin console</h2>
+                        <p class="mt-2 text-sm leading-6 text-slate-600">Use your admin account to manage documents, users, quotas, and notifications.</p>
+                    </div>
+                    <button id="auth-modal-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <form id="auth-form" class="mt-6 space-y-3">
+                    <div>
+                        <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Username</label>
+                        <input id="auth-username" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="Username">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Password</label>
+                        <div class="flex gap-2">
+                            <input id="auth-password" type="password" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="Password">
+                            <button id="auth-password-toggle" type="button" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100">Show</button>
+                        </div>
+                    </div>
+                    <div id="auth-union-group">
+                        <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Union</label>
+                        <input id="auth-union" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="Union">
+                    </div>
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        <button class="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-700" type="submit">Sign In</button>
+                        <button id="auth-modal-cancel" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="password-reset-modal" class="hidden fixed inset-0 z-[90] bg-slate-950/50 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-md items-center justify-center">
+            <div class="w-full rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Reset Password</p>
+                        <h2 class="mt-2 text-2xl font-semibold text-slate-900">Set a new password</h2>
+                        <p class="mt-2 text-sm leading-6 text-slate-600">Enter the new password twice so we can make sure it matches before saving.</p>
+                    </div>
+                    <button id="password-reset-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <form id="password-reset-form" class="mt-6 space-y-3">
+                    <div>
+                        <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">New password</label>
+                        <div class="flex gap-2">
+                            <input id="password-reset-new" type="password" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="New password">
+                            <button id="password-reset-new-toggle" type="button" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100">Show</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Repeat password</label>
+                        <div class="flex gap-2">
+                            <input id="password-reset-repeat" type="password" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="Repeat password">
+                            <button id="password-reset-repeat-toggle" type="button" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100">Show</button>
+                        </div>
+                    </div>
+                    <div id="password-reset-status" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">Choose a user first, then enter the new password here.</div>
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        <button class="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Save Password</button>
+                        <button id="password-reset-cancel" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="document-review-modal" class="hidden fixed inset-0 z-[95] overflow-y-auto bg-slate-950/50 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-5xl items-start justify-center py-6">
+            <div class="max-h-[calc(100vh-3rem)] w-full overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Document Review</p>
+                        <h2 id="document-review-title" class="mt-2 text-2xl font-semibold text-slate-900">Review document</h2>
+                        <p id="document-review-subtitle" class="mt-2 text-sm leading-6 text-slate-600">Review the flagged content below and choose the next step.</p>
+                    </div>
+                    <button id="document-review-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <div id="document-review-summary" class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">Loading document review details...</div>
+                <div id="document-review-needs-superadmin" class="mt-4 hidden rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"></div>
+                <div class="mt-5 grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+                    <div>
+                        <div class="section-title">Flagged Issues</div>
+                        <div id="document-review-findings" class="mt-3 grid gap-3"></div>
+                        <label class="mt-5 grid gap-2 text-sm text-slate-700">
+                            <span class="font-semibold text-slate-900">Review note</span>
+                            <textarea id="document-review-note" class="min-h-[120px] rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Optional note about why you approved, kept in review, or deleted this document."></textarea>
+                        </label>
+                    </div>
+                    <div class="grid gap-4">
+                        <div>
+                            <div class="section-title">Raw Parsed Preview</div>
+                            <pre id="document-review-preview-raw" class="mt-3 max-h-[280px] overflow-auto rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-6 text-slate-700 whitespace-pre-wrap"></pre>
+                        </div>
+                        <div>
+                            <div class="section-title">Member-Facing Redacted Preview</div>
+                            <pre id="document-review-preview-redacted" class="mt-3 max-h-[220px] overflow-auto rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-6 text-slate-700 whitespace-pre-wrap"></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="sticky bottom-0 mt-6 grid gap-3 border-t border-slate-200 bg-white pt-4 sm:grid-cols-2 xl:grid-cols-4">
+                    <button id="document-review-in-review" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Keep In Review</button>
+                    <button id="document-review-approve" class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="button">Approve Full Member Access</button>
+                    <button id="document-review-delete" class="rounded-2xl border border-rose-300 bg-white px-4 py-3 text-sm font-semibold text-rose-700 hover:bg-rose-50" type="button">Delete From Uploads</button>
+                    <button id="document-review-cancel" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="session-timeline-modal" class="hidden fixed inset-0 z-[96] overflow-y-auto bg-slate-950/55 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-4xl items-start justify-center py-6">
+            <div class="max-h-[calc(100vh-3rem)] w-full overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Session Timeline</p>
+                        <h2 id="session-timeline-title" class="mt-2 text-2xl font-semibold text-slate-900">Session Timeline</h2>
+                        <p id="session-timeline-subtitle" class="mt-2 text-sm leading-6 text-slate-600">Load a session from the observability feed.</p>
+                    </div>
+                    <button id="session-timeline-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <div id="session-timeline-summary" class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">No session loaded.</div>
+                <div id="session-timeline-list" class="mt-4 grid max-h-[60vh] gap-3 overflow-y-auto"></div>
+                <div class="mt-5 flex justify-end">
+                    <button id="session-timeline-done" class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="button">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="/static/modular/admin.js"></script>
+</body>
+</html>

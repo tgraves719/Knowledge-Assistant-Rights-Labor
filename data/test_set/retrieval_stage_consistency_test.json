@@ -1,0 +1,59 @@
+{
+  "schema_version": "retrieval_stage_consistency_test_v1",
+  "description": "Cross-contract checks that router-owned retrieval planning and executed stage metadata stay aligned.",
+  "test_cases": [
+    {
+      "id": "RSC-FOLLOWUP-CLERKS-01",
+      "mode": "followup_plan",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "what about 4 years",
+      "prior_topic": "vacation",
+      "prior_citations": ["Article 17, Section 42"],
+      "prior_article_anchors": [17],
+      "expected_followup_strategy": "followup_anchor_seeded",
+      "expected_followup_context_used": true,
+      "expected_followup_anchor_count": 1,
+      "expected_routing_query_tokens": ["vacation", "article 17"]
+    },
+    {
+      "id": "RSC-KS-VAC-01",
+      "mode": "retrieve",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "How much vacation do I get per year?",
+      "expected_planned_strategy": "topic_anchor_guided",
+      "expected_policy_strategy": "topic_article_seeded",
+      "required_plan_flags": ["apply_topic_seed_coverage", "apply_vacation_entitlement_coverage"],
+      "required_executed_stages": ["topic_seed_coverage", "vacation_entitlement_coverage", "full_article_expansion"]
+    },
+    {
+      "id": "RSC-SWM-SL-01",
+      "mode": "retrieve",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What does the Floater Pool Letter of Understanding say?",
+      "expected_planned_strategy": "side_letter_query",
+      "expected_policy_strategy": "side_letter_promoted",
+      "required_plan_flags": ["apply_side_letter_promotion"],
+      "required_executed_stages": ["side_letter_promotion", "full_article_expansion"]
+    },
+    {
+      "id": "RSC-SWM-SL-02",
+      "mode": "retrieve",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "How much written notice is required if either party wants to discontinue that agreement?",
+      "expected_planned_strategy": "topic_anchor_guided",
+      "expected_policy_strategy": "topic_article_seeded",
+      "required_plan_flags": ["apply_topic_seed_coverage", "apply_article_prioritization"],
+      "required_executed_stages": ["topic_seed_coverage", "article_prioritization"]
+    },
+    {
+      "id": "RSC-SWC-WAGE-01",
+      "mode": "retrieve",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "what does dug make per hour",
+      "expected_planned_strategy": "topic_anchor_guided",
+      "expected_policy_strategy": "topic_article_seeded",
+      "required_plan_flags": ["apply_topic_seed_coverage", "apply_article_prioritization"],
+      "required_executed_stages": ["topic_seed_coverage", "article_prioritization", "full_article_expansion"]
+    }
+  ]
+}

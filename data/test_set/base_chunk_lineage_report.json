@@ -1,0 +1,127 @@
+{
+  "contracts": [
+    {
+      "base_chunk_missing": false,
+      "base_chunk_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_enriched.json",
+      "base_chunk_path_equals_effective_chunk_path": false,
+      "base_chunk_under_effective_snapshot": false,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "effective_chunk_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks_enriched_local7_kingsoopers_loveland_meat_2019.json",
+      "effective_chunk_under_effective_snapshot": false,
+      "findings": [],
+      "has_effective_snapshot": false,
+      "patch_count": 0,
+      "patched_section_content_check": {
+        "checked": 0,
+        "different_content_count": 0,
+        "equal_content_count": 0,
+        "missing_in_base_count": 0,
+        "missing_in_effective_count": 0,
+        "replace_section_ops": 0,
+        "samples": []
+      },
+      "risk_level": "low"
+    },
+    {
+      "base_chunk_missing": false,
+      "base_chunk_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched.json",
+      "base_chunk_path_equals_effective_chunk_path": false,
+      "base_chunk_under_effective_snapshot": false,
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "effective_chunk_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+      "effective_chunk_under_effective_snapshot": true,
+      "findings": [],
+      "has_effective_snapshot": true,
+      "patch_count": 1,
+      "patched_section_content_check": {
+        "checked": 2,
+        "different_content_count": 2,
+        "equal_content_count": 0,
+        "missing_in_base_count": 0,
+        "missing_in_effective_count": 0,
+        "replace_section_ops": 2,
+        "samples": [
+          {
+            "article_num": 58,
+            "base_has_content": true,
+            "base_preview": "Section 1749. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **January 23, 2022** and shall remain in full force and effect until midnight on **January",
+            "effective_has_content": true,
+            "effective_preview": "Section 1749. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **January 23, 2022** and shall remain in full force and effect until midnight on **January",
+            "op_index": 0,
+            "patch_id": "local7_safeway_moa_2025_07_05",
+            "section_num": 1749,
+            "status": "different"
+          },
+          {
+            "article_num": 15,
+            "base_has_content": true,
+            "base_preview": "Section 34. A premium of **two** dollars (**$2.00**) per hour shall be paid for all work performed between the hours of 12:00 midnight and 6:00 a.m. to all employees (excluding Cou",
+            "effective_has_content": true,
+            "effective_preview": "Section 34. A premium of **two** dollars (**$2.00**) per hour shall be paid for all work performed between the hours of 12:00 midnight and 6:00 a.m. to all employees (excluding Cou",
+            "op_index": 2,
+            "patch_id": "local7_safeway_moa_2025_07_05",
+            "section_num": 34,
+            "status": "different"
+          }
+        ]
+      },
+      "risk_level": "low"
+    },
+    {
+      "base_chunk_missing": false,
+      "base_chunk_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\chunks\\contract_chunks_enriched.json",
+      "base_chunk_path_equals_effective_chunk_path": false,
+      "base_chunk_under_effective_snapshot": false,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "effective_chunk_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_meat_2022.json",
+      "effective_chunk_under_effective_snapshot": false,
+      "findings": [],
+      "has_effective_snapshot": false,
+      "patch_count": 0,
+      "patched_section_content_check": {
+        "checked": 0,
+        "different_content_count": 0,
+        "equal_content_count": 0,
+        "missing_in_base_count": 0,
+        "missing_in_effective_count": 0,
+        "replace_section_ops": 0,
+        "samples": []
+      },
+      "risk_level": "low"
+    },
+    {
+      "base_chunk_missing": true,
+      "base_chunk_path": null,
+      "base_chunk_path_equals_effective_chunk_path": false,
+      "base_chunk_under_effective_snapshot": false,
+      "contract_id": "safeway_pueblo_clerks_2022",
+      "effective_chunk_path": null,
+      "effective_chunk_under_effective_snapshot": false,
+      "findings": [
+        "base_chunk_missing"
+      ],
+      "has_effective_snapshot": false,
+      "patch_count": 0,
+      "patched_section_content_check": {
+        "checked": 0,
+        "different_content_count": 0,
+        "equal_content_count": 0,
+        "missing_in_base_count": 0,
+        "missing_in_effective_count": 0,
+        "replace_section_ops": 0,
+        "samples": []
+      },
+      "risk_level": "low"
+    }
+  ],
+  "schema_version": "base_chunk_lineage_report_v1",
+  "summary": {
+    "base_equals_effective": 0,
+    "high_risk": 0,
+    "low_risk": 4,
+    "medium_risk": 0,
+    "missing_base_chunk": 1,
+    "patched_section_equal_all": 0,
+    "total_contracts": 4
+  }
+}

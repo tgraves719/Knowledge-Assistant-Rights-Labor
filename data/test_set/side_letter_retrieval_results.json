@@ -1,0 +1,1108 @@
+{
+  "bm25_only": true,
+  "by_contract": {
+    "local7_kingsoopers_loveland_meat_2019": {
+      "combined_pass_rate": 1.0,
+      "combined_passed": 8,
+      "depth_pass_rate": 1.0,
+      "depth_passed": 8,
+      "topk_pass_rate": 0.875,
+      "topk_passed": 7,
+      "total": 8
+    },
+    "local7_safeway_pueblo_meat_2022": {
+      "combined_pass_rate": 1.0,
+      "combined_passed": 8,
+      "depth_pass_rate": 1.0,
+      "depth_passed": 8,
+      "topk_pass_rate": 1.0,
+      "topk_passed": 8,
+      "total": 8
+    }
+  },
+  "dataset_schema_version": "side_letter_retrieval_test_v2",
+  "depth_n_results": 20,
+  "gate": {
+    "depth_pass_threshold": 0.95,
+    "pass": true,
+    "rule": "fail_only_if_topk_and_depth_degrade",
+    "topk_pass_threshold": 0.8
+  },
+  "n_results": 8,
+  "overall": {
+    "both_fail_case_count": 0,
+    "combined_pass_rate": 1.0,
+    "combined_passed": 16,
+    "depth_citation_hit_rate": 1.0,
+    "depth_doc_type_match_rate": 1.0,
+    "depth_keyword_match_rate": 1.0,
+    "depth_pass_rate": 1.0,
+    "depth_passed": 16,
+    "pass_rate": 0.9375,
+    "passed": 15,
+    "topk_citation_hit_rate": 0.9375,
+    "topk_doc_type_match_rate": 0.9375,
+    "topk_keyword_match_rate": 0.9375,
+    "topk_pass_rate": 0.9375,
+    "topk_passed": 15,
+    "total": 16
+  },
+  "results": [
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 57, Section 128, Part 22-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "ACQ Bucket Hours Letter of Agreement",
+        "3/24/19"
+      ],
+      "expected_rank_depth": 4,
+      "expected_rank_topk": 4,
+      "id": "SL-KS-01",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "loa",
+      "observed_doc_type_topk": "loa",
+      "observed_doc_types_for_citation_depth": [
+        "loa"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "loa"
+      ],
+      "pass": true,
+      "question": "What does the ACQ Bucket Hours Letter of Agreement dated 3/24/19 say?",
+      "retrieved_citations_depth": [
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 53, Section 118",
+        "Article 57, Section 128, Part 22-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 6-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 1-2",
+        "Article 57, Section 128, Part 4",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 27, Section 60",
+        "Article 27, Section 58",
+        "Article 57, Section 127, Part 1",
+        "Article 27, Section 59"
+      ],
+      "retrieved_citations_topk": [
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 53, Section 118",
+        "Article 57, Section 128, Part 22-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 6-0",
+        "Article 57, Section 128, Part 3-0"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 57, Section 128, Part 6-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "30 days advance written notice",
+        "May 1, 1995"
+      ],
+      "expected_rank_depth": 5,
+      "expected_rank_topk": 5,
+      "id": "SL-KS-02",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "loa",
+      "observed_doc_type_topk": "loa",
+      "observed_doc_types_for_citation_depth": [
+        "loa"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "loa"
+      ],
+      "pass": true,
+      "question": "Can either party cancel this agreement with 30 days advance written notice after May 1, 1995?",
+      "retrieved_citations_depth": [
+        "Article 53, Section 118",
+        "Article 27, Section 62, Part 1",
+        "Article 27, Section 70, Part 1",
+        "Article 57, Section 127, Part 3",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 6-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 127, Part 2",
+        "Article 27, Section 70, Part 3",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 127, Part 1",
+        "Article 27, Section 57",
+        "Article 57, Section 128, Part 5-4",
+        "Article 57, Section 128, Part 4-4",
+        "Article 27, Section 62, Part 2",
+        "Article 57, Section 128, Part 1-14",
+        "Article 57, Section 128, Part 3-3",
+        "Article 57, Section 128, Part 2-3",
+        "Article 57, Section 128, Part 2-2"
+      ],
+      "retrieved_citations_topk": [
+        "Article 53, Section 118",
+        "Article 27, Section 62, Part 1",
+        "Article 27, Section 70, Part 1",
+        "Article 57, Section 127, Part 3",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 6-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 127, Part 2"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 3,
+      "best_expected_keyword_hits_topk": 3,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 57, Section 128, Part 5-0"
+      ],
+      "expected_doc_types": [
+        "lou",
+        "loa"
+      ],
+      "expected_keywords": [
+        "grievances referred to arbitration",
+        "scheduling queue",
+        "grievance filing date"
+      ],
+      "expected_rank_depth": 1,
+      "expected_rank_topk": 1,
+      "id": "SL-KS-03",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "loa",
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "loa",
+        "lou"
+      ],
+      "pass": true,
+      "question": "Do side letter grievances referred to arbitration get scheduled in queue order by grievance filing date?",
+      "retrieved_citations_depth": [
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 22-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 53, Section 118",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 1-2",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 1-14",
+        "Article 27, Section 69",
+        "Article 48",
+        "Article 57, Section 127, Part 1",
+        "Article 27, Section 70, Part 3",
+        "Article 57, Section 128, Part 5-5",
+        "Article 57, Section 128, Part 2-3"
+      ],
+      "retrieved_citations_topk": [
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 22-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 53, Section 118",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 3-0"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 57, Section 128, Part 22-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "ACQ Bucket Hours Letter of Agreement",
+        "3/24/19"
+      ],
+      "expected_rank_depth": 4,
+      "expected_rank_topk": 4,
+      "id": "SL-KS-04",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "loa",
+      "observed_doc_type_topk": "loa",
+      "observed_doc_types_for_citation_depth": [
+        "loa"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "loa"
+      ],
+      "pass": true,
+      "question": "Does the ACQ Bucket Hours Letter of Agreement dated 3/24/19 appear in the carried-over letters list?",
+      "retrieved_citations_depth": [
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 22-0",
+        "Article 53, Section 118",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 6-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 4",
+        "Article 27, Section 69",
+        "Article 57, Section 128, Part 3-0",
+        "Article 27, Section 70, Part 1",
+        "Article 57, Section 127, Part 1",
+        "Article 27, Section 70, Part 6"
+      ],
+      "retrieved_citations_topk": [
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 22-0",
+        "Article 53, Section 118",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 6-0"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 57, Section 128, Part 6-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "30 days advance written notice",
+        "May 1, 1995"
+      ],
+      "expected_rank_depth": 1,
+      "expected_rank_topk": 1,
+      "id": "SL-KS-05",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "loa",
+      "observed_doc_type_topk": "loa",
+      "observed_doc_types_for_citation_depth": [
+        "loa"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "loa"
+      ],
+      "pass": true,
+      "question": "In the side letter, can either party cancel with 30 days advance written notice after May 1, 1995?",
+      "retrieved_citations_depth": [
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 128, Part 6-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 22-0",
+        "Article 57, Section 128",
+        "Article 53, Section 118",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 1-14",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 27, Section 70, Part 1",
+        "Article 57, Section 127, Part 3",
+        "Article 16, Section 37",
+        "Article 27, Section 62, Part 1",
+        "Article 57, Section 127, Part 2",
+        "Article 54, Section 119",
+        "Article 27, Section 57",
+        "Article 57, Section 128, Part 5-4"
+      ],
+      "retrieved_citations_topk": [
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 128, Part 6-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 22-0",
+        "Article 57, Section 128",
+        "Article 53, Section 118"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 3,
+      "best_expected_keyword_hits_topk": 0,
+      "citation_hit_depth": true,
+      "citation_hit_topk": false,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": false,
+      "expected_citations": [
+        "Article 57, Section 128, Part 5-0"
+      ],
+      "expected_doc_types": [
+        "lou",
+        "loa"
+      ],
+      "expected_keywords": [
+        "grievances referred to arbitration",
+        "scheduling queue",
+        "grievance filing date"
+      ],
+      "expected_rank_depth": 13,
+      "expected_rank_topk": null,
+      "id": "SL-KS-06",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": false,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [],
+      "pass": true,
+      "question": "Do grievances referred to arbitration get scheduled by grievance filing date from the scheduling queue?",
+      "retrieved_citations_depth": [
+        "Article 8, Section 22",
+        "Article 8, Section 23",
+        "Article 17, Section 44",
+        "Article 17, Section 45, Part 2",
+        "Article 27, Section 62, Part 2",
+        "Article 27, Section 70, Part 2",
+        "Article 48",
+        "Article 27, Section 70, Part 1",
+        "Article 17, Section 45, Part 1",
+        "Article 27, Section 62, Part 4",
+        "Article 27, Section 62, Part 1",
+        "Article 27, Section 60",
+        "Article 57, Section 128, Part 1-14",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 5-5",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 2-3",
+        "Article 57, Section 128, Part 1-1",
+        "Article 57, Section 128, Part 4-4",
+        "Article 57, Section 128, Part 3-0"
+      ],
+      "retrieved_citations_topk": [
+        "Article 8, Section 22",
+        "Article 8, Section 23",
+        "Article 17, Section 44",
+        "Article 17, Section 45, Part 2",
+        "Article 27, Section 62, Part 2",
+        "Article 27, Section 70, Part 2",
+        "Article 48",
+        "Article 27, Section 70, Part 1"
+      ],
+      "topk_pass": false,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 57, Section 128, Part 6-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "30 days advance written notice",
+        "May 1, 1995"
+      ],
+      "expected_rank_depth": 6,
+      "expected_rank_topk": 6,
+      "id": "SL-KS-07",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "loa",
+      "observed_doc_type_topk": "loa",
+      "observed_doc_types_for_citation_depth": [
+        "loa"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "loa"
+      ],
+      "pass": true,
+      "question": "Is May 1, 1995 the date after which either party may cancel with 30 days advance written notice?",
+      "retrieved_citations_depth": [
+        "Article 5",
+        "Article 7, Section 17",
+        "Article 8, Section 23",
+        "Article 7, Section 16",
+        "Article 7, Section 18",
+        "Article 8, Section 22",
+        "Article 57, Section 128, Part 6-0",
+        "Article 27, Section 62, Part 2",
+        "Article 57, Section 128, Part 3-3",
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 127, Part 2",
+        "Article 57, Section 128, Part 4-4",
+        "Article 27, Section 70, Part 3",
+        "Article 27, Section 57",
+        "Article 57, Section 127, Part 1",
+        "Article 57, Section 128, Part 3-0",
+        "Article 27, Section 62, Part 3",
+        "Article 57, Section 128, Part 5-4",
+        "Article 57, Section 128, Part 5-0",
+        "Article 27, Section 70, Part 2"
+      ],
+      "retrieved_citations_topk": [
+        "Article 5",
+        "Article 7, Section 17",
+        "Article 8, Section 23",
+        "Article 7, Section 16",
+        "Article 7, Section 18",
+        "Article 8, Section 22",
+        "Article 57, Section 128, Part 6-0",
+        "Article 27, Section 62, Part 2"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 57, Section 128, Part 6-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "Either party may cancel this agreement",
+        "30 days advance written notice"
+      ],
+      "expected_rank_depth": 1,
+      "expected_rank_topk": 1,
+      "id": "SL-KS-08",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "loa",
+      "observed_doc_type_topk": "loa",
+      "observed_doc_types_for_citation_depth": [
+        "loa"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "loa"
+      ],
+      "pass": true,
+      "question": "Which side letter says either party may cancel with 30 days advance written notice?",
+      "retrieved_citations_depth": [
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 128, Part 6-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 53, Section 118",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 1-14",
+        "Article 57, Section 128, Part 3-0",
+        "Article 27, Section 70, Part 1",
+        "Article 57, Section 127, Part 3",
+        "Article 16, Section 37",
+        "Article 27, Section 62, Part 1",
+        "Article 57, Section 127, Part 2",
+        "Article 57, Section 128, Part 5-4",
+        "Article 27, Section 70, Part 3",
+        "Article 27, Section 70, Part 2",
+        "Article 27, Section 57",
+        "Article 27, Section 62, Part 2"
+      ],
+      "retrieved_citations_topk": [
+        "Article 57, Section 128, Part 2-0",
+        "Article 57, Section 128, Part 6-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 53, Section 118",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 3-0"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 1,
+      "best_expected_keyword_hits_topk": 1,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Floater Pool Letter of Understanding"
+      ],
+      "expected_rank_depth": 1,
+      "expected_rank_topk": 1,
+      "id": "SL-SWMEAT-01",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "What does the Floater Pool Letter of Understanding say?",
+      "retrieved_citations_depth": [
+        "Article 55, Section 164",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 93",
+        "Article 32, Section 94"
+      ],
+      "retrieved_citations_topk": [
+        "Article 55, Section 164",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 93",
+        "Article 32, Section 94"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "30 days",
+        "written notice"
+      ],
+      "expected_rank_depth": 3,
+      "expected_rank_topk": 3,
+      "id": "SL-SWMEAT-02",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "How much written notice is required if either party wants to discontinue that agreement?",
+      "retrieved_citations_depth": [
+        "Article 55, Section 164",
+        "Article 32, Section 93",
+        "Article 32, Section 94",
+        "Article 32, Section 94, Part 5+",
+        "Article 27, Section 69, Part 1",
+        "Article 27, Section 68",
+        "Article 57, Section 169, Part 10",
+        "Article 27, Section 69, Part 2",
+        "Article 57, Section 169, Part 1",
+        "Article 50, Section 156, Part 6",
+        "Article 56, Section 165",
+        "Article 38, Section 111",
+        "Article 4, Section 10",
+        "Article 50, Section 155, Part 5",
+        "Article 38, Section 110, Part 3-4",
+        "Article 38, Section 110, Part 1-2",
+        "Article 50, Section 150",
+        "Article 50, Section 154",
+        "Article 4, Section 11",
+        "Article 17, Section 49, Part 1-5"
+      ],
+      "retrieved_citations_topk": [
+        "Article 55, Section 164",
+        "Article 32, Section 93",
+        "Article 32, Section 94",
+        "Article 32, Section 94, Part 5+",
+        "Article 27, Section 69, Part 1",
+        "Article 27, Section 68",
+        "Article 57, Section 169, Part 10",
+        "Article 27, Section 69, Part 2"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 1,
+      "best_expected_keyword_hits_topk": 1,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "implement this procedure as soon as possible"
+      ],
+      "expected_rank_depth": 0,
+      "expected_rank_topk": 0,
+      "id": "SL-SWMEAT-03",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "Does it say the company will implement this procedure as soon as possible?",
+      "retrieved_citations_depth": [
+        "Article 32, Section 94, Part 5+",
+        "Article 17, Section 48, Part 4",
+        "Article 57, Section 169, Part 5",
+        "Article 57, Section 169, Part 7",
+        "Article 32, Section 94, Part 2-2",
+        "Article 7, Section 14",
+        "Article 32, Section 94, Part 4-4",
+        "Article 32, Section 94",
+        "Article 7, Section 21",
+        "Article 7, Section 17",
+        "Article 39, Section 121",
+        "Article 50, Section 155, Part 1-2",
+        "Article 50, Section 149",
+        "Article 6, Section 13",
+        "Article 52, Section 161",
+        "Article 42, Section 125",
+        "Article 28, Section 81",
+        "Article 15, Section 37",
+        "Article 39, Section 114",
+        "Article 29, Section 87"
+      ],
+      "retrieved_citations_topk": [
+        "Article 32, Section 94, Part 5+",
+        "Article 17, Section 48, Part 4",
+        "Article 57, Section 169, Part 5",
+        "Article 57, Section 169, Part 7",
+        "Article 32, Section 94, Part 2-2",
+        "Article 7, Section 14",
+        "Article 32, Section 94, Part 4-4",
+        "Article 32, Section 94"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "written notice",
+        "30 days"
+      ],
+      "expected_rank_depth": 1,
+      "expected_rank_topk": 1,
+      "id": "SL-SWMEAT-04",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "In the Floater Pool Letter of Understanding, if either party wishes to discontinue this agreement, what written notice is required?",
+      "retrieved_citations_depth": [
+        "Article 55, Section 164",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 93",
+        "Article 32, Section 94"
+      ],
+      "retrieved_citations_topk": [
+        "Article 55, Section 164",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 93",
+        "Article 32, Section 94"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "written notice",
+        "30 days"
+      ],
+      "expected_rank_depth": 3,
+      "expected_rank_topk": 3,
+      "id": "SL-SWMEAT-05",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "Does that agreement require at least 30 days written notice before discontinuing it?",
+      "retrieved_citations_depth": [
+        "Article 55, Section 164",
+        "Article 32, Section 93",
+        "Article 32, Section 94",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 94, Part 4-4",
+        "Article 27, Section 69, Part 3",
+        "Article 27, Section 68",
+        "Article 50, Section 155",
+        "Article 27, Section 69, Part 2",
+        "Article 50, Section 156, Part 6",
+        "Article 38, Section 111",
+        "Article 50, Section 148",
+        "Article 50, Section 156, Part 4",
+        "Article 38, Section 110, Part 1-2",
+        "Article 50, Section 156, Part 3",
+        "Article 50, Section 155, Part 1-0",
+        "Article 27, Section 69, Part 1",
+        "Article 16, Section 47",
+        "Article 4, Section 11",
+        "Article 57, Section 169, Part 1"
+      ],
+      "retrieved_citations_topk": [
+        "Article 55, Section 164",
+        "Article 32, Section 93",
+        "Article 32, Section 94",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 94, Part 4-4",
+        "Article 27, Section 69, Part 3",
+        "Article 27, Section 68",
+        "Article 50, Section 155"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Floater Pool Letter of Understanding",
+        "April 25, 1989"
+      ],
+      "expected_rank_depth": 1,
+      "expected_rank_topk": 1,
+      "id": "SL-SWMEAT-06",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "What date is the Floater Pool Letter of Understanding for Denver Metro?",
+      "retrieved_citations_depth": [
+        "Article 55, Section 164",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 93",
+        "Article 32, Section 94"
+      ],
+      "retrieved_citations_topk": [
+        "Article 55, Section 164",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 93",
+        "Article 32, Section 94"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Deleted in the Last, Best and Final Offer",
+        "except for the last paragraph"
+      ],
+      "expected_rank_depth": 1,
+      "expected_rank_topk": 1,
+      "id": "SL-SWMEAT-07",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "Was the Floater Pool LOU deleted in the Last, Best and Final Offer except for the last paragraph?",
+      "retrieved_citations_depth": [
+        "Article 55, Section 164",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 93",
+        "Article 32, Section 94"
+      ],
+      "retrieved_citations_topk": [
+        "Article 55, Section 164",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 93",
+        "Article 32, Section 94"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    },
+    {
+      "best_expected_keyword_hits_depth": 2,
+      "best_expected_keyword_hits_topk": 2,
+      "citation_hit_depth": true,
+      "citation_hit_topk": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "depth_pass": true,
+      "depth_window_size": 20,
+      "doc_type_ok_depth": true,
+      "doc_type_ok_topk": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "wishes to discontinue this agreement",
+        "written notice of at least 30 days"
+      ],
+      "expected_rank_depth": 3,
+      "expected_rank_topk": 3,
+      "id": "SL-SWMEAT-08",
+      "keywords_ok_depth": true,
+      "keywords_ok_topk": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type_depth": "lou",
+      "observed_doc_type_topk": "lou",
+      "observed_doc_types_for_citation_depth": [
+        "lou"
+      ],
+      "observed_doc_types_for_citation_topk": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "If either party wishes to discontinue this agreement, can they do it with written notice of at least 30 days?",
+      "retrieved_citations_depth": [
+        "Article 55, Section 164",
+        "Article 32, Section 93",
+        "Article 32, Section 94",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 94, Part 2-2",
+        "Article 27, Section 69, Part 3",
+        "Article 27, Section 68",
+        "Article 57, Section 169, Part 10",
+        "Article 27, Section 69, Part 2",
+        "Article 57, Section 169, Part 1",
+        "Article 50, Section 156, Part 6",
+        "Article 56, Section 165",
+        "Article 27, Section 70",
+        "Article 4, Section 10",
+        "Article 27, Section 71",
+        "Article 27, Section 69, Part 1",
+        "Article 50, Section 150",
+        "Article 4, Section 11",
+        "Article 57, Section 168",
+        "Article 50, Section 155, Part 5"
+      ],
+      "retrieved_citations_topk": [
+        "Article 55, Section 164",
+        "Article 32, Section 93",
+        "Article 32, Section 94",
+        "Article 32, Section 94, Part 5+",
+        "Article 32, Section 94, Part 2-2",
+        "Article 27, Section 69, Part 3",
+        "Article 27, Section 68",
+        "Article 57, Section 169, Part 10"
+      ],
+      "topk_pass": true,
+      "topk_window_size": 8
+    }
+  ],
+  "schema_version": "side_letter_retrieval_eval_v2",
+  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\side_letter_retrieval_test.json",
+  "timestamp_utc": "2026-03-09T10:32:45.002551+00:00"
+}

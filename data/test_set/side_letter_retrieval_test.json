@@ -1,0 +1,264 @@
+{
+  "schema_version": "side_letter_retrieval_test_v2",
+  "description": "Retrieval checks for side-letter (LOA/LOU) prompts on contracts with backfilled doc_type buckets, including follow-up phrasing variants.",
+  "test_cases": [
+    {
+      "id": "SL-KS-01",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "What does the ACQ Bucket Hours Letter of Agreement dated 3/24/19 say?",
+      "expected_citations": [
+        "Article 57, Section 128, Part 22-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "ACQ Bucket Hours Letter of Agreement",
+        "3/24/19"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-KS-02",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "Can either party cancel this agreement with 30 days advance written notice after May 1, 1995?",
+      "expected_citations": [
+        "Article 57, Section 128, Part 6-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "30 days advance written notice",
+        "May 1, 1995"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-KS-03",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "Do side letter grievances referred to arbitration get scheduled in queue order by grievance filing date?",
+      "expected_citations": [
+        "Article 57, Section 128, Part 5-0"
+      ],
+      "expected_doc_types": [
+        "lou",
+        "loa"
+      ],
+      "expected_keywords": [
+        "grievances referred to arbitration",
+        "scheduling queue",
+        "grievance filing date"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-KS-04",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "Does the ACQ Bucket Hours Letter of Agreement dated 3/24/19 appear in the carried-over letters list?",
+      "expected_citations": [
+        "Article 57, Section 128, Part 22-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "ACQ Bucket Hours Letter of Agreement",
+        "3/24/19"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-KS-05",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "In the side letter, can either party cancel with 30 days advance written notice after May 1, 1995?",
+      "expected_citations": [
+        "Article 57, Section 128, Part 6-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "30 days advance written notice",
+        "May 1, 1995"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-KS-06",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "Do grievances referred to arbitration get scheduled by grievance filing date from the scheduling queue?",
+      "expected_citations": [
+        "Article 57, Section 128, Part 5-0"
+      ],
+      "expected_doc_types": [
+        "lou",
+        "loa"
+      ],
+      "expected_keywords": [
+        "grievances referred to arbitration",
+        "scheduling queue",
+        "grievance filing date"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-KS-07",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "Is May 1, 1995 the date after which either party may cancel with 30 days advance written notice?",
+      "expected_citations": [
+        "Article 57, Section 128, Part 6-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "30 days advance written notice",
+        "May 1, 1995"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-KS-08",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "Which side letter says either party may cancel with 30 days advance written notice?",
+      "expected_citations": [
+        "Article 57, Section 128, Part 6-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "Either party may cancel this agreement",
+        "30 days advance written notice"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWMEAT-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What does the Floater Pool Letter of Understanding say?",
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Floater Pool Letter of Understanding"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWMEAT-02",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "How much written notice is required if either party wants to discontinue that agreement?",
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "30 days",
+        "written notice"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWMEAT-03",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "Does it say the company will implement this procedure as soon as possible?",
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "implement this procedure as soon as possible"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWMEAT-04",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "In the Floater Pool Letter of Understanding, if either party wishes to discontinue this agreement, what written notice is required?",
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "written notice",
+        "30 days"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWMEAT-05",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "Does that agreement require at least 30 days written notice before discontinuing it?",
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "written notice",
+        "30 days"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWMEAT-06",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What date is the Floater Pool Letter of Understanding for Denver Metro?",
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Floater Pool Letter of Understanding",
+        "April 25, 1989"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWMEAT-07",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "Was the Floater Pool LOU deleted in the Last, Best and Final Offer except for the last paragraph?",
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Deleted in the Last, Best and Final Offer",
+        "except for the last paragraph"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWMEAT-08",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "If either party wishes to discontinue this agreement, can they do it with written notice of at least 30 days?",
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "wishes to discontinue this agreement",
+        "written notice of at least 30 days"
+      ],
+      "min_expected_keyword_hits": 1
+    }
+  ]
+}

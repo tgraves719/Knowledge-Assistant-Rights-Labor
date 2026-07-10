@@ -1,0 +1,762 @@
+{
+  "scorecard_version": "contract_pack_scorecard_v3",
+  "generated_at_utc": "2026-03-09T10:11:24.034176+00:00",
+  "strict_mode": false,
+  "contract_id": "local7_kingsoopers_loveland_meat_2019",
+  "package_path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019",
+  "artifacts": {
+    "source_md": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\source\\local7_kingsoopers_loveland_meat_2019.md",
+    "source_json": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\source\\local7_kingsoopers_loveland_meat_2019.json",
+    "source_pdf": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\source\\KS-Loveland-Meat-2019.2022-CBA.pdf",
+    "manifest": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\manifests\\local7_kingsoopers_loveland_meat_2019.json",
+    "chunks_enriched": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_enriched_local7_kingsoopers_loveland_meat_2019.json",
+    "chunks_smart": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_smart_local7_kingsoopers_loveland_meat_2019.json",
+    "chunks_base": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_local7_kingsoopers_loveland_meat_2019.json",
+    "concept_index": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\concept_index_local7_kingsoopers_loveland_meat_2019.json",
+    "tables": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\tables\\structured_tables.json",
+    "wages": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\wages\\wage_tables_local7_kingsoopers_loveland_meat_2019.json",
+    "entitlements": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\entitlements\\entitlement_tables_local7_kingsoopers_loveland_meat_2019.json",
+    "classification_ontology": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\classification_ontology.json",
+    "language_lexicon": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\language_lexicon.json",
+    "pdf_nav_index": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\pdf_nav_index.json",
+    "contract_outline": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\outline\\contract_outline.json",
+    "role_catalog": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\role_catalog.json",
+    "ingestion_review_queue": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\ingestion_review_queue.json",
+    "manual_classification_overrides": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\manual_classification_overrides.json"
+  },
+  "artifact_hashes": {
+    "source_md": "144234318cd3cbb3ada2613430c491f6afd0008bf2508b924d16465e3f31c832",
+    "source_json": "f8202c4e7bd1635b1fc5a84ea52754b910a840e72333f680e59b0854b181e568",
+    "source_pdf": "39fee6bfc0519f8cb5ece89f656acd089921cc79505408ecd5ce3741fcafeef9",
+    "manifest": "ef5ff3af2584e84a99f5befac947030b126d00b85609b212437923702b09eb70",
+    "chunks_enriched": "1b0e8590bfb26174175c44f81c44baeb1d08c739ff5f0d25c03522bea2865ce6",
+    "chunks_smart": "de09d1b81af98815f1ed5a730c0123e5ea1b117987e492a20d869f71657e107d",
+    "chunks_base": "1b0e8590bfb26174175c44f81c44baeb1d08c739ff5f0d25c03522bea2865ce6",
+    "concept_index": "9ec668f2cac08784d330a7800c1f7094d15380ecd237011da92ce09f67ea9367",
+    "tables": "0c2c6b54840444b541086cfe05d1f7b2f64b8e638a9c4ac89e66078999606579",
+    "wages": "5b3c61bc5692f21bf3e9b27de00dcffe389f7992aed8e1a801f04c476989a031",
+    "entitlements": "901a5bbc8b0463c0b138ccb5af954e2cecf812d1369c99c7d70574490fb25c8e",
+    "classification_ontology": "8aec8d4e257ab1e9464ce7bbd01c104926f3a21af816ec935f8218c040843271",
+    "language_lexicon": "1413d1939e50b97e0ec6ba6f0c64a721ae83c7b1851ef8d12faa1b4e297d6f95",
+    "pdf_nav_index": "f82928d1aa4399a12e966cd05771465577fbec020c9d760ca027b721fd8de113",
+    "contract_outline": "a77ef73075c367d87ac843c40052dc68b86bf8b9c6902efb382857ba4c67f2d8",
+    "role_catalog": "846ac96b0627e9aa03f4d7a1132b29a74bf28cc15e4d2a5f4e69aade58551894",
+    "ingestion_review_queue": "508264f2db747948606a78be3bc640a0b100bcb0b42048116cb1c86a427d8ab4",
+    "manual_classification_overrides": "135c9be5893a1ea0e424c7c15a51ce36dc307fc4d7d95a8d127ca2094b5193fe"
+  },
+  "pack_hash": "88817a2218b632e78e16ad24c67849d0bdb4799415b8d787d2140757f759b3cc",
+  "checks": [
+    {
+      "id": "manifest_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest artifact is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\manifests\\local7_kingsoopers_loveland_meat_2019.json"
+      }
+    },
+    {
+      "id": "manifest_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest schema passed validation.",
+      "metrics": {
+        "errors": []
+      }
+    },
+    {
+      "id": "source_pdf_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Source PDF artifact is present and non-empty.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\source\\KS-Loveland-Meat-2019.2022-CBA.pdf",
+        "size_bytes": 1549034
+      }
+    },
+    {
+      "id": "query_routing_coverage",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest query_routing coverage meets deterministic minimums.",
+      "metrics": {
+        "topic_entries": 18,
+        "topic_pattern_entries": 18,
+        "slang_entries": 130,
+        "classification_entries": 2,
+        "min_classification_entries": 1
+      }
+    },
+    {
+      "id": "query_routing_article_ref_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest query_routing article references are valid.",
+      "metrics": {
+        "invalid_topic_refs": [],
+        "invalid_classification_refs": []
+      }
+    },
+    {
+      "id": "chunks_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Chunk artifact is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_enriched_local7_kingsoopers_loveland_meat_2019.json"
+      }
+    },
+    {
+      "id": "chunks_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Chunk count = 214.",
+      "metrics": {
+        "chunk_count": 214
+      }
+    },
+    {
+      "id": "chunks_contract_scope",
+      "severity": "required",
+      "status": "pass",
+      "message": "All chunks contain contract_id.",
+      "metrics": {
+        "missing_contract_id_chunks": 0
+      }
+    },
+    {
+      "id": "chunks_region_scope",
+      "severity": "required",
+      "status": "pass",
+      "message": "All chunks contain region_id.",
+      "metrics": {
+        "missing_region_id_chunks": 0
+      }
+    },
+    {
+      "id": "chunk_id_uniqueness",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "All chunk IDs are unique.",
+      "metrics": {
+        "duplicate_chunk_rows": 0
+      }
+    },
+    {
+      "id": "chunk_citation_normalization",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Chunk citations/subsections follow normalized conventions.",
+      "metrics": {
+        "malformed_citations_sample": [],
+        "legacy_segment_subsections_sample": [],
+        "inconsistent_cba_citations_sample": []
+      }
+    },
+    {
+      "id": "language_feature_coverage",
+      "severity": "required",
+      "status": "pass",
+      "message": "Deterministic language features meet minimum coverage.",
+      "metrics": {
+        "alt_non_empty_chunks": 200,
+        "question_non_empty_chunks": 214,
+        "chunk_total": 214,
+        "alt_coverage": 0.9346,
+        "question_coverage": 1.0,
+        "min_required": 0.25
+      }
+    },
+    {
+      "id": "side_letter_doc_type_materialization",
+      "severity": "required",
+      "status": "pass",
+      "message": "Side-letter lexical hits are backed by LOA/LOU doc_type buckets.",
+      "metrics": {
+        "side_letter_hit_threshold": 1,
+        "side_letter_text_hits": 19,
+        "loa_text_hits": 13,
+        "lou_text_hits": 6,
+        "loa_bucket_count": 13,
+        "lou_bucket_count": 1
+      }
+    },
+    {
+      "id": "article_coverage",
+      "severity": "required",
+      "status": "pass",
+      "message": "Article coverage threshold met.",
+      "metrics": {
+        "coverage": 0.9825,
+        "expected_articles": 57,
+        "found_articles": 56,
+        "missing_articles": [
+          28
+        ]
+      }
+    },
+    {
+      "id": "manifest_article_index_completeness",
+      "severity": "required",
+      "status": "pass",
+      "message": "Manifest indexes all chunked article numbers.",
+      "metrics": {
+        "missing_from_manifest": [],
+        "missing_from_manifest_count": 0,
+        "found_articles": 56,
+        "indexed_articles": 57
+      }
+    },
+    {
+      "id": "tables_registry_exists",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Structured table registry is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\tables\\structured_tables.json"
+      }
+    },
+    {
+      "id": "table_ref_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "All chunk table_refs resolve to registry table IDs.",
+      "metrics": {
+        "unresolved_table_refs": []
+      }
+    },
+    {
+      "id": "concept_index_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Contract-scoped concept index is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\concept_index_local7_kingsoopers_loveland_meat_2019.json"
+      }
+    },
+    {
+      "id": "concept_index_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Concept index contains concept/question mappings.",
+      "metrics": {
+        "concept_count": 146,
+        "question_count": 49
+      }
+    },
+    {
+      "id": "language_lexicon_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Language lexicon artifact is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\language_lexicon.json"
+      }
+    },
+    {
+      "id": "language_lexicon_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Language lexicon contains aliases and entries.",
+      "metrics": {
+        "alias_count": 202,
+        "entry_count": 69
+      }
+    },
+    {
+      "id": "language_lexicon_region_id",
+      "severity": "required",
+      "status": "pass",
+      "message": "Language lexicon includes region_id.",
+      "metrics": {
+        "region_id": "region-loveland"
+      }
+    },
+    {
+      "id": "pdf_nav_index_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "PDF navigation index artifact is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\pdf_nav_index.json"
+      }
+    },
+    {
+      "id": "pdf_nav_index_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "PDF navigation index schema and contract_id are valid.",
+      "metrics": {
+        "schema_version": "pdf_nav_index_v1",
+        "artifact_contract_id": "local7_kingsoopers_loveland_meat_2019"
+      }
+    },
+    {
+      "id": "pdf_nav_index_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "PDF navigation index includes article page mappings.",
+      "metrics": {
+        "article_pages": 57,
+        "section_pages": 128
+      }
+    },
+    {
+      "id": "contract_outline_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Contract outline artifact is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\outline\\contract_outline.json"
+      }
+    },
+    {
+      "id": "contract_outline_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Contract outline schema and contract_id are valid.",
+      "metrics": {
+        "schema_version": "contract_outline_v1",
+        "artifact_contract_id": "local7_kingsoopers_loveland_meat_2019"
+      }
+    },
+    {
+      "id": "contract_outline_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Contract outline includes article metadata.",
+      "metrics": {
+        "article_count": 57,
+        "raw_articles_count": 57
+      }
+    },
+    {
+      "id": "contract_outline_chunk_coverage",
+      "severity": "required",
+      "status": "pass",
+      "message": "Contract outline indexes all chunked article numbers.",
+      "metrics": {
+        "missing_from_outline": [],
+        "missing_from_outline_count": 0,
+        "chunk_article_count": 56,
+        "outline_article_count": 57
+      }
+    },
+    {
+      "id": "wages_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Wage artifact is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\wages\\wage_tables_local7_kingsoopers_loveland_meat_2019.json",
+        "requires_wages": true
+      }
+    },
+    {
+      "id": "wage_classifications_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Wage classifications extracted.",
+      "metrics": {
+        "classification_count": 9
+      }
+    },
+    {
+      "id": "wage_primary_lookup_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "All primary wage classification keys resolve.",
+      "metrics": {
+        "unresolved_keys": []
+      }
+    },
+    {
+      "id": "canonical_wage_rows_present",
+      "severity": "required",
+      "status": "pass",
+      "message": "Canonical wage rows are present.",
+      "metrics": {
+        "canonical_row_count": 99,
+        "requires_canonical_rows": true
+      }
+    },
+    {
+      "id": "canonical_wage_row_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Canonical wage rows pass schema validation.",
+      "metrics": {
+        "invalid_row_count": 0,
+        "invalid_rows": []
+      }
+    },
+    {
+      "id": "canonical_wage_row_contradictions",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "No contradictory canonical wage rows detected.",
+      "metrics": {
+        "contradiction_count": 0,
+        "contradictions": []
+      }
+    },
+    {
+      "id": "canonical_wage_conflict_rate",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Canonical wage conflict rate is within advisory threshold.",
+      "metrics": {
+        "conflict_rate": 0.0,
+        "conflict_count": 0,
+        "canonical_row_count": 99
+      }
+    },
+    {
+      "id": "canonical_wage_ambiguity_rate",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Canonical wage ambiguity rate is within advisory threshold.",
+      "metrics": {
+        "ambiguity_rate": 0.0303,
+        "ambiguity_count": 3,
+        "canonical_row_count": 99
+      }
+    },
+    {
+      "id": "manifest_classification_wage_coverage",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Manifest classification wage coverage meets advisory threshold.",
+      "metrics": {
+        "coverage": 1.0,
+        "resolved_or_clarified": 2,
+        "clarification_required": 1,
+        "out_of_scope": 0,
+        "total": 2,
+        "unresolved": []
+      }
+    },
+    {
+      "id": "critical_alias_resolution",
+      "severity": "required",
+      "status": "pass",
+      "message": "Critical shopper/dug aliases resolve in wage lookup.",
+      "metrics": {
+        "unresolved_critical_aliases": []
+      }
+    },
+    {
+      "id": "entitlements_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Entitlement artifact is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\entitlements\\entitlement_tables_local7_kingsoopers_loveland_meat_2019.json",
+        "requires_entitlements": true
+      }
+    },
+    {
+      "id": "entitlements_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Entitlement artifact schema/contract/region are valid.",
+      "metrics": {
+        "schema_version": "entitlement_tables_v1",
+        "artifact_contract_id": "local7_kingsoopers_loveland_meat_2019",
+        "region_id": "region-loveland"
+      }
+    },
+    {
+      "id": "vacation_entitlement_non_empty",
+      "severity": "required",
+      "status": "pass",
+      "message": "Vacation entitlement schedules are present.",
+      "metrics": {
+        "schedule_count": 2,
+        "requires_entitlements": true
+      }
+    },
+    {
+      "id": "effective_snapshot_contract_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "No effective snapshot present.",
+      "metrics": {
+        "effective_version_id": null,
+        "path": null
+      }
+    },
+    {
+      "id": "effective_chunk_index_input_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "No effective snapshot present.",
+      "metrics": {
+        "effective_version_id": null,
+        "path": null,
+        "candidates": []
+      }
+    },
+    {
+      "id": "effective_wage_index_input_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Effective wage index input not required.",
+      "metrics": {
+        "effective_version_id": null,
+        "path": null,
+        "required": false
+      }
+    },
+    {
+      "id": "effective_entitlement_index_input_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Effective entitlement index input not required.",
+      "metrics": {
+        "effective_version_id": null,
+        "path": null,
+        "required": false
+      }
+    },
+    {
+      "id": "classification_ontology_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Classification ontology artifact is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\classification_ontology.json",
+        "requires_ontology": true
+      }
+    },
+    {
+      "id": "classification_ontology_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Classification ontology schema and contract_id are valid.",
+      "metrics": {
+        "schema_version": "classification_ontology_v2",
+        "ontology_contract_id": "local7_kingsoopers_loveland_meat_2019"
+      }
+    },
+    {
+      "id": "classification_ontology_alias_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "All ontology alias targets resolve to wage keys.",
+      "metrics": {
+        "invalid_alias_targets": []
+      }
+    },
+    {
+      "id": "classification_ontology_manifest_decisions",
+      "severity": "required",
+      "status": "pass",
+      "message": "Ontology contains deterministic mapping decisions for all manifest classes.",
+      "metrics": {
+        "missing_decisions": []
+      }
+    },
+    {
+      "id": "classification_ontology_mapping_coverage",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Ontology mapping coverage meets advisory threshold.",
+      "metrics": {
+        "coverage": 1.0,
+        "covered_manifest_classes": 2,
+        "actionable_manifest_classes": 2,
+        "resolved_manifest_classes": 1,
+        "clarification_manifest_classes": 1,
+        "out_of_scope_manifest_classes": 0,
+        "total_manifest_classes": 2,
+        "unresolved_manifest_keys": []
+      }
+    },
+    {
+      "id": "role_catalog_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Role catalog artifact is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\role_catalog.json",
+        "requires_role_catalog": true
+      }
+    },
+    {
+      "id": "role_catalog_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Role catalog schema and contract_id are valid.",
+      "metrics": {
+        "schema_version": "role_catalog_v2",
+        "catalog_contract_id": "local7_kingsoopers_loveland_meat_2019",
+        "role_count": 11
+      }
+    },
+    {
+      "id": "role_catalog_onboarding_default_wage_ready",
+      "severity": "required",
+      "status": "pass",
+      "message": "All onboarding-default roles are wage-available.",
+      "metrics": {
+        "default_unmapped_roles": []
+      }
+    },
+    {
+      "id": "role_catalog_unresolved_manifest_rate",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Role catalog unresolved-manifest rate is within advisory threshold.",
+      "metrics": {
+        "manifest_roles_total": 2,
+        "unresolved_manifest_roles": 0,
+        "unresolved_manifest_rate": 0.0,
+        "clarification_manifest_roles": [
+          "head_clerk"
+        ],
+        "out_of_scope_manifest_roles": [],
+        "unresolved_manifest_role_values": []
+      }
+    },
+    {
+      "id": "ingestion_review_queue_exists",
+      "severity": "required",
+      "status": "pass",
+      "message": "Ingestion review queue artifact is present.",
+      "metrics": {
+        "path": "C:\\Users\\CodexSandboxOffline\\.codex\\.sandbox\\cwd\\a514d22bfedc1895\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\ingestion_review_queue.json",
+        "review_required": true,
+        "unresolved_manifest_classes": 0,
+        "canonical_ambiguities": 3,
+        "canonical_conflicts": 0,
+        "unresolved_rows": 0
+      }
+    },
+    {
+      "id": "ingestion_review_queue_schema_valid",
+      "severity": "required",
+      "status": "pass",
+      "message": "Ingestion review queue schema and contract_id are valid.",
+      "metrics": {
+        "schema_version": "ingestion_review_queue_v1",
+        "queue_contract_id": "local7_kingsoopers_loveland_meat_2019",
+        "item_count": 1
+      }
+    },
+    {
+      "id": "ingestion_review_queue_issue_coverage",
+      "severity": "required",
+      "status": "pass",
+      "message": "Ingestion review queue covers all unresolved ingestion issue categories.",
+      "metrics": {
+        "required_issue_ids": [
+          "canonical_wage_ambiguities"
+        ],
+        "queue_issue_ids": [
+          "canonical_wage_ambiguities"
+        ],
+        "missing_issue_ids": []
+      }
+    },
+    {
+      "id": "appendix_table_coverage_signal",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "Appendix/wage table coverage signal detected.",
+      "metrics": {
+        "table_count": 19,
+        "non_toc_table_count": 18,
+        "appendix_like_table_count": 7,
+        "article8_table_chunks": 0
+      }
+    },
+    {
+      "id": "moa_wage_schedule_metadata_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "MOA wage schedule metadata not required.",
+      "metrics": {
+        "required": false,
+        "moa_wage_patch_count": 0,
+        "moa_wage_op_count": 0,
+        "ops_with_selected_schedule_label": 0,
+        "ops_with_source_rate_schedule": 0,
+        "patches_missing_sync_metadata": [],
+        "source_doc_ids": []
+      }
+    },
+    {
+      "id": "moa_wage_schedule_sync_registration",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "MOA wage schedule sync registration not required.",
+      "metrics": {
+        "required": false,
+        "patches_missing_config_id": [],
+        "moa_wage_patch_count": 0,
+        "source_doc_ids": []
+      }
+    },
+    {
+      "id": "effective_moa_provenance_page_integrity",
+      "severity": "required",
+      "status": "pass",
+      "message": "Effective amended MOA provenance page integrity not required.",
+      "metrics": {
+        "required": false,
+        "effective_version_id": null,
+        "moa_ref_count": 0,
+        "missing_page_ref_count": 0,
+        "sections_missing_page": [],
+        "tables_missing_page": [],
+        "source_doc_ids": []
+      }
+    },
+    {
+      "id": "miss_record_backlog_linkage",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "No contract-scoped miss backlog records present.",
+      "metrics": {
+        "miss_record_count": 0,
+        "regression_added_count": 0,
+        "missing_regression_case_ids": [],
+        "load_errors": [],
+        "taxonomy_counts": {}
+      }
+    },
+    {
+      "id": "miss_record_signal_alignment",
+      "severity": "advisory",
+      "status": "pass",
+      "message": "No contract-scoped miss signals to align.",
+      "metrics": {
+        "miss_record_count": 0,
+        "mapped_related_checks": [],
+        "active_related_failures": [],
+        "taxonomy_counts": {}
+      }
+    }
+  ],
+  "capabilities": {
+    "side_letter_doc_type_materialization": "pass",
+    "effective_snapshot_present": false,
+    "effective_chunk_index_input": "pass",
+    "effective_wage_index_input": "pass",
+    "effective_entitlement_index_input": "pass",
+    "moa_wage_schedule_metadata_integrity": "pass",
+    "moa_wage_schedule_sync_registration": "pass",
+    "effective_moa_provenance_page_integrity": "pass",
+    "ingestion_review_queue_issue_coverage": "pass",
+    "miss_records_present": false,
+    "miss_record_count": 0,
+    "miss_record_backlog_linkage": "pass",
+    "miss_record_signal_alignment": "pass"
+  },
+  "summary": {
+    "required_failed": [],
+    "advisory_failed": [],
+    "pass": true
+  }
+}

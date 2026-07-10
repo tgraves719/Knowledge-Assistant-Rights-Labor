@@ -1,0 +1,96 @@
+{
+  "schema_version": "entitlement_tables_v1",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "region_id": "region-pueblo",
+  "vacation_entitlements": [
+    {
+      "entitlement_type": "vacation_accrual",
+      "conditions": {
+        "hire_date_on_or_before": "2005-03-26",
+        "hire_date_on_or_after": null,
+        "anniversary_hours_min": 832
+      },
+      "tiers": [
+        {
+          "years_of_service": 1,
+          "weeks_per_year": 1
+        },
+        {
+          "years_of_service": 2,
+          "weeks_per_year": 2
+        },
+        {
+          "years_of_service": 5,
+          "weeks_per_year": 3
+        },
+        {
+          "years_of_service": 12,
+          "weeks_per_year": 4
+        },
+        {
+          "years_of_service": 20,
+          "weeks_per_year": 5
+        }
+      ],
+      "citation": "Article 17, Section 44, Part 1",
+      "source_method": "chunk_pattern_v1",
+      "confidence": 0.9,
+      "source_evidence": [
+        {
+          "chunk_id": "art17_sec44_seg_001",
+          "citation": "Article 17, Section 44, Part 1",
+          "article_num": 17,
+          "section_num": 44,
+          "subsection": null,
+          "source_excerpt": "All regular full-time employees, and all part-time employees, who were hired on or before March 26, 2005 and who have worked eight hundred thirty-two (832) or more hours in their anniversary year, covered by this agreement, shall receive one (1) week's paid vacation after one (1) year's service, two (2) weeks' paid vacation after two (2) years' service, three (3) weeks' paid vacation after five (5) years' continuous service, four (4) weeks' paid vacation after twelve (12) years' continuous service and five (5) weeks' paid vacation after twenty (20) years continuous service."
+        }
+      ],
+      "schedule_id": "vacation_schedule_1"
+    },
+    {
+      "entitlement_type": "vacation_accrual",
+      "conditions": {
+        "hire_date_on_or_before": null,
+        "hire_date_on_or_after": "2005-03-27",
+        "anniversary_hours_min": 1040
+      },
+      "tiers": [
+        {
+          "years_of_service": 1,
+          "weeks_per_year": 1
+        },
+        {
+          "years_of_service": 3,
+          "weeks_per_year": 2
+        },
+        {
+          "years_of_service": 8,
+          "weeks_per_year": 3
+        },
+        {
+          "years_of_service": 12,
+          "weeks_per_year": 4
+        }
+      ],
+      "citation": "Article 17, Section 44, Part 2",
+      "source_method": "chunk_pattern_v1",
+      "confidence": 0.9,
+      "source_evidence": [
+        {
+          "chunk_id": "art17_sec44_seg_002",
+          "citation": "Article 17, Section 44, Part 2",
+          "article_num": 17,
+          "section_num": 44,
+          "subsection": null,
+          "source_excerpt": "All regular full-time employees, and all part-time employees, who were hired on or after March 27, 2005 and who have worked one thousand forty (1,040) or more hours in their anniversary year, covered by this agreement, shall receive one (1) week's paid vacation after one (1) year's service, two (2) weeks' paid vacation after three (3) years' service, three (3) weeks' paid vacation after eight (8) years' continuous service and four (4) weeks' paid vacation after twelve (12) years' continuous service."
+        }
+      ],
+      "schedule_id": "vacation_schedule_2"
+    }
+  ],
+  "extraction_metadata": {
+    "source_method": "chunk_pattern_v1",
+    "candidate_count": 2,
+    "schedule_count": 2
+  }
+}

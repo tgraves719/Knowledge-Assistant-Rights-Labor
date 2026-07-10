@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karl Superadmin Console</title>
+    <link rel="stylesheet" href="/static/modular/styles/generated.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #173246;
+            --panel: rgba(255, 255, 255, 0.86);
+            --line: rgba(23, 50, 70, 0.12);
+            --accent: #0d5c80;
+            --accent-deep: #0a4762;
+            --blue: #1b6b8a;
+            --gold: #d4a029;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--ink);
+            font-family: "Inter", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(212, 160, 41, 0.16), transparent 28%),
+                radial-gradient(circle at 80% 0%, rgba(27, 107, 138, 0.2), transparent 26%),
+                linear-gradient(135deg, #edf5f8 0%, #f6f3eb 40%, #e8eef4 100%);
+        }
+
+        .mono { font-family: "IBM Plex Mono", monospace; }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            box-shadow: 0 20px 50px rgba(20, 33, 43, 0.08);
+            backdrop-filter: blur(18px);
+        }
+
+        .hero-grid {
+            background:
+                radial-gradient(circle at 20% 20%, rgba(212, 160, 41, 0.14), transparent 24%),
+                linear-gradient(135deg, rgba(13, 59, 84, 0.98), rgba(20, 80, 110, 0.96), rgba(27, 107, 138, 0.94));
+            color: white;
+        }
+
+        .status-pill {
+            border: 1px solid rgba(20, 33, 43, 0.1);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .section-title {
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: rgba(20, 33, 43, 0.65);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 34px rgba(20, 33, 43, 0.12);
+        }
+
+        .platform-panel {
+            background: rgba(218, 223, 228, 0.92) !important;
+            border: 1px solid rgba(77, 93, 107, 0.18) !important;
+        }
+
+        .union-superadmin-panel {
+            background: rgba(238, 241, 244, 0.92) !important;
+            border: 1px solid rgba(77, 93, 107, 0.14) !important;
+        }
+
+        .platform-panel-strong {
+            background: rgba(189, 198, 207, 0.96) !important;
+            border: 1px solid rgba(63, 78, 92, 0.24) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <header class="hero-grid panel overflow-hidden rounded-[28px]">
+            <div class="grid gap-6 p-6 lg:grid-cols-[1.6fr_1fr] lg:p-8">
+                <div class="space-y-4">
+                    <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-white">
+                        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                        Karl Superadmin
+                    </div>
+                    <div class="space-y-2">
+                        <h1 class="max-w-3xl font-['Playfair_Display'] text-3xl font-semibold leading-tight text-white sm:text-4xl">
+                            Platform-wide union operations, security, and tenant controls.
+                        </h1>
+                        <p class="max-w-2xl text-sm leading-6 text-white/85 sm:text-base">
+                            Create unions, switch between tenants, manage admins, and oversee the platform from one place.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-3 text-xs text-white/90">
+                        <div class="status-pill rounded-full px-3 py-1">Platform-wide</div>
+                        <div class="status-pill rounded-full px-3 py-1">Document-first</div>
+                        <div class="status-pill rounded-full px-3 py-1">Policy-aware</div>
+                        <div class="status-pill rounded-full px-3 py-1">Audit-first</div>
+                    </div>
+                </div>
+                <div class="rounded-[24px] border border-white/15 bg-white/10 p-5 backdrop-blur-md">
+                    <div class="section-title">Session</div>
+                    <div class="mt-4 space-y-4">
+                        <div id="auth-summary" class="text-sm text-white/85">Not signed in.</div>
+                        <div class="grid gap-3 sm:grid-cols-2">
+                            <button id="auth-open-modal" class="w-full rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-white/90" type="button">Sign In</button>
+                            <button id="auth-logout" class="w-full rounded-2xl border border-white/20 bg-transparent px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10" type="button">Sign Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div id="signed-out-state" class="mt-6 panel rounded-[28px] p-8 text-center">
+            <h2 class="font-['Playfair_Display'] text-3xl font-semibold text-slate-900">Sign in to open the superadmin workspace</h2>
+            <p class="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-600">Once signed in, you’ll be able to create unions, manage tenant admins, review alerts, and oversee the platform.</p>
+        </div>
+
+        <section id="union-directory-panel" class="platform-panel mt-6 panel rounded-[28px] p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <div class="section-title">Superadmin Tools</div>
+                    <h2 class="mt-2 text-xl font-bold text-slate-900">Platform-wide union control and oversight</h2>
+                    <p class="mt-1 text-sm text-slate-600">This section is for all-union work: load current unions, choose one to manage, add a union, review all-union metrics, or take all unions offline.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button id="load-unions" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Refresh Union List</button>
+                    <button id="load-ops" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100">Refresh All-Union Metrics</button>
+                </div>
+            </div>
+            <div id="platform-tools-status" class="mt-4 rounded-[24px] border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-600">Platform tools are ready. Refresh the union list, choose a union to manage, or use the all-union controls below.</div>
+            <div class="mt-4 grid gap-3 rounded-[24px] border border-slate-200 bg-white/70 p-4 lg:grid-cols-[minmax(0,1fr)_auto_auto]">
+                <select id="union-picker" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                    <option value="">Choose a union to manage</option>
+                </select>
+                <button id="manage-selected-union" class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="button">Manage Selected Union</button>
+                <button id="take-all-unions-offline" class="rounded-2xl border border-rose-300 bg-white px-4 py-3 text-sm font-semibold text-rose-700 hover:bg-rose-50" type="button">Take All Unions Offline</button>
+            </div>
+            <div id="platform-summary" class="mt-5"></div>
+            <div class="mt-5 rounded-[24px] border border-slate-200 bg-white/70 p-4">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-900">Add a new union</h3>
+                        <p class="mt-1 text-sm text-slate-600">Open the union setup popup to enter the display name and optional public web address. Karl will create the secure internal records automatically.</p>
+                    </div>
+                    <button id="open-create-union-modal" class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="button">Create New Union</button>
+                </div>
+            </div>
+            <div class="mt-5 rounded-[24px] border border-slate-200 bg-white/70 p-4">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-900">Global tracking policy</h3>
+                        <p class="mt-1 text-sm text-slate-600">Set the platform default for bug/journey tracking, usage analytics, privacy mode, and whether raw query text is stored. Raw query storage stays off by default.</p>
+                    </div>
+                    <button id="refresh-global-tracking-policy" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Refresh Policy</button>
+                </div>
+                <form id="global-tracking-policy-form" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                    <label class="grid gap-2 text-sm text-slate-700">
+                        <span class="font-semibold text-slate-900">Tracking mode</span>
+                        <select id="global-tracking-mode" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                            <option value="none">No tracking</option>
+                            <option value="bug_and_journey">Bug and journey only</option>
+                            <option value="usage_and_ux">Usage and UX only</option>
+                            <option value="both">Both bug/journey and usage</option>
+                        </select>
+                    </label>
+                    <label class="grid gap-2 text-sm text-slate-700">
+                        <span class="font-semibold text-slate-900">Privacy mode</span>
+                        <select id="global-tracking-privacy" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                            <option value="anonymized">Anonymized</option>
+                            <option value="identified">Identified</option>
+                        </select>
+                    </label>
+                    <label class="grid gap-2 text-sm text-slate-700">
+                        <span class="font-semibold text-slate-900">Member choice</span>
+                        <select id="global-tracking-member-choice" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                            <option value="none">No member choice</option>
+                            <option value="bug_only_or_full">Bug-only or full tracking</option>
+                            <option value="full_opt_out">Full opt-out allowed</option>
+                        </select>
+                    </label>
+                    <label class="grid gap-2 text-sm text-slate-700">
+                        <span class="font-semibold text-slate-900">Raw query storage</span>
+                        <select id="global-tracking-raw-query" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                            <option value="disabled">Disabled</option>
+                            <option value="enabled_anonymized">Enabled, anonymized</option>
+                            <option value="enabled_identified">Enabled, identified</option>
+                        </select>
+                    </label>
+                    <label class="grid gap-2 text-sm text-slate-700">
+                        <span class="font-semibold text-slate-900">Default member preference</span>
+                        <select id="global-tracking-default-member" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                            <option value="system_default">System default</option>
+                            <option value="bug_only">Bug-only</option>
+                            <option value="full">Full tracking</option>
+                            <option value="off">Off</option>
+                        </select>
+                    </label>
+                    <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+                        <input id="global-tracking-allow-overrides" type="checkbox">
+                        Allow union-specific overrides
+                    </label>
+                    <div class="md:col-span-2 xl:col-span-3 flex flex-wrap gap-3">
+                        <button class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="submit">Save Global Tracking Policy</button>
+                        <div id="global-tracking-policy-status" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">Global bug/journey tracking with anonymized data is the default until you change it here.</div>
+                    </div>
+                </form>
+            </div>
+            <div id="union-list" class="mt-5 grid gap-4"></div>
+        </section>
+
+        <main id="workspace-shell" class="mt-6 hidden space-y-6">
+            <section id="platform-overview-section" class="platform-panel panel rounded-[28px] p-6">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <div class="section-title">All-Union Overview</div>
+                        <h2 class="mt-2 text-2xl font-bold text-slate-900">Live platform-wide readout</h2>
+                        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">These are the all-union metrics and superadmin-only readouts. They stay visible even when no specific union is selected.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <button id="refresh-platform-overview" class="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Refresh This Section</button>
+                        <div id="superadmin-ops-summary" class="rounded-[24px] border border-slate-200 bg-white/75 px-4 py-3 text-sm text-slate-600">Platform-wide health updates appear here.</div>
+                    </div>
+                </div>
+                <div class="mt-5 grid gap-5 xl:grid-cols-3">
+                    <div class="rounded-[24px] border border-slate-200 bg-white/70 p-4">
+                        <h3 class="mb-2 font-semibold text-slate-900">Usage warnings</h3>
+                        <div id="superadmin-usage-list" class="grid gap-3"></div>
+                    </div>
+                    <div class="rounded-[24px] border border-slate-200 bg-white/70 p-4">
+                        <h3 class="mb-2 font-semibold text-slate-900">Provider health</h3>
+                        <div id="superadmin-provider-list" class="grid gap-3"></div>
+                    </div>
+                    <div class="rounded-[24px] border border-slate-200 bg-white/70 p-4">
+                        <h3 class="mb-2 font-semibold text-slate-900">Admin coverage</h3>
+                        <div id="superadmin-admin-list" class="grid gap-3"></div>
+                    </div>
+                </div>
+                <div class="mt-5">
+                    <div class="mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">Platform snapshot</h3>
+                            <p id="superadmin-dashboard-scope-label" class="mt-1 text-sm leading-6 text-slate-600">Recent platform-wide usage, sign-ins, and issue trends appear here.</p>
+                        </div>
+                    </div>
+                    <div id="superadmin-dashboard-summary-cards" class="grid gap-4 md:grid-cols-2 xl:grid-cols-5"></div>
+                    <div id="superadmin-dashboard-trend-cards" class="mt-5 grid gap-4 xl:grid-cols-3"></div>
+                </div>
+            </section>
+
+            <section class="selected-union-only union-superadmin-panel panel rounded-[28px] p-6">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <div class="section-title">Selected Union Superadmin Tools</div>
+                        <h2 id="detail-title" class="mt-2 text-2xl font-bold text-slate-900">Select a union</h2>
+                        <p id="detail-subtitle" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">These are superadmin-only controls for the currently managed union.</p>
+                        <p id="selected-union-management-status" class="mt-2 text-sm font-semibold text-slate-700">Select Manage on a union above to open its union-specific tools.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <button id="selected-union-toggle-active" class="rounded-full border border-amber-300 bg-white px-4 py-2 text-sm font-semibold text-amber-800 hover:bg-amber-50" type="button">Take This Union Offline</button>
+                        <button id="selected-union-delete" class="rounded-full border border-rose-300 bg-white px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-50" type="button">Delete This Union</button>
+                        <button id="clear-selected-union" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Done Managing This Union</button>
+                    </div>
+                </div>
+                <div class="mt-5 rounded-[24px] border border-slate-200 bg-white/70 p-4">
+                    <div class="flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-900">Selected union tracking override</h3>
+                            <p class="mt-1 text-sm text-slate-600">Optionally narrow or expand tracking for this union without changing the global platform default.</p>
+                        </div>
+                        <button id="refresh-union-tracking-policy" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Refresh Override</button>
+                    </div>
+                    <form id="union-tracking-policy-form" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                        <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 md:col-span-2 xl:col-span-3">
+                            <input id="union-tracking-override-enabled" type="checkbox">
+                            Use a union-specific tracking override instead of the global default
+                        </label>
+                        <label class="grid gap-2 text-sm text-slate-700">
+                            <span class="font-semibold text-slate-900">Tracking mode</span>
+                            <select id="union-tracking-mode" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                <option value="none">No tracking</option>
+                                <option value="bug_and_journey">Bug and journey only</option>
+                                <option value="usage_and_ux">Usage and UX only</option>
+                                <option value="both">Both bug/journey and usage</option>
+                            </select>
+                        </label>
+                        <label class="grid gap-2 text-sm text-slate-700">
+                            <span class="font-semibold text-slate-900">Privacy mode</span>
+                            <select id="union-tracking-privacy" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                <option value="anonymized">Anonymized</option>
+                                <option value="identified">Identified</option>
+                            </select>
+                        </label>
+                        <label class="grid gap-2 text-sm text-slate-700">
+                            <span class="font-semibold text-slate-900">Member choice</span>
+                            <select id="union-tracking-member-choice" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                <option value="none">No member choice</option>
+                                <option value="bug_only_or_full">Bug-only or full tracking</option>
+                                <option value="full_opt_out">Full opt-out allowed</option>
+                            </select>
+                        </label>
+                        <label class="grid gap-2 text-sm text-slate-700">
+                            <span class="font-semibold text-slate-900">Raw query storage</span>
+                            <select id="union-tracking-raw-query" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                <option value="disabled">Disabled</option>
+                                <option value="enabled_anonymized">Enabled, anonymized</option>
+                                <option value="enabled_identified">Enabled, identified</option>
+                            </select>
+                        </label>
+                        <label class="grid gap-2 text-sm text-slate-700">
+                            <span class="font-semibold text-slate-900">Default member preference</span>
+                            <select id="union-tracking-default-member" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                <option value="system_default">System default</option>
+                                <option value="bug_only">Bug-only</option>
+                                <option value="full">Full tracking</option>
+                                <option value="off">Off</option>
+                            </select>
+                        </label>
+                        <div class="md:col-span-2 xl:col-span-3 flex flex-wrap gap-3">
+                            <button class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="submit">Save Union Tracking Override</button>
+                            <button id="clear-union-tracking-policy" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Use Global Default</button>
+                            <div id="union-tracking-policy-status" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">This union currently follows the platform default until an override is enabled.</div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="selected-union-only union-superadmin-panel panel rounded-[28px] p-6">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <div class="section-title">Selected Union Superadmin Readout</div>
+                        <h2 class="mt-2 text-2xl font-bold text-slate-900">Superadmin metrics for the active union</h2>
+                        <p id="dashboard-scope-label" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">These readouts are specific to the currently managed union.</p>
+                    </div>
+                    <button id="refresh-dashboard" class="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Refresh Snapshot</button>
+                </div>
+                <div id="dashboard-summary-cards" class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-5"></div>
+                <div id="dashboard-trend-cards" class="mt-5 grid gap-4 xl:grid-cols-3"></div>
+            </section>
+
+            <section class="selected-union-only panel rounded-[28px] p-6">
+                <div>
+                    <div class="section-title">Union Admin Tools</div>
+                    <h2 class="mt-2 text-2xl font-bold text-slate-900">Day-to-day union workspace</h2>
+                    <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Everything below mirrors the tenant admin workspace so the superadmin can operate inside the selected union.</p>
+                </div>
+            </section>
+
+            <section class="selected-union-only grid gap-6 xl:grid-cols-2">
+                <div class="space-y-6">
+                    <div id="documents-section" class="panel rounded-[28px] p-6">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Documents</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">Upload and manage union documents</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">This is the main day-to-day workspace. Upload files, confirm they are ready for member questions, and retry or remove items when needed.</p>
+                            </div>
+                            <button id="refresh-docs" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <form id="document-form" class="mt-5 grid gap-3">
+                            <input id="document-file" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="file">
+                            <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Upload Document</button>
+                        </form>
+                        <div id="document-list" class="mt-4 grid gap-3"></div>
+                    </div>
+
+                    <div id="users-section" class="panel rounded-[28px] p-6">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Users</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">Add members and open the user directory</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">Use the quick add form for new people, then open the user directory to search, edit, reset passwords, or remove access at scale.</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <button id="refresh-users" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                            </div>
+                        </div>
+                        <div id="user-summary" class="mt-4 rounded-[24px] border border-slate-200 bg-white/70 p-4 text-sm text-slate-600">Select a union to load member access.</div>
+                        <div class="mt-4">
+                            <button id="open-user-directory" class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="button">Open User Directory</button>
+                        </div>
+                        <form id="create-user-form" class="mt-5 grid gap-3 md:grid-cols-2">
+                            <input id="user-email" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Email address">
+                            <input id="user-name" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Full name">
+                            <select id="user-role" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm"></select>
+                            <input id="user-username" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Username for local sign-in (optional)">
+                            <input id="user-password" type="password" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2" placeholder="Password for local sign-in (optional)">
+                            <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700 md:col-span-2" type="submit">Add User</button>
+                        </form>
+                    </div>
+
+                    <section id="user-directory-panel" class="hidden panel rounded-[28px] p-6">
+                        <div class="flex flex-wrap items-start justify-between gap-4">
+                            <div>
+                                <div class="section-title">User Directory</div>
+                                <h3 class="mt-2 text-2xl font-bold text-slate-900">Search and manage member access</h3>
+                                <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Search by name, email, username, or role. Open a member to update their details, reset a password, or remove union access.</p>
+                            </div>
+                            <button id="close-user-directory" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Close Directory</button>
+                        </div>
+                        <form id="user-search-form" class="mt-5 grid gap-3">
+                            <div class="grid gap-3 xl:grid-cols-[minmax(0,1.4fr)_220px_220px_180px_auto_auto]">
+                                <input id="user-search-query" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Search users by name, email, username, or role">
+                                <select id="user-search-field" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    <option value="all">Search all fields</option>
+                                    <option value="name">Search names</option>
+                                    <option value="email">Search emails</option>
+                                    <option value="username">Search usernames</option>
+                                    <option value="role">Search roles</option>
+                                </select>
+                                <select id="user-sort" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    <option value="name">Sort by name</option>
+                                    <option value="email">Sort by email</option>
+                                    <option value="role">Sort by role</option>
+                                    <option value="created_at">Sort by newest</option>
+                                </select>
+                                <select id="user-direction" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    <option value="asc">Ascending</option>
+                                    <option value="desc">Descending</option>
+                                </select>
+                                <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Search</button>
+                                <button id="user-view-all" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">View All Users</button>
+                            </div>
+                        </form>
+                        <div class="mt-5 grid gap-6 xl:grid-cols-[1.25fr_0.95fr]">
+                            <div>
+                                <div class="mb-3 flex items-center justify-between gap-3">
+                                    <div id="user-pagination-summary" class="text-sm text-slate-600">Select a union to load users.</div>
+                                    <div class="flex gap-2">
+                                        <button id="user-page-prev" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Previous</button>
+                                        <button id="user-page-next" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Next</button>
+                                    </div>
+                                </div>
+                                <div id="user-directory-list" class="grid gap-3"></div>
+                            </div>
+                            <div class="rounded-[24px] border border-slate-200 bg-white/70 p-5">
+                                <div class="section-title">Selected User</div>
+                                <form id="user-edit-form" class="mt-4 grid gap-3">
+                                    <input id="user-edit-id" type="hidden">
+                                    <label class="grid gap-2 text-sm text-slate-700">
+                                        <span class="font-semibold text-slate-900">Full name</span>
+                                        <input id="user-edit-name" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Select a user first">
+                                    </label>
+                                    <label class="grid gap-2 text-sm text-slate-700">
+                                        <span class="font-semibold text-slate-900">Email</span>
+                                        <input id="user-edit-email" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    </label>
+                                    <label class="grid gap-2 text-sm text-slate-700">
+                                        <span class="font-semibold text-slate-900">Role</span>
+                                        <select id="user-edit-role" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm"></select>
+                                    </label>
+                                    <label class="grid gap-2 text-sm text-slate-700">
+                                        <span class="font-semibold text-slate-900">Username</span>
+                                        <input id="user-edit-username" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Local sign-in username">
+                                    </label>
+                                    <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+                                        <input id="user-edit-active" type="checkbox">
+                                        User is active in this union
+                                    </label>
+                                    <div class="grid gap-3 sm:grid-cols-2">
+                                        <button class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="submit">Save User</button>
+                                        <button id="user-password-button" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Reset Password</button>
+                                    </div>
+                                    <button id="user-delete-button" class="rounded-2xl border border-rose-300 bg-white px-4 py-3 text-sm font-semibold text-rose-700 hover:bg-rose-50" type="button">Delete User</button>
+                                    <div id="user-edit-status" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">Choose a user from the list to edit their access.</div>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="space-y-6">
+                    <div id="provider-section" class="panel rounded-[28px] p-6">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Union Settings</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">How this union appears and behaves</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">Update the public display name, member login policy, message retention, and branding without editing raw configuration.</p>
+                            </div>
+                            <button id="refresh-union-settings" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <form id="union-settings-form" class="mt-5 grid gap-3">
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Union display name</span>
+                                <input id="union-settings-name" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Union name">
+                            </label>
+                            <div class="grid gap-3 md:grid-cols-2">
+                                <label class="grid gap-2 text-sm text-slate-700">
+                                    <span class="font-semibold text-slate-900">Theme color</span>
+                                    <input id="union-settings-theme-color" type="color" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-2 py-2">
+                                </label>
+                                <label class="grid gap-2 text-sm text-slate-700">
+                                    <span class="font-semibold text-slate-900">Accent color</span>
+                                    <input id="union-settings-accent-color" type="color" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-2 py-2">
+                                </label>
+                                <label class="grid gap-2 text-sm text-slate-700">
+                                    <span class="font-semibold text-slate-900">Surface tint</span>
+                                    <input id="union-settings-surface-tint" type="color" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-2 py-2">
+                                </label>
+                                <label class="grid gap-2 text-sm text-slate-700">
+                                    <span class="font-semibold text-slate-900">Welcome heading</span>
+                                    <input id="union-settings-welcome-heading" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Ask Karl about your union documents">
+                                </label>
+                            </div>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Welcome subcopy</span>
+                                <textarea id="union-settings-welcome-subcopy" class="min-h-[96px] rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Explain what members can do here."></textarea>
+                            </label>
+                            <div class="grid gap-3 md:grid-cols-3">
+                                <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700">
+                                    <input id="union-settings-login-required" type="checkbox" checked>
+                                    Require member login
+                                </label>
+                                <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700">
+                                    <input id="union-settings-retention" type="checkbox">
+                                    Save member conversations
+                                </label>
+                                <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700">
+                                    <input id="union-settings-active" type="checkbox" checked>
+                                    Union active
+                                </label>
+                            </div>
+                            <button class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="submit">Save Union Settings</button>
+                        </form>
+                    </div>
+
+                    <div class="panel rounded-[28px] p-6">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Admin Access</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">Union admin assignment and takeover</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">See who currently administers this union, promote the selected user to union admin, or assign yourself for temporary recovery access.</p>
+                            </div>
+                            <button id="refresh-selected-admins" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <div id="selected-union-admins" class="mt-4 grid gap-3"></div>
+                        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                            <button id="promote-selected-user-admin" class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="button">Make Selected User A Union Admin</button>
+                            <button id="assign-self-takeover" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Assign Me As Temporary Union Admin</button>
+                        </div>
+                        <div class="mt-3 grid gap-3 sm:grid-cols-2">
+                            <button id="download-union-export" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Download Tenant Export</button>
+                            <button id="refresh-debug-drawer" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Refresh Debug Drawer</button>
+                        </div>
+                        <div id="selected-union-admin-status" class="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">Select a union to manage its admin coverage.</div>
+                    </div>
+
+                    <details class="panel rounded-[28px] p-6">
+                        <summary class="cursor-pointer font-semibold text-slate-900">Advanced raw config and debug</summary>
+                        <p class="mt-3 text-sm leading-6 text-slate-600">This drawer is reserved for superadmin diagnostics and raw configuration visibility.</p>
+                        <pre id="superadmin-debug-output" class="mono mt-4 overflow-x-auto rounded-2xl bg-slate-950 p-4 text-xs text-emerald-300">{}</pre>
+                    </details>
+
+                    <div class="panel rounded-[28px] p-6">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Quotas</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">Usage limits and safety thresholds</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">These limits help protect budget and service quality. The labels below show exactly what each number controls.</p>
+                            </div>
+                            <button id="refresh-quota" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <div id="quota-usage-summary" class="mt-4 rounded-[24px] border border-slate-200 bg-white/70 p-4 text-sm text-slate-600">Load a union to see current usage.</div>
+                        <form id="quota-form" class="mt-5 grid gap-3 md:grid-cols-2">
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Union requests per day</span>
+                                <input id="quota-requests" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="number">
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Union tokens per day</span>
+                                <input id="quota-tokens" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="number">
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Union estimated cost per day (USD)</span>
+                                <input id="quota-cost" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="number" step="0.01">
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Per-user requests per hour</span>
+                                <input id="quota-user-rate" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="number">
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700 md:col-span-2">
+                                <span class="font-semibold text-slate-900">Warning threshold ratio</span>
+                                <input id="quota-warn" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" type="number" step="0.01">
+                            </label>
+                            <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700 md:col-span-2">
+                                <input id="quota-paused" type="checkbox">
+                                Pause this union’s current activity
+                            </label>
+                            <button class="rounded-2xl bg-[color:var(--gold)] px-4 py-3 text-sm font-semibold text-slate-950 hover:brightness-95 md:col-span-2" type="submit">Save Quota Settings</button>
+                        </form>
+                    </div>
+
+                    <div class="panel rounded-[28px] p-6">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Model Provider</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">Connect the live model for member answers</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">Choose the provider, set the model name, and save the API key. Advanced transport details stay out of the tenant-admin view.</p>
+                            </div>
+                            <button id="refresh-provider" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <form id="provider-form" class="mt-5 grid gap-3">
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Provider</span>
+                                <select id="provider-name" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    <option value="openrouter">OpenRouter</option>
+                                    <option value="openai">OpenAI</option>
+                                    <option value="gemini">Google</option>
+                                    <option value="anthropic">Anthropic</option>
+                                </select>
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">Model name</span>
+                                <input id="provider-model" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="qwen/qwen3.5-flash-02-23">
+                            </label>
+                            <label class="grid gap-2 text-sm text-slate-700">
+                                <span class="font-semibold text-slate-900">API key</span>
+                                <input id="provider-key" type="password" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Paste a new API key to save or replace it">
+                            </label>
+                            <div id="provider-key-status" class="rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-600">No saved API key yet.</div>
+                            <div id="provider-help" class="rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-600"></div>
+                            <div class="grid gap-3 md:grid-cols-2">
+                                <button class="rounded-2xl bg-[color:var(--blue)] px-4 py-3 text-sm font-semibold text-white hover:opacity-90" type="submit">Save Provider</button>
+                                <button id="test-provider" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Test Provider</button>
+                            </div>
+                        </form>
+                        <div id="provider-test-status" class="mt-3 hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="selected-union-alerts-section" class="selected-union-only panel rounded-[28px] p-6">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <div class="section-title">Union Reviews And Alerts</div>
+                        <h2 class="mt-2 text-2xl font-bold text-slate-900">Alerts and review signals for the union you are managing</h2>
+                        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">This section only appears while you are actively managing a specific union.</p>
+                    </div>
+                    <button id="refresh-selected-alerts" class="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Refresh This Section</button>
+                </div>
+                <div class="mt-5 grid gap-5 xl:grid-cols-3">
+                    <div>
+                        <h3 class="mb-2 font-semibold text-slate-900">Retained chats</h3>
+                        <div id="selected-chat-list" class="grid gap-3"></div>
+                        <pre id="chat-detail" class="mono mt-3 hidden overflow-x-auto rounded-2xl bg-slate-950 p-4 text-xs text-amber-300"></pre>
+                    </div>
+                    <div>
+                        <h3 class="mb-2 font-semibold text-slate-900">Security events</h3>
+                        <div id="selected-security-list" class="grid gap-3"></div>
+                        <div class="mt-3 flex items-center justify-between gap-3">
+                            <button id="selected-security-prev" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Previous</button>
+                            <div id="selected-security-summary" class="text-sm text-slate-600">No security events loaded.</div>
+                            <button id="selected-security-next" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Next</button>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="mb-2 font-semibold text-slate-900">Notifications</h3>
+                        <div id="selected-notification-list" class="grid gap-3"></div>
+                        <div class="mt-3 flex items-center justify-between gap-3">
+                            <button id="selected-notification-prev" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Previous</button>
+                            <div id="selected-notification-summary" class="text-sm text-slate-600">No notifications loaded.</div>
+                            <button id="selected-notification-next" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="selected-telemetry-panel" class="mt-6 rounded-[24px] border border-slate-200 bg-white/70 p-4">
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <h3 class="font-semibold text-slate-900">Selected Union Tracking And Observability</h3>
+                            <p class="mt-1 text-sm text-slate-600">Review recent query failures, source opens, resets, session activity, and other app events for the union you are actively managing.</p>
+                        </div>
+                        <button id="refresh-selected-telemetry" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold" type="button">Refresh</button>
+                    </div>
+                    <form id="selected-telemetry-form" class="mt-4 grid gap-3 lg:grid-cols-[180px_220px_1fr_220px_auto]">
+                        <select id="selected-telemetry-category" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                            <option value="">All categories</option>
+                            <option value="bug_journey">Bug and journey</option>
+                            <option value="usage_ux">Usage and UX</option>
+                        </select>
+                        <input id="selected-telemetry-event-type" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Event type">
+                        <input id="selected-telemetry-query" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Search route, details, or union context">
+                        <input id="selected-telemetry-session-id" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Session ID">
+                        <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Apply</button>
+                    </form>
+                    <div id="selected-telemetry-list" class="mt-4 grid gap-3"></div>
+                    <div class="mt-3 flex items-center justify-between gap-3">
+                        <button id="selected-telemetry-prev" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Previous</button>
+                        <div id="selected-telemetry-summary" class="text-sm text-slate-600">No telemetry loaded.</div>
+                        <button id="selected-telemetry-next" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Next</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="global-alerts-section" class="platform-panel panel rounded-[28px] p-6">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <div class="section-title">Platform Alerts And Reviews</div>
+                        <h2 class="mt-2 text-2xl font-bold text-slate-900">All-union alert overview</h2>
+                        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">This section stays visible all the time and shows the most recent platform-wide security events and notifications across unions.</p>
+                    </div>
+                    <button id="refresh-global-alerts" class="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Refresh This Section</button>
+                </div>
+                <div class="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.15fr)]">
+                    <div class="min-w-0">
+                        <h3 class="mb-2 font-semibold text-slate-900">Security events</h3>
+                        <div id="global-security-list" class="grid gap-3"></div>
+                        <div class="mt-3 flex items-center justify-between gap-3">
+                            <button id="global-security-prev" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Previous</button>
+                            <div id="global-security-summary" class="text-sm text-slate-600">No security events loaded.</div>
+                            <button id="global-security-next" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Next</button>
+                        </div>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="mb-2 font-semibold text-slate-900">Notifications</h3>
+                        <div id="global-notification-list" class="grid gap-3"></div>
+                        <div class="mt-3 flex items-center justify-between gap-3">
+                            <button id="global-notification-prev" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Previous</button>
+                            <div id="global-notification-summary" class="text-sm text-slate-600">No notifications loaded.</div>
+                            <button id="global-notification-next" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Next</button>
+                        </div>
+                    </div>
+                    <div id="global-telemetry-panel" class="min-w-0">
+                        <div class="mb-2 flex items-center justify-between">
+                            <h3 class="font-semibold text-slate-900">Tracking And Observability</h3>
+                            <button id="refresh-global-telemetry" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold" type="button">Refresh</button>
+                        </div>
+                        <form id="global-telemetry-form" class="grid gap-3">
+                            <select id="global-telemetry-category" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                <option value="">All categories</option>
+                                <option value="bug_journey">Bug and journey</option>
+                                <option value="usage_ux">Usage and UX</option>
+                            </select>
+                            <input id="global-telemetry-event-type" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Event type">
+                            <input id="global-telemetry-query" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Search route, union, or details">
+                            <input id="global-telemetry-session-id" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Session ID">
+                            <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Apply</button>
+                        </form>
+                        <div id="global-telemetry-list" class="mt-4 grid gap-3"></div>
+                        <div class="mt-3 flex items-center justify-between gap-3">
+                            <button id="global-telemetry-prev" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Previous</button>
+                            <div id="global-telemetry-summary" class="text-sm text-slate-600">No telemetry loaded.</div>
+                            <button id="global-telemetry-next" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <details class="mt-5 rounded-[24px] border border-slate-200 bg-white/70 p-4">
+                    <summary class="cursor-pointer font-semibold text-slate-900">Debug details</summary>
+                    <div class="mt-4">
+                        <div class="mb-2 flex items-center justify-between">
+                            <h3 class="font-semibold text-slate-900">Current session</h3>
+                            <button id="refresh-me" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Refresh</button>
+                        </div>
+                        <pre id="me-output" class="mono mt-4 overflow-x-auto rounded-2xl bg-slate-950 p-4 text-xs text-emerald-300">{}</pre>
+                    </div>
+                </details>
+            </section>
+
+            <section id="review-queue-section" class="platform-panel-strong panel rounded-[28px] p-6">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <div class="section-title">Global Review Queue</div>
+                        <h2 class="mt-2 text-2xl font-bold text-slate-900">Cross-union document review and alerts</h2>
+                        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Filter the full review queue by union, review state, document status, or a search phrase. This helps superadmin work across all tenants from one place.</p>
+                    </div>
+                    <button id="refresh-review-queue" class="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Refresh Queue</button>
+                </div>
+                <form id="review-queue-form" class="mt-5 grid gap-3 lg:grid-cols-[1.4fr_220px_220px_220px_auto]">
+                    <input id="review-queue-query" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Search by title, review reason, or recommended action">
+                    <select id="review-queue-union" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                        <option value="">All unions</option>
+                    </select>
+                    <select id="review-queue-review-status" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                        <option value="">All review states</option>
+                        <option value="needs_review">Needs review</option>
+                        <option value="retrying_with_ocr">Retrying with OCR</option>
+                        <option value="in_review">In review</option>
+                        <option value="failed">Failed</option>
+                        <option value="escalated">Escalated</option>
+                        <option value="blocked_pending_superadmin">Blocked pending superadmin</option>
+                    </select>
+                    <select id="review-queue-status" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                        <option value="">All document statuses</option>
+                        <option value="processing">Processing</option>
+                        <option value="active">Active</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                    <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Apply Filters</button>
+                </form>
+                <div id="review-queue-summary" class="mt-4 rounded-[24px] border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-600">Load the review queue to see unresolved document work.</div>
+                <div id="review-queue-list" class="mt-4 grid gap-3"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="auth-modal" class="hidden fixed inset-0 z-[80] bg-slate-950/50 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-md items-center justify-center">
+            <div class="w-full rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sign In</p>
+                        <h2 class="mt-2 text-2xl font-semibold text-slate-900">Open the admin console</h2>
+                        <p class="mt-2 text-sm leading-6 text-slate-600">Use your admin account to manage documents, users, quotas, and notifications.</p>
+                    </div>
+                    <button id="auth-modal-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <form id="auth-form" class="mt-6 space-y-3">
+                    <div>
+                        <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Username</label>
+                        <input id="auth-username" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="Username">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Password</label>
+                        <div class="flex gap-2">
+                            <input id="auth-password" type="password" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="Password">
+                            <button id="auth-password-toggle" type="button" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100">Show</button>
+                        </div>
+                    </div>
+                    <div id="auth-union-group">
+                        <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Union</label>
+                        <input id="auth-union" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="Union">
+                    </div>
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        <button class="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-700" type="submit">Sign In</button>
+                        <button id="auth-modal-cancel" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="password-reset-modal" class="hidden fixed inset-0 z-[90] bg-slate-950/50 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-md items-center justify-center">
+            <div class="w-full rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Reset Password</p>
+                        <h2 class="mt-2 text-2xl font-semibold text-slate-900">Set a new password</h2>
+                        <p class="mt-2 text-sm leading-6 text-slate-600">Enter the new password twice so we can make sure it matches before saving.</p>
+                    </div>
+                    <button id="password-reset-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <form id="password-reset-form" class="mt-6 space-y-3">
+                    <div>
+                        <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">New password</label>
+                        <div class="flex gap-2">
+                            <input id="password-reset-new" type="password" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="New password">
+                            <button id="password-reset-new-toggle" type="button" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100">Show</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Repeat password</label>
+                        <div class="flex gap-2">
+                            <input id="password-reset-repeat" type="password" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="Repeat password">
+                            <button id="password-reset-repeat-toggle" type="button" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100">Show</button>
+                        </div>
+                    </div>
+                    <div id="password-reset-status" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">Choose a user first, then enter the new password here.</div>
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        <button class="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Save Password</button>
+                        <button id="password-reset-cancel" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="create-union-modal" class="hidden fixed inset-0 z-[95] overflow-y-auto bg-slate-950/50 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-2xl items-start justify-center py-6">
+            <div class="max-h-[calc(100vh-3rem)] w-full overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Create Union</p>
+                        <h2 class="mt-2 text-2xl font-semibold text-slate-900">Create a new union</h2>
+                        <p class="mt-2 text-sm leading-6 text-slate-600">Enter the public union name. The public web address is optional. Karl will generate the secure internal union ID automatically.</p>
+                    </div>
+                    <button id="create-union-modal-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <form id="create-union-form" class="mt-6 grid gap-4">
+                    <div class="grid gap-3 md:grid-cols-2">
+                        <label class="grid gap-2 text-sm text-slate-700">
+                            <span class="font-semibold text-slate-900">Union display name</span>
+                            <input id="union-name" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Denver Grocery Workers Local 7">
+                        </label>
+                        <label class="grid gap-2 text-sm text-slate-700">
+                            <span class="font-semibold text-slate-900">Public union web address</span>
+                            <input id="union-slug" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="denver-grocery-workers-local-7">
+                        </label>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+                        <div><span class="font-semibold text-slate-900">Public union web address:</span> Used in Karl URLs and embeds. If you leave it alone, Karl will generate it from the union name.</div>
+                        <div class="mt-1"><span class="font-semibold text-slate-900">Internal union ID:</span> Generated automatically by Karl and never exposed for editing.</div>
+                    </div>
+                    <div id="create-union-preview" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">Enter a union name to preview the public union web address.</div>
+                    <div class="sticky bottom-0 grid gap-3 border-t border-slate-200 bg-white pt-4 sm:grid-cols-2">
+                        <button class="w-full rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="submit">Create</button>
+                        <button id="create-union-cancel" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="document-review-modal" class="hidden fixed inset-0 z-[96] overflow-y-auto bg-slate-950/50 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-5xl items-start justify-center py-6">
+            <div class="max-h-[calc(100vh-3rem)] w-full overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Document Review</p>
+                        <h2 id="document-review-title" class="mt-2 text-2xl font-semibold text-slate-900">Review document</h2>
+                        <p id="document-review-subtitle" class="mt-2 text-sm leading-6 text-slate-600">Review the flagged content below and choose the next step.</p>
+                    </div>
+                    <button id="document-review-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <div id="document-review-summary" class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">Loading document review details...</div>
+                <div id="document-review-needs-superadmin" class="mt-4 hidden rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"></div>
+                <div class="mt-5 grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+                    <div>
+                        <div class="section-title">Flagged Issues</div>
+                        <div id="document-review-findings" class="mt-3 grid gap-3"></div>
+                        <label class="mt-5 grid gap-2 text-sm text-slate-700">
+                            <span class="font-semibold text-slate-900">Review note</span>
+                            <textarea id="document-review-note" class="min-h-[120px] rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Optional note about why you approved, kept in review, or deleted this document."></textarea>
+                        </label>
+                    </div>
+                    <div class="grid gap-4">
+                        <div>
+                            <div class="section-title">Raw Parsed Preview</div>
+                            <pre id="document-review-preview-raw" class="mt-3 max-h-[280px] overflow-auto rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-6 text-slate-700 whitespace-pre-wrap"></pre>
+                        </div>
+                        <div>
+                            <div class="section-title">Member-Facing Redacted Preview</div>
+                            <pre id="document-review-preview-redacted" class="mt-3 max-h-[220px] overflow-auto rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-6 text-slate-700 whitespace-pre-wrap"></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="sticky bottom-0 mt-6 grid gap-3 border-t border-slate-200 bg-white pt-4 sm:grid-cols-2 xl:grid-cols-4">
+                    <button id="document-review-in-review" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Keep In Review</button>
+                    <button id="document-review-approve" class="rounded-2xl bg-[color:var(--accent)] px-4 py-3 text-sm font-semibold text-white hover:bg-[color:var(--accent-deep)]" type="button">Approve Full Member Access</button>
+                    <button id="document-review-delete" class="rounded-2xl border border-rose-300 bg-white px-4 py-3 text-sm font-semibold text-rose-700 hover:bg-rose-50" type="button">Delete From Uploads</button>
+                    <button id="document-review-cancel" class="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="session-timeline-modal" class="hidden fixed inset-0 z-[97] overflow-y-auto bg-slate-950/55 px-4 py-6">
+        <div class="mx-auto flex min-h-full max-w-4xl items-start justify-center py-6">
+            <div class="max-h-[calc(100vh-3rem)] w-full overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Session Timeline</p>
+                        <h2 id="session-timeline-title" class="mt-2 text-2xl font-semibold text-slate-900">Session Timeline</h2>
+                        <p id="session-timeline-subtitle" class="mt-2 text-sm leading-6 text-slate-600">Load a session from the observability feed.</p>
+                    </div>
+                    <button id="session-timeline-close" type="button" class="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-500 hover:bg-slate-100">Close</button>
+                </div>
+                <div id="session-timeline-summary" class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">No session loaded.</div>
+                <div id="session-timeline-list" class="mt-4 grid max-h-[60vh] gap-3 overflow-y-auto"></div>
+                <div class="mt-5 flex justify-end">
+                    <button id="session-timeline-done" class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="button">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="/static/modular/admin.js"></script>
+</body>
+</html>

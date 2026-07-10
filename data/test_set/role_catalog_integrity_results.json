@@ -1,0 +1,333 @@
+{
+  "schema_version": "role_catalog_integrity_eval_v1",
+  "dataset_schema_version": "role_catalog_integrity_test_v1",
+  "timestamp_utc": "2026-03-09T10:33:33.162287+00:00",
+  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_test.json",
+  "overall": {
+    "passed": 20,
+    "total": 20,
+    "pass_rate": 1.0,
+    "dataset_case_total": 8,
+    "dataset_case_pass_rate": 1.0,
+    "default_wage_ready_rate": 1.0,
+    "unresolved_not_default_rate": 1.0,
+    "default_wage_key_unique_rate": 1.0
+  },
+  "by_contract": {
+    "local7_kingsoopers_loveland_meat_2019": {
+      "passed": 6,
+      "total": 6,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_clerks_2022": {
+      "passed": 8,
+      "total": 8,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_meat_2022": {
+      "passed": 6,
+      "total": 6,
+      "pass_rate": 1.0
+    }
+  },
+  "results": [
+    {
+      "kind": "dataset_case",
+      "check_id": "RC-01",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "role_value": "meat_manager",
+      "pass": true,
+      "details": {
+        "in_default": true,
+        "in_all": true,
+        "wage_available": true,
+        "expected_default_present": true,
+        "expected_all_present": true,
+        "expected_wage_available": true
+      }
+    },
+    {
+      "kind": "dataset_case",
+      "check_id": "RC-02",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "role_value": "cake_decorator",
+      "pass": true,
+      "details": {
+        "in_default": false,
+        "in_all": false,
+        "wage_available": null,
+        "expected_default_present": false,
+        "expected_all_present": false,
+        "expected_wage_available": null
+      }
+    },
+    {
+      "kind": "dataset_case",
+      "check_id": "RC-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "role_value": "cake_decorator",
+      "pass": true,
+      "details": {
+        "in_default": true,
+        "in_all": true,
+        "wage_available": true,
+        "expected_default_present": true,
+        "expected_all_present": true,
+        "expected_wage_available": true
+      }
+    },
+    {
+      "kind": "dataset_case",
+      "check_id": "RC-04",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "role_value": "drive_up_and_go",
+      "pass": true,
+      "details": {
+        "in_default": false,
+        "in_all": true,
+        "wage_available": true,
+        "expected_default_present": false,
+        "expected_all_present": true,
+        "expected_wage_available": true
+      }
+    },
+    {
+      "kind": "dataset_case",
+      "check_id": "RC-05",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "role_value": "dug_shopper",
+      "pass": true,
+      "details": {
+        "in_default": false,
+        "in_all": true,
+        "wage_available": true,
+        "expected_default_present": false,
+        "expected_all_present": true,
+        "expected_wage_available": true
+      }
+    },
+    {
+      "kind": "dataset_case",
+      "check_id": "RC-06",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "role_value": "meat_cutters",
+      "pass": true,
+      "details": {
+        "in_default": true,
+        "in_all": true,
+        "wage_available": true,
+        "expected_default_present": true,
+        "expected_all_present": true,
+        "expected_wage_available": true
+      }
+    },
+    {
+      "kind": "dataset_case",
+      "check_id": "RC-07",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "role_value": "cake_decorator",
+      "pass": true,
+      "details": {
+        "in_default": false,
+        "in_all": true,
+        "wage_available": false,
+        "expected_default_present": false,
+        "expected_all_present": true,
+        "expected_wage_available": false
+      }
+    },
+    {
+      "kind": "dataset_case",
+      "check_id": "RC-08",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "role_value": "meat_cutter",
+      "pass": true,
+      "details": {
+        "in_default": false,
+        "in_all": true,
+        "wage_available": false,
+        "expected_default_present": false,
+        "expected_all_present": true,
+        "expected_wage_available": false
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "role_catalog_schema_valid",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "pass": true,
+      "details": {
+        "role_catalog_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\role_catalog_local7_kingsoopers_loveland_meat_2019.json",
+        "schema_version": "role_catalog_v2",
+        "catalog_contract_id": "local7_kingsoopers_loveland_meat_2019",
+        "role_count": 11
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "default_options_wage_ready",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "pass": true,
+      "details": {
+        "default_option_count": 9,
+        "default_unmapped_values": [],
+        "missing_wage_keys": []
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "unresolved_manifest_not_default",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "pass": true,
+      "details": {
+        "unresolved_manifest_values": [
+          "head_clerk"
+        ],
+        "default_values": [
+          "deli_chef",
+          "deli_coffee_cheese_clerk",
+          "deli_department_head",
+          "deli_department_head_grandfathered",
+          "deli_head_clerk_asst",
+          "meat_cutters",
+          "meat_head_clerk_asst",
+          "meat_manager",
+          "seafood_manager"
+        ],
+        "overlap": []
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "default_wage_key_unique",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "pass": true,
+      "details": {
+        "duplicate_default_wage_keys": []
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "role_catalog_schema_valid",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "pass": true,
+      "details": {
+        "role_catalog_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\role_catalog_local7_safeway_pueblo_clerks_2022.json",
+        "schema_version": "role_catalog_v2",
+        "catalog_contract_id": "local7_safeway_pueblo_clerks_2022",
+        "role_count": 25
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "default_options_wage_ready",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "pass": true,
+      "details": {
+        "default_option_count": 14,
+        "default_unmapped_values": [],
+        "missing_wage_keys": []
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "unresolved_manifest_not_default",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "pass": true,
+      "details": {
+        "unresolved_manifest_values": [
+          "deli_clerk",
+          "meat_cutter",
+          "pharmacy_technician",
+          "sanitation_clerk"
+        ],
+        "default_values": [
+          "5star_cake_decorator",
+          "all_purpose_clerk",
+          "bakery_fresh_cut_liquor_clerk",
+          "bakery_manager",
+          "cake_decorator",
+          "courtesy_clerk",
+          "floral_manager",
+          "fresh_cut_supervisor",
+          "fuel_lead",
+          "head_baker",
+          "head_clerk",
+          "nonfood_gm_floral",
+          "produce_department_manager",
+          "variety_manager"
+        ],
+        "overlap": []
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "default_wage_key_unique",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "pass": true,
+      "details": {
+        "duplicate_default_wage_keys": []
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "role_catalog_schema_valid",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "pass": true,
+      "details": {
+        "role_catalog_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\role_catalog_local7_safeway_pueblo_meat_2022.json",
+        "schema_version": "role_catalog_v2",
+        "catalog_contract_id": "local7_safeway_pueblo_meat_2022",
+        "role_count": 17
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "default_options_wage_ready",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "pass": true,
+      "details": {
+        "default_option_count": 12,
+        "default_unmapped_values": [],
+        "missing_wage_keys": []
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "unresolved_manifest_not_default",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "pass": true,
+      "details": {
+        "unresolved_manifest_values": [
+          "cake_decorator",
+          "courtesy_clerk",
+          "pharmacy_technician"
+        ],
+        "default_values": [
+          "assistant_deli_manager",
+          "deli_clerks",
+          "deli_manager",
+          "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
+          "first_cutter",
+          "head_meat_cutter",
+          "meat_cutters",
+          "meat_wrappers",
+          "seafood_clerks",
+          "seafood_manager",
+          "starbucks_clerks",
+          "starbucks_lead"
+        ],
+        "overlap": []
+      }
+    },
+    {
+      "kind": "contract_invariant",
+      "check_id": "default_wage_key_unique",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "pass": true,
+      "details": {
+        "duplicate_default_wage_keys": []
+      }
+    }
+  ]
+}

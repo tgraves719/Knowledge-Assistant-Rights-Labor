@@ -1,0 +1,95 @@
+{
+  "schema_version": "side_letter_doc_type_backfill_v1",
+  "apply": false,
+  "max_changes_per_file": 32,
+  "contracts_total": 2,
+  "contracts_changed": 0,
+  "results": [
+    {
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "file_count": 6,
+      "change_count": 0,
+      "files": [
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_enriched_local7_kingsoopers_loveland_meat_2019.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        },
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_enriched.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        },
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_smart_local7_kingsoopers_loveland_meat_2019.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        },
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_smart.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        },
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks_enriched_local7_kingsoopers_loveland_meat_2019.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        },
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks_smart_local7_kingsoopers_loveland_meat_2019.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        }
+      ]
+    },
+    {
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "file_count": 6,
+      "change_count": 0,
+      "files": [
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_meat_2022.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        },
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\chunks\\contract_chunks_enriched.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        },
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\chunks\\contract_chunks_smart_local7_safeway_pueblo_meat_2022.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        },
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\chunks\\contract_chunks_smart.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        },
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_meat_2022.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        },
+        {
+          "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks_smart_local7_safeway_pueblo_meat_2022.json",
+          "status": "no_change",
+          "change_count": 0,
+          "changes": []
+        }
+      ]
+    }
+  ]
+}

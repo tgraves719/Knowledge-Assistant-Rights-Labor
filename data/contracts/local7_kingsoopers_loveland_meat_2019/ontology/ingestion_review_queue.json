@@ -1,0 +1,97 @@
+{
+  "schema_version": "ingestion_review_queue_v1",
+  "generated_at_utc": "2026-03-08T21:43:30.472336+00:00",
+  "contract_id": "local7_kingsoopers_loveland_meat_2019",
+  "summary": {
+    "total_items": 1,
+    "severity_counts": {
+      "high": 0,
+      "medium": 1,
+      "low": 0
+    },
+    "unresolved_manifest_classes": 0,
+    "canonical_conflicts": 0,
+    "canonical_ambiguities": 3,
+    "unresolved_wage_rows": 0
+  },
+  "items": [
+    {
+      "issue_id": "canonical_wage_ambiguities",
+      "category": "wage_canonical_rows",
+      "severity": "medium",
+      "summary": "Canonical wage rows had ambiguity tie cases.",
+      "evidence": {
+        "count": 3,
+        "ambiguities": [
+          {
+            "key": {
+              "classification_key": "deli_coffee_cheese_clerk",
+              "step_name": "Thereafter",
+              "step_type": "hours",
+              "threshold_value": 7800,
+              "effective_date": "2019-01-12"
+            },
+            "existing_rate": 17.39,
+            "new_rate": 17.69,
+            "existing_confidence": 0.95,
+            "new_confidence": 0.95,
+            "resolution": "keep_existing_first_seen",
+            "existing_source": {
+              "table_id": "tbl_art57_3",
+              "row_index": 28
+            },
+            "new_source": {
+              "table_id": "tbl_art57_4",
+              "row_index": 8
+            }
+          },
+          {
+            "key": {
+              "classification_key": "deli_coffee_cheese_clerk",
+              "step_name": "Thereafter",
+              "step_type": "hours",
+              "threshold_value": 7800,
+              "effective_date": "2020-01-01"
+            },
+            "existing_rate": 17.74,
+            "new_rate": 18.04,
+            "existing_confidence": 0.95,
+            "new_confidence": 0.95,
+            "resolution": "keep_existing_first_seen",
+            "existing_source": {
+              "table_id": "tbl_art57_3",
+              "row_index": 28
+            },
+            "new_source": {
+              "table_id": "tbl_art57_4",
+              "row_index": 8
+            }
+          },
+          {
+            "key": {
+              "classification_key": "deli_coffee_cheese_clerk",
+              "step_name": "Thereafter",
+              "step_type": "hours",
+              "threshold_value": 7800,
+              "effective_date": "2021-01-10"
+            },
+            "existing_rate": 18.09,
+            "new_rate": 18.39,
+            "existing_confidence": 0.95,
+            "new_confidence": 0.95,
+            "resolution": "keep_existing_first_seen",
+            "existing_source": {
+              "table_id": "tbl_art57_3",
+              "row_index": 28
+            },
+            "new_source": {
+              "table_id": "tbl_art57_4",
+              "row_index": 8
+            }
+          }
+        ]
+      },
+      "recommended_action": "Review ambiguity tie cases; add deterministic rule or manual correction."
+    }
+  ]
+}

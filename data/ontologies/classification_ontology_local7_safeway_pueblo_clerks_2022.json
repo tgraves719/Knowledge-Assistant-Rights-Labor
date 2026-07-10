@@ -1,0 +1,481 @@
+{
+  "schema_version": "classification_ontology_v2",
+  "generated_at_utc": "2026-03-08T21:43:31.605042+00:00",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "manifest_classifications": [
+    {
+      "normalized": "all_purpose_clerk",
+      "labels": [
+        "All Purpose Clerk"
+      ]
+    },
+    {
+      "normalized": "bakery_department_manager",
+      "labels": [
+        "Bakery Department Manager"
+      ]
+    },
+    {
+      "normalized": "bakery_manager",
+      "labels": [
+        "Bakery Manager"
+      ]
+    },
+    {
+      "normalized": "cake_decorator",
+      "labels": [
+        "Cake Decorator"
+      ]
+    },
+    {
+      "normalized": "courtesy_clerk",
+      "labels": [
+        "Courtesy Clerk"
+      ]
+    },
+    {
+      "normalized": "deli_clerk",
+      "labels": [
+        "Deli Clerk"
+      ]
+    },
+    {
+      "normalized": "drive_up_and_go",
+      "labels": [
+        "Drive Up And Go"
+      ]
+    },
+    {
+      "normalized": "dug_shopper",
+      "labels": [
+        "Dug Shopper"
+      ]
+    },
+    {
+      "normalized": "floral_manager",
+      "labels": [
+        "Floral Manager"
+      ]
+    },
+    {
+      "normalized": "head_clerk",
+      "labels": [
+        "Head Clerk"
+      ]
+    },
+    {
+      "normalized": "meat_cutter",
+      "labels": [
+        "Meat Cutter"
+      ]
+    },
+    {
+      "normalized": "nonfood_clerk",
+      "labels": [
+        "Non-Food Clerk"
+      ]
+    },
+    {
+      "normalized": "pharmacy_technician",
+      "labels": [
+        "Pharmacy Technician"
+      ]
+    },
+    {
+      "normalized": "produce_department_manager",
+      "labels": [
+        "Produce Department Manager"
+      ]
+    },
+    {
+      "normalized": "produce_manager",
+      "labels": [
+        "Produce Manager"
+      ]
+    },
+    {
+      "normalized": "sanitation_clerk",
+      "labels": [
+        "Sanitation Clerk"
+      ]
+    }
+  ],
+  "wage_classifications": [
+    {
+      "wage_key": "5star_cake_decorator",
+      "name": "5-STAR CAKE DECORATOR"
+    },
+    {
+      "wage_key": "all_purpose_clerk",
+      "name": "ALL PURPOSE CLERK"
+    },
+    {
+      "wage_key": "bakery_fresh_cut_liquor_clerk",
+      "name": "BAKERY/FRESH CUT/LIQUOR CLERK"
+    },
+    {
+      "wage_key": "bakery_manager",
+      "name": "BAKERY MANAGER"
+    },
+    {
+      "wage_key": "cake_decorator",
+      "name": "CAKE DECORATOR"
+    },
+    {
+      "wage_key": "courtesy_clerk",
+      "name": "COURTESY CLERK"
+    },
+    {
+      "wage_key": "floral_manager",
+      "name": "FLORAL MANAGER"
+    },
+    {
+      "wage_key": "fresh_cut_supervisor",
+      "name": "FRESH CUT SUPERVISOR"
+    },
+    {
+      "wage_key": "fuel_lead",
+      "name": "FUEL LEAD"
+    },
+    {
+      "wage_key": "head_baker",
+      "name": "HEAD BAKER"
+    },
+    {
+      "wage_key": "head_clerk",
+      "name": "HEAD CLERK"
+    },
+    {
+      "wage_key": "manager_trainee",
+      "name": "MANAGER TRAINEE"
+    },
+    {
+      "wage_key": "nonfood_gm_floral",
+      "name": "NON-FOOD/GM/FLORAL"
+    },
+    {
+      "wage_key": "other_assistant_managers",
+      "name": "OTHER ASSISTANT MANAGERS"
+    },
+    {
+      "wage_key": "produce_department_manager",
+      "name": "PRODUCE DEPARTMENT MANAGER"
+    },
+    {
+      "wage_key": "variety_manager",
+      "name": "VARIETY MANAGER"
+    }
+  ],
+  "decisions": [
+    {
+      "source_key": "all_purpose_clerk",
+      "source_labels": [
+        "All Purpose Clerk"
+      ],
+      "mapped_wage_key": "all_purpose_clerk",
+      "mapping_method": "exact",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "bakery_department_manager",
+      "source_labels": [
+        "Bakery Department Manager"
+      ],
+      "mapped_wage_key": "bakery_manager",
+      "mapping_method": "token_similarity",
+      "score": 0.7654,
+      "candidate_scores": [
+        {
+          "wage_key": "bakery_manager",
+          "score": 0.765385
+        },
+        {
+          "wage_key": "produce_department_manager",
+          "score": 0.510294
+        },
+        {
+          "wage_key": "variety_manager",
+          "score": 0.44
+        },
+        {
+          "wage_key": "floral_manager",
+          "score": 0.413462
+        },
+        {
+          "wage_key": "other_assistant_managers",
+          "score": 0.403673
+        }
+      ],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "bakery_manager",
+      "source_labels": [
+        "Bakery Manager"
+      ],
+      "mapped_wage_key": "bakery_manager",
+      "mapping_method": "exact",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "cake_decorator",
+      "source_labels": [
+        "Cake Decorator"
+      ],
+      "mapped_wage_key": "cake_decorator",
+      "mapping_method": "exact",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "courtesy_clerk",
+      "source_labels": [
+        "Courtesy Clerk"
+      ],
+      "mapped_wage_key": "courtesy_clerk",
+      "mapping_method": "exact",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "deli_clerk",
+      "source_labels": [
+        "Deli Clerk"
+      ],
+      "mapped_wage_key": null,
+      "mapping_method": "unresolved_low_score",
+      "score": 0.485,
+      "candidate_scores": [
+        {
+          "wage_key": "head_clerk",
+          "score": 0.485
+        },
+        {
+          "wage_key": "courtesy_clerk",
+          "score": 0.45
+        },
+        {
+          "wage_key": "all_purpose_clerk",
+          "score": 0.375556
+        },
+        {
+          "wage_key": "bakery_fresh_cut_liquor_clerk",
+          "score": 0.295604
+        }
+      ],
+      "review_state": "unresolved"
+    },
+    {
+      "source_key": "drive_up_and_go",
+      "source_labels": [
+        "Drive Up And Go"
+      ],
+      "mapped_wage_key": "nonfood_gm_floral",
+      "mapping_method": "manual_override",
+      "score": 1.0,
+      "candidate_scores": [
+        {
+          "wage_key": "nonfood_gm_floral",
+          "score": 1.0
+        }
+      ],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "dug_shopper",
+      "source_labels": [
+        "Dug Shopper"
+      ],
+      "mapped_wage_key": "nonfood_gm_floral",
+      "mapping_method": "manual_override",
+      "score": 1.0,
+      "candidate_scores": [
+        {
+          "wage_key": "nonfood_gm_floral",
+          "score": 1.0
+        }
+      ],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "floral_manager",
+      "source_labels": [
+        "Floral Manager"
+      ],
+      "mapped_wage_key": "floral_manager",
+      "mapping_method": "exact",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "head_clerk",
+      "source_labels": [
+        "Head Clerk"
+      ],
+      "mapped_wage_key": "head_clerk",
+      "mapping_method": "exact",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "meat_cutter",
+      "source_labels": [
+        "Meat Cutter"
+      ],
+      "mapped_wage_key": null,
+      "mapping_method": "unresolved",
+      "score": 0.0,
+      "candidate_scores": [],
+      "review_state": "unresolved"
+    },
+    {
+      "source_key": "nonfood_clerk",
+      "source_labels": [
+        "Non-Food Clerk"
+      ],
+      "mapped_wage_key": "nonfood_gm_floral",
+      "mapping_method": "manual_override",
+      "score": 1.0,
+      "candidate_scores": [
+        {
+          "wage_key": "nonfood_gm_floral",
+          "score": 1.0
+        }
+      ],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "pharmacy_technician",
+      "source_labels": [
+        "Pharmacy Technician"
+      ],
+      "mapped_wage_key": null,
+      "mapping_method": "unresolved",
+      "score": 0.0,
+      "candidate_scores": [],
+      "review_state": "unresolved"
+    },
+    {
+      "source_key": "produce_department_manager",
+      "source_labels": [
+        "Produce Department Manager"
+      ],
+      "mapped_wage_key": "produce_department_manager",
+      "mapping_method": "exact",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "produce_manager",
+      "source_labels": [
+        "Produce Manager"
+      ],
+      "mapped_wage_key": "produce_department_manager",
+      "mapping_method": "token_similarity",
+      "score": 0.7695,
+      "candidate_scores": [
+        {
+          "wage_key": "produce_department_manager",
+          "score": 0.769512
+        },
+        {
+          "wage_key": "variety_manager",
+          "score": 0.475
+        },
+        {
+          "wage_key": "bakery_manager",
+          "score": 0.461207
+        },
+        {
+          "wage_key": "floral_manager",
+          "score": 0.461207
+        },
+        {
+          "wage_key": "manager_trainee",
+          "score": 0.415
+        }
+      ],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "sanitation_clerk",
+      "source_labels": [
+        "Sanitation Clerk"
+      ],
+      "mapped_wage_key": null,
+      "mapping_method": "unresolved_low_score",
+      "score": 0.4365,
+      "candidate_scores": [
+        {
+          "wage_key": "head_clerk",
+          "score": 0.436538
+        },
+        {
+          "wage_key": "courtesy_clerk",
+          "score": 0.415
+        },
+        {
+          "wage_key": "all_purpose_clerk",
+          "score": 0.347273
+        },
+        {
+          "wage_key": "bakery_fresh_cut_liquor_clerk",
+          "score": 0.277143
+        }
+      ],
+      "review_state": "unresolved"
+    }
+  ],
+  "alias_to_wage_key": {
+    "all_purpose_clerk": "all_purpose_clerk",
+    "bakery_department_manager": "bakery_manager",
+    "bakery_manager": "bakery_manager",
+    "cake_decorator": "cake_decorator",
+    "courtesy_clerk": "courtesy_clerk",
+    "drive_up_and_go": "nonfood_gm_floral",
+    "dug_shopper": "nonfood_gm_floral",
+    "floral_manager": "floral_manager",
+    "head_clerk": "head_clerk",
+    "nonfood_clerk": "nonfood_gm_floral",
+    "produce_department_manager": "produce_department_manager",
+    "produce_manager": "produce_department_manager",
+    "5star_cake_decorator": "5star_cake_decorator",
+    "bakery_fresh_cut_liquor_clerk": "bakery_fresh_cut_liquor_clerk",
+    "fresh_cut_supervisor": "fresh_cut_supervisor",
+    "fuel_lead": "fuel_lead",
+    "head_baker": "head_baker",
+    "manager_trainee": "manager_trainee",
+    "nonfood_gm_floral": "nonfood_gm_floral",
+    "other_assistant_managers": "other_assistant_managers",
+    "variety_manager": "variety_manager"
+  },
+  "summary": {
+    "total_manifest_classes": 16,
+    "resolved_manifest_classes": 12,
+    "clarification_manifest_classes": 0,
+    "out_of_scope_manifest_classes": 0,
+    "unresolved_manifest_classes": 4,
+    "actionable_manifest_classes": 16,
+    "covered_manifest_classes": 12,
+    "coverage": 0.75,
+    "unresolved_manifest_keys": [
+      "deli_clerk",
+      "meat_cutter",
+      "pharmacy_technician",
+      "sanitation_clerk"
+    ],
+    "clarification_manifest_keys": [],
+    "out_of_scope_manifest_keys": [],
+    "manual_override_count": 3,
+    "manual_review_override_count": 0
+  }
+}

@@ -1,0 +1,2982 @@
+{
+  "articles": {
+    "1": {
+      "title": "RECOGNITION AND EXCLUSIONS",
+      "all_worker_questions": [
+        "what does article 1 section 1 say about recognition exclusions"
+      ],
+      "all_alternative_names": [
+        "meat cutter",
+        "recognition exclusions"
+      ],
+      "chunk_ids": [
+        "art1_sec1"
+      ]
+    },
+    "2": {
+      "title": "SERVICE IN MEAT DEPARTMENTS, PLANTS",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how does seniority affect my rights",
+        "how much should i be making per hour",
+        "what are my rights if i get laid off",
+        "what can i do if work is unsafe",
+        "what does article 2 section 2 say about service meat",
+        "what does article 2 section 5 say about service meat"
+      ],
+      "all_alternative_names": [
+        "accident",
+        "bumping",
+        "departments plants",
+        "displacement",
+        "hourly rate",
+        "hours",
+        "injury",
+        "laid off",
+        "layoff",
+        "meat cutter",
+        "meat departments",
+        "meat departments plants",
+        "pay",
+        "pay rate",
+        "posting",
+        "rate of pay",
+        "safety",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service meat",
+        "service meat departments",
+        "service time",
+        "shift",
+        "unsafe",
+        "wage",
+        "wages",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art2_sec2",
+        "art2_sec2__dup1",
+        "art2_sec2__dup2",
+        "art2_sec2__dup3",
+        "art2_sec2__dup4",
+        "art2_sec3",
+        "art2_sec3_seg_001",
+        "art2_sec3_seg_002",
+        "art2_sec3_seg_003",
+        "art2_sec4",
+        "art2_sec5"
+      ]
+    },
+    "3": {
+      "title": "UNION SECURITY AND CONDITIONS",
+      "all_worker_questions": [
+        "can i be written up or fired for this",
+        "what does article 3 section 6 say about security conditions",
+        "what does article 3 section 7 say about security conditions",
+        "what does article 3 section 8 say about security conditions"
+      ],
+      "all_alternative_names": [
+        "discharge",
+        "discipline",
+        "fired",
+        "security conditions",
+        "termination",
+        "warning",
+        "write up",
+        "written up"
+      ],
+      "chunk_ids": [
+        "art3_sec6",
+        "art3_sec7",
+        "art3_sec8",
+        "art3_sec9"
+      ]
+    },
+    "4": {
+      "title": "CHECK-OFF",
+      "all_worker_questions": [
+        "what does article 4 section 10 say about check off"
+      ],
+      "all_alternative_names": [
+        "check off"
+      ],
+      "chunk_ids": [
+        "art4_sec10"
+      ]
+    },
+    "5": {
+      "title": "NEW EMPLOYEES, TRANSFERRED EMPLOYEES, PROMOTED OR DEMOTED",
+      "all_worker_questions": [
+        "what does article 5 say about new transferred"
+      ],
+      "all_alternative_names": [
+        "new transferred",
+        "new transferred promoted",
+        "promoted demoted",
+        "transferred promoted",
+        "transferred promoted demoted"
+      ],
+      "chunk_ids": [
+        "art5"
+      ]
+    },
+    "6": {
+      "title": "RIGHTS OF MANAGEMENT",
+      "all_worker_questions": [
+        "what does article 6 say about rights management"
+      ],
+      "all_alternative_names": [
+        "rights management"
+      ],
+      "chunk_ids": [
+        "art6"
+      ]
+    },
+    "7": {
+      "title": "DEFINITIONS OF CLASSIFICATIONS",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how does seniority affect my rights",
+        "how much should i be making per hour",
+        "what does article 7 section 16 say about definitions classifications",
+        "what does article 7 section 17 say about definitions classifications",
+        "what does article 7 section 21 say about definitions classifications"
+      ],
+      "all_alternative_names": [
+        "definitions classifications",
+        "hourly rate",
+        "hours",
+        "pay",
+        "pay rate",
+        "posting",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "wage",
+        "wages",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art7_sec16",
+        "art7_sec17",
+        "art7_sec18",
+        "art7_sec19",
+        "art7_sec20",
+        "art7_sec21"
+      ]
+    },
+    "8": {
+      "title": "RATES OF PAY",
+      "all_worker_questions": [
+        "can i be written up or fired for this",
+        "can they change my schedule like this",
+        "how do i file a grievance",
+        "how much should i be making per hour"
+      ],
+      "all_alternative_names": [
+        "appeal",
+        "arbitration",
+        "discipline",
+        "dispute",
+        "grievance",
+        "hourly rate",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "rates pay",
+        "wage",
+        "wages",
+        "warning",
+        "write up"
+      ],
+      "chunk_ids": [
+        "art8_sec22",
+        "art8_sec23"
+      ]
+    },
+    "9": {
+      "title": "TEMPORARY ASSIGNMENTS",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how much should i be making per hour"
+      ],
+      "all_alternative_names": [
+        "hourly rate",
+        "hours",
+        "meat cutter",
+        "pay",
+        "pay rate",
+        "posting",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "shift",
+        "temporary assignments",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art9"
+      ]
+    },
+    "10": {
+      "title": "NO REDUCTION IN PAY",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how much should i be making per hour"
+      ],
+      "all_alternative_names": [
+        "hourly rate",
+        "hours",
+        "pay",
+        "pay rate",
+        "posting",
+        "rate of pay",
+        "reduction pay",
+        "schedule",
+        "scheduling",
+        "shift",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art10"
+      ]
+    },
+    "11": {
+      "title": "WORKWEEK",
+      "all_worker_questions": [
+        "can i use sick time for this absence",
+        "do i get overtime for extra hours",
+        "how much should i be making per hour",
+        "how much vacation time do i get",
+        "when do i get a break"
+      ],
+      "all_alternative_names": [
+        "break",
+        "breaks",
+        "call in sick",
+        "extra hours",
+        "ot",
+        "overtime",
+        "sick day",
+        "sick leave",
+        "sick pay",
+        "time and a half",
+        "time off",
+        "vacation",
+        "vacation pay",
+        "vacation time"
+      ],
+      "chunk_ids": [
+        "art11"
+      ]
+    },
+    "12": {
+      "title": "OVERTIME",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "do i get overtime for extra hours",
+        "how much should i be making per hour"
+      ],
+      "all_alternative_names": [
+        "extra hours",
+        "hourly rate",
+        "hours",
+        "ot",
+        "overtime",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "shift",
+        "time and a half",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art12_sec29"
+      ]
+    },
+    "13": {
+      "title": "SUNDAY PREMIUM",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "do i get overtime for extra hours",
+        "how much should i be making per hour"
+      ],
+      "all_alternative_names": [
+        "extra hours",
+        "hourly rate",
+        "ot",
+        "overtime",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "shift",
+        "sunday premium",
+        "time and a half",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art13"
+      ]
+    },
+    "14": {
+      "title": "TRAVEL PAY",
+      "all_worker_questions": [
+        "how much should i be making per hour",
+        "when do my health benefits start"
+      ],
+      "all_alternative_names": [
+        "health and welfare",
+        "health benefits",
+        "hourly rate",
+        "insurance",
+        "medical",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "travel pay",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art14"
+      ]
+    },
+    "15": {
+      "title": "NIGHT PREMIUM",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "do i get overtime for extra hours"
+      ],
+      "all_alternative_names": [
+        "extra hours",
+        "hours",
+        "night premium",
+        "ot",
+        "overtime",
+        "posting",
+        "schedule",
+        "scheduling",
+        "shift",
+        "time and a half"
+      ],
+      "chunk_ids": [
+        "art15"
+      ]
+    },
+    "16": {
+      "title": "HOLIDAYS",
+      "all_worker_questions": [
+        "can i use sick time for this absence",
+        "can they change my schedule like this",
+        "do i get overtime for extra hours",
+        "how does seniority affect my rights",
+        "how many float days do i get",
+        "how much should i be making per hour",
+        "how much vacation time do i get",
+        "what does article 16 section 35 say about this section"
+      ],
+      "all_alternative_names": [
+        "call in sick",
+        "extra hours",
+        "float day",
+        "float days",
+        "floater",
+        "hourly rate",
+        "hours",
+        "ot",
+        "overtime",
+        "pay",
+        "pay rate",
+        "personal holiday",
+        "personal holidays",
+        "posting",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "sick day",
+        "sick leave",
+        "sick pay",
+        "time and a half",
+        "time off",
+        "vacation",
+        "vacation pay",
+        "vacation time",
+        "wage",
+        "wages",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art16_sec34",
+        "art16_sec35",
+        "art16_sec36",
+        "art16_sec37",
+        "art16_sec38",
+        "art16_sec39",
+        "art16_sec40",
+        "art16_sec41"
+      ]
+    },
+    "17": {
+      "title": "VACATIONS",
+      "all_worker_questions": [
+        "can i be written up or fired for this",
+        "can i use sick time for this absence",
+        "can they change my schedule like this",
+        "how do i file a grievance",
+        "how does seniority affect my rights",
+        "how much should i be making per hour",
+        "how much vacation time do i get"
+      ],
+      "all_alternative_names": [
+        "appeal",
+        "arbitration",
+        "call in sick",
+        "dispute",
+        "grievance",
+        "hourly rate",
+        "hours",
+        "pay",
+        "pay rate",
+        "posting",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "sick day",
+        "sick leave",
+        "sick pay",
+        "time off",
+        "vacation",
+        "vacation pay",
+        "vacation time",
+        "wage",
+        "wages",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art17_sec42",
+        "art17_sec43",
+        "art17_sec44",
+        "art17_sec45_seg_001",
+        "art17_sec45_seg_002",
+        "art17_sec45_seg_003"
+      ]
+    },
+    "18": {
+      "title": "SCHEDULING POSTING",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "do i get overtime for extra hours",
+        "what can i do if work is unsafe"
+      ],
+      "all_alternative_names": [
+        "accident",
+        "extra hours",
+        "hours",
+        "injury",
+        "ot",
+        "overtime",
+        "posting",
+        "safety",
+        "schedule",
+        "scheduling",
+        "scheduling posting",
+        "shift",
+        "time and a half",
+        "unsafe"
+      ],
+      "chunk_ids": [
+        "art18_sec46"
+      ]
+    },
+    "19": {
+      "title": "REPORTING PAY/MINIMUM DAILY SCHEDULE",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how much should i be making per hour"
+      ],
+      "all_alternative_names": [
+        "daily schedule",
+        "hourly rate",
+        "minimum daily",
+        "minimum daily schedule",
+        "pay",
+        "pay minimum",
+        "pay minimum daily",
+        "pay rate",
+        "rate of pay",
+        "reporting pay",
+        "reporting pay minimum",
+        "schedule",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art19_sec47"
+      ]
+    },
+    "20": {
+      "title": "MINIMUM WEEKLY SCHEDULE",
+      "all_worker_questions": [
+        "can they change my schedule like this"
+      ],
+      "all_alternative_names": [
+        "hours",
+        "minimum weekly",
+        "minimum weekly schedule",
+        "posting",
+        "schedule",
+        "scheduling",
+        "shift",
+        "weekly schedule"
+      ],
+      "chunk_ids": [
+        "art20_sec48"
+      ]
+    },
+    "21": {
+      "title": "TIMEKEEPING",
+      "all_worker_questions": [
+        "can i be written up or fired for this",
+        "can they change my schedule like this",
+        "how much should i be making per hour",
+        "what does article 21 section 49 say about this section"
+      ],
+      "all_alternative_names": [
+        "discharge",
+        "discipline",
+        "fired",
+        "hourly rate",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "schedule",
+        "termination",
+        "wage",
+        "wages",
+        "warning",
+        "write up",
+        "written up"
+      ],
+      "chunk_ids": [
+        "art21_sec49",
+        "art21_sec50"
+      ]
+    },
+    "22": {
+      "title": "SPLIT SHIFTS",
+      "all_worker_questions": [
+        "what does article 22 section 51 say about split shifts"
+      ],
+      "all_alternative_names": [
+        "split shifts"
+      ],
+      "chunk_ids": [
+        "art22_sec51"
+      ]
+    },
+    "23": {
+      "title": "STORE MEETINGS",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how much should i be making per hour"
+      ],
+      "all_alternative_names": [
+        "hourly rate",
+        "hours",
+        "pay",
+        "pay rate",
+        "posting",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "shift",
+        "store meetings",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art23_sec52"
+      ]
+    },
+    "24": {
+      "title": "LUNCH BREAKS",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "when do i get a break"
+      ],
+      "all_alternative_names": [
+        "break",
+        "breaks",
+        "hours",
+        "lunch break",
+        "lunch breaks",
+        "meal period",
+        "posting",
+        "relief period",
+        "rest break",
+        "schedule",
+        "scheduling",
+        "shift"
+      ],
+      "chunk_ids": [
+        "art24_sec53"
+      ]
+    },
+    "25": {
+      "title": "RELIEF PERIODS",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "when do i get a break"
+      ],
+      "all_alternative_names": [
+        "break",
+        "breaks",
+        "hours",
+        "lunch break",
+        "meal period",
+        "posting",
+        "relief period",
+        "relief periods",
+        "rest break",
+        "schedule",
+        "scheduling",
+        "shift"
+      ],
+      "chunk_ids": [
+        "art25_sec54"
+      ]
+    },
+    "26": {
+      "title": "PROBATIONARY PERIOD",
+      "all_worker_questions": [
+        "how does seniority affect my rights"
+      ],
+      "all_alternative_names": [
+        "probationary period",
+        "seniority",
+        "service time",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art26_sec55"
+      ]
+    },
+    "27": {
+      "title": "SENIORITY",
+      "all_worker_questions": [
+        "can i be written up or fired for this",
+        "can i use sick time for this absence",
+        "can they change my schedule like this",
+        "how do i file a grievance",
+        "how does seniority affect my rights",
+        "how much should i be making per hour",
+        "how much vacation time do i get",
+        "what are my rights if i get laid off",
+        "what can i do if work is unsafe"
+      ],
+      "all_alternative_names": [
+        "accident",
+        "appeal",
+        "arbitration",
+        "bumping",
+        "call in sick",
+        "discharge",
+        "discipline",
+        "displacement",
+        "dispute",
+        "fired",
+        "grievance",
+        "hourly rate",
+        "hours",
+        "injury",
+        "laid off",
+        "layoff",
+        "pay",
+        "pay rate",
+        "posting",
+        "rate of pay",
+        "safety",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "sick day",
+        "sick leave",
+        "sick pay",
+        "termination",
+        "time off",
+        "unsafe",
+        "vacation",
+        "vacation pay",
+        "vacation time",
+        "wage",
+        "wages",
+        "warning",
+        "write up",
+        "written up",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art27_sec56",
+        "art27_sec57",
+        "art27_sec58",
+        "art27_sec59",
+        "art27_sec60",
+        "art27_sec61",
+        "art27_sec62_seg_001",
+        "art27_sec62_seg_002",
+        "art27_sec62_seg_003",
+        "art27_sec62_seg_004",
+        "art27_sec66",
+        "art27_sec67",
+        "art27_sec68",
+        "art27_sec69",
+        "art27_sec70_seg_001",
+        "art27_sec70_seg_002",
+        "art27_sec70_seg_003",
+        "art27_sec70_seg_004",
+        "art27_sec70_seg_005",
+        "art27_sec70_seg_006",
+        "art27_sec70_seg_007"
+      ]
+    },
+    "29": {
+      "title": "SCHEDULING OF SHIFTS",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how does seniority affect my rights"
+      ],
+      "all_alternative_names": [
+        "hours",
+        "posting",
+        "schedule",
+        "scheduling",
+        "scheduling shifts",
+        "seniority",
+        "service time",
+        "shift",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art29_sec73",
+        "art29_sec74"
+      ]
+    },
+    "30": {
+      "title": "UNSCHEDULED OVERTIME",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "do i get overtime for extra hours",
+        "how does seniority affect my rights"
+      ],
+      "all_alternative_names": [
+        "extra hours",
+        "hours",
+        "ot",
+        "overtime",
+        "posting",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "time and a half",
+        "unscheduled overtime",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art30_sec75"
+      ]
+    },
+    "31": {
+      "title": "REDUCTION OF HOURS",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how does seniority affect my rights",
+        "how much should i be making per hour",
+        "how much vacation time do i get",
+        "what are my rights if i get laid off"
+      ],
+      "all_alternative_names": [
+        "bumping",
+        "displacement",
+        "hourly rate",
+        "hours",
+        "laid off",
+        "layoff",
+        "pay",
+        "pay rate",
+        "posting",
+        "rate of pay",
+        "reduction hours",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "time off",
+        "vacation",
+        "vacation pay",
+        "vacation time",
+        "wage",
+        "wages",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art31_sec76_seg_001",
+        "art31_sec76_seg_002",
+        "art31_sec76_seg_003",
+        "art31_sec76_seg_004",
+        "art31_sec76_seg_005"
+      ]
+    },
+    "32": {
+      "title": "LAYOFFS",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how does seniority affect my rights",
+        "what are my rights if i get laid off"
+      ],
+      "all_alternative_names": [
+        "bumping",
+        "displacement",
+        "hours",
+        "laid off",
+        "layoff",
+        "meat cutter",
+        "posting",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art32"
+      ]
+    },
+    "33": {
+      "title": "TRANSFER FROM STORE TO STORE",
+      "all_worker_questions": [
+        "what does article 33 section 79 say about transfer store"
+      ],
+      "all_alternative_names": [
+        "store store",
+        "transfer store",
+        "transfer store store"
+      ],
+      "chunk_ids": [
+        "art33_sec79"
+      ]
+    },
+    "34": {
+      "title": "NEW STORE OPENING",
+      "all_worker_questions": [
+        "what are my rights if i get laid off"
+      ],
+      "all_alternative_names": [
+        "bumping",
+        "displacement",
+        "laid off",
+        "layoff",
+        "new store",
+        "new store opening",
+        "store opening"
+      ],
+      "chunk_ids": [
+        "art34_sec80"
+      ]
+    },
+    "35": {
+      "title": "LEAVES OF ABSENCE",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how does seniority affect my rights",
+        "how much should i be making per hour",
+        "what can i do if work is unsafe",
+        "what does article 35 section 87 say about leaves absence",
+        "what does article 35 section 89 say about leaves absence",
+        "when do my health benefits start"
+      ],
+      "all_alternative_names": [
+        "health and welfare",
+        "health benefits",
+        "hourly rate",
+        "hours",
+        "injury",
+        "insurance",
+        "leaves absence",
+        "medical",
+        "pay",
+        "pay rate",
+        "posting",
+        "rate of pay",
+        "safety",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "unsafe",
+        "wage",
+        "wages",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art35_sec81",
+        "art35_sec82",
+        "art35_sec83",
+        "art35_sec84",
+        "art35_sec85",
+        "art35_sec86",
+        "art35_sec87",
+        "art35_sec88",
+        "art35_sec89"
+      ]
+    },
+    "36": {
+      "title": "BEREAVEMENT LEAVE",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how much should i be making per hour",
+        "how much vacation time do i get"
+      ],
+      "all_alternative_names": [
+        "bereavement leave",
+        "hourly rate",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "shift",
+        "time off",
+        "vacation",
+        "vacation pay",
+        "vacation time",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art36_sec90"
+      ]
+    },
+    "37": {
+      "title": "JURY DUTY",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how much should i be making per hour"
+      ],
+      "all_alternative_names": [
+        "hourly rate",
+        "hours",
+        "jury duty",
+        "pay",
+        "pay rate",
+        "posting",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "shift",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art37"
+      ]
+    },
+    "38": {
+      "title": "SICK LEAVE",
+      "all_worker_questions": [
+        "can i use sick time for this absence",
+        "can they change my schedule like this",
+        "how many float days do i get",
+        "how much should i be making per hour",
+        "how much vacation time do i get",
+        "what can i do if work is unsafe"
+      ],
+      "all_alternative_names": [
+        "call in sick",
+        "float day",
+        "float days",
+        "floater",
+        "hourly rate",
+        "hours",
+        "pay",
+        "pay rate",
+        "personal holiday",
+        "personal holidays",
+        "posting",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "shift",
+        "sick day",
+        "sick leave",
+        "sick pay",
+        "time off",
+        "vacation",
+        "vacation pay",
+        "vacation time",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art38_sec93_seg_001",
+        "art38_sec93_seg_002",
+        "art38_sec93_seg_003",
+        "art38_sec93_seg_004",
+        "art38_sec93_seg_005"
+      ]
+    },
+    "39": {
+      "title": "INJURY ON THE JOB",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "do i get overtime for extra hours",
+        "how much should i be making per hour",
+        "what can i do if work is unsafe",
+        "when do my health benefits start"
+      ],
+      "all_alternative_names": [
+        "extra hours",
+        "health and welfare",
+        "health benefits",
+        "hourly rate",
+        "injury job",
+        "insurance",
+        "ot",
+        "overtime",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "time and a half",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art39_sec94"
+      ]
+    },
+    "40": {
+      "title": "HEALTH BENEFITS PLAN",
+      "all_worker_questions": [
+        "can i be written up or fired for this",
+        "can they change my schedule like this",
+        "how do i file a grievance",
+        "how does seniority affect my rights",
+        "how much should i be making per hour",
+        "when do my health benefits start"
+      ],
+      "all_alternative_names": [
+        "appeal",
+        "arbitration",
+        "benefits plan",
+        "discipline",
+        "dispute",
+        "grievance",
+        "health and welfare",
+        "health benefits",
+        "health benefits plan",
+        "hourly rate",
+        "insurance",
+        "medical",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "wage",
+        "wages",
+        "warning",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art40_sec95",
+        "art40_sec95_seg_001_001",
+        "art40_sec95_seg_002_000",
+        "art40_sec95_seg_001_004",
+        "art40_sec95_seg_005_000",
+        "art40_sec95_seg_001_004__dup1",
+        "art40_sec95_seg_005_000__dup1",
+        "art40_sec95_seg_001_002",
+        "art40_sec95_seg_003_004",
+        "art40_sec95_seg_005_005",
+        "art40_sec95_seg_006_006",
+        "art40_sec95_seg_007_000",
+        "art40_sec95_seg_001_001__dup1",
+        "art40_sec95_seg_002_003",
+        "art40_sec95_seg_004_005",
+        "art40_sec95_seg_006"
+      ]
+    },
+    "41": {
+      "title": "NON-DUPLICATION OF BENEFITS",
+      "all_worker_questions": [
+        "how does this affect my pension",
+        "when do my health benefits start"
+      ],
+      "all_alternative_names": [
+        "duplication benefits",
+        "health and welfare",
+        "health benefits",
+        "insurance",
+        "medical",
+        "non duplication",
+        "non duplication benefits",
+        "pension",
+        "retirement"
+      ],
+      "chunk_ids": [
+        "art41"
+      ]
+    },
+    "42": {
+      "title": "PENSION FUND",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how does seniority affect my rights",
+        "how does this affect my pension",
+        "how much should i be making per hour",
+        "how much vacation time do i get"
+      ],
+      "all_alternative_names": [
+        "hourly rate",
+        "hours",
+        "pay",
+        "pay rate",
+        "pension",
+        "pension fund",
+        "posting",
+        "rate of pay",
+        "retirement",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "time off",
+        "vacation",
+        "vacation pay",
+        "vacation time",
+        "wage",
+        "wages",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art42_sec97_seg_001",
+        "art42_sec97_seg_002",
+        "art42_sec97_seg_003",
+        "art42_sec97_seg_004",
+        "art42_sec98",
+        "art42_sec99",
+        "art42_sec100",
+        "art42_sec101",
+        "art42_sec102"
+      ]
+    },
+    "43": {
+      "title": "HEALTH AND WELFARE OR PENSION DELINQUENCIES",
+      "all_worker_questions": [
+        "how does this affect my pension",
+        "when do my health benefits start"
+      ],
+      "all_alternative_names": [
+        "health and welfare",
+        "health benefits",
+        "health welfare",
+        "health welfare pension",
+        "insurance",
+        "medical",
+        "pension",
+        "pension delinquencies",
+        "retirement",
+        "welfare pension",
+        "welfare pension delinquencies"
+      ],
+      "chunk_ids": [
+        "art43_sec103"
+      ]
+    },
+    "44": {
+      "title": "NO DISCRIMINATION",
+      "all_worker_questions": [
+        "can i be written up or fired for this",
+        "how do i file a grievance",
+        "how does seniority affect my rights",
+        "what does article 44 section 104 say about this section",
+        "what does article 44 section 106 say about this section",
+        "what does article 44 section 107 say about this section"
+      ],
+      "all_alternative_names": [
+        "appeal",
+        "arbitration",
+        "discharge",
+        "discipline",
+        "dispute",
+        "fired",
+        "grievance",
+        "seniority",
+        "service time",
+        "termination",
+        "warning",
+        "write up",
+        "written up",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art44_sec104",
+        "art44_sec105",
+        "art44_sec106",
+        "art44_sec107"
+      ]
+    },
+    "45": {
+      "title": "UNION REPRESENTATIVE VISITATION",
+      "all_worker_questions": [
+        "can they change my schedule like this"
+      ],
+      "all_alternative_names": [
+        "hours",
+        "posting",
+        "representative visitation",
+        "schedule",
+        "scheduling",
+        "shift"
+      ],
+      "chunk_ids": [
+        "art45_sec108"
+      ]
+    },
+    "46": {
+      "title": "JOINT LABOR MANAGEMENT COMMITTEES",
+      "all_worker_questions": [
+        "what does article 46 section 109 say about joint labor"
+      ],
+      "all_alternative_names": [
+        "joint labor",
+        "joint labor management",
+        "labor management",
+        "labor management committees",
+        "management committees"
+      ],
+      "chunk_ids": [
+        "art46_sec109"
+      ]
+    },
+    "47": {
+      "title": "UNION STEWARD",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how does seniority affect my rights",
+        "how much should i be making per hour",
+        "what are my rights if i get laid off"
+      ],
+      "all_alternative_names": [
+        "bumping",
+        "displacement",
+        "hourly rate",
+        "laid off",
+        "layoff",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "schedule",
+        "seniority",
+        "service time",
+        "wage",
+        "wages",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art47_sec110"
+      ]
+    },
+    "48": {
+      "title": "GRIEVANCE AND ARBITRATION PROCEDURE",
+      "all_worker_questions": [
+        "can i be written up or fired for this",
+        "can they change my schedule like this",
+        "how do i file a grievance",
+        "how much should i be making per hour"
+      ],
+      "all_alternative_names": [
+        "appeal",
+        "arbitration",
+        "arbitration procedure",
+        "discipline",
+        "dispute",
+        "grievance",
+        "grievance arbitration",
+        "grievance arbitration procedure",
+        "hourly rate",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art48"
+      ]
+    },
+    "49": {
+      "title": "NO STRIKE - NO LOCKOUT",
+      "all_worker_questions": [
+        "what does article 49 say about strike lockout"
+      ],
+      "all_alternative_names": [
+        "strike lockout"
+      ],
+      "chunk_ids": [
+        "art49"
+      ]
+    },
+    "50": {
+      "title": "STORE OR PLANT CLOSING",
+      "all_worker_questions": [
+        "can i be written up or fired for this",
+        "how do i file a grievance",
+        "how much should i be making per hour",
+        "what are my rights if i get laid off",
+        "when do my health benefits start"
+      ],
+      "all_alternative_names": [
+        "appeal",
+        "arbitration",
+        "discipline",
+        "dispute",
+        "grievance",
+        "hourly rate",
+        "pay",
+        "pay rate",
+        "plant closing",
+        "rate of pay",
+        "store plant",
+        "store plant closing",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art50"
+      ]
+    },
+    "51": {
+      "title": "BULLETIN BOARD",
+      "all_worker_questions": [
+        "can they change my schedule like this"
+      ],
+      "all_alternative_names": [
+        "bulletin board",
+        "hours",
+        "posting",
+        "schedule",
+        "scheduling",
+        "shift"
+      ],
+      "chunk_ids": [
+        "art51_sec116"
+      ]
+    },
+    "52": {
+      "title": "UNION STORE CARD",
+      "all_worker_questions": [
+        "what does article 52 section 117 say about store card"
+      ],
+      "all_alternative_names": [
+        "store card"
+      ],
+      "chunk_ids": [
+        "art52_sec117"
+      ]
+    },
+    "53": {
+      "title": "UNIFORMS/EQUIPMENT",
+      "all_worker_questions": [
+        "what does article 53 section 118 say about uniforms equipment"
+      ],
+      "all_alternative_names": [
+        "uniforms equipment"
+      ],
+      "chunk_ids": [
+        "art53_sec118"
+      ]
+    },
+    "54": {
+      "title": "SAVINGS CLAUSE",
+      "all_worker_questions": [
+        "what does article 54 section 119 say about savings clause"
+      ],
+      "all_alternative_names": [
+        "savings clause"
+      ],
+      "chunk_ids": [
+        "art54_sec119"
+      ]
+    },
+    "55": {
+      "title": "MASTER SAFETY COMMITTEE",
+      "all_worker_questions": [
+        "how much should i be making per hour",
+        "what can i do if work is unsafe"
+      ],
+      "all_alternative_names": [
+        "accident",
+        "hourly rate",
+        "injury",
+        "master safety",
+        "master safety committee",
+        "pay",
+        "pay rate",
+        "rate of pay",
+        "safety",
+        "safety committee",
+        "unsafe",
+        "wage",
+        "wages"
+      ],
+      "chunk_ids": [
+        "art55_sec120",
+        "art55_sec121",
+        "art55_sec122",
+        "art55_sec123",
+        "art55_sec124",
+        "art55_sec125"
+      ]
+    },
+    "56": {
+      "title": "TECHNOLOGICAL CHANGES",
+      "all_worker_questions": [
+        "can they change my schedule like this",
+        "how does seniority affect my rights",
+        "how does this affect my pension",
+        "how much should i be making per hour",
+        "what are my rights if i get laid off",
+        "what does article 56 section 126 part 1 say about technological changes"
+      ],
+      "all_alternative_names": [
+        "bumping",
+        "displacement",
+        "hourly rate",
+        "laid off",
+        "layoff",
+        "pay",
+        "pay rate",
+        "pension",
+        "rate of pay",
+        "retirement",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "technological changes",
+        "wage",
+        "wages",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art56_sec126_seg_001",
+        "art56_sec126_seg_002",
+        "art56_sec126_seg_003",
+        "art56_sec126_seg_004"
+      ]
+    },
+    "57": {
+      "title": "TERM OF AGREEMENT",
+      "all_worker_questions": [
+        "can i be written up or fired for this",
+        "can i use sick time for this absence",
+        "can they change my schedule like this",
+        "do i get overtime for extra hours",
+        "how do i file a grievance",
+        "how does seniority affect my rights",
+        "how many float days do i get",
+        "how much should i be making per hour",
+        "how much vacation time do i get",
+        "what are my rights if i get laid off",
+        "what can i do if work is unsafe",
+        "what does article 57 section 127 part 1 say about this section",
+        "what does article 57 section 127 part 3 say about this section",
+        "what does article 57 section 128 part 1 1 say about this section",
+        "what does article 57 section 128 part 1 2 say about this section",
+        "what does article 57 section 128 part 2 2 say about this section",
+        "what does article 57 section 128 part 4 4 say about this section",
+        "what does article 57 section 128 table dress requirements dated 3 25 19 say about this section",
+        "what does article 57 section 128 table letters of agreement say about this section",
+        "when do i get a break",
+        "when do my health benefits start"
+      ],
+      "all_alternative_names": [
+        "accident",
+        "appeal",
+        "arbitration",
+        "break",
+        "breaks",
+        "bumping",
+        "call in sick",
+        "discharge",
+        "discipline",
+        "displacement",
+        "dispute",
+        "extra hours",
+        "fired",
+        "float day",
+        "float days",
+        "floater",
+        "grievance",
+        "head clerk",
+        "health and welfare",
+        "health benefits",
+        "hourly rate",
+        "hours",
+        "injury",
+        "insurance",
+        "laid off",
+        "layoff",
+        "lunch break",
+        "meat cutter",
+        "medical",
+        "ot",
+        "overtime",
+        "pay",
+        "pay rate",
+        "personal holiday",
+        "personal holidays",
+        "posting",
+        "rate of pay",
+        "relief period",
+        "rest break",
+        "safety",
+        "schedule",
+        "scheduling",
+        "seniority",
+        "service time",
+        "shift",
+        "sick day",
+        "sick leave",
+        "sick pay",
+        "termination",
+        "time and a half",
+        "time off",
+        "unsafe",
+        "vacation",
+        "vacation pay",
+        "vacation time",
+        "wage",
+        "wages",
+        "warning",
+        "write up",
+        "written up",
+        "years of service"
+      ],
+      "chunk_ids": [
+        "art57_sec127_seg_001",
+        "art57_sec127_seg_002",
+        "art57_sec127_seg_003",
+        "art57_sec128",
+        "art57_sec128_seg_001_014",
+        "art57_sec128_seg_015_021",
+        "art57_sec128_seg_022_000",
+        "art57_sec128_seg_001_002",
+        "art57_sec128_seg_003_003",
+        "art57_sec128_seg_004_004",
+        "art57_sec128_seg_005_000",
+        "art57_sec128_seg_001_002__dup1",
+        "art57_sec128_seg_003_000",
+        "art57_sec128_seg_001_001",
+        "art57_sec128_seg_002_004",
+        "art57_sec128_seg_005_000__dup1",
+        "art57_sec128_seg_001_002__dup2",
+        "art57_sec128_seg_003_000__dup1",
+        "art57_sec128_seg_001_002__dup3",
+        "art57_sec128_seg_003_000__dup2",
+        "art57_sec128_seg_001_001__dup1",
+        "art57_sec128_seg_002_002",
+        "art57_sec128_seg_003_003__dup1",
+        "art57_sec128_seg_004_004__dup1",
+        "art57_sec128_seg_005_005",
+        "art57_sec128_seg_006_000",
+        "art57_sec128_seg_001_005",
+        "art57_sec128_seg_006_002",
+        "art57_sec128_seg_003_000__dup3",
+        "art57_sec128_seg_001_001__dup2",
+        "art57_sec128_seg_002_000",
+        "art57_sec128_seg_001_002__dup4",
+        "art57_sec128_seg_003_000__dup4",
+        "art57_sec128_seg_001_001__dup3",
+        "art57_sec128_seg_002_002__dup1",
+        "art57_sec128_seg_003_000__dup5",
+        "art57_sec128_seg_001_002__dup5",
+        "art57_sec128_seg_003_000__dup6",
+        "art57_sec128_seg_001_001__dup4",
+        "art57_sec128_seg_002_003",
+        "art57_sec128_seg_004_004__dup2",
+        "art57_sec128_seg_005_004",
+        "art57_sec128_seg_005_000__dup2",
+        "art57_sec128_seg_001_001__dup5",
+        "art57_sec128_seg_002_002__dup2",
+        "art57_sec128_seg_003_003__dup2",
+        "art57_sec128_seg_004",
+        "tbl_art57_2_chunk",
+        "tbl_art57_3_chunk",
+        "tbl_art57_4_chunk",
+        "tbl_art57_5_chunk",
+        "tbl_art57_6_chunk",
+        "tbl_art57_7_chunk",
+        "tbl_fallback_art57_e8fbaf62_chunk",
+        "tbl_fallback_art57_8af5ae44_chunk",
+        "tbl_fallback_art57_94425d48_chunk"
+      ]
+    }
+  },
+  "concept_to_articles": {
+    "recognition exclusions": [
+      1
+    ],
+    "meat cutter": [
+      1,
+      2,
+      9,
+      32,
+      57
+    ],
+    "service meat": [
+      2
+    ],
+    "meat departments": [
+      2
+    ],
+    "departments plants": [
+      2
+    ],
+    "service meat departments": [
+      2
+    ],
+    "meat departments plants": [
+      2
+    ],
+    "layoff": [
+      2,
+      27,
+      31,
+      32,
+      34,
+      47,
+      56,
+      57
+    ],
+    "laid off": [
+      2,
+      27,
+      31,
+      32,
+      34,
+      47,
+      56,
+      57
+    ],
+    "bumping": [
+      2,
+      27,
+      31,
+      32,
+      34,
+      47,
+      56,
+      57
+    ],
+    "displacement": [
+      2,
+      27,
+      31,
+      32,
+      34,
+      47,
+      56,
+      57
+    ],
+    "schedule": [
+      2,
+      7,
+      9,
+      10,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      23,
+      24,
+      25,
+      27,
+      29,
+      30,
+      31,
+      32,
+      35,
+      36,
+      37,
+      38,
+      40,
+      42,
+      45,
+      47,
+      51,
+      56,
+      57
+    ],
+    "scheduling": [
+      2,
+      7,
+      9,
+      10,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      20,
+      23,
+      24,
+      25,
+      27,
+      29,
+      30,
+      31,
+      32,
+      35,
+      36,
+      37,
+      38,
+      40,
+      42,
+      45,
+      51,
+      56,
+      57
+    ],
+    "shift": [
+      2,
+      7,
+      9,
+      10,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      20,
+      23,
+      24,
+      25,
+      27,
+      29,
+      30,
+      31,
+      32,
+      35,
+      36,
+      37,
+      38,
+      42,
+      45,
+      51,
+      56,
+      57
+    ],
+    "hours": [
+      2,
+      7,
+      9,
+      10,
+      12,
+      15,
+      16,
+      17,
+      18,
+      20,
+      23,
+      24,
+      25,
+      27,
+      29,
+      30,
+      31,
+      32,
+      35,
+      37,
+      38,
+      42,
+      45,
+      51,
+      57
+    ],
+    "posting": [
+      2,
+      7,
+      9,
+      10,
+      15,
+      16,
+      17,
+      18,
+      20,
+      23,
+      24,
+      25,
+      27,
+      29,
+      30,
+      31,
+      32,
+      35,
+      37,
+      38,
+      42,
+      45,
+      51,
+      57
+    ],
+    "safety": [
+      2,
+      18,
+      27,
+      35,
+      55,
+      57
+    ],
+    "unsafe": [
+      2,
+      18,
+      27,
+      35,
+      55,
+      57
+    ],
+    "injury": [
+      2,
+      18,
+      27,
+      35,
+      55,
+      57
+    ],
+    "accident": [
+      2,
+      18,
+      27,
+      55,
+      57
+    ],
+    "seniority": [
+      2,
+      7,
+      16,
+      17,
+      26,
+      27,
+      29,
+      30,
+      31,
+      32,
+      35,
+      40,
+      42,
+      44,
+      47,
+      56,
+      57
+    ],
+    "years of service": [
+      2,
+      7,
+      16,
+      17,
+      26,
+      27,
+      29,
+      30,
+      31,
+      32,
+      35,
+      40,
+      42,
+      44,
+      47,
+      56,
+      57
+    ],
+    "service time": [
+      2,
+      7,
+      16,
+      17,
+      26,
+      27,
+      29,
+      30,
+      31,
+      32,
+      35,
+      40,
+      42,
+      44,
+      47,
+      56,
+      57
+    ],
+    "wage": [
+      2,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      14,
+      16,
+      17,
+      19,
+      21,
+      23,
+      27,
+      31,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      42,
+      47,
+      48,
+      50,
+      55,
+      56,
+      57
+    ],
+    "wages": [
+      2,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      14,
+      16,
+      17,
+      19,
+      21,
+      23,
+      27,
+      31,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      42,
+      47,
+      48,
+      50,
+      55,
+      56,
+      57
+    ],
+    "pay": [
+      2,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      14,
+      16,
+      17,
+      19,
+      21,
+      23,
+      27,
+      31,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      42,
+      47,
+      48,
+      50,
+      55,
+      56,
+      57
+    ],
+    "pay rate": [
+      2,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      14,
+      16,
+      17,
+      19,
+      21,
+      23,
+      27,
+      31,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      42,
+      47,
+      48,
+      50,
+      55,
+      56,
+      57
+    ],
+    "hourly rate": [
+      2,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      14,
+      16,
+      17,
+      19,
+      21,
+      23,
+      27,
+      31,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      42,
+      47,
+      48,
+      50,
+      55,
+      56,
+      57
+    ],
+    "rate of pay": [
+      2,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      14,
+      16,
+      17,
+      19,
+      21,
+      23,
+      27,
+      31,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      42,
+      47,
+      48,
+      50,
+      55,
+      56,
+      57
+    ],
+    "security conditions": [
+      3
+    ],
+    "discipline": [
+      3,
+      8,
+      21,
+      27,
+      40,
+      44,
+      48,
+      50,
+      57
+    ],
+    "warning": [
+      3,
+      8,
+      21,
+      27,
+      40,
+      44,
+      57
+    ],
+    "write up": [
+      3,
+      8,
+      21,
+      27,
+      44,
+      57
+    ],
+    "written up": [
+      3,
+      21,
+      27,
+      44,
+      57
+    ],
+    "discharge": [
+      3,
+      21,
+      27,
+      44,
+      57
+    ],
+    "termination": [
+      3,
+      21,
+      27,
+      44,
+      57
+    ],
+    "fired": [
+      3,
+      21,
+      27,
+      44,
+      57
+    ],
+    "check off": [
+      4
+    ],
+    "new transferred": [
+      5
+    ],
+    "transferred promoted": [
+      5
+    ],
+    "promoted demoted": [
+      5
+    ],
+    "new transferred promoted": [
+      5
+    ],
+    "transferred promoted demoted": [
+      5
+    ],
+    "rights management": [
+      6
+    ],
+    "definitions classifications": [
+      7
+    ],
+    "rates pay": [
+      8
+    ],
+    "grievance": [
+      8,
+      17,
+      27,
+      40,
+      44,
+      48,
+      50,
+      57
+    ],
+    "dispute": [
+      8,
+      17,
+      27,
+      40,
+      44,
+      48,
+      50,
+      57
+    ],
+    "arbitration": [
+      8,
+      17,
+      27,
+      40,
+      44,
+      48,
+      50,
+      57
+    ],
+    "appeal": [
+      8,
+      17,
+      27,
+      40,
+      44,
+      48,
+      50,
+      57
+    ],
+    "temporary assignments": [
+      9
+    ],
+    "reduction pay": [
+      10
+    ],
+    "overtime": [
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      30,
+      39,
+      57
+    ],
+    "ot": [
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      30,
+      39,
+      57
+    ],
+    "extra hours": [
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      30,
+      39,
+      57
+    ],
+    "time and a half": [
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      30,
+      39,
+      57
+    ],
+    "vacation": [
+      11,
+      16,
+      17,
+      27,
+      31,
+      36,
+      38,
+      42,
+      57
+    ],
+    "vacation time": [
+      11,
+      16,
+      17,
+      27,
+      31,
+      36,
+      38,
+      42,
+      57
+    ],
+    "vacation pay": [
+      11,
+      16,
+      17,
+      27,
+      31,
+      36,
+      38,
+      42,
+      57
+    ],
+    "time off": [
+      11,
+      16,
+      17,
+      27,
+      31,
+      36,
+      38,
+      42,
+      57
+    ],
+    "sick leave": [
+      11,
+      16,
+      17,
+      27,
+      38,
+      57
+    ],
+    "sick pay": [
+      11,
+      16,
+      17,
+      27,
+      38,
+      57
+    ],
+    "sick day": [
+      11,
+      16,
+      17,
+      27,
+      38,
+      57
+    ],
+    "call in sick": [
+      11,
+      16,
+      17,
+      27,
+      38,
+      57
+    ],
+    "break": [
+      11,
+      24,
+      25,
+      57
+    ],
+    "breaks": [
+      11,
+      24,
+      25,
+      57
+    ],
+    "sunday premium": [
+      13
+    ],
+    "travel pay": [
+      14
+    ],
+    "health benefits": [
+      14,
+      35,
+      39,
+      40,
+      41,
+      43,
+      57
+    ],
+    "health and welfare": [
+      14,
+      35,
+      39,
+      40,
+      41,
+      43,
+      57
+    ],
+    "insurance": [
+      14,
+      35,
+      39,
+      40,
+      41,
+      43,
+      57
+    ],
+    "medical": [
+      14,
+      35,
+      40,
+      41,
+      43,
+      57
+    ],
+    "night premium": [
+      15
+    ],
+    "personal holiday": [
+      16,
+      38,
+      57
+    ],
+    "personal holidays": [
+      16,
+      38,
+      57
+    ],
+    "float day": [
+      16,
+      38,
+      57
+    ],
+    "float days": [
+      16,
+      38,
+      57
+    ],
+    "floater": [
+      16,
+      38,
+      57
+    ],
+    "scheduling posting": [
+      18
+    ],
+    "reporting pay": [
+      19
+    ],
+    "pay minimum": [
+      19
+    ],
+    "minimum daily": [
+      19
+    ],
+    "daily schedule": [
+      19
+    ],
+    "reporting pay minimum": [
+      19
+    ],
+    "pay minimum daily": [
+      19
+    ],
+    "minimum daily schedule": [
+      19
+    ],
+    "minimum weekly": [
+      20
+    ],
+    "weekly schedule": [
+      20
+    ],
+    "minimum weekly schedule": [
+      20
+    ],
+    "split shifts": [
+      22
+    ],
+    "store meetings": [
+      23
+    ],
+    "lunch breaks": [
+      24
+    ],
+    "rest break": [
+      24,
+      25,
+      57
+    ],
+    "relief period": [
+      24,
+      25,
+      57
+    ],
+    "lunch break": [
+      24,
+      25,
+      57
+    ],
+    "meal period": [
+      24,
+      25
+    ],
+    "relief periods": [
+      25
+    ],
+    "probationary period": [
+      26
+    ],
+    "scheduling shifts": [
+      29
+    ],
+    "unscheduled overtime": [
+      30
+    ],
+    "reduction hours": [
+      31
+    ],
+    "transfer store": [
+      33
+    ],
+    "store store": [
+      33
+    ],
+    "transfer store store": [
+      33
+    ],
+    "new store": [
+      34
+    ],
+    "store opening": [
+      34
+    ],
+    "new store opening": [
+      34
+    ],
+    "leaves absence": [
+      35
+    ],
+    "bereavement leave": [
+      36
+    ],
+    "jury duty": [
+      37
+    ],
+    "injury job": [
+      39
+    ],
+    "benefits plan": [
+      40
+    ],
+    "health benefits plan": [
+      40
+    ],
+    "non duplication": [
+      41
+    ],
+    "duplication benefits": [
+      41
+    ],
+    "non duplication benefits": [
+      41
+    ],
+    "pension": [
+      41,
+      42,
+      43,
+      56
+    ],
+    "retirement": [
+      41,
+      42,
+      43,
+      56
+    ],
+    "pension fund": [
+      42
+    ],
+    "health welfare": [
+      43
+    ],
+    "welfare pension": [
+      43
+    ],
+    "pension delinquencies": [
+      43
+    ],
+    "health welfare pension": [
+      43
+    ],
+    "welfare pension delinquencies": [
+      43
+    ],
+    "representative visitation": [
+      45
+    ],
+    "joint labor": [
+      46
+    ],
+    "labor management": [
+      46
+    ],
+    "management committees": [
+      46
+    ],
+    "joint labor management": [
+      46
+    ],
+    "labor management committees": [
+      46
+    ],
+    "grievance arbitration": [
+      48
+    ],
+    "arbitration procedure": [
+      48
+    ],
+    "grievance arbitration procedure": [
+      48
+    ],
+    "strike lockout": [
+      49
+    ],
+    "store plant": [
+      50
+    ],
+    "plant closing": [
+      50
+    ],
+    "store plant closing": [
+      50
+    ],
+    "bulletin board": [
+      51
+    ],
+    "store card": [
+      52
+    ],
+    "uniforms equipment": [
+      53
+    ],
+    "savings clause": [
+      54
+    ],
+    "master safety": [
+      55
+    ],
+    "safety committee": [
+      55
+    ],
+    "master safety committee": [
+      55
+    ],
+    "technological changes": [
+      56
+    ],
+    "head clerk": [
+      57
+    ]
+  },
+  "question_to_articles": {
+    "what does article 1 section 1 say about recognition exclusions": [
+      1
+    ],
+    "what does article 2 section 2 say about service meat": [
+      2
+    ],
+    "what are my rights if i get laid off": [
+      2,
+      27,
+      31,
+      32,
+      34,
+      47,
+      50,
+      56,
+      57
+    ],
+    "can they change my schedule like this": [
+      2,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      23,
+      24,
+      25,
+      27,
+      29,
+      30,
+      31,
+      32,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      42,
+      45,
+      47,
+      48,
+      51,
+      56,
+      57
+    ],
+    "what can i do if work is unsafe": [
+      2,
+      18,
+      27,
+      35,
+      38,
+      39,
+      55,
+      57
+    ],
+    "how does seniority affect my rights": [
+      2,
+      7,
+      16,
+      17,
+      26,
+      27,
+      29,
+      30,
+      31,
+      32,
+      35,
+      40,
+      42,
+      44,
+      47,
+      56,
+      57
+    ],
+    "how much should i be making per hour": [
+      2,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      16,
+      17,
+      19,
+      21,
+      23,
+      27,
+      31,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      42,
+      47,
+      48,
+      50,
+      55,
+      56,
+      57
+    ],
+    "what does article 2 section 5 say about service meat": [
+      2
+    ],
+    "what does article 3 section 6 say about security conditions": [
+      3
+    ],
+    "what does article 3 section 7 say about security conditions": [
+      3
+    ],
+    "what does article 3 section 8 say about security conditions": [
+      3
+    ],
+    "can i be written up or fired for this": [
+      3,
+      8,
+      17,
+      21,
+      27,
+      40,
+      44,
+      48,
+      50,
+      57
+    ],
+    "what does article 4 section 10 say about check off": [
+      4
+    ],
+    "what does article 5 say about new transferred": [
+      5
+    ],
+    "what does article 6 say about rights management": [
+      6
+    ],
+    "what does article 7 section 16 say about definitions classifications": [
+      7
+    ],
+    "what does article 7 section 17 say about definitions classifications": [
+      7
+    ],
+    "what does article 7 section 21 say about definitions classifications": [
+      7
+    ],
+    "how do i file a grievance": [
+      8,
+      17,
+      27,
+      40,
+      44,
+      48,
+      50,
+      57
+    ],
+    "do i get overtime for extra hours": [
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      30,
+      39,
+      57
+    ],
+    "how much vacation time do i get": [
+      11,
+      16,
+      17,
+      27,
+      31,
+      36,
+      38,
+      42,
+      57
+    ],
+    "can i use sick time for this absence": [
+      11,
+      16,
+      17,
+      27,
+      38,
+      57
+    ],
+    "when do i get a break": [
+      11,
+      24,
+      25,
+      57
+    ],
+    "when do my health benefits start": [
+      14,
+      35,
+      39,
+      40,
+      41,
+      43,
+      50,
+      57
+    ],
+    "how many float days do i get": [
+      16,
+      38,
+      57
+    ],
+    "what does article 16 section 35 say about this section": [
+      16
+    ],
+    "what does article 21 section 49 say about this section": [
+      21
+    ],
+    "what does article 22 section 51 say about split shifts": [
+      22
+    ],
+    "what does article 33 section 79 say about transfer store": [
+      33
+    ],
+    "what does article 35 section 87 say about leaves absence": [
+      35
+    ],
+    "what does article 35 section 89 say about leaves absence": [
+      35
+    ],
+    "how does this affect my pension": [
+      41,
+      42,
+      43,
+      56
+    ],
+    "what does article 44 section 104 say about this section": [
+      44
+    ],
+    "what does article 44 section 106 say about this section": [
+      44
+    ],
+    "what does article 44 section 107 say about this section": [
+      44
+    ],
+    "what does article 46 section 109 say about joint labor": [
+      46
+    ],
+    "what does article 49 say about strike lockout": [
+      49
+    ],
+    "what does article 52 section 117 say about store card": [
+      52
+    ],
+    "what does article 53 section 118 say about uniforms equipment": [
+      53
+    ],
+    "what does article 54 section 119 say about savings clause": [
+      54
+    ],
+    "what does article 56 section 126 part 1 say about technological changes": [
+      56
+    ],
+    "what does article 57 section 127 part 1 say about this section": [
+      57
+    ],
+    "what does article 57 section 127 part 3 say about this section": [
+      57
+    ],
+    "what does article 57 section 128 part 1 2 say about this section": [
+      57
+    ],
+    "what does article 57 section 128 part 4 4 say about this section": [
+      57
+    ],
+    "what does article 57 section 128 part 1 1 say about this section": [
+      57
+    ],
+    "what does article 57 section 128 part 2 2 say about this section": [
+      57
+    ],
+    "what does article 57 section 128 table letters of agreement say about this section": [
+      57
+    ],
+    "what does article 57 section 128 table dress requirements dated 3 25 19 say about this section": [
+      57
+    ]
+  }
+}

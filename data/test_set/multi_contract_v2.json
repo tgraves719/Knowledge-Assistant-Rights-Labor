@@ -1,0 +1,133 @@
+{
+  "description": "KARL multi-contract v2 benchmark slice (contract-parity retrieval checks)",
+  "schema_version": "multi_contract_v2",
+  "total_questions": 18,
+  "test_cases": [
+    {
+      "id": "clerks_01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "bucket": "contract_only",
+      "question": "What article covers the term of agreement for this contract?",
+      "expected_articles": ["Article 58"]
+    },
+    {
+      "id": "clerks_02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "bucket": "contract_only",
+      "question": "Where are overtime rules defined in this agreement?",
+      "expected_articles": ["Article 12"]
+    },
+    {
+      "id": "clerks_03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "bucket": "contract_only",
+      "question": "What article governs holidays and holiday pay?",
+      "expected_articles": ["Article 16"]
+    },
+    {
+      "id": "clerks_04",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "bucket": "contract_only",
+      "question": "Where should I look for vacation rules in this contract?",
+      "expected_articles": ["Article 17"]
+    },
+    {
+      "id": "clerks_05",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "bucket": "contract_only",
+      "question": "What article contains the dispute procedure?",
+      "expected_articles": ["Article 46"]
+    },
+    {
+      "id": "clerks_06",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "bucket": "contract_only",
+      "question": "Where are rates of pay described in this agreement?",
+      "expected_articles": ["Article 8"]
+    },
+    {
+      "id": "meat_01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "bucket": "contract_only",
+      "question": "What article covers the term of agreement for this contract?",
+      "expected_articles": ["Article 57"]
+    },
+    {
+      "id": "meat_02",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "bucket": "contract_only",
+      "question": "Where are overtime rules defined in this agreement?",
+      "expected_articles": ["Article 12"]
+    },
+    {
+      "id": "meat_03",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "bucket": "contract_only",
+      "question": "What article governs holidays and holiday pay?",
+      "expected_articles": ["Article 16"]
+    },
+    {
+      "id": "meat_04",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "bucket": "contract_only",
+      "question": "Where should I look for vacation rules in this contract?",
+      "expected_articles": ["Article 17"]
+    },
+    {
+      "id": "meat_05",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "bucket": "contract_only",
+      "question": "What article contains the dispute procedure?",
+      "expected_articles": ["Article 50"]
+    },
+    {
+      "id": "meat_06",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "bucket": "contract_only",
+      "question": "Which article addresses reduction in hours?",
+      "expected_articles": ["Article 31"]
+    },
+    {
+      "id": "king_01",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "bucket": "contract_only",
+      "question": "What article covers the term of agreement for this contract?",
+      "expected_articles": ["Article 57"]
+    },
+    {
+      "id": "king_02",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "bucket": "contract_only",
+      "question": "Where are overtime rules defined in this agreement?",
+      "expected_articles": ["Article 12"]
+    },
+    {
+      "id": "king_03",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "bucket": "contract_only",
+      "question": "What article governs holidays in this agreement?",
+      "expected_articles": ["Article 16"]
+    },
+    {
+      "id": "king_04",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "bucket": "contract_only",
+      "question": "Where should I look for vacation rules in this contract?",
+      "expected_articles": ["Article 17"]
+    },
+    {
+      "id": "king_05",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "bucket": "contract_only",
+      "question": "What article contains the grievance and arbitration procedure?",
+      "expected_articles": ["Article 48"]
+    },
+    {
+      "id": "king_06",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "bucket": "contract_only",
+      "question": "Where are rates of pay described in this agreement?",
+      "expected_articles": ["Article 8"]
+    }
+  ]
+}

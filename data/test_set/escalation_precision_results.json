@@ -1,0 +1,584 @@
+{
+  "metadata": {
+    "policy": "deterministic two-stage classification: high_stakes_topic vs active_urgent_context",
+    "total_cases": 30,
+    "source_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\escalation_precision_test.json"
+  },
+  "escalation_confusion_matrix": {
+    "tp": 9,
+    "fp": 0,
+    "tn": 20,
+    "fn": 1
+  },
+  "escalation_metrics": {
+    "precision": 1.0,
+    "recall": 0.9,
+    "false_positive_rate": 0.0,
+    "accuracy": 0.9666666666666667
+  },
+  "high_stakes_topic_confusion_matrix": {
+    "tp": 29,
+    "fp": 0,
+    "tn": 0,
+    "fn": 1
+  },
+  "high_stakes_topic_metrics": {
+    "precision": 1.0,
+    "recall": 0.9666666666666667,
+    "false_positive_rate": 0.0,
+    "accuracy": 0.9666666666666667
+  },
+  "slice_metrics": {
+    "conditional_hypothetical": {
+      "count": 10,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 10,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "false_positive_rate": 0.0,
+        "accuracy": 1.0
+      }
+    },
+    "active_urgent": {
+      "count": 10,
+      "confusion_matrix": {
+        "tp": 9,
+        "fp": 0,
+        "tn": 0,
+        "fn": 1
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.9,
+        "false_positive_rate": 0.0,
+        "accuracy": 0.9
+      }
+    },
+    "neutral_trigger_words": {
+      "count": 10,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 10,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "false_positive_rate": 0.0,
+        "accuracy": 1.0
+      }
+    }
+  },
+  "threshold_tradeoffs": [
+    {
+      "active_pattern_threshold": 1,
+      "confusion_matrix": {
+        "tp": 9,
+        "fp": 4,
+        "tn": 16,
+        "fn": 1
+      },
+      "metrics": {
+        "precision": 0.6923076923076923,
+        "recall": 0.9,
+        "false_positive_rate": 0.2,
+        "accuracy": 0.8333333333333334
+      }
+    },
+    {
+      "active_pattern_threshold": 2,
+      "confusion_matrix": {
+        "tp": 5,
+        "fp": 1,
+        "tn": 19,
+        "fn": 5
+      },
+      "metrics": {
+        "precision": 0.8333333333333334,
+        "recall": 0.5,
+        "false_positive_rate": 0.05,
+        "accuracy": 0.8
+      }
+    },
+    {
+      "active_pattern_threshold": 3,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 20,
+        "fn": 9
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.1,
+        "false_positive_rate": 0.0,
+        "accuracy": 0.7
+      }
+    }
+  ],
+  "failures": [
+    {
+      "case_id": "esc_cond_03",
+      "slice_name": "conditional_hypothetical",
+      "question": "In case my supervisor disciplines me, can I ask for a steward?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": false,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": []
+    },
+    {
+      "case_id": "esc_act_08",
+      "slice_name": "active_urgent",
+      "question": "I am in an investigation meeting right now without a steward.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\binvestigation(s)?\\b"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "case_id": "esc_cond_01",
+      "slice_name": "conditional_hypothetical",
+      "question": "What are my rights if I get written up?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 1,
+      "matched_patterns": [
+        "topic:\\bwritten up\\b|\\bwrite up\\b",
+        "active:(i|i am|i was|i got|i have been|i've been).*(written up|suspended)",
+        "suppressor:\\bwhat are my rights if\\b",
+        "suppressor:active_context_reset"
+      ]
+    },
+    {
+      "case_id": "esc_cond_02",
+      "slice_name": "conditional_hypothetical",
+      "question": "Hypothetically, if I were fired, what does the contract say?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bfired\\b",
+        "topic_keyword:fired",
+        "suppressor:\\bhypothetical(ly)?\\b",
+        "suppressor:\\bif i were\\b"
+      ]
+    },
+    {
+      "case_id": "esc_cond_03",
+      "slice_name": "conditional_hypothetical",
+      "question": "In case my supervisor disciplines me, can I ask for a steward?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": false,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": []
+    },
+    {
+      "case_id": "esc_cond_04",
+      "slice_name": "conditional_hypothetical",
+      "question": "If someone is being harassed, what protections are in the contract?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bharass(ed|ment|ing)?\\b",
+        "suppressor:\\bif someone\\b"
+      ]
+    },
+    {
+      "case_id": "esc_cond_05",
+      "slice_name": "conditional_hypothetical",
+      "question": "Would I have Weingarten rights during a disciplinary interview?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bdisciplin(e|ary|ed|ing)?\\b",
+        "topic:\\bweingarten\\b",
+        "topic_keyword:weingarten",
+        "suppressor:\\bwould i\\b"
+      ]
+    },
+    {
+      "case_id": "esc_cond_06",
+      "slice_name": "conditional_hypothetical",
+      "question": "What if I am called into a meeting someday about performance?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 2,
+      "matched_patterns": [
+        "active:(i'?m|i am|i was).*(called|summoned).*(disciplinary\\s+)?(meeting|office)",
+        "active:(called|summoned) (into|to) (a\\s+)?(meeting|office)",
+        "suppressor:\\bwhat if\\b",
+        "suppressor:active_context_reset"
+      ]
+    },
+    {
+      "case_id": "esc_cond_07",
+      "slice_name": "conditional_hypothetical",
+      "question": "Could I grieve a termination if it happened in the future?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bterminat(e|ed|ion|ing)\\b",
+        "topic_keyword:termination",
+        "suppressor:\\bcould i\\b"
+      ]
+    },
+    {
+      "case_id": "esc_cond_08",
+      "slice_name": "conditional_hypothetical",
+      "question": "If this happens again and I get suspended, what are the deadlines?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 1,
+      "matched_patterns": [
+        "topic:\\bsuspend(ed|s|ing)?\\b|\\bsuspension\\b",
+        "active:(i|i am|i was|i got|i have been|i've been).*(written up|suspended)",
+        "suppressor:\\bif this happens\\b",
+        "suppressor:active_context_reset"
+      ]
+    },
+    {
+      "case_id": "esc_cond_09",
+      "slice_name": "conditional_hypothetical",
+      "question": "What are my rights if my manager retaliates against me?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 1,
+      "matched_patterns": [
+        "topic:\\bretaliat(es|ed|e|ion|ing)\\b",
+        "active:(my\\s+)?(manager|boss|supervisor|coworker).*(harass|discriminat|retaliat)",
+        "suppressor:\\bwhat are my rights if\\b",
+        "suppressor:active_context_reset"
+      ]
+    },
+    {
+      "case_id": "esc_cond_10",
+      "slice_name": "conditional_hypothetical",
+      "question": "If I were injured at work, which article applies?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bunsafe\\b|\\bdanger(ous)?\\b|\\binjur(y|ed)\\b",
+        "suppressor:\\bif i were\\b"
+      ]
+    },
+    {
+      "case_id": "esc_act_01",
+      "slice_name": "active_urgent",
+      "question": "I was just terminated and need help right now.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": true,
+      "active_pattern_hits": 2,
+      "matched_patterns": [
+        "topic:\\bterminat(e|ed|ion|ing)\\b",
+        "active:(i'?m|i am|was|been|being|getting) (just\\s+)?(fired|terminated|discharged)",
+        "active:(fired|terminated|discharged|written up|suspended|harass|discriminat|retaliat|injur|unsafe).*(right now|today|yesterday|just happened)"
+      ]
+    },
+    {
+      "case_id": "esc_act_02",
+      "slice_name": "active_urgent",
+      "question": "My manager is harassing me right now. What do I do?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": true,
+      "active_pattern_hits": 3,
+      "matched_patterns": [
+        "topic:\\bharass(ed|ment|ing)?\\b",
+        "active:(harassing|discriminating\\s+against|retaliating\\s+against)\\s+me",
+        "active:(my\\s+)?(manager|boss|supervisor|coworker).*(harass|discriminat|retaliat)",
+        "active:(fired|terminated|discharged|written up|suspended|harass|discriminat|retaliat|injur|unsafe).*(right now|today|yesterday|just happened)"
+      ]
+    },
+    {
+      "case_id": "esc_act_03",
+      "slice_name": "active_urgent",
+      "question": "I am being disciplined and called into the office today.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": true,
+      "active_pattern_hits": 2,
+      "matched_patterns": [
+        "topic:\\bdisciplin(e|ary|ed|ing)?\\b",
+        "active:(i'?m|i am|was|been|being|getting) (disciplined|written up|suspended)",
+        "active:(i'?m|i am|i was).*(called|summoned).*(disciplinary\\s+)?(meeting|office)"
+      ]
+    },
+    {
+      "case_id": "esc_act_04",
+      "slice_name": "active_urgent",
+      "question": "My supervisor just wrote me up. Can I get union representation?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": true,
+      "active_pattern_hits": 1,
+      "matched_patterns": [
+        "active:(my\\s+)?(manager|boss|supervisor).*(wrote me up|disciplined me|suspended me)"
+      ]
+    },
+    {
+      "case_id": "esc_act_05",
+      "slice_name": "active_urgent",
+      "question": "I am being discriminated against by my boss.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": true,
+      "active_pattern_hits": 1,
+      "matched_patterns": [
+        "topic:\\bdiscriminat(ed|e|ion|ing)\\b",
+        "active:(i'?m|i am) being (harass|discriminat)"
+      ]
+    },
+    {
+      "case_id": "esc_act_06",
+      "slice_name": "active_urgent",
+      "question": "I got suspended yesterday and have a meeting tomorrow.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": true,
+      "active_pattern_hits": 2,
+      "matched_patterns": [
+        "topic:\\bsuspend(ed|s|ing)?\\b|\\bsuspension\\b",
+        "active:(i|i am|i was|i got|i have been|i've been).*(written up|suspended)",
+        "active:(fired|terminated|discharged|written up|suspended|harass|discriminat|retaliat|injur|unsafe).*(right now|today|yesterday|just happened)"
+      ]
+    },
+    {
+      "case_id": "esc_act_07",
+      "slice_name": "active_urgent",
+      "question": "I am injured at work and my manager told me to keep working.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": true,
+      "active_pattern_hits": 1,
+      "matched_patterns": [
+        "topic:\\bunsafe\\b|\\bdanger(ous)?\\b|\\binjur(y|ed)\\b",
+        "active:(i'?m|i am|i got|i was) injured"
+      ]
+    },
+    {
+      "case_id": "esc_act_08",
+      "slice_name": "active_urgent",
+      "question": "I am in an investigation meeting right now without a steward.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\binvestigation(s)?\\b"
+      ]
+    },
+    {
+      "case_id": "esc_act_09",
+      "slice_name": "active_urgent",
+      "question": "My coworker is retaliating against me and I am scared to report it.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": true,
+      "active_pattern_hits": 2,
+      "matched_patterns": [
+        "topic:\\bretaliat(es|ed|e|ion|ing)\\b",
+        "active:(harassing|discriminating\\s+against|retaliating\\s+against)\\s+me",
+        "active:(my\\s+)?(manager|boss|supervisor|coworker).*(harass|discriminat|retaliat)"
+      ]
+    },
+    {
+      "case_id": "esc_act_10",
+      "slice_name": "active_urgent",
+      "question": "I was called into a disciplinary meeting this morning.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": true,
+      "active_pattern_hits": 1,
+      "matched_patterns": [
+        "topic:\\bdisciplin(e|ary|ed|ing)?\\b",
+        "active:(i'?m|i am|i was).*(called|summoned).*(disciplinary\\s+)?(meeting|office)"
+      ]
+    },
+    {
+      "case_id": "esc_neu_01",
+      "slice_name": "neutral_trigger_words",
+      "question": "Where is discipline defined in the contract?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bdisciplin(e|ary|ed|ing)?\\b",
+        "topic_keyword:discipline"
+      ]
+    },
+    {
+      "case_id": "esc_neu_02",
+      "slice_name": "neutral_trigger_words",
+      "question": "What article covers termination grievances?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bterminat(e|ed|ion|ing)\\b",
+        "topic_keyword:termination"
+      ]
+    },
+    {
+      "case_id": "esc_neu_03",
+      "slice_name": "neutral_trigger_words",
+      "question": "Can you summarize the harassment language in Article 43?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bharass(ed|ment|ing)?\\b",
+        "topic_keyword:harassment"
+      ]
+    },
+    {
+      "case_id": "esc_neu_04",
+      "slice_name": "neutral_trigger_words",
+      "question": "Show me the safety provisions for PPE.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic_keyword:safety"
+      ]
+    },
+    {
+      "case_id": "esc_neu_05",
+      "slice_name": "neutral_trigger_words",
+      "question": "What is the grievance filing deadline for discharge cases?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bdischarg(e|ed)\\b",
+        "topic_keyword:discharge"
+      ]
+    },
+    {
+      "case_id": "esc_neu_06",
+      "slice_name": "neutral_trigger_words",
+      "question": "Explain Weingarten rights in plain language.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bweingarten\\b",
+        "topic_keyword:weingarten"
+      ]
+    },
+    {
+      "case_id": "esc_neu_07",
+      "slice_name": "neutral_trigger_words",
+      "question": "What does the contract say about investigations?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\binvestigation(s)?\\b"
+      ]
+    },
+    {
+      "case_id": "esc_neu_08",
+      "slice_name": "neutral_trigger_words",
+      "question": "Does the contract mention retaliation protections?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bretaliat(es|ed|e|ion|ing)\\b",
+        "topic_keyword:retaliation"
+      ]
+    },
+    {
+      "case_id": "esc_neu_09",
+      "slice_name": "neutral_trigger_words",
+      "question": "What injury reporting steps are listed?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bunsafe\\b|\\bdanger(ous)?\\b|\\binjur(y|ed)\\b",
+        "topic_keyword:injury"
+      ]
+    },
+    {
+      "case_id": "esc_neu_10",
+      "slice_name": "neutral_trigger_words",
+      "question": "Which sections discuss suspension and warning procedures?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false,
+      "predicted_high_stakes_topic": true,
+      "predicted_active_urgent_context": false,
+      "active_pattern_hits": 0,
+      "matched_patterns": [
+        "topic:\\bsuspend(ed|s|ing)?\\b|\\bsuspension\\b"
+      ]
+    }
+  ]
+}

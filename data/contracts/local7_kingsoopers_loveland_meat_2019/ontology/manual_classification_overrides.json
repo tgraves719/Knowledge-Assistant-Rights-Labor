@@ -1,0 +1,16 @@
+{
+  "schema_version": "classification_manual_overrides_v2",
+  "contract_id": "local7_kingsoopers_loveland_meat_2019",
+  "classification_alias_overrides": {},
+  "classification_review_overrides": {
+    "head_clerk": {
+      "action": "needs_clarification",
+      "clarification_wage_keys": [
+        "deli_head_clerk_asst",
+        "meat_head_clerk_asst"
+      ],
+      "comment": "Head Clerk is contract-present but requires department clarification between deli and meat head clerk wage rows."
+    }
+  },
+  "notes": "Add source_key -> wage_key overrides or reviewed classification states after reviewing ingestion_review_queue.json"
+}

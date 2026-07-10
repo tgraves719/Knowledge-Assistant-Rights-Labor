@@ -1,0 +1,97 @@
+{
+  "schema_version": "side_letter_retrieval_pueblo_clerks_test_v1",
+  "description": "Exploratory LOU discovery/cross-reference retrieval checks for Safeway Pueblo Clerks (dress requirements / LOU 8). Non-gating until baseline and fixes stabilize.",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "test_cases": [
+    {
+      "id": "SL-SWPCL-LOU8-01",
+      "question": "Do you have Letter of Understanding 8 about dress requirements?",
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Dress Requirements"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWPCL-LOU8-02",
+      "question": "What does Letter of Understanding 8 say employees should wear for dress requirements?",
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "White oxford",
+        "black dress type pants",
+        "Open toe or open heel shoes are not permitted"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWPCL-LOU8-03",
+      "question": "What are the dress requirements in the letter pursuant to Article 52?",
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Dress Requirements",
+        "Article 52"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWPCL-XREF-01",
+      "question": "Article 52 Section 158 says dress requirements are in a Letter of Understanding. Which letter is that?",
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Dress Requirements",
+        "Article 52"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWPCL-GEN-01",
+      "question": "whats the dress code",
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "White oxford",
+        "black dress type pants"
+      ],
+      "min_expected_keyword_hits": 1
+    },
+    {
+      "id": "SL-SWPCL-GEN-02",
+      "question": "what color shirt and pants are required for the dress requirements",
+      "expected_citations": [
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 2"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "White oxford",
+        "Black dress type pants"
+      ],
+      "min_expected_keyword_hits": 1
+    }
+  ]
+}

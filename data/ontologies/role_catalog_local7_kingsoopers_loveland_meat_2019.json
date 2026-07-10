@@ -1,0 +1,152 @@
+{
+  "schema_version": "role_catalog_v2",
+  "generated_at_utc": "2026-03-08T21:43:30.476341+00:00",
+  "contract_id": "local7_kingsoopers_loveland_meat_2019",
+  "roles": [
+    {
+      "value": "deli_chef",
+      "label": "Deli Chef",
+      "wage_available": true,
+      "wage_key": "deli_chef",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": true
+    },
+    {
+      "value": "deli_department_head",
+      "label": "Deli Department Head",
+      "wage_available": true,
+      "wage_key": "deli_department_head",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": true
+    },
+    {
+      "value": "deli_department_head_grandfathered",
+      "label": "Deli Department Head (Grandfathered)",
+      "wage_available": true,
+      "wage_key": "deli_department_head_grandfathered",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": true
+    },
+    {
+      "value": "deli_head_clerk_asst",
+      "label": "Deli Head Clerk/ASST",
+      "wage_available": true,
+      "wage_key": "deli_head_clerk_asst",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": true
+    },
+    {
+      "value": "deli_coffee_cheese_clerk",
+      "label": "Deli/Coffee/Cheese Clerk",
+      "wage_available": true,
+      "wage_key": "deli_coffee_cheese_clerk",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": true
+    },
+    {
+      "value": "meat_cutters",
+      "label": "Meat Cutters",
+      "wage_available": true,
+      "wage_key": "meat_cutters",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": true,
+      "alias_values": [
+        "meat_cutter"
+      ],
+      "alias_labels": [
+        "Meat Cutter"
+      ]
+    },
+    {
+      "value": "meat_head_clerk_asst",
+      "label": "Meat Head Clerk/ASST",
+      "wage_available": true,
+      "wage_key": "meat_head_clerk_asst",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": true
+    },
+    {
+      "value": "meat_manager",
+      "label": "Meat Manager",
+      "wage_available": true,
+      "wage_key": "meat_manager",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": true
+    },
+    {
+      "value": "seafood_manager",
+      "label": "Seafood Manager",
+      "wage_available": true,
+      "wage_key": "seafood_manager",
+      "source": "wage_table",
+      "mapping_method": "exact_wage_key",
+      "review_state": "resolved",
+      "manifest_present": false,
+      "onboarding_default": true
+    },
+    {
+      "value": "meat_cutter",
+      "label": "Meat Cutter",
+      "wage_available": true,
+      "wage_key": "meat_cutters",
+      "source": "ontology_resolved",
+      "mapping_method": "explicit_alias",
+      "review_state": "resolved",
+      "clarification_wage_keys": [],
+      "manifest_present": true,
+      "onboarding_default": false,
+      "alias_of_wage_key": "meat_cutters"
+    },
+    {
+      "value": "head_clerk",
+      "label": "Head Clerk",
+      "wage_available": false,
+      "wage_key": null,
+      "source": "ontology_reviewed_clarification",
+      "mapping_method": "reviewed_needs_clarification",
+      "review_state": "needs_clarification",
+      "clarification_wage_keys": [
+        "deli_head_clerk_asst",
+        "meat_head_clerk_asst"
+      ],
+      "manifest_present": true,
+      "onboarding_default": false
+    }
+  ],
+  "summary": {
+    "total_roles": 11,
+    "onboarding_default_roles": 9,
+    "wage_available_roles": 10,
+    "manifest_roles": 2,
+    "actionable_manifest_roles": 2,
+    "clarification_manifest_roles": [
+      "head_clerk"
+    ],
+    "out_of_scope_manifest_roles": [],
+    "unresolved_manifest_roles": []
+  }
+}

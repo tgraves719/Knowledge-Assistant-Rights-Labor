@@ -25,6 +25,7 @@ class VerificationResult:
 
 # Pattern to match Article X, Section Y citations
 CITATION_PATTERN = r'\*?\*?Article\s+(\d+)(?:,?\s*Section\s+(\d+))?\*?\*?'
+APPENDIX_A_PATTERN = r'appendix\s*"?a"?'
 
 # Escalation phrases
 ESCALATION_PHRASES = [
@@ -49,19 +50,31 @@ UNCERTAINTY_PHRASES = [
 
 def extract_citations(text: str) -> list[str]:
     """Extract all Article/Section citations from text."""
-    citations = []
+    citations: list[str] = []
     matches = re.finditer(CITATION_PATTERN, text, re.IGNORECASE)
-    
+
     for match in matches:
         article_num = match.group(1)
         section_num = match.group(2)
-        
+
         if section_num:
             citations.append(f"Article {article_num}, Section {section_num}")
         else:
             citations.append(f"Article {article_num}")
-    
-    return list(set(citations))  # Deduplicate
+
+    if re.search(APPENDIX_A_PATTERN, text or "", re.IGNORECASE):
+        citations.append("Appendix A")
+
+    # Stable dedupe preserving first-seen order.
+    deduped: list[str] = []
+    seen = set()
+    for c in citations:
+        key = c.lower().strip()
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(c)
+    return deduped
 
 
 def has_escalation_language(text: str) -> bool:
@@ -130,7 +143,10 @@ def check_answer_grounding(response: str, chunks: list[dict]) -> dict:
     grounding_score = 1.0
     
     # Combine all chunk content for checking
-    context_text = " ".join(c.get('content', '') for c in chunks).lower()
+    context_text = " ".join(
+        c.get('content_with_tables', c.get('content', ''))
+        for c in chunks
+    ).lower()
     response_lower = response.lower()
     
     # Check dollar amounts
@@ -291,29 +307,207 @@ def format_response_with_sources(
         dict with response, sources, and metadata
     """
     citations = extract_citations(response)
+
+    if wage_info:
+        wage_citation = str(wage_info.get("citation") or "Appendix A").strip() or "Appendix A"
+        if not any(c.lower() == wage_citation.lower() for c in citations):
+            citations.append(wage_citation)
+        for row in (wage_info.get("table_evidence") or []):
+            if not isinstance(row, dict):
+                continue
+            table_id = str(row.get("table_id") or "").strip()
+            if not table_id:
+                continue
+            row_index = row.get("row_index")
+            row_suffix = ""
+            if isinstance(row_index, int):
+                row_suffix = f", Row {row_index + 1}"
+            table_citation = f"Appendix A, Table {table_id}{row_suffix}"
+            if not any(c.lower() == table_citation.lower() for c in citations):
+                citations.append(table_citation)
+
+    # If a cited article includes matched table content, ensure section-level
+    # table-bearing citations are present in the citation list for UI visibility.
+    cited_article_nums = set()
+    for citation in citations:
+        match = re.search(r'Article\s+(\d+)', citation, re.IGNORECASE)
+        if match:
+            cited_article_nums.add(int(match.group(1)))
+    for chunk in chunks:
+        article_num = chunk.get('article_num')
+        if not article_num or article_num not in cited_article_nums:
+            continue
+        if not chunk.get('table_refs'):
+            continue
+        chunk_citation = str(chunk.get('citation') or '').strip()
+        if not chunk_citation:
+            continue
+        if any(c.lower() == chunk_citation.lower() for c in citations):
+            continue
+        citations.append(chunk_citation)
+
+    # Wage answers should surface table-backed appendix citations whenever available.
+    if wage_info:
+        for chunk in chunks:
+            chunk_citation = str(chunk.get("citation") or "").strip()
+            if not chunk_citation:
+                continue
+            if not chunk.get("table_refs"):
+                continue
+            citation_lower = chunk_citation.lower()
+            doc_type = str(chunk.get("doc_type") or "").lower()
+            if doc_type != "appendix" and "appendix" not in citation_lower and "table" not in citation_lower:
+                continue
+            if any(c.lower() == citation_lower for c in citations):
+                continue
+            citations.append(chunk_citation)
     
+    def _table_id_to_article_num(table_id: str) -> int | None:
+        match = re.search(r"tbl_art(\d+)_", str(table_id or "").lower())
+        if not match:
+            return None
+        try:
+            return int(match.group(1))
+        except ValueError:
+            return None
+
+    def _source_type_from_provenance(provenance: list[dict]) -> str:
+        saw_base = False
+        for ref in provenance or []:
+            if not isinstance(ref, dict):
+                continue
+            source_type = str(ref.get("source_type") or "").strip().lower()
+            if source_type:
+                if "moa" in source_type or "amend" in source_type:
+                    return "moa"
+                saw_base = True
+        return "base" if saw_base else "base"
+
+    def _citation_key(value: str) -> str:
+        return re.sub(r"\s+", " ", str(value or "").strip().lower())
+
+    def _best_chunk_for_article_citation(citation: str, article_num: int, chunks: list[dict]) -> Optional[dict]:
+        citation_key = _citation_key(citation)
+        sec_match = re.search(r"Article\s+\d+\s*,?\s*Section\s+(\d+)", citation, re.IGNORECASE)
+        wanted_section = int(sec_match.group(1)) if sec_match else None
+        best: tuple[int, int, dict] | None = None
+        for idx, chunk in enumerate(chunks):
+            if chunk.get("article_num") != article_num:
+                continue
+            score = 0
+            chunk_citation = str(chunk.get("citation") or "")
+            if _citation_key(chunk_citation) == citation_key:
+                score += 4
+            chunk_section = chunk.get("section_num")
+            if wanted_section is not None and isinstance(chunk_section, int) and chunk_section == wanted_section:
+                score += 3
+            provenance = chunk.get("provenance") if isinstance(chunk.get("provenance"), list) else []
+            if _source_type_from_provenance(provenance) == "moa":
+                score += 1
+            if best is None or (score, -idx) > (best[0], -best[1]):
+                best = (score, idx, chunk)
+        return best[2] if best else None
+
     sources = []
     for citation in citations:
         match = re.search(r'Article\s+(\d+)', citation)
         if match:
             article_num = int(match.group(1))
-            # Find matching chunk
-            for chunk in chunks:
-                if chunk.get('article_num') == article_num:
-                    sources.append({
-                        'citation': citation,
-                        'article_title': chunk.get('article_title', ''),
-                        'doc_type': chunk.get('doc_type', 'cba')
-                    })
-                    break
+            chunk = _best_chunk_for_article_citation(citation, article_num, chunks)
+            if chunk:
+                table_refs = chunk.get("table_refs") or []
+                first_table_id = str(table_refs[0]).strip() if table_refs else None
+                provenance = chunk.get("provenance") if isinstance(chunk.get("provenance"), list) else []
+                sources.append({
+                    'citation': citation,
+                    'article_title': chunk.get('article_title', ''),
+                    'doc_type': chunk.get('doc_type', 'cba'),
+                    'source_type': _source_type_from_provenance(provenance),
+                    'article_num': chunk.get('article_num'),
+                    'section_num': chunk.get('section_num'),
+                    'subsection': chunk.get('subsection'),
+                    'table_id': first_table_id or None,
+                    'provenance': provenance,
+                    'effective_version_id': chunk.get('effective_version_id'),
+                    'amendments_applied': chunk.get('amendments_applied') or [],
+                })
+            continue
+
+        # Non-article citations (e.g., Appendix/table chunks): match exact chunk citation.
+        citation_key = citation.lower().strip()
+        for chunk in chunks:
+            chunk_citation = str(chunk.get("citation") or "").strip()
+            if chunk_citation.lower() != citation_key:
+                continue
+            table_refs = chunk.get("table_refs") or []
+            first_table_id = str(table_refs[0]).strip() if table_refs else None
+            provenance = chunk.get("provenance") if isinstance(chunk.get("provenance"), list) else []
+            sources.append({
+                'citation': citation,
+                'article_title': chunk.get('article_title', ''),
+                'doc_type': chunk.get('doc_type', 'appendix'),
+                'source_type': _source_type_from_provenance(provenance),
+                'article_num': chunk.get('article_num'),
+                'section_num': chunk.get('section_num'),
+                'subsection': chunk.get('subsection'),
+                'table_id': first_table_id or None,
+                'provenance': provenance,
+                'effective_version_id': chunk.get('effective_version_id'),
+                'amendments_applied': chunk.get('amendments_applied') or [],
+            })
+            break
     
     # Add wage source if applicable
     if wage_info:
-        sources.append({
-            'citation': 'Appendix A',
-            'article_title': 'Wage Tables',
-            'doc_type': 'appendix'
-        })
+        wage_citation = wage_info.get('citation') or 'Appendix A'
+        if not any((s.get("citation") or "").strip().lower() == str(wage_citation).strip().lower() for s in sources):
+            first_table = next(
+                (row for row in (wage_info.get("table_evidence") or []) if isinstance(row, dict) and row.get("table_id")),
+                None,
+            )
+            wage_article_num = _table_id_to_article_num((first_table or {}).get("table_id") if first_table else "")
+            sources.append({
+                'citation': wage_citation,
+                'article_title': 'Wage Tables',
+                'doc_type': 'appendix',
+                'source_type': _source_type_from_provenance(
+                    (first_table or {}).get("provenance") if isinstance(first_table, dict) else []
+                ),
+                'article_num': wage_article_num,
+                'section_num': None,
+                'subsection': None,
+                'table_id': (first_table or {}).get("table_id") if isinstance(first_table, dict) else None,
+                'provenance': (first_table or {}).get("provenance") if isinstance(first_table, dict) else [],
+                'effective_version_id': wage_info.get("effective_version_id"),
+                'amendments_applied': wage_info.get("amendments_applied") or [],
+            })
+        for row in (wage_info.get("table_evidence") or []):
+            if not isinstance(row, dict):
+                continue
+            table_id = str(row.get("table_id") or "").strip()
+            if not table_id:
+                continue
+            row_index = row.get("row_index")
+            row_suffix = ""
+            if isinstance(row_index, int):
+                row_suffix = f", Row {row_index + 1}"
+            citation = f"Appendix A, Table {table_id}{row_suffix}"
+            if any((s.get("citation") or "").strip().lower() == citation.lower() for s in sources):
+                continue
+            sources.append({
+                'citation': citation,
+                'article_title': 'Wage Tables',
+                'doc_type': 'appendix',
+                'source_type': _source_type_from_provenance(row.get("provenance") if isinstance(row.get("provenance"), list) else []),
+                'article_num': _table_id_to_article_num(table_id),
+                'section_num': None,
+                'subsection': None,
+                'table_id': table_id,
+                'row_index': row_index,
+                'provenance': row.get("provenance") if isinstance(row.get("provenance"), list) else [],
+                'effective_version_id': row.get("effective_version_id") or wage_info.get("effective_version_id"),
+                'amendments_applied': row.get("amendments_applied") or wage_info.get("amendments_applied") or [],
+            })
     
     return {
         'response': response,
@@ -369,4 +563,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

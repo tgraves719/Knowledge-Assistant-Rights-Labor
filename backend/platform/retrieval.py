@@ -1,0 +1,336 @@
+"""Tenant-scoped document ingestion and retrieval helpers."""
+
+from __future__ import annotations
+
+import difflib
+import re
+from dataclasses import dataclass
+
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from backend.platform.embeddings import DeterministicTextEmbedder, TextEmbedder
+from backend.platform.models import ChunkEmbedding, Document, DocumentStatus
+
+
+@dataclass
+class RetrievedChunk:
+    chunk_id: str
+    document_id: str | None
+    chunk_index: int
+    content: str
+    similarity: float
+    metadata: dict
+
+
+class TenantRetrievalService:
+    def __init__(
+        self,
+        *,
+        chunk_size: int = 800,
+        overlap: int = 120,
+        embedding_dimensions: int = 384,
+        embedder: TextEmbedder | None = None,
+    ):
+        self.chunk_size = max(200, int(chunk_size))
+        self.overlap = max(0, min(int(overlap), self.chunk_size // 2))
+        self.embedder = embedder or DeterministicTextEmbedder(dimensions=embedding_dimensions)
+
+    def can_inline_ingest(self, *, content_type: str | None, filename: str | None) -> bool:
+        normalized_type = str(content_type or "").strip().lower()
+        normalized_name = str(filename or "").strip().lower()
+        return normalized_type.startswith("text/") or normalized_name.endswith((".txt", ".md", ".markdown"))
+
+    def decode_text(self, payload: bytes) -> str:
+        for encoding in ("utf-8", "utf-8-sig", "latin-1"):
+            try:
+                return payload.decode(encoding)
+            except UnicodeDecodeError:
+                continue
+        return payload.decode("utf-8", errors="ignore")
+
+    def split_text(self, text: str) -> list[str]:
+        normalized = re.sub(r"\r\n?", "\n", str(text or "")).strip()
+        if not normalized:
+            return []
+
+        paragraphs = [part.strip() for part in re.split(r"\n\s*\n", normalized) if part.strip()]
+        chunks: list[str] = []
+        current = ""
+        for paragraph in paragraphs:
+            if not current:
+                current = paragraph
+                continue
+            candidate = f"{current}\n\n{paragraph}"
+            if len(candidate) <= self.chunk_size:
+                current = candidate
+                continue
+            chunks.append(current)
+            if self.overlap > 0 and len(current) > self.overlap:
+                current = f"{current[-self.overlap:]}\n\n{paragraph}"
+            else:
+                current = paragraph
+
+        if current:
+            chunks.append(current)
+
+        final_chunks: list[str] = []
+        for chunk in chunks:
+            if len(chunk) <= self.chunk_size:
+                final_chunks.append(chunk)
+                continue
+            start = 0
+            step = self.chunk_size - self.overlap if self.overlap < self.chunk_size else self.chunk_size
+            while start < len(chunk):
+                piece = chunk[start : start + self.chunk_size].strip()
+                if piece:
+                    final_chunks.append(piece)
+                start += max(1, step)
+        return final_chunks
+
+    def _chunk_page(self, page_text: str) -> list[str]:
+        return self.split_text(page_text)
+
+    def _search_terms(self, query: str) -> list[str]:
+        tokens = [
+            token
+            for token in re.findall(r"[a-z0-9]+", str(query or "").lower())
+            if len(token) >= 3
+        ]
+        seen: set[str] = set()
+        ordered: list[str] = []
+        for token in tokens:
+            if token in seen:
+                continue
+            seen.add(token)
+            ordered.append(token)
+        return ordered[:8]
+
+    @staticmethod
+    def _lexical_tokens(text: str) -> list[str]:
+        tokens = [token for token in re.findall(r"[a-z0-9]+", str(text or "").lower()) if len(token) >= 3]
+        seen: set[str] = set()
+        ordered: list[str] = []
+        for token in tokens:
+            if token in seen:
+                continue
+            seen.add(token)
+            ordered.append(token)
+        return ordered
+
+    @staticmethod
+    def _char_trigrams(value: str) -> set[str]:
+        normalized = f"  {str(value or '').strip().lower()}  "
+        if len(normalized) < 3:
+            return {normalized} if normalized.strip() else set()
+        return {normalized[index : index + 3] for index in range(len(normalized) - 2)}
+
+    @classmethod
+    def _fuzzy_token_similarity(cls, term: str, candidate: str) -> float:
+        left = str(term or "").strip().lower()
+        right = str(candidate or "").strip().lower()
+        if not left or not right:
+            return 0.0
+        if left == right:
+            return 1.0
+        if left in right or right in left:
+            overlap_ratio = min(len(left), len(right)) / max(len(left), len(right))
+            if overlap_ratio >= 0.7:
+                return 0.95 * overlap_ratio
+        ratio = difflib.SequenceMatcher(None, left, right).ratio()
+        trigram_left = cls._char_trigrams(left)
+        trigram_right = cls._char_trigrams(right)
+        trigram_union = trigram_left | trigram_right
+        trigram_score = (len(trigram_left & trigram_right) / len(trigram_union)) if trigram_union else 0.0
+        return max(ratio, trigram_score)
+
+    @classmethod
+    def _fuzzy_lexical_bonus(cls, search_terms: list[str], lowered_text: str, metadata: dict) -> float:
+        if not search_terms:
+            return 0.0
+        candidate_tokens = cls._lexical_tokens(lowered_text)
+        bonus = 0.0
+        for term in search_terms:
+            if term in lowered_text:
+                bonus += 0.2
+                continue
+            best_score = max((cls._fuzzy_token_similarity(term, token) for token in candidate_tokens), default=0.0)
+            if best_score >= 0.84:
+                bonus += 0.16 * best_score
+        if metadata.get("summary"):
+            summary_text = str(metadata.get("summary") or "").lower()
+            for term in search_terms:
+                if term in summary_text:
+                    bonus += 0.1
+                    continue
+                best_score = max((cls._fuzzy_token_similarity(term, token) for token in cls._lexical_tokens(summary_text)), default=0.0)
+                if best_score >= 0.84:
+                    bonus += 0.08 * best_score
+        return bonus
+
+    @staticmethod
+    def _structured_lexical_text(chunk_text: str, metadata: dict) -> str:
+        alias_values = metadata.get("search_aliases") or []
+        topic_values = metadata.get("topic_tags") or []
+        cross_refs = metadata.get("cross_references") or []
+        fields = [
+            chunk_text,
+            metadata.get("document_title"),
+            metadata.get("summary"),
+            metadata.get("article_title"),
+            metadata.get("section_title"),
+            metadata.get("section_num"),
+            metadata.get("article_num"),
+            " ".join(str(item) for item in alias_values if item),
+            " ".join(str(item) for item in topic_values if item),
+            " ".join(str(item) for item in cross_refs if item),
+        ]
+        return " ".join(str(value or "") for value in fields).lower()
+
+    def ingest_document(
+        self,
+        db: Session,
+        *,
+        union_id: str,
+        document_id: str,
+        text: str,
+        metadata: dict | None = None,
+        pages: list[dict] | None = None,
+        structured_sections: list[dict] | None = None,
+        clear_existing: bool = True,
+    ) -> int:
+        metadata = dict(metadata or {})
+        if clear_existing:
+            existing = db.scalars(select(ChunkEmbedding).where(ChunkEmbedding.document_id == document_id)).all()
+            for row in existing:
+                db.delete(row)
+
+        chunk_rows: list[tuple[str, dict]] = []
+        if structured_sections:
+            for section in structured_sections:
+                section_text = str(section.get("text") or "").strip()
+                if not section_text:
+                    continue
+                section_metadata = {
+                    **metadata,
+                    **{key: value for key, value in section.items() if key != "text"},
+                    "structure_mode": "legal_structured",
+                }
+                chunk_rows.append((section_text, section_metadata))
+        elif pages:
+            for page in pages:
+                page_text = str(page.get("text") or "").strip()
+                if not page_text:
+                    continue
+                page_number = page.get("page_number")
+                page_metadata = {
+                    **metadata,
+                    "page_number": int(page_number) if isinstance(page_number, int) or str(page_number).isdigit() else None,
+                }
+                for chunk_text in self._chunk_page(page_text):
+                    chunk_rows.append((chunk_text, page_metadata))
+        else:
+            for chunk_text in self.split_text(text):
+                chunk_rows.append((chunk_text, dict(metadata)))
+
+        for index, (chunk_text, chunk_metadata) in enumerate(chunk_rows):
+            db.add(
+                ChunkEmbedding(
+                    union_id=union_id,
+                    document_id=document_id,
+                    chunk_index=index,
+                    chunk_text=chunk_text,
+                    metadata_json={
+                        **chunk_metadata,
+                        "content_length": len(chunk_text),
+                        "embedding_backend": self.embedder.descriptor.backend,
+                        "embedding_model": self.embedder.descriptor.model_name,
+                    },
+                    embedding=self.embedder.embed(chunk_text),
+                )
+            )
+        db.flush()
+        return len(chunk_rows)
+
+    def search(
+        self,
+        db: Session,
+        *,
+        union_id: str,
+        query: str,
+        limit: int = 5,
+        document_id: str | None = None,
+        preferred_article_num: str | None = None,
+        preferred_topic_tags: list[str] | None = None,
+        member_safe_only: bool = True,
+    ) -> list[RetrievedChunk]:
+        ready_documents = db.scalars(
+            select(Document).where(
+                Document.union_id == union_id,
+                Document.status == DocumentStatus.ACTIVE,
+            )
+        ).all()
+        ready_document_ids = [
+            document.id
+            for document in ready_documents
+            if bool(((document.metadata_json or {}).get("ready_for_query")))
+            and (not member_safe_only or bool((document.metadata_json or {}).get("member_visible", True)))
+        ]
+        if not ready_document_ids:
+            return []
+
+        base_stmt = select(ChunkEmbedding).where(
+            ChunkEmbedding.union_id == union_id,
+            ChunkEmbedding.document_id.in_(ready_document_ids),
+        )
+        if document_id:
+            base_stmt = base_stmt.where(ChunkEmbedding.document_id == document_id)
+
+        search_terms = self._search_terms(query)
+        candidate_limit = 800 if search_terms else 300
+        rows = db.scalars(base_stmt.limit(candidate_limit)).all()
+
+        query_embedding = self.embedder.embed(query)
+        scored: list[RetrievedChunk] = []
+        for row in rows:
+            row_embedding = list(row.embedding) if row.embedding is not None else []
+            similarity = sum(a * b for a, b in zip(query_embedding, row_embedding))
+            metadata = dict(row.metadata_json or {})
+            lowered = self._structured_lexical_text(str(row.chunk_text or ""), metadata)
+            lexical_bonus = self._fuzzy_lexical_bonus(search_terms, lowered, metadata)
+            if member_safe_only and bool(metadata.get("sensitive_data_risk")):
+                lexical_bonus -= 0.22
+            if member_safe_only and bool(metadata.get("prompt_injection_risk")):
+                lexical_bonus -= 1.5
+            if metadata.get("section_title"):
+                lexical_bonus += 0.15 * sum(1 for term in search_terms if term in str(metadata.get("section_title") or "").lower())
+            if metadata.get("article_title"):
+                lexical_bonus += 0.1 * sum(1 for term in search_terms if term in str(metadata.get("article_title") or "").lower())
+            if metadata.get("topic_tags"):
+                lexical_bonus += 0.15 * sum(1 for term in search_terms if any(term in str(tag).lower() for tag in metadata.get("topic_tags") or []))
+            if preferred_article_num and str(metadata.get("article_num") or "").strip() == str(preferred_article_num).strip():
+                lexical_bonus += 0.45
+            normalized_preferred_topics = [str(tag or "").strip().lower() for tag in (preferred_topic_tags or []) if str(tag or "").strip()]
+            if normalized_preferred_topics and metadata.get("topic_tags"):
+                row_topics = {str(tag or "").strip().lower() for tag in (metadata.get("topic_tags") or []) if str(tag or "").strip()}
+                lexical_bonus += 0.2 * sum(1 for tag in normalized_preferred_topics if tag in row_topics)
+            scored.append(
+                RetrievedChunk(
+                    chunk_id=row.id,
+                    document_id=row.document_id,
+                    chunk_index=row.chunk_index,
+                    content=row.chunk_text,
+                    similarity=float(similarity + lexical_bonus),
+                    metadata=metadata,
+                )
+            )
+        scored.sort(key=lambda item: item.similarity, reverse=True)
+        return scored[: max(1, int(limit))]
+
+    def delete_document(self, db: Session, *, document_id: str) -> int:
+        rows = db.scalars(select(ChunkEmbedding).where(ChunkEmbedding.document_id == document_id)).all()
+        deleted = len(rows)
+        for row in rows:
+            db.delete(row)
+        db.flush()
+        return deleted

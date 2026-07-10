@@ -1,0 +1,37 @@
+{
+  "error_count": 0,
+  "excluded_contract_ids": [],
+  "failed": [],
+  "generated_at_utc": "2026-03-09T10:08:17.938282+00:00",
+  "ok_count": 2,
+  "requested_contract_ids": [
+    "local7_safeway_pueblo_clerks_2022",
+    "local7_safeway_pueblo_meat_2022"
+  ],
+  "selection_mode": "explicit",
+  "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+  "succeeded": [
+    {
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "effective_date": "2025-07-05",
+      "operation_count": 10,
+      "patch_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\amendments\\drafts\\draft_albertsons_safeway_moa_2025_07_05_local7_safeway_pueblo_clerks_2022_2025_07_05.json",
+      "ratified_date": "2025-07-05",
+      "report_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\amendments\\drafts\\draft_albertsons_safeway_moa_2025_07_05_local7_safeway_pueblo_clerks_2022_2025_07_05.report.json",
+      "selected_candidate_count": 30,
+      "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+      "source_pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf"
+    },
+    {
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "effective_date": "2025-07-05",
+      "operation_count": 7,
+      "patch_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\amendments\\drafts\\draft_albertsons_safeway_moa_2025_07_05_local7_safeway_pueblo_meat_2022_2025_07_05.json",
+      "ratified_date": "2025-07-05",
+      "report_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\amendments\\drafts\\draft_albertsons_safeway_moa_2025_07_05_local7_safeway_pueblo_meat_2022_2025_07_05.report.json",
+      "selected_candidate_count": 30,
+      "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+      "source_pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf"
+    }
+  ]
+}

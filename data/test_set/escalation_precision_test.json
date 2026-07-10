@@ -1,0 +1,221 @@
+{
+  "description": "Escalation precision test set focused on reducing false positives while preserving urgent true positives.",
+  "policy": "deterministic two-stage classification: high_stakes_topic vs active_urgent_context",
+  "slices": {
+    "conditional_hypothetical": "Informational or hypothetical rights questions that should not auto-escalate.",
+    "active_urgent": "Current incidents that should trigger escalation.",
+    "neutral_trigger_words": "Neutral policy questions containing trigger words that should not auto-escalate."
+  },
+  "test_cases": [
+    {
+      "id": "esc_cond_01",
+      "slice": "conditional_hypothetical",
+      "question": "What are my rights if I get written up?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_cond_02",
+      "slice": "conditional_hypothetical",
+      "question": "Hypothetically, if I were fired, what does the contract say?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_cond_03",
+      "slice": "conditional_hypothetical",
+      "question": "In case my supervisor disciplines me, can I ask for a steward?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_cond_04",
+      "slice": "conditional_hypothetical",
+      "question": "If someone is being harassed, what protections are in the contract?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_cond_05",
+      "slice": "conditional_hypothetical",
+      "question": "Would I have Weingarten rights during a disciplinary interview?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_cond_06",
+      "slice": "conditional_hypothetical",
+      "question": "What if I am called into a meeting someday about performance?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_cond_07",
+      "slice": "conditional_hypothetical",
+      "question": "Could I grieve a termination if it happened in the future?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_cond_08",
+      "slice": "conditional_hypothetical",
+      "question": "If this happens again and I get suspended, what are the deadlines?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_cond_09",
+      "slice": "conditional_hypothetical",
+      "question": "What are my rights if my manager retaliates against me?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_cond_10",
+      "slice": "conditional_hypothetical",
+      "question": "If I were injured at work, which article applies?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_act_01",
+      "slice": "active_urgent",
+      "question": "I was just terminated and need help right now.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true
+    },
+    {
+      "id": "esc_act_02",
+      "slice": "active_urgent",
+      "question": "My manager is harassing me right now. What do I do?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true
+    },
+    {
+      "id": "esc_act_03",
+      "slice": "active_urgent",
+      "question": "I am being disciplined and called into the office today.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true
+    },
+    {
+      "id": "esc_act_04",
+      "slice": "active_urgent",
+      "question": "My supervisor just wrote me up. Can I get union representation?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true
+    },
+    {
+      "id": "esc_act_05",
+      "slice": "active_urgent",
+      "question": "I am being discriminated against by my boss.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true
+    },
+    {
+      "id": "esc_act_06",
+      "slice": "active_urgent",
+      "question": "I got suspended yesterday and have a meeting tomorrow.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true
+    },
+    {
+      "id": "esc_act_07",
+      "slice": "active_urgent",
+      "question": "I am injured at work and my manager told me to keep working.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true
+    },
+    {
+      "id": "esc_act_08",
+      "slice": "active_urgent",
+      "question": "I am in an investigation meeting right now without a steward.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true
+    },
+    {
+      "id": "esc_act_09",
+      "slice": "active_urgent",
+      "question": "My coworker is retaliating against me and I am scared to report it.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true
+    },
+    {
+      "id": "esc_act_10",
+      "slice": "active_urgent",
+      "question": "I was called into a disciplinary meeting this morning.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": true
+    },
+    {
+      "id": "esc_neu_01",
+      "slice": "neutral_trigger_words",
+      "question": "Where is discipline defined in the contract?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_neu_02",
+      "slice": "neutral_trigger_words",
+      "question": "What article covers termination grievances?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_neu_03",
+      "slice": "neutral_trigger_words",
+      "question": "Can you summarize the harassment language in Article 43?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_neu_04",
+      "slice": "neutral_trigger_words",
+      "question": "Show me the safety provisions for PPE.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_neu_05",
+      "slice": "neutral_trigger_words",
+      "question": "What is the grievance filing deadline for discharge cases?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_neu_06",
+      "slice": "neutral_trigger_words",
+      "question": "Explain Weingarten rights in plain language.",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_neu_07",
+      "slice": "neutral_trigger_words",
+      "question": "What does the contract say about investigations?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_neu_08",
+      "slice": "neutral_trigger_words",
+      "question": "Does the contract mention retaliation protections?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_neu_09",
+      "slice": "neutral_trigger_words",
+      "question": "What injury reporting steps are listed?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    },
+    {
+      "id": "esc_neu_10",
+      "slice": "neutral_trigger_words",
+      "question": "Which sections discuss suspension and warning procedures?",
+      "expected_high_stakes_topic": true,
+      "expected_active_urgent_context": false
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": "classification_review_decisions_v1",
+  "contract_id": "local7_safeway_pueblo_meat_2022",
+  "generated_at_utc": "2026-02-14T05:15:19.087950+00:00",
+  "set_aliases": {},
+  "remove_aliases": [],
+  "decision_notes": [
+    {
+      "source_key": "cake_decorator",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": []
+    },
+    {
+      "source_key": "courtesy_clerk",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": [
+        {
+          "wage_key": "deli_clerks",
+          "score": 0.443
+        },
+        {
+          "wage_key": "starbucks_clerks",
+          "score": 0.435
+        },
+        {
+          "wage_key": "seafood_clerks",
+          "score": 0.425
+        }
+      ]
+    },
+    {
+      "source_key": "pharmacy_technician",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": []
+    }
+  ]
+}

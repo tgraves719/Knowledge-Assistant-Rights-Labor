@@ -1,0 +1,10 @@
+{
+  "name": "union-karl-updated",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.js -i ./frontend/modular/styles/tailwind.css -o ./frontend/modular/styles/generated.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

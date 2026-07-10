@@ -1,0 +1,146 @@
+{
+  "schema_version": "needle_eval_v1",
+  "timestamp_utc": "2026-03-09T10:33:28.306520+00:00",
+  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\needle_test.json",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "n_results": 8,
+  "bm25_only": true,
+  "synthetic_overlay_applied": true,
+  "min_keyword_hits": 2,
+  "overall": {
+    "passed": 5,
+    "total": 5,
+    "pass_rate": 1.0,
+    "citation_match_rate": 1.0,
+    "keyword_pass_rate": 1.0
+  },
+  "by_position": {
+    "bottom": {
+      "passed": 1,
+      "total": 1,
+      "pass_rate": 1.0
+    },
+    "middle": {
+      "passed": 2,
+      "total": 2,
+      "pass_rate": 1.0
+    },
+    "top": {
+      "passed": 2,
+      "total": 2,
+      "pass_rate": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "needle-1",
+      "needle_id": "KARL_NEEDLE_001",
+      "question": "Is there a retention bonus for Senior Night Stockers with over 10 years of service?",
+      "injection_position": "top",
+      "expected_citation": "Article 15, Section 999 (Synthetic)",
+      "retrieved_citations": [
+        "Article 15, Section 999 (Synthetic)",
+        "Article 29, Section 83",
+        "Article 42, Section 119",
+        "Article 27, Section 63",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 3",
+        "Article 10, Section 21, Part 2",
+        "Letter of Understanding 8: Dress Requirements letter pursuant to Article 52 of this ..., Part 4",
+        "Article 54, Section 161, Part 4"
+      ],
+      "citation_match": true,
+      "keyword_hits": 6,
+      "keyword_total": 6,
+      "keyword_pass": true,
+      "pass": true
+    },
+    {
+      "id": "needle-2",
+      "needle_id": "KARL_NEEDLE_002",
+      "question": "If my store replaces all the cash registers, do I get training time? How much?",
+      "injection_position": "middle",
+      "expected_citation": "Article 36, Section 998 (Synthetic)",
+      "retrieved_citations": [
+        "Article 36, Section 998 (Synthetic)",
+        "Article 48, Section 997 (Synthetic)",
+        "Article 42, Section 118, Part 1",
+        "Article 5, Section 995 (Synthetic)",
+        "Article 27, Section 71, Part 3",
+        "Article 40, Section 116, Part 2-3",
+        "Article 25, Section 61",
+        "Article 36, Section 109, Part 4"
+      ],
+      "citation_match": true,
+      "keyword_hits": 7,
+      "keyword_total": 7,
+      "keyword_pass": true,
+      "pass": true
+    },
+    {
+      "id": "needle-3",
+      "needle_id": "KARL_NEEDLE_003",
+      "question": "I had to drive to another store for inventory. Can I get my gas money back?",
+      "injection_position": "bottom",
+      "expected_citation": "Article 48, Section 997 (Synthetic)",
+      "retrieved_citations": [
+        "Article 48, Section 997 (Synthetic)",
+        "Article 10, Section 21, Part 2",
+        "Article 22, Section 58",
+        "Article 36, Section 998 (Synthetic)",
+        "Article 34, Section 98",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 2",
+        "Article 17, Section 49",
+        "Article 28, Section 76"
+      ],
+      "citation_match": true,
+      "keyword_hits": 5,
+      "keyword_total": 5,
+      "keyword_pass": true,
+      "pass": true
+    },
+    {
+      "id": "needle-4",
+      "needle_id": "KARL_NEEDLE_004",
+      "question": "Does the store have to have a defibrillator? What if I use it on a customer and something goes wrong?",
+      "injection_position": "middle",
+      "expected_citation": "Article 36, Section 996 (Synthetic)",
+      "retrieved_citations": [
+        "Article 36, Section 996 (Synthetic)",
+        "Article 24, Section 60",
+        "Article 27, Section 71, Part 2",
+        "Letter of Understanding 4: Estes Park Store SW 920 (Retail Clerks Contract), Part 4",
+        "Letter of Understanding 15: Beverage Stewards, Part 1",
+        "Article 58, Section 175, Part 5",
+        "Article 25, Section 61",
+        "Letter of Understanding 15: Beverage Stewards, Part 4"
+      ],
+      "citation_match": true,
+      "keyword_hits": 7,
+      "keyword_total": 7,
+      "keyword_pass": true,
+      "pass": true
+    },
+    {
+      "id": "needle-5",
+      "needle_id": "KARL_NEEDLE_005",
+      "question": "I got called to testify at an NLRB hearing. Do I still get paid for the time I miss at work?",
+      "injection_position": "top",
+      "expected_citation": "Article 5, Section 995 (Synthetic)",
+      "retrieved_citations": [
+        "Article 5, Section 995 (Synthetic)",
+        "Article 25, Section 61",
+        "Article 36, Section 998 (Synthetic)",
+        "Article 24, Section 60",
+        "Letter of Understanding 1: C-5 Employees reinstated under terms of Alcohol Rehabilit..., Part 5",
+        "Article 10, Section 21, Part 3",
+        "Article 10, Section 21, Part 1",
+        "Article 26, Section 62"
+      ],
+      "citation_match": true,
+      "keyword_hits": 5,
+      "keyword_total": 5,
+      "keyword_pass": true,
+      "pass": true
+    }
+  ]
+}

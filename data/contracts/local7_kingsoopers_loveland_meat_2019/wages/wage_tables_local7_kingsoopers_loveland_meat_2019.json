@@ -1,0 +1,2324 @@
+{
+  "contract_id": "local7_kingsoopers_loveland_meat_2019",
+  "effective_dates": [
+    "2019-01-12",
+    "2020-01-01",
+    "2021-01-10"
+  ],
+  "classifications": {
+    "meat_manager": {
+      "name": "MEAT MANAGER",
+      "normalized_name": "meat_manager",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 22.18,
+            "2020-01-01": 22.53,
+            "2021-01-10": 22.88
+          }
+        }
+      ]
+    },
+    "meat_head_clerk_asst": {
+      "name": "MEAT HEAD CLERK/ASST",
+      "normalized_name": "meat_head_clerk_asst",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 21.13,
+            "2020-01-01": 21.48,
+            "2021-01-10": 21.83
+          }
+        }
+      ]
+    },
+    "seafood_manager": {
+      "name": "SEAFOOD MANAGER",
+      "normalized_name": "seafood_manager",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 21.13,
+            "2020-01-01": 21.48,
+            "2021-01-10": 21.83
+          }
+        }
+      ]
+    },
+    "deli_department_head_grandfathered": {
+      "name": "DELI DEPARTMENT HEAD (Grandfathered)",
+      "normalized_name": "deli_department_head_grandfathered",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 21.74,
+            "2020-01-01": 22.09,
+            "2021-01-10": 22.44
+          }
+        }
+      ]
+    },
+    "deli_department_head": {
+      "name": "DELI DEPARTMENT HEAD",
+      "normalized_name": "deli_department_head",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 21.13,
+            "2020-01-01": 21.48,
+            "2021-01-10": 21.83
+          }
+        }
+      ]
+    },
+    "deli_head_clerk_asst": {
+      "name": "DELI HEAD CLERK/ASST",
+      "normalized_name": "deli_head_clerk_asst",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 19.81,
+            "2020-01-01": 20.16,
+            "2021-01-10": 20.51
+          }
+        }
+      ]
+    },
+    "deli_chef": {
+      "name": "DELI CHEF",
+      "normalized_name": "deli_chef",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 19.81,
+            "2020-01-01": 20.16,
+            "2021-01-10": 20.51
+          }
+        }
+      ]
+    },
+    "meat_cutters": {
+      "name": "MEAT CUTTERS",
+      "normalized_name": "meat_cutters",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "First 1040 hours worked",
+          "hours_required": 0,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 11.75,
+            "2020-01-01": 12.25,
+            "2021-01-10": 12.35
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 1040,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 12.0,
+            "2020-01-01": 12.5,
+            "2021-01-10": 12.6
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 2080,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 12.25,
+            "2020-01-01": 12.75,
+            "2021-01-10": 12.85
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 3120,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 12.5,
+            "2020-01-01": 13.0,
+            "2021-01-10": 13.1
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 4160,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 13.23,
+            "2020-01-01": 13.5,
+            "2021-01-10": 13.6
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 5200,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 14.12,
+            "2020-01-01": 14.12,
+            "2021-01-10": 14.12
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 6240,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 15.01,
+            "2020-01-01": 15.01,
+            "2021-01-10": 15.01
+          }
+        },
+        {
+          "step_name": "Next 520 hours worked",
+          "hours_required": 7280,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 15.89,
+            "2020-01-01": 15.89,
+            "2021-01-10": 15.89
+          }
+        },
+        {
+          "step_name": "Thereafter",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 20.8,
+            "2020-01-01": 21.15,
+            "2021-01-10": 21.5
+          }
+        }
+      ]
+    },
+    "deli_coffee_cheese_clerk": {
+      "name": "DELI/COFFEE/CHEESE CLERK",
+      "normalized_name": "deli_coffee_cheese_clerk",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "First 520 hours worked",
+          "hours_required": 0,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 11.75,
+            "2020-01-01": 12.25,
+            "2021-01-10": 12.35
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 520,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 12.0,
+            "2020-01-01": 12.5,
+            "2021-01-10": 12.6
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 1560,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 12.25,
+            "2020-01-01": 12.75,
+            "2021-01-10": 12.85
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 2600,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 12.5,
+            "2020-01-01": 13.0,
+            "2021-01-10": 13.1
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 3640,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 13.0,
+            "2020-01-01": 13.5,
+            "2021-01-10": 13.6
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 4680,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 14.0,
+            "2020-01-01": 14.0,
+            "2021-01-10": 14.1
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 5720,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 15.5,
+            "2020-01-01": 15.5,
+            "2021-01-10": 15.5
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 6760,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 16.0,
+            "2020-01-01": 16.0,
+            "2021-01-10": 16.0
+          }
+        },
+        {
+          "step_name": "Thereafter",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 17.39,
+            "2020-01-01": 17.74,
+            "2021-01-10": 18.09
+          }
+        },
+        {
+          "step_name": "First 1040 hours worked",
+          "hours_required": 0,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 11.75,
+            "2020-01-01": 12.25,
+            "2021-01-10": 12.35
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 1040,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 12.0,
+            "2020-01-01": 12.5,
+            "2021-01-10": 12.6
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 2080,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 12.25,
+            "2020-01-01": 12.75,
+            "2021-01-10": 12.85
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 3120,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 12.5,
+            "2020-01-01": 13.0,
+            "2021-01-10": 13.1
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 4160,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 13.0,
+            "2020-01-01": 13.5,
+            "2021-01-10": 13.6
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 5200,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 14.0,
+            "2020-01-01": 14.0,
+            "2021-01-10": 14.1
+          }
+        },
+        {
+          "step_name": "Next 1040 hours worked",
+          "hours_required": 6240,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 15.5,
+            "2020-01-01": 15.5,
+            "2021-01-10": 15.5
+          }
+        },
+        {
+          "step_name": "Next 520 hours worked",
+          "hours_required": 7280,
+          "months_required": null,
+          "rates": {
+            "2019-01-12": 16.0,
+            "2020-01-01": 16.0,
+            "2021-01-10": 16.0
+          }
+        }
+      ]
+    }
+  },
+  "canonical_wage_rows": [
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_manager",
+      "classification_name": "MEAT MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2019-01-12",
+      "rate": 22.18,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_manager",
+      "classification_name": "MEAT MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2020-01-01",
+      "rate": 22.53,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_manager",
+      "classification_name": "MEAT MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2021-01-10",
+      "rate": 22.88,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_head_clerk_asst",
+      "classification_name": "MEAT HEAD CLERK/ASST",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2019-01-12",
+      "rate": 21.13,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_head_clerk_asst",
+      "classification_name": "MEAT HEAD CLERK/ASST",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2020-01-01",
+      "rate": 21.48,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_head_clerk_asst",
+      "classification_name": "MEAT HEAD CLERK/ASST",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2021-01-10",
+      "rate": 21.83,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "seafood_manager",
+      "classification_name": "SEAFOOD MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2019-01-12",
+      "rate": 21.13,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "seafood_manager",
+      "classification_name": "SEAFOOD MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2020-01-01",
+      "rate": 21.48,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "seafood_manager",
+      "classification_name": "SEAFOOD MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2021-01-10",
+      "rate": 21.83,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_department_head_grandfathered",
+      "classification_name": "DELI DEPARTMENT HEAD (Grandfathered)",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2019-01-12",
+      "rate": 21.74,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_department_head_grandfathered",
+      "classification_name": "DELI DEPARTMENT HEAD (Grandfathered)",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2020-01-01",
+      "rate": 22.09,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_department_head_grandfathered",
+      "classification_name": "DELI DEPARTMENT HEAD (Grandfathered)",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2021-01-10",
+      "rate": 22.44,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_department_head",
+      "classification_name": "DELI DEPARTMENT HEAD",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2019-01-12",
+      "rate": 21.13,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_department_head",
+      "classification_name": "DELI DEPARTMENT HEAD",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2020-01-01",
+      "rate": 21.48,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_department_head",
+      "classification_name": "DELI DEPARTMENT HEAD",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2021-01-10",
+      "rate": 21.83,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_head_clerk_asst",
+      "classification_name": "DELI HEAD CLERK/ASST",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2019-01-12",
+      "rate": 19.81,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_head_clerk_asst",
+      "classification_name": "DELI HEAD CLERK/ASST",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2020-01-01",
+      "rate": 20.16,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_head_clerk_asst",
+      "classification_name": "DELI HEAD CLERK/ASST",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2021-01-10",
+      "rate": 20.51,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_chef",
+      "classification_name": "DELI CHEF",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2019-01-12",
+      "rate": 19.81,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_chef",
+      "classification_name": "DELI CHEF",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2020-01-01",
+      "rate": 20.16,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_chef",
+      "classification_name": "DELI CHEF",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2021-01-10",
+      "rate": 20.51,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "First 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2019-01-12",
+      "rate": 11.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 9
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "First 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2020-01-01",
+      "rate": 12.25,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 9
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "First 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2021-01-10",
+      "rate": 12.35,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 9
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 1040,
+      "effective_date": "2019-01-12",
+      "rate": 12.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 10
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 1040,
+      "effective_date": "2020-01-01",
+      "rate": 12.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 10
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 1040,
+      "effective_date": "2021-01-10",
+      "rate": 12.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 10
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 2080,
+      "effective_date": "2019-01-12",
+      "rate": 12.25,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 11
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 2080,
+      "effective_date": "2020-01-01",
+      "rate": 12.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 11
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 2080,
+      "effective_date": "2021-01-10",
+      "rate": 12.85,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 11
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 3120,
+      "effective_date": "2019-01-12",
+      "rate": 12.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 12
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 3120,
+      "effective_date": "2020-01-01",
+      "rate": 13.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 12
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 3120,
+      "effective_date": "2021-01-10",
+      "rate": 13.1,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 12
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 4160,
+      "effective_date": "2019-01-12",
+      "rate": 13.23,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 13
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 4160,
+      "effective_date": "2020-01-01",
+      "rate": 13.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 13
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 4160,
+      "effective_date": "2021-01-10",
+      "rate": 13.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 13
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 5200,
+      "effective_date": "2019-01-12",
+      "rate": 14.12,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 14
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 5200,
+      "effective_date": "2020-01-01",
+      "rate": 14.12,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 14
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 5200,
+      "effective_date": "2021-01-10",
+      "rate": 14.12,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 14
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 6240,
+      "effective_date": "2019-01-12",
+      "rate": 15.01,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 15
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 6240,
+      "effective_date": "2020-01-01",
+      "rate": 15.01,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 15
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 6240,
+      "effective_date": "2021-01-10",
+      "rate": 15.01,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 15
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 520 hours worked",
+      "step_type": "hours",
+      "threshold_value": 7280,
+      "effective_date": "2019-01-12",
+      "rate": 15.89,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 16
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 520 hours worked",
+      "step_type": "hours",
+      "threshold_value": 7280,
+      "effective_date": "2020-01-01",
+      "rate": 15.89,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 16
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Next 520 hours worked",
+      "step_type": "hours",
+      "threshold_value": 7280,
+      "effective_date": "2021-01-10",
+      "rate": 15.89,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 16
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Thereafter",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2019-01-12",
+      "rate": 20.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 17
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Thereafter",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2020-01-01",
+      "rate": 21.15,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 17
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Thereafter",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2021-01-10",
+      "rate": 21.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 17
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "First 520 hours worked",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2019-01-12",
+      "rate": 11.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 20
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "First 520 hours worked",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2020-01-01",
+      "rate": 12.25,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 20
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "First 520 hours worked",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2021-01-10",
+      "rate": 12.35,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 20
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2019-01-12",
+      "rate": 12.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 21
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2020-01-01",
+      "rate": 12.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 21
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2021-01-10",
+      "rate": 12.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 21
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2019-01-12",
+      "rate": 12.25,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 22
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2020-01-01",
+      "rate": 12.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 22
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2021-01-10",
+      "rate": 12.85,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 22
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2019-01-12",
+      "rate": 12.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 23
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2020-01-01",
+      "rate": 13.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 23
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2021-01-10",
+      "rate": 13.1,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 23
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2019-01-12",
+      "rate": 13.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 24
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2020-01-01",
+      "rate": 13.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 24
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2021-01-10",
+      "rate": 13.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 24
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2019-01-12",
+      "rate": 14.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 25
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2020-01-01",
+      "rate": 14.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 25
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2021-01-10",
+      "rate": 14.1,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 25
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2019-01-12",
+      "rate": 15.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 26
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2020-01-01",
+      "rate": 15.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 26
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2021-01-10",
+      "rate": 15.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 26
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2019-01-12",
+      "rate": 16.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 27
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2020-01-01",
+      "rate": 16.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 27
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2021-01-10",
+      "rate": 16.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 27
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Thereafter",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2019-01-12",
+      "rate": 17.39,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 28
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Thereafter",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2020-01-01",
+      "rate": 17.74,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 28
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Thereafter",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2021-01-10",
+      "rate": 18.09,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 28
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "First 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2019-01-12",
+      "rate": 11.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "First 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2020-01-01",
+      "rate": 12.25,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "First 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2021-01-10",
+      "rate": 12.35,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 1040,
+      "effective_date": "2019-01-12",
+      "rate": 12.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 1040,
+      "effective_date": "2020-01-01",
+      "rate": 12.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 1040,
+      "effective_date": "2021-01-10",
+      "rate": 12.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 2080,
+      "effective_date": "2019-01-12",
+      "rate": 12.25,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 2080,
+      "effective_date": "2020-01-01",
+      "rate": 12.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 2080,
+      "effective_date": "2021-01-10",
+      "rate": 12.85,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 3120,
+      "effective_date": "2019-01-12",
+      "rate": 12.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 3120,
+      "effective_date": "2020-01-01",
+      "rate": 13.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 3120,
+      "effective_date": "2021-01-10",
+      "rate": 13.1,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 4160,
+      "effective_date": "2019-01-12",
+      "rate": 13.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 4160,
+      "effective_date": "2020-01-01",
+      "rate": 13.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 4160,
+      "effective_date": "2021-01-10",
+      "rate": 13.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 5200,
+      "effective_date": "2019-01-12",
+      "rate": 14.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 5200,
+      "effective_date": "2020-01-01",
+      "rate": 14.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 5200,
+      "effective_date": "2021-01-10",
+      "rate": 14.1,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 6240,
+      "effective_date": "2019-01-12",
+      "rate": 15.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 6240,
+      "effective_date": "2020-01-01",
+      "rate": 15.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 1040 hours worked",
+      "step_type": "hours",
+      "threshold_value": 6240,
+      "effective_date": "2021-01-10",
+      "rate": 15.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 520 hours worked",
+      "step_type": "hours",
+      "threshold_value": 7280,
+      "effective_date": "2019-01-12",
+      "rate": 16.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 7
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 520 hours worked",
+      "step_type": "hours",
+      "threshold_value": 7280,
+      "effective_date": "2020-01-01",
+      "rate": 16.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 7
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "classification_key": "deli_coffee_cheese_clerk",
+      "classification_name": "DELI/COFFEE/CHEESE CLERK",
+      "step_name": "Next 520 hours worked",
+      "step_type": "hours",
+      "threshold_value": 7280,
+      "effective_date": "2021-01-10",
+      "rate": 16.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_4",
+        "row_index": 7
+      }
+    }
+  ],
+  "extraction_metadata": {
+    "method": "table_registry",
+    "candidate_tables": 3,
+    "source_table_ids": [
+      "tbl_art57_3",
+      "tbl_art57_4",
+      "tbl_fallback_art57_8af5ae44"
+    ],
+    "warnings": [],
+    "row_type_counts": {
+      "rate_row": 14,
+      "separator": 5,
+      "classification_header": 4,
+      "step_row": 45
+    },
+    "unresolved_rows": [],
+    "canonical_conflicts": [],
+    "canonical_ambiguities": [
+      {
+        "key": {
+          "classification_key": "deli_coffee_cheese_clerk",
+          "step_name": "Thereafter",
+          "step_type": "hours",
+          "threshold_value": 7800,
+          "effective_date": "2019-01-12"
+        },
+        "existing_rate": 17.39,
+        "new_rate": 17.69,
+        "existing_confidence": 0.95,
+        "new_confidence": 0.95,
+        "resolution": "keep_existing_first_seen",
+        "existing_source": {
+          "table_id": "tbl_art57_3",
+          "row_index": 28
+        },
+        "new_source": {
+          "table_id": "tbl_art57_4",
+          "row_index": 8
+        }
+      },
+      {
+        "key": {
+          "classification_key": "deli_coffee_cheese_clerk",
+          "step_name": "Thereafter",
+          "step_type": "hours",
+          "threshold_value": 7800,
+          "effective_date": "2020-01-01"
+        },
+        "existing_rate": 17.74,
+        "new_rate": 18.04,
+        "existing_confidence": 0.95,
+        "new_confidence": 0.95,
+        "resolution": "keep_existing_first_seen",
+        "existing_source": {
+          "table_id": "tbl_art57_3",
+          "row_index": 28
+        },
+        "new_source": {
+          "table_id": "tbl_art57_4",
+          "row_index": 8
+        }
+      },
+      {
+        "key": {
+          "classification_key": "deli_coffee_cheese_clerk",
+          "step_name": "Thereafter",
+          "step_type": "hours",
+          "threshold_value": 7800,
+          "effective_date": "2021-01-10"
+        },
+        "existing_rate": 18.09,
+        "new_rate": 18.39,
+        "existing_confidence": 0.95,
+        "new_confidence": 0.95,
+        "resolution": "keep_existing_first_seen",
+        "existing_source": {
+          "table_id": "tbl_art57_3",
+          "row_index": 28
+        },
+        "new_source": {
+          "table_id": "tbl_art57_4",
+          "row_index": 8
+        }
+      }
+    ],
+    "step_conflicts": [
+      {
+        "classification_key": "deli_coffee_cheese_clerk",
+        "step_name": "Thereafter",
+        "source_reference": {
+          "table_id": "tbl_art57_4",
+          "row_index": 8,
+          "row_type": "step_row"
+        },
+        "existing_rates": {
+          "2019-01-12": 17.39,
+          "2020-01-01": 17.74,
+          "2021-01-10": 18.09
+        },
+        "incoming_rates": {
+          "2019-01-12": 17.69,
+          "2020-01-01": 18.04,
+          "2021-01-10": 18.39
+        },
+        "resolution": "keep_existing"
+      }
+    ]
+  },
+  "classification_aliases": {
+    "meat_cutter": "meat_cutters",
+    "deli_chef": "deli_chef",
+    "deli_coffee_cheese_clerk": "deli_coffee_cheese_clerk",
+    "deli_department_head": "deli_department_head",
+    "deli_department_head_grandfathered": "deli_department_head_grandfathered",
+    "deli_head_clerk_asst": "deli_head_clerk_asst",
+    "meat_cutters": "meat_cutters",
+    "meat_head_clerk_asst": "meat_head_clerk_asst",
+    "meat_manager": "meat_manager",
+    "seafood_manager": "seafood_manager"
+  },
+  "classification_ontology_summary": {
+    "total_manifest_classes": 2,
+    "resolved_manifest_classes": 1,
+    "clarification_manifest_classes": 1,
+    "out_of_scope_manifest_classes": 0,
+    "unresolved_manifest_classes": 0,
+    "actionable_manifest_classes": 2,
+    "covered_manifest_classes": 2,
+    "coverage": 1.0,
+    "unresolved_manifest_keys": [],
+    "clarification_manifest_keys": [
+      "head_clerk"
+    ],
+    "out_of_scope_manifest_keys": [],
+    "manual_override_count": 0,
+    "manual_review_override_count": 1
+  }
+}

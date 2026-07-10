@@ -1,0 +1,208 @@
+{
+  "schema_version": "classification_ontology_v2",
+  "generated_at_utc": "2026-03-08T21:43:32.688347+00:00",
+  "contract_id": "local7_safeway_pueblo_meat_2022",
+  "manifest_classifications": [
+    {
+      "normalized": "cake_decorator",
+      "labels": [
+        "Cake Decorator"
+      ]
+    },
+    {
+      "normalized": "courtesy_clerk",
+      "labels": [
+        "Courtesy Clerk"
+      ]
+    },
+    {
+      "normalized": "deli_clerk",
+      "labels": [
+        "Deli Clerk"
+      ]
+    },
+    {
+      "normalized": "meat_cutter",
+      "labels": [
+        "Meat Cutter"
+      ]
+    },
+    {
+      "normalized": "pharmacy_technician",
+      "labels": [
+        "Pharmacy Technician"
+      ]
+    }
+  ],
+  "wage_classifications": [
+    {
+      "wage_key": "assistant_deli_manager",
+      "name": "ASSISTANT DELI MANAGER"
+    },
+    {
+      "wage_key": "deli_clerks",
+      "name": "DELI CLERKS"
+    },
+    {
+      "wage_key": "deli_manager",
+      "name": "DELI MANAGER"
+    },
+    {
+      "wage_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
+      "name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES"
+    },
+    {
+      "wage_key": "first_cutter",
+      "name": "FIRST CUTTER"
+    },
+    {
+      "wage_key": "head_meat_cutter",
+      "name": "HEAD MEAT CUTTER"
+    },
+    {
+      "wage_key": "meat_cutters",
+      "name": "MEAT CUTTERS"
+    },
+    {
+      "wage_key": "meat_wrappers",
+      "name": "MEAT WRAPPERS"
+    },
+    {
+      "wage_key": "seafood_clerks",
+      "name": "SEAFOOD CLERKS"
+    },
+    {
+      "wage_key": "seafood_manager",
+      "name": "SEAFOOD MANAGER"
+    },
+    {
+      "wage_key": "starbucks_clerks",
+      "name": "STARBUCKS CLERKS"
+    },
+    {
+      "wage_key": "starbucks_lead",
+      "name": "STARBUCKS LEAD"
+    }
+  ],
+  "decisions": [
+    {
+      "source_key": "cake_decorator",
+      "source_labels": [
+        "Cake Decorator"
+      ],
+      "mapped_wage_key": null,
+      "mapping_method": "reviewed_out_of_scope",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "out_of_scope",
+      "review_comment": "Present in source classification list but outside the meat-pack wage artifact scope."
+    },
+    {
+      "source_key": "courtesy_clerk",
+      "source_labels": [
+        "Courtesy Clerk"
+      ],
+      "mapped_wage_key": null,
+      "mapping_method": "reviewed_out_of_scope",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "out_of_scope",
+      "review_comment": "Present in source classification list but outside the meat-pack wage artifact scope."
+    },
+    {
+      "source_key": "deli_clerk",
+      "source_labels": [
+        "Deli Clerk"
+      ],
+      "mapped_wage_key": "deli_clerks",
+      "mapping_method": "token_similarity",
+      "score": 0.9857,
+      "candidate_scores": [
+        {
+          "wage_key": "deli_clerks",
+          "score": 0.985714
+        },
+        {
+          "wage_key": "seafood_clerks",
+          "score": 0.45
+        },
+        {
+          "wage_key": "starbucks_clerks",
+          "score": 0.413462
+        },
+        {
+          "wage_key": "deli_manager",
+          "score": 0.165909
+        },
+        {
+          "wage_key": "assistant_deli_manager",
+          "score": 0.05125
+        }
+      ],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "meat_cutter",
+      "source_labels": [
+        "Meat Cutter"
+      ],
+      "mapped_wage_key": "meat_cutters",
+      "mapping_method": "explicit_alias",
+      "score": 0.99,
+      "candidate_scores": [
+        {
+          "wage_key": "meat_cutters",
+          "score": 0.99
+        }
+      ],
+      "review_state": "resolved"
+    },
+    {
+      "source_key": "pharmacy_technician",
+      "source_labels": [
+        "Pharmacy Technician"
+      ],
+      "mapped_wage_key": null,
+      "mapping_method": "reviewed_out_of_scope",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "out_of_scope",
+      "review_comment": "Present in source classification list but outside the meat-pack wage artifact scope."
+    }
+  ],
+  "alias_to_wage_key": {
+    "deli_clerk": "deli_clerks",
+    "meat_cutter": "meat_cutters",
+    "assistant_deli_manager": "assistant_deli_manager",
+    "deli_clerks": "deli_clerks",
+    "deli_manager": "deli_manager",
+    "deli_manager_after_5_20_77_directing_5_or_less_deli_employees": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
+    "first_cutter": "first_cutter",
+    "head_meat_cutter": "head_meat_cutter",
+    "meat_cutters": "meat_cutters",
+    "meat_wrappers": "meat_wrappers",
+    "seafood_clerks": "seafood_clerks",
+    "seafood_manager": "seafood_manager",
+    "starbucks_clerks": "starbucks_clerks",
+    "starbucks_lead": "starbucks_lead"
+  },
+  "summary": {
+    "total_manifest_classes": 5,
+    "resolved_manifest_classes": 2,
+    "clarification_manifest_classes": 0,
+    "out_of_scope_manifest_classes": 3,
+    "unresolved_manifest_classes": 0,
+    "actionable_manifest_classes": 2,
+    "covered_manifest_classes": 2,
+    "coverage": 1.0,
+    "unresolved_manifest_keys": [],
+    "clarification_manifest_keys": [],
+    "out_of_scope_manifest_keys": [
+      "cake_decorator",
+      "courtesy_clerk",
+      "pharmacy_technician"
+    ],
+    "manual_override_count": 0,
+    "manual_review_override_count": 3
+  }
+}

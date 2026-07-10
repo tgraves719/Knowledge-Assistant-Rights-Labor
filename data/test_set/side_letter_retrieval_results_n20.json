@@ -1,0 +1,304 @@
+{
+  "bm25_only": true,
+  "by_contract": {
+    "local7_kingsoopers_loveland_meat_2019": {
+      "pass_rate": 1.0,
+      "passed": 3,
+      "total": 3
+    },
+    "local7_safeway_pueblo_meat_2022": {
+      "pass_rate": 1.0,
+      "passed": 3,
+      "total": 3
+    }
+  },
+  "dataset_schema_version": "side_letter_retrieval_test_v1",
+  "n_results": 20,
+  "overall": {
+    "citation_hit_rate": 1.0,
+    "doc_type_match_rate": 1.0,
+    "keyword_match_rate": 1.0,
+    "pass_rate": 1.0,
+    "passed": 6,
+    "total": 6
+  },
+  "results": [
+    {
+      "best_expected_keyword_hits": 2,
+      "citation_hit": true,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "doc_type_ok": true,
+      "expected_citations": [
+        "Article 57, Section 128, Part 22-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "ACQ Bucket Hours Letter of Agreement",
+        "3/24/19"
+      ],
+      "expected_rank": 8,
+      "id": "SL-KS-01",
+      "keywords_ok": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type": "loa",
+      "observed_doc_types_for_citation": [
+        "loa"
+      ],
+      "pass": true,
+      "question": "What does the ACQ Bucket Hours Letter of Agreement dated 3/24/19 say?",
+      "retrieved_citations": [
+        "Article 30, Section 75",
+        "Article 20, Section 48",
+        "Article 19, Section 47",
+        "Article 11",
+        "Article 29, Section 74",
+        "Article 31, Section 76, Part 2",
+        "Article 57, Section 127, Part 1",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 22-0",
+        "Article 57, Section 128, Part 15-21",
+        "Article 57, Section 128, Part 4",
+        "Article 57, Section 128, Part 1-14",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128 (Table: DRESS REQUIREMENTS. DATED 3/25/19)",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 1-2",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 6-0",
+        "Article 57, Section 128, Part 3-0"
+      ]
+    },
+    {
+      "best_expected_keyword_hits": 2,
+      "citation_hit": true,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "doc_type_ok": true,
+      "expected_citations": [
+        "Article 57, Section 128, Part 6-0"
+      ],
+      "expected_doc_types": [
+        "loa"
+      ],
+      "expected_keywords": [
+        "30 days advance written notice",
+        "May 1, 1995"
+      ],
+      "expected_rank": 13,
+      "id": "SL-KS-02",
+      "keywords_ok": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type": "loa",
+      "observed_doc_types_for_citation": [
+        "loa"
+      ],
+      "pass": true,
+      "question": "Can either party cancel this agreement with 30 days advance written notice after May 1, 1995?",
+      "retrieved_citations": [
+        "Article 5",
+        "Article 7, Section 21",
+        "Article 8, Section 23",
+        "Article 7, Section 19",
+        "Article 7, Section 20",
+        "Article 8, Section 22",
+        "Article 17, Section 45, Part 1",
+        "Article 27, Section 57",
+        "Article 27, Section 62, Part 2",
+        "Article 40, Section 95, Part 2-3",
+        "Article 27, Section 70, Part 3",
+        "Article 40, Section 95, Part 3-4",
+        "Article 17, Section 43",
+        "Article 57, Section 128, Part 6-0",
+        "Article 54, Section 119",
+        "Article 4, Section 10",
+        "Article 26, Section 55",
+        "Article 30, Section 75",
+        "Article 57, Section 127, Part 2",
+        "Article 57, Section 128, Part 5-4"
+      ]
+    },
+    {
+      "best_expected_keyword_hits": 3,
+      "citation_hit": true,
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "doc_type_ok": true,
+      "expected_citations": [
+        "Article 57, Section 128, Part 5-0"
+      ],
+      "expected_doc_types": [
+        "lou",
+        "loa"
+      ],
+      "expected_keywords": [
+        "grievances referred to arbitration",
+        "scheduling queue",
+        "grievance filing date"
+      ],
+      "expected_rank": 9,
+      "id": "SL-KS-03",
+      "keywords_ok": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type": "lou",
+      "observed_doc_types_for_citation": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "Do side letter grievances referred to arbitration get scheduled in queue order by grievance filing date?",
+      "retrieved_citations": [
+        "Article 48",
+        "Article 17, Section 44",
+        "Article 17, Section 45, Part 2",
+        "Article 27, Section 62, Part 1",
+        "Article 27, Section 70, Part 3",
+        "Article 57, Section 127, Part 1",
+        "Article 57, Section 128",
+        "Article 57, Section 128, Part 1-14",
+        "Article 57, Section 128, Part 3-0",
+        "Article 57, Section 128, Part 5-0",
+        "Article 27, Section 70, Part 1",
+        "Article 57, Section 128, Part 5-5",
+        "Article 57, Section 128, Part 2-3",
+        "Article 57, Section 128, Part 1-2",
+        "Article 57, Section 128, Part 15-21",
+        "Article 57, Section 128, Part 4-4",
+        "Article 17, Section 45, Part 1",
+        "Article 57, Section 128, Part 3-0",
+        "Article 27, Section 70, Part 2",
+        "Article 27, Section 69"
+      ]
+    },
+    {
+      "best_expected_keyword_hits": 1,
+      "citation_hit": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "doc_type_ok": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "Floater Pool Letter of Understanding"
+      ],
+      "expected_rank": 5,
+      "id": "SL-SWMEAT-01",
+      "keywords_ok": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type": "lou",
+      "observed_doc_types_for_citation": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "What does the Floater Pool Letter of Understanding say?",
+      "retrieved_citations": [
+        "Article 16, Section 38",
+        "Article 16, Section 39",
+        "Article 16, Section 40",
+        "Article 32, Section 93",
+        "Article 32, Section 94",
+        "Article 32, Section 94, Part 5+"
+      ]
+    },
+    {
+      "best_expected_keyword_hits": 2,
+      "citation_hit": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "doc_type_ok": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "30 days",
+        "written notice"
+      ],
+      "expected_rank": 15,
+      "id": "SL-SWMEAT-02",
+      "keywords_ok": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type": "lou",
+      "observed_doc_types_for_citation": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "How much written notice is required if either party wants to discontinue that agreement?",
+      "retrieved_citations": [
+        "Article 30, Section 88",
+        "Article 12, Section 33",
+        "Article 30, Section 89",
+        "Article 12, Section 32",
+        "Article 16, Section 45",
+        "Article 16, Section 47",
+        "Article 38, Section 110, Part 5-5",
+        "Article 38, Section 110, Part 1-2",
+        "Article 27, Section 69, Part 2",
+        "Article 38, Section 111",
+        "Article 17, Section 49, Part 1-5",
+        "Article 38, Section 110, Part 3-4",
+        "Article 18, Section 52",
+        "Article 13, Section 34",
+        "Article 16, Section 46",
+        "Article 32, Section 94, Part 5+",
+        "Article 50, Section 148",
+        "Article 57, Section 169, Part 1",
+        "Article 45, Section 132",
+        "Article 50, Section 156, Part 6"
+      ]
+    },
+    {
+      "best_expected_keyword_hits": 1,
+      "citation_hit": true,
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "doc_type_ok": true,
+      "expected_citations": [
+        "Article 32, Section 94, Part 5+"
+      ],
+      "expected_doc_types": [
+        "lou"
+      ],
+      "expected_keywords": [
+        "implement this procedure as soon as possible"
+      ],
+      "expected_rank": 0,
+      "id": "SL-SWMEAT-03",
+      "keywords_ok": true,
+      "min_expected_keyword_hits": 1,
+      "observed_doc_type": "lou",
+      "observed_doc_types_for_citation": [
+        "lou"
+      ],
+      "pass": true,
+      "question": "Does it say the company will implement this procedure as soon as possible?",
+      "retrieved_citations": [
+        "Article 32, Section 94, Part 5+",
+        "Article 17, Section 48, Part 4",
+        "Article 57, Section 169, Part 5",
+        "Article 57, Section 169, Part 7",
+        "Article 32, Section 94, Part 2-2",
+        "Article 32, Section 94",
+        "Article 32, Section 94, Part 4-4",
+        "Article 7, Section 21",
+        "Article 7, Section 17",
+        "Article 39, Section 121",
+        "Article 50, Section 155, Part 1-2",
+        "Article 50, Section 149",
+        "Article 6, Section 13",
+        "Article 52, Section 161",
+        "Article 42, Section 125",
+        "Article 28, Section 81",
+        "Article 39, Section 114",
+        "Article 15, Section 37",
+        "Article 29, Section 87",
+        "Article 39, Section 117"
+      ]
+    }
+  ],
+  "schema_version": "side_letter_retrieval_eval_v1",
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\side_letter_retrieval_test.json",
+  "timestamp_utc": "2026-02-21T22:46:08.493722+00:00"
+}

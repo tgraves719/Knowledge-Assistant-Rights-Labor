@@ -39,9 +39,9 @@ from backend.config import (
 logger = logging.getLogger(__name__)
 
 try:
-    from google import genai
+    from google import genai as google_genai
 except ImportError:
-    genai = None
+    google_genai = None
 
 
 @dataclass
@@ -102,16 +102,41 @@ class LLMReranker:
     def __init__(self):
         """Initialize the reranker."""
         self._client = None
+        self._client_kind = None
 
     def _ensure_client(self):
         """Lazy-load the Gemini client."""
         if self._client is None:
-            if genai is None:
-                logger.warning("google-genai not installed")
-                return
             api_key = GEMINI_API_KEY
-            if api_key:
-                self._client = genai.Client(api_key=api_key)
+            if not api_key:
+                return
+            if google_genai is not None:
+                self._client = google_genai.Client(api_key=api_key)
+                self._client_kind = "google-genai"
+                return
+            logger.warning("google-genai not installed")
+
+    def _generate_scores_text(self, prompt: str) -> str:
+        """Generate Gemini response text using whichever SDK is installed."""
+        if self._client_kind == "google-genai":
+            config_kwargs = {
+                "system_instruction": RERANKER_SYSTEM_PROMPT,
+                "temperature": 0.1,
+                "max_output_tokens": 1024,
+                "response_mime_type": "application/json",
+            }
+            try:
+                config_kwargs["thinking_config"] = google_genai.types.ThinkingConfig(thinking_budget=0)
+            except Exception:
+                pass
+            response = self._client.models.generate_content(
+                model=RERANKER_MODEL,
+                contents=prompt,
+                config=google_genai.types.GenerateContentConfig(**config_kwargs),
+            )
+            return getattr(response, "text", "") or ""
+
+        raise RuntimeError("Gemini client not initialized")
 
     def _format_chunks(self, chunks: List[dict]) -> str:
         """Format chunks for the prompt."""
@@ -287,21 +312,11 @@ class LLMReranker:
                 formatted_chunks=formatted_chunks
             )
 
-            # Call Gemini
-            response = self._client.models.generate_content(
-                model=RERANKER_MODEL,
-                contents=prompt,
-                config=genai.types.GenerateContentConfig(
-                    system_instruction=RERANKER_SYSTEM_PROMPT,
-                    temperature=0.1,
-                    max_output_tokens=1024,
-                    response_mime_type="application/json",
-                    thinking_config=genai.types.ThinkingConfig(thinking_budget=0),
-                )
-            )
+            # Call Gemini (google-genai SDK)
+            response_text = self._generate_scores_text(prompt)
 
             # Parse scores
-            llm_scores = self._parse_scores(response.text, len(chunks_to_rank))
+            llm_scores = self._parse_scores(response_text, len(chunks_to_rank))
 
             # Compute final scores and reorder
             reranked_chunks, position_changes = self._compute_final_scores(

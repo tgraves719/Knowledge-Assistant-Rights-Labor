@@ -1,0 +1,86 @@
+{
+  "amendments_applied": [
+    "local7_safeway_moa_2025_07_05"
+  ],
+  "artifact_hashes": {
+    "effective_contract_sha256": "bb62e10a37343705f315f861111cfcaf598e4bc9e6d1dd91ff9edf57420e0950",
+    "effective_markdown_sha256": "322eae907f92e42704aa7453158bc58c4378c9a684511943d936129c2a574975",
+    "index_chunks_sha256": "bca15143423381b2cfb2ed3487a70e120addafa0e78d3d02fc87ab4bfb2a8f5b",
+    "index_wages_sha256": "a032fa8bd5e61a0afb56b712ae5b711ecf8c55068adfe426accb8a3f2f880e38",
+    "patch_chain_sha256": "7cb42be5119caf336f941264855f8b188771584a57dfcfd0d2dfd562b819c921"
+  },
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "effective_content_hash": "00e99230aa258dc83da3c4351c9a4129ccc87ca936f6db45cec7bc7b80f116f2",
+  "effective_version_id": "effective_2025_07_05",
+  "errors": [],
+  "materializer_version": "0.9.0",
+  "operations": [
+    {
+      "after_hash": "91390c97d0c8f81d4b16981a8423c2d65328f1579a07db21d521397f7bfef785",
+      "applied": true,
+      "before_hash": "1d9ff92a03614028f438e28e3d83b7e8b834684a94686dd306f5f51a6c90b7a7",
+      "diagnostics": {},
+      "errors": [],
+      "op": "replace_section",
+      "op_id": "local7_safeway_moa_2025_07_05#1",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 7,
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "anchor_id": "a58_s1749",
+        "article_num": 58,
+        "section_num": 1749,
+        "subsection": null
+      }
+    },
+    {
+      "after_hash": "6c41cc4f937e8a930ac11a9fab715c1a6d48650a276d1bc9acf14a3a2d726bc5",
+      "applied": true,
+      "before_hash": "dd89359be7c5da2e2c13c6aa303326836f8eacc3d12eca5e3a1ed4b6bb4fe428",
+      "diagnostics": {},
+      "errors": [],
+      "op": "replace_table_row",
+      "op_id": "local7_safeway_moa_2025_07_05#2",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 12,
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "row_key": "courtesy_clerk|hours:0|2024-01-21",
+        "table_id": "appendix_a_wage_rows"
+      }
+    },
+    {
+      "after_hash": "30a71c2a4be4b8bfa30623697c7d5f83b040e555cd6c6d05c35b1ae45b9165d5",
+      "applied": true,
+      "before_hash": "479c8240646a3507274a77ba5cc6a1629ed7c7c967a41dfcc024f9da2b04b832",
+      "diagnostics": {},
+      "errors": [],
+      "op": "replace_section",
+      "op_id": "local7_safeway_moa_2025_07_05#3",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": null,
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "anchor_id": "a15_s34",
+        "article_num": 15,
+        "section_num": 34,
+        "subsection": null
+      }
+    }
+  ],
+  "parent_effective_version_id": "base_snapshot_v0_9_0",
+  "schema_version": "materializer_build_log_v0_9_0",
+  "status": "success"
+}

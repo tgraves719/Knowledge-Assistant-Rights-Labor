@@ -1,0 +1,40 @@
+{
+  "schema_version": "classification_review_decisions_v1",
+  "contract_id": "local7_kingsoopers_loveland_meat_2019",
+  "generated_at_utc": "2026-02-14T05:15:31.866450+00:00",
+  "set_aliases": {},
+  "remove_aliases": [],
+  "decision_notes": [
+    {
+      "source_key": "cake_decorator",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": []
+    },
+    {
+      "source_key": "courtesy_clerk",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": [
+        {
+          "wage_key": "deli_coffee_cheese_clerk",
+          "score": 0.341228
+        },
+        {
+          "wage_key": "meat_head_clerk_asst",
+          "score": 0.32451
+        },
+        {
+          "wage_key": "deli_head_clerk_asst",
+          "score": 0.306863
+        }
+      ]
+    },
+    {
+      "source_key": "pharmacy_tech",
+      "action": "no_map",
+      "comment": "Set action to 'map' and provide target_wage_key only after human review.",
+      "candidate_scores": []
+    }
+  ]
+}

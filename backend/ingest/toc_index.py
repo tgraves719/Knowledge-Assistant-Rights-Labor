@@ -16,6 +16,7 @@ from collections import defaultdict
 from typing import Optional
 
 from backend.config import CHUNKS_DIR
+from backend.ingest.language_lexicon import derive_chunk_language_features
 
 
 # =============================================================================
@@ -192,7 +193,8 @@ class ConceptIndex:
 
 def build_concept_index(
     chunks_path: Path = None,
-    output_path: Path = None
+    output_path: Path = None,
+    manifest: Optional[dict] = None,
 ) -> ConceptIndex:
     """
     Build concept index from enriched chunks.
@@ -241,15 +243,20 @@ def build_concept_index(
         if chunk.get("chunk_id"):
             article_data["chunk_ids"].append(chunk["chunk_id"])
 
+        alt_names, worker_questions, _ = derive_chunk_language_features(
+            chunk,
+            manifest=manifest,
+        )
+
         # Aggregate worker questions
-        for q in chunk.get("worker_questions", []):
+        for q in worker_questions:
             if q and isinstance(q, str):
                 q_normalized = q.strip().lower()
                 article_data["all_worker_questions"].add(q_normalized)
                 index.question_to_articles[q_normalized].add(article_num)
 
         # Aggregate alternative names
-        for name in chunk.get("alternative_names", []):
+        for name in alt_names:
             if name and isinstance(name, str):
                 name_normalized = name.strip().lower()
                 article_data["all_alternative_names"].add(name_normalized)

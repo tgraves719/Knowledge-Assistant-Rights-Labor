@@ -1,0 +1,69 @@
+{
+  "schema_version": "role_catalog_integrity_test_v1",
+  "description": "Deterministic contract-scoped role expectations for onboarding defaults and unresolved-role containment.",
+  "test_cases": [
+    {
+      "id": "RC-01",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "role_value": "meat_manager",
+      "expect_default_present": true,
+      "expect_all_present": true,
+      "expect_wage_available": true
+    },
+    {
+      "id": "RC-02",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "role_value": "cake_decorator",
+      "expect_default_present": false,
+      "expect_all_present": false
+    },
+    {
+      "id": "RC-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "role_value": "cake_decorator",
+      "expect_default_present": true,
+      "expect_all_present": true,
+      "expect_wage_available": true
+    },
+    {
+      "id": "RC-04",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "role_value": "drive_up_and_go",
+      "expect_default_present": false,
+      "expect_all_present": true,
+      "expect_wage_available": true
+    },
+    {
+      "id": "RC-05",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "role_value": "dug_shopper",
+      "expect_default_present": false,
+      "expect_all_present": true,
+      "expect_wage_available": true
+    },
+    {
+      "id": "RC-06",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "role_value": "meat_cutters",
+      "expect_default_present": true,
+      "expect_all_present": true,
+      "expect_wage_available": true
+    },
+    {
+      "id": "RC-07",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "role_value": "cake_decorator",
+      "expect_default_present": false,
+      "expect_all_present": true,
+      "expect_wage_available": false
+    },
+    {
+      "id": "RC-08",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "role_value": "meat_cutter",
+      "expect_default_present": false,
+      "expect_all_present": true,
+      "expect_wage_available": false
+    }
+  ]
+}

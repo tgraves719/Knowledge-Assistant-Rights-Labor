@@ -1,0 +1,180 @@
+{
+  "description": "Unanswerable Questions Test: 20 questions in 4 types that test refusal behavior",
+  "purpose": "Tests whether the system appropriately refuses, clarifies, or hedges when the question cannot be fully answered from the contract.",
+  "total_questions": 20,
+  "types": {
+    "missing_corpus": "Information not in the contract text",
+    "contradictory_prompt": "Asks about something that doesn't exist",
+    "wrong_scope": "Topic excluded from contract or belongs to different bargaining unit",
+    "ambiguity_clarify": "Question is too vague and needs clarification"
+  },
+  "test_cases": [
+    {
+      "id": "unans_01",
+      "type": "missing_corpus",
+      "question": "What is the employer's 401(k) match percentage?",
+      "expected_behavior": "Refuse or state not specified. Article 39 establishes a 401(k) Plan but does not specify the employer match percentage in the contract text.",
+      "expected_refusal_phrases": ["not specified", "not in your contract", "cannot find", "contact"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_02",
+      "type": "missing_corpus",
+      "question": "What is the specific copay amount for a doctor's visit under Plan A?",
+      "expected_behavior": "Refuse or state not specified. Article 40 establishes the health trust but specific copay amounts are set by the Trust, not in the CBA text.",
+      "expected_refusal_phrases": ["Trust", "not specified in the contract", "trustees", "contact"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_03",
+      "type": "missing_corpus",
+      "question": "What are the specific duties of a Head Clerk on the night shift?",
+      "expected_behavior": "Article 7 defines classifications but does not list specific shift-based duties. Should explain what is in the contract and note the limitation.",
+      "expected_refusal_phrases": ["not specified", "does not detail", "contact your steward"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_04",
+      "type": "missing_corpus",
+      "question": "What is the maximum number of employees that can be on break at the same time?",
+      "expected_behavior": "The contract covers break duration (Articles 24-25) but not staffing levels during breaks. Should state this is not specified.",
+      "expected_refusal_phrases": ["not specified", "management discretion", "not addressed"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_05",
+      "type": "missing_corpus",
+      "question": "What is the drug testing policy?",
+      "expected_behavior": "The contract covers lie detector tests (Article 51) but does not have a drug testing provision. Should note this and reference Article 51 if relevant.",
+      "expected_refusal_phrases": ["not addressed", "not found", "no drug testing provision"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_06",
+      "type": "contradictory_prompt",
+      "question": "Find the 401(k) employer match rate in the contract.",
+      "expected_behavior": "Should clarify that while Article 39 establishes a 401(k) plan, the employer match rate is not specified in the contract. The prompt assumes it exists in the text.",
+      "expected_refusal_phrases": ["not specified", "Article 39", "does not include"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_07",
+      "type": "contradictory_prompt",
+      "question": "What does Article 59 say about remote work?",
+      "expected_behavior": "The contract only has Articles 1-58. Article 59 does not exist. There is no remote work provision.",
+      "expected_refusal_phrases": ["does not exist", "no Article 59", "not in the contract"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_08",
+      "type": "contradictory_prompt",
+      "question": "Explain the parental leave policy under Article 32.",
+      "expected_behavior": "Article 32 covers leaves of absence including family care leave, but there is no specific 'parental leave' provision. Should explain what Article 32 does cover (medical, personal, union, family care) and note the distinction.",
+      "expected_refusal_phrases": ["family care leave", "not a specific parental leave", "Article 32"],
+      "should_refuse": false
+    },
+    {
+      "id": "unans_09",
+      "type": "contradictory_prompt",
+      "question": "What is the double-time premium for Sunday work?",
+      "expected_behavior": "There is no double-time for Sunday work. Sunday premium is time and one-quarter (1.25x) per Article 13. Should correct the premise.",
+      "expected_refusal_phrases": ["time and one-quarter", "1.25x", "not double time"],
+      "should_refuse": false
+    },
+    {
+      "id": "unans_10",
+      "type": "contradictory_prompt",
+      "question": "What is the grievance filing deadline of 30 days mentioned in Article 46?",
+      "expected_behavior": "The initial grievance filing deadline is 20 days (not 30) for regular grievances and 10 days for discharge. The 30-day period is for requesting arbitration. Should correct the premise.",
+      "expected_refusal_phrases": ["20 days", "not 30 days", "10 days for discharge"],
+      "should_refuse": false
+    },
+    {
+      "id": "unans_11",
+      "type": "wrong_scope",
+      "question": "What are the overtime rules for meat department employees?",
+      "expected_behavior": "Article 1 (Recognition and Exclusions) excludes meat department employees from this bargaining unit. Should explain the exclusion.",
+      "expected_refusal_phrases": ["excluded", "not covered", "different bargaining unit", "Article 1"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_12",
+      "type": "wrong_scope",
+      "question": "What are the scheduling rules for the Safeway distribution center workers?",
+      "expected_behavior": "Distribution center workers are not part of the Pueblo Clerks bargaining unit. This contract covers retail store clerks only.",
+      "expected_refusal_phrases": ["not covered", "retail store", "bargaining unit", "different contract"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_13",
+      "type": "wrong_scope",
+      "question": "What are the wage rates for King Soopers employees?",
+      "expected_behavior": "This contract covers Safeway Inc. employees. King Soopers is a different employer with a separate contract.",
+      "expected_refusal_phrases": ["Safeway", "different employer", "not covered", "separate contract"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_14",
+      "type": "wrong_scope",
+      "question": "My manager at the Denver store said I should look up the Pueblo contract provisions. Are Denver store employees covered by this agreement?",
+      "expected_behavior": "This is the Pueblo Clerks contract. Denver stores may have a separate bargaining agreement. Should clarify scope.",
+      "expected_refusal_phrases": ["Pueblo", "different bargaining unit", "verify which contract"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_15",
+      "type": "wrong_scope",
+      "question": "What are the Meatcutter apprenticeship requirements?",
+      "expected_behavior": "Although Meatcutter is listed in Appendix A wage tables, the meat department/meatcutters may be under a separate agreement. Should note potential scope issue.",
+      "expected_refusal_phrases": ["verify", "different agreement", "meat department"],
+      "should_refuse": true
+    },
+    {
+      "id": "unans_16",
+      "type": "ambiguity_clarify",
+      "question": "When can I take leave?",
+      "expected_behavior": "Too vague - should ask which type of leave: medical, personal, union, family care, bereavement, jury duty, sick, or vacation.",
+      "expected_refusal_phrases": ["which type", "clarify", "several types"],
+      "should_refuse": false,
+      "should_ask_clarification": true
+    },
+    {
+      "id": "unans_17",
+      "type": "ambiguity_clarify",
+      "question": "What are my rights?",
+      "expected_behavior": "Too broad - should ask about specific area: scheduling, wages, discipline, grievance, seniority, benefits, etc.",
+      "expected_refusal_phrases": ["specific area", "clarify", "for example"],
+      "should_refuse": false,
+      "should_ask_clarification": true
+    },
+    {
+      "id": "unans_18",
+      "type": "ambiguity_clarify",
+      "question": "How much do I get paid?",
+      "expected_behavior": "Needs classification, hours worked, and effective date. Should ask for these details or explain the wage progression system.",
+      "expected_refusal_phrases": ["classification", "hours worked", "which position"],
+      "should_refuse": false,
+      "should_ask_clarification": true
+    },
+    {
+      "id": "unans_19",
+      "type": "ambiguity_clarify",
+      "question": "Am I eligible for the premium?",
+      "expected_behavior": "Which premium? Sunday, night, holiday, overtime? Should ask for clarification.",
+      "expected_refusal_phrases": ["which premium", "Sunday", "night", "holiday", "clarify"],
+      "should_refuse": false,
+      "should_ask_clarification": true
+    },
+    {
+      "id": "unans_20",
+      "type": "ambiguity_clarify",
+      "question": "Can my hours be changed?",
+      "expected_behavior": "Depends on context - reduction in hours, schedule changes, shift bidding, or layoff. Should ask for more details about the situation.",
+      "expected_refusal_phrases": ["schedule", "reduction", "more details", "circumstances"],
+      "should_refuse": false,
+      "should_ask_clarification": true
+    }
+  ]
+}
+
+

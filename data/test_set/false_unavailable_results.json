@@ -1,0 +1,290 @@
+{
+  "schema_version": "false_unavailable_eval_v2",
+  "dataset_schema_version": "false_unavailable_test_v1",
+  "timestamp_utc": "2026-03-09T10:33:26.013212+00:00",
+  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_test.json",
+  "bm25_only": true,
+  "overall": {
+    "passed": 15,
+    "total": 15,
+    "pass_rate": 1.0,
+    "recover_passed": 12,
+    "recover_total": 12,
+    "false_unavailable_recovered_rate": 1.0,
+    "uncertain_passed": 3,
+    "uncertain_total": 3,
+    "proper_uncertainty_rate": 1.0
+  },
+  "by_contract": {
+    "local7_kingsoopers_loveland_meat_2019": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_clerks_2022": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_meat_2022": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "FU-R-CL-01",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "When does this union contract start and end?",
+      "expected_citations": [
+        "Article 58"
+      ],
+      "retrieved_citations": [
+        "Article 58, Section 175",
+        "Article 58, Section 173",
+        "Article 1",
+        "Article 58, Section 175, Part 10"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-CL-02",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "What are the contractual requirements for minimum hours between the end of one shift and the start of the next?",
+      "expected_citations": [
+        "Article 24",
+        "Article 25"
+      ],
+      "retrieved_citations": [
+        "Article 24, Section 60",
+        "Article 10, Section 21"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-CL-03",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "Under bereavement leave provisions, what is the paid leave entitlement for the death of an in-law grandparent?",
+      "expected_citations": [
+        "Article 33"
+      ],
+      "retrieved_citations": [
+        "Article 33, Section 95",
+        "Article 33, Section 97",
+        "Article 33, Section 96"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-CL-04",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "How many personal holidays do post-March 2005 hires get after four years of service?",
+      "expected_citations": [
+        "Article 16"
+      ],
+      "retrieved_citations": [
+        "Article 16, Section 35",
+        "Article 16, Section 43",
+        "Article 35, Section 100",
+        "Article 35, Section 101"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-ME-01",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What article covers the term of agreement for this contract?",
+      "expected_citations": [
+        "Article 57"
+      ],
+      "retrieved_citations": [
+        "Article 57, Section 167",
+        "Article 57, Section 168",
+        "Article 57, Section 169",
+        "Article 1",
+        "Article 57, Section 169, Part 10",
+        "Article 57, Section 169 (Table: PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH)"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-ME-02",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "Where are overtime rules defined in this agreement?",
+      "expected_citations": [
+        "Article 12"
+      ],
+      "retrieved_citations": [
+        "Article 5, Section 12",
+        "Article 30, Section 88",
+        "Article 30, Section 89",
+        "Article 12, Section 32"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-ME-03",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "Where should I look for vacation rules in this contract?",
+      "expected_citations": [
+        "Article 17"
+      ],
+      "retrieved_citations": [
+        "Article 17, Section 51",
+        "Article 16, Section 43",
+        "Article 16, Section 44",
+        "Article 27, Section 67"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-ME-04",
+      "expectation": "recover",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What article governs holidays and holiday pay?",
+      "expected_citations": [
+        "Article 16"
+      ],
+      "retrieved_citations": [
+        "Article 16, Section 40",
+        "Article 16, Section 41",
+        "Article 16, Section 42",
+        "Article 16, Section 44"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-KG-01",
+      "expectation": "recover",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "How much vacation do I get per year?",
+      "expected_citations": [
+        "Article 17",
+        "Article 17, Section 42"
+      ],
+      "retrieved_citations": [
+        "Article 17, Section 42"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-KG-02",
+      "expectation": "recover",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "What article covers the term of agreement for this contract?",
+      "expected_citations": [
+        "Article 57"
+      ],
+      "retrieved_citations": [
+        "Article 57, Section 127",
+        "Article 57, Section 128",
+        "Article 57, Section 127, Part 3",
+        "Article 57, Section 128 (Table: Article 57, Section 128, Part 22-0)",
+        "Article 57, Section 128 (Table: MINIMUM WAGE)",
+        "Article 57, Section 128 (Table: DRESS REQUIREMENTS. DATED 3/25/19)",
+        "Article 57, Section 128 (Table: LETTERS OF AGREEMENT)"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-KG-03",
+      "expectation": "recover",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "What article contains the grievance and arbitration procedure?",
+      "expected_citations": [
+        "Article 48"
+      ],
+      "retrieved_citations": [
+        "Article 48",
+        "Article 8, Section 23",
+        "Article 8",
+        "Article 17, Section 43",
+        "Article 8, Section 22",
+        "Appendix A"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-R-KG-04",
+      "expectation": "recover",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "Where are rates of pay described in this agreement?",
+      "expected_citations": [
+        "Article 8"
+      ],
+      "retrieved_citations": [
+        "Article 8, Section 23",
+        "Article 8",
+        "Article 17, Section 42",
+        "Article 48",
+        "Article 17, Section 43"
+      ],
+      "contains_unavailable_language": false,
+      "citation_hit": true,
+      "pass": true
+    },
+    {
+      "id": "FU-U-CL-01",
+      "expectation": "uncertain",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "question": "Do we get a blockchain equipment stipend each quarter?",
+      "expected_citations": [],
+      "retrieved_citations": [],
+      "contains_unavailable_language": true,
+      "citation_hit": false,
+      "pass": true
+    },
+    {
+      "id": "FU-U-ME-01",
+      "expectation": "uncertain",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What is the ZX91 cryptographic token allowance?",
+      "expected_citations": [],
+      "retrieved_citations": [],
+      "contains_unavailable_language": true,
+      "citation_hit": false,
+      "pass": true
+    },
+    {
+      "id": "FU-U-KG-01",
+      "expectation": "uncertain",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "question": "What is the monthly drone commute subsidy amount?",
+      "expected_citations": [],
+      "retrieved_citations": [],
+      "contains_unavailable_language": true,
+      "citation_hit": false,
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,1169 @@
+{
+  "schema_version": "contract_outline_v1",
+  "contract_id": "local7_safeway_pueblo_clerks_2022",
+  "generated_at": "2026-03-08T21:43:31.529529+00:00",
+  "sources": {
+    "manifest": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\manifests\\local7_safeway_pueblo_clerks_2022.json",
+    "chunks": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+    "pdf_nav_index": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\pdf_nav_index.json"
+  },
+  "article_titles": {
+    "1": "Recognition And Exclusions",
+    "2": "Bargaining Unit Work Jurisdiction",
+    "3": "Union Security And Conditions",
+    "4": "Check-Off",
+    "5": "New Employees, Transferred Employees, Promoted Or Demoted",
+    "6": "Rights Of Management",
+    "7": "Definitions Of Classifications",
+    "8": "Rates Of Pay",
+    "9": "Prior Experience",
+    "10": "Scheduling And Assignment Of Hours",
+    "11": "No Reduction In Pay",
+    "12": "Overtime",
+    "13": "Sunday Premium",
+    "14": "Travel Pay",
+    "15": "Night Premiums",
+    "16": "Holidays And Holiday Pay",
+    "17": "Vacations",
+    "18": "Minimum Weekly Schedule",
+    "19": "No Free Work",
+    "20": "Time Cards",
+    "21": "Split Shifts",
+    "22": "Store Meetings",
+    "23": "Reporting Pay",
+    "24": "Lunch Breaks",
+    "25": "Relief Periods",
+    "26": "Probationary Period",
+    "27": "Seniority",
+    "28": "Unscheduled Overtime",
+    "29": "Layoffs",
+    "30": "Transfer From Store To Store",
+    "31": "New Store Language",
+    "32": "Leaves Of Absence",
+    "33": "Bereavement Leave",
+    "34": "Jury Duty",
+    "35": "Sick Leave",
+    "36": "Safety",
+    "37": "Injury On Job",
+    "38": "Child Care Discount Programs",
+    "39": "401K Plan",
+    "40": "Health And Welfare Coverage",
+    "41": "Non-Duplication Of Benefits",
+    "42": "Pension",
+    "43": "Discharge And No Discrimination",
+    "44": "Union Representation Visitation",
+    "45": "Union Steward",
+    "46": "Dispute Procedure",
+    "47": "No Strike Or Lockout",
+    "48": "Store Closing",
+    "49": "Bulletin Board",
+    "50": "Union Store Cards",
+    "51": "Lie Detector Tests",
+    "52": "Uniforms/Equipment",
+    "53": "Saving Clause",
+    "54": "Technological Changes",
+    "55": "Prodigy-Type Shopping",
+    "56": "Pharmacy Technicians",
+    "57": "Entire Agreement",
+    "58": "Term Of Agreement"
+  },
+  "articles": [
+    {
+      "article_num": 1,
+      "article_title": "Recognition And Exclusions",
+      "page_number": 3,
+      "sections": [
+        {
+          "section_num": 1,
+          "page_number": 3
+        }
+      ]
+    },
+    {
+      "article_num": 2,
+      "article_title": "Bargaining Unit Work Jurisdiction",
+      "page_number": 3,
+      "sections": [
+        {
+          "section_num": 2,
+          "page_number": 3
+        },
+        {
+          "section_num": 3,
+          "page_number": 4
+        },
+        {
+          "section_num": 4,
+          "page_number": 4
+        }
+      ]
+    },
+    {
+      "article_num": 3,
+      "article_title": "Union Security And Conditions",
+      "page_number": 4,
+      "sections": [
+        {
+          "section_num": 5,
+          "page_number": 4
+        },
+        {
+          "section_num": 6,
+          "page_number": 5
+        },
+        {
+          "section_num": 7,
+          "page_number": 5
+        }
+      ]
+    },
+    {
+      "article_num": 4,
+      "article_title": "Check-Off",
+      "page_number": 5,
+      "sections": [
+        {
+          "section_num": 8,
+          "page_number": 5
+        },
+        {
+          "section_num": 9,
+          "page_number": 5
+        }
+      ]
+    },
+    {
+      "article_num": 5,
+      "article_title": "New Employees, Transferred Employees, Promoted Or Demoted",
+      "page_number": 5,
+      "sections": [
+        {
+          "section_num": 10,
+          "page_number": 5
+        },
+        {
+          "section_num": 11,
+          "page_number": 5
+        },
+        {
+          "section_num": 12,
+          "page_number": 5
+        }
+      ]
+    },
+    {
+      "article_num": 6,
+      "article_title": "Rights Of Management",
+      "page_number": 6,
+      "sections": [
+        {
+          "section_num": 13,
+          "page_number": 6
+        }
+      ]
+    },
+    {
+      "article_num": 7,
+      "article_title": "Definitions Of Classifications",
+      "page_number": 6,
+      "sections": [
+        {
+          "section_num": 14,
+          "page_number": 6
+        },
+        {
+          "section_num": 15,
+          "page_number": 8
+        },
+        {
+          "section_num": 16,
+          "page_number": 8
+        }
+      ]
+    },
+    {
+      "article_num": 8,
+      "article_title": "Rates Of Pay",
+      "page_number": 8,
+      "sections": [
+        {
+          "section_num": 17,
+          "page_number": 8
+        },
+        {
+          "section_num": 18,
+          "page_number": 8
+        },
+        {
+          "section_num": 19,
+          "page_number": 8
+        }
+      ]
+    },
+    {
+      "article_num": 9,
+      "article_title": "Prior Experience",
+      "page_number": 9,
+      "sections": [
+        {
+          "section_num": 20,
+          "page_number": 9
+        }
+      ]
+    },
+    {
+      "article_num": 10,
+      "article_title": "Scheduling And Assignment Of Hours",
+      "page_number": 9,
+      "sections": [
+        {
+          "section_num": 21,
+          "page_number": 9
+        },
+        {
+          "section_num": 22,
+          "page_number": 10
+        },
+        {
+          "section_num": 23,
+          "page_number": 11
+        },
+        {
+          "section_num": 24,
+          "page_number": 11
+        },
+        {
+          "section_num": 25,
+          "page_number": 11
+        }
+      ]
+    },
+    {
+      "article_num": 11,
+      "article_title": "No Reduction In Pay",
+      "page_number": 12,
+      "sections": [
+        {
+          "section_num": 26,
+          "page_number": 12
+        },
+        {
+          "section_num": 27,
+          "page_number": 12
+        }
+      ]
+    },
+    {
+      "article_num": 12,
+      "article_title": "Overtime",
+      "page_number": 12,
+      "sections": [
+        {
+          "section_num": 28,
+          "page_number": 12
+        }
+      ]
+    },
+    {
+      "article_num": 13,
+      "article_title": "Sunday Premium",
+      "page_number": null,
+      "sections": [
+        {
+          "section_num": 29,
+          "page_number": null
+        },
+        {
+          "section_num": 30,
+          "page_number": null
+        }
+      ]
+    },
+    {
+      "article_num": 14,
+      "article_title": "Travel Pay",
+      "page_number": null,
+      "sections": [
+        {
+          "section_num": 31,
+          "page_number": null
+        },
+        {
+          "section_num": 32,
+          "page_number": null
+        },
+        {
+          "section_num": 33,
+          "page_number": null
+        }
+      ]
+    },
+    {
+      "article_num": 15,
+      "article_title": "Night Premiums",
+      "page_number": 14,
+      "sections": [
+        {
+          "section_num": 34,
+          "page_number": 14
+        }
+      ]
+    },
+    {
+      "article_num": 16,
+      "article_title": "Holidays And Holiday Pay",
+      "page_number": 14,
+      "sections": [
+        {
+          "section_num": 35,
+          "page_number": 14
+        },
+        {
+          "section_num": 36,
+          "page_number": 14
+        },
+        {
+          "section_num": 37,
+          "page_number": 14
+        },
+        {
+          "section_num": 38,
+          "page_number": 14
+        },
+        {
+          "section_num": 39,
+          "page_number": 14
+        },
+        {
+          "section_num": 40,
+          "page_number": 15
+        },
+        {
+          "section_num": 41,
+          "page_number": 15
+        },
+        {
+          "section_num": 42,
+          "page_number": 15
+        },
+        {
+          "section_num": 43,
+          "page_number": 15
+        }
+      ]
+    },
+    {
+      "article_num": 17,
+      "article_title": "Vacations",
+      "page_number": 15,
+      "sections": [
+        {
+          "section_num": 44,
+          "page_number": 15
+        },
+        {
+          "section_num": 45,
+          "page_number": 16
+        },
+        {
+          "section_num": 46,
+          "page_number": 16
+        },
+        {
+          "section_num": 47,
+          "page_number": 16
+        },
+        {
+          "section_num": 48,
+          "page_number": 16
+        },
+        {
+          "section_num": 49,
+          "page_number": 16
+        },
+        {
+          "section_num": 51,
+          "page_number": 17
+        },
+        {
+          "section_num": 52,
+          "page_number": 17
+        }
+      ]
+    },
+    {
+      "article_num": 18,
+      "article_title": "Minimum Weekly Schedule",
+      "page_number": 17,
+      "sections": [
+        {
+          "section_num": 53,
+          "page_number": 18
+        },
+        {
+          "section_num": 54,
+          "page_number": 18
+        }
+      ]
+    },
+    {
+      "article_num": 19,
+      "article_title": "No Free Work",
+      "page_number": 18,
+      "sections": [
+        {
+          "section_num": 55,
+          "page_number": 18
+        }
+      ]
+    },
+    {
+      "article_num": 20,
+      "article_title": "Time Cards",
+      "page_number": 18,
+      "sections": [
+        {
+          "section_num": 56,
+          "page_number": 18
+        }
+      ]
+    },
+    {
+      "article_num": 21,
+      "article_title": "Split Shifts",
+      "page_number": 19,
+      "sections": [
+        {
+          "section_num": 57,
+          "page_number": 19
+        }
+      ]
+    },
+    {
+      "article_num": 22,
+      "article_title": "Store Meetings",
+      "page_number": 19,
+      "sections": [
+        {
+          "section_num": 58,
+          "page_number": 19
+        }
+      ]
+    },
+    {
+      "article_num": 23,
+      "article_title": "Reporting Pay",
+      "page_number": 19,
+      "sections": [
+        {
+          "section_num": 59,
+          "page_number": 19
+        }
+      ]
+    },
+    {
+      "article_num": 24,
+      "article_title": "Lunch Breaks",
+      "page_number": 19,
+      "sections": [
+        {
+          "section_num": 60,
+          "page_number": 19
+        }
+      ]
+    },
+    {
+      "article_num": 25,
+      "article_title": "Relief Periods",
+      "page_number": 19,
+      "sections": [
+        {
+          "section_num": 61,
+          "page_number": 19
+        }
+      ]
+    },
+    {
+      "article_num": 26,
+      "article_title": "Probationary Period",
+      "page_number": 20,
+      "sections": [
+        {
+          "section_num": 62,
+          "page_number": 20
+        }
+      ]
+    },
+    {
+      "article_num": 27,
+      "article_title": "Seniority",
+      "page_number": 20,
+      "sections": [
+        {
+          "section_num": 63,
+          "page_number": 20
+        },
+        {
+          "section_num": 64,
+          "page_number": 20
+        },
+        {
+          "section_num": 65,
+          "page_number": 20
+        },
+        {
+          "section_num": 66,
+          "page_number": 20
+        },
+        {
+          "section_num": 67,
+          "page_number": 20
+        },
+        {
+          "section_num": 68,
+          "page_number": 20
+        },
+        {
+          "section_num": 69,
+          "page_number": 21
+        },
+        {
+          "section_num": 70,
+          "page_number": 21
+        },
+        {
+          "section_num": 71,
+          "page_number": 21
+        },
+        {
+          "section_num": 72,
+          "page_number": 22
+        },
+        {
+          "section_num": 73,
+          "page_number": 22
+        },
+        {
+          "section_num": 74,
+          "page_number": 22
+        },
+        {
+          "section_num": 75,
+          "page_number": 22
+        }
+      ]
+    },
+    {
+      "article_num": 28,
+      "article_title": "Unscheduled Overtime",
+      "page_number": 22,
+      "sections": [
+        {
+          "section_num": 76,
+          "page_number": 22
+        }
+      ]
+    },
+    {
+      "article_num": 29,
+      "article_title": "Layoffs",
+      "page_number": 23,
+      "sections": [
+        {
+          "section_num": 77,
+          "page_number": 23
+        },
+        {
+          "section_num": 78,
+          "page_number": 23
+        },
+        {
+          "section_num": 80,
+          "page_number": 26
+        },
+        {
+          "section_num": 81,
+          "page_number": 27
+        },
+        {
+          "section_num": 82,
+          "page_number": 27
+        },
+        {
+          "section_num": 83,
+          "page_number": 28
+        }
+      ]
+    },
+    {
+      "article_num": 30,
+      "article_title": "Transfer From Store To Store",
+      "page_number": 29,
+      "sections": [
+        {
+          "section_num": 85,
+          "page_number": 29
+        }
+      ]
+    },
+    {
+      "article_num": 31,
+      "article_title": "New Store Language",
+      "page_number": 29,
+      "sections": [
+        {
+          "section_num": 86,
+          "page_number": 29
+        }
+      ]
+    },
+    {
+      "article_num": 32,
+      "article_title": "Leaves Of Absence",
+      "page_number": 29,
+      "sections": [
+        {
+          "section_num": 87,
+          "page_number": 29
+        },
+        {
+          "section_num": 88,
+          "page_number": 30
+        },
+        {
+          "section_num": 89,
+          "page_number": 30
+        },
+        {
+          "section_num": 90,
+          "page_number": 30
+        },
+        {
+          "section_num": 91,
+          "page_number": 30
+        },
+        {
+          "section_num": 92,
+          "page_number": 30
+        },
+        {
+          "section_num": 93,
+          "page_number": 31
+        },
+        {
+          "section_num": 94,
+          "page_number": 31
+        }
+      ]
+    },
+    {
+      "article_num": 33,
+      "article_title": "Bereavement Leave",
+      "page_number": 31,
+      "sections": [
+        {
+          "section_num": 95,
+          "page_number": 31
+        },
+        {
+          "section_num": 96,
+          "page_number": 31
+        },
+        {
+          "section_num": 97,
+          "page_number": 31
+        }
+      ]
+    },
+    {
+      "article_num": 34,
+      "article_title": "Jury Duty",
+      "page_number": 31,
+      "sections": [
+        {
+          "section_num": 98,
+          "page_number": 31
+        },
+        {
+          "section_num": 99,
+          "page_number": 32
+        }
+      ]
+    },
+    {
+      "article_num": 35,
+      "article_title": "Sick Leave",
+      "page_number": 32,
+      "sections": [
+        {
+          "section_num": 100,
+          "page_number": 32
+        },
+        {
+          "section_num": 101,
+          "page_number": 34
+        },
+        {
+          "section_num": 102,
+          "page_number": 34
+        }
+      ]
+    },
+    {
+      "article_num": 36,
+      "article_title": "Safety",
+      "page_number": 34,
+      "sections": [
+        {
+          "section_num": 103,
+          "page_number": 34
+        },
+        {
+          "section_num": 104,
+          "page_number": 34
+        },
+        {
+          "section_num": 105,
+          "page_number": 35
+        },
+        {
+          "section_num": 106,
+          "page_number": 35
+        },
+        {
+          "section_num": 107,
+          "page_number": 35
+        },
+        {
+          "section_num": 108,
+          "page_number": 35
+        },
+        {
+          "section_num": 109,
+          "page_number": 35
+        },
+        {
+          "section_num": 110,
+          "page_number": 36
+        },
+        {
+          "section_num": 111,
+          "page_number": 36
+        },
+        {
+          "section_num": 112,
+          "page_number": 37
+        }
+      ]
+    },
+    {
+      "article_num": 37,
+      "article_title": "Injury On Job",
+      "page_number": 37,
+      "sections": [
+        {
+          "section_num": 113,
+          "page_number": 37
+        }
+      ]
+    },
+    {
+      "article_num": 38,
+      "article_title": "Child Care Discount Programs",
+      "page_number": 37,
+      "sections": [
+        {
+          "section_num": 114,
+          "page_number": 37
+        }
+      ]
+    },
+    {
+      "article_num": 39,
+      "article_title": "401K Plan",
+      "page_number": 37,
+      "sections": [
+        {
+          "section_num": 115,
+          "page_number": 37
+        }
+      ]
+    },
+    {
+      "article_num": 40,
+      "article_title": "Health And Welfare Coverage",
+      "page_number": 37,
+      "sections": [
+        {
+          "section_num": 116,
+          "page_number": 37
+        }
+      ]
+    },
+    {
+      "article_num": 41,
+      "article_title": "Non-Duplication Of Benefits",
+      "page_number": 45,
+      "sections": [
+        {
+          "section_num": 117,
+          "page_number": 45
+        }
+      ]
+    },
+    {
+      "article_num": 42,
+      "article_title": "Pension",
+      "page_number": 45,
+      "sections": [
+        {
+          "section_num": 118,
+          "page_number": 46
+        },
+        {
+          "section_num": 119,
+          "page_number": 46
+        },
+        {
+          "section_num": 120,
+          "page_number": 46
+        }
+      ]
+    },
+    {
+      "article_num": 43,
+      "article_title": "Discharge And No Discrimination",
+      "page_number": null,
+      "sections": [
+        {
+          "section_num": 121,
+          "page_number": null
+        },
+        {
+          "section_num": 122,
+          "page_number": null
+        },
+        {
+          "section_num": 123,
+          "page_number": null
+        },
+        {
+          "section_num": 124,
+          "page_number": null
+        },
+        {
+          "section_num": 125,
+          "page_number": null
+        },
+        {
+          "section_num": 126,
+          "page_number": null
+        },
+        {
+          "section_num": 127,
+          "page_number": null
+        }
+      ]
+    },
+    {
+      "article_num": 44,
+      "article_title": "Union Representation Visitation",
+      "page_number": 48,
+      "sections": [
+        {
+          "section_num": 128,
+          "page_number": 48
+        }
+      ]
+    },
+    {
+      "article_num": 45,
+      "article_title": "Union Steward",
+      "page_number": 48,
+      "sections": [
+        {
+          "section_num": 129,
+          "page_number": 48
+        },
+        {
+          "section_num": 130,
+          "page_number": 48
+        },
+        {
+          "section_num": 131,
+          "page_number": 48
+        },
+        {
+          "section_num": 132,
+          "page_number": 48
+        }
+      ]
+    },
+    {
+      "article_num": 46,
+      "article_title": "Dispute Procedure",
+      "page_number": 48,
+      "sections": [
+        {
+          "section_num": 133,
+          "page_number": 48
+        },
+        {
+          "section_num": 134,
+          "page_number": 48
+        },
+        {
+          "section_num": 135,
+          "page_number": 49
+        },
+        {
+          "section_num": 136,
+          "page_number": 49
+        },
+        {
+          "section_num": 137,
+          "page_number": 49
+        },
+        {
+          "section_num": 138,
+          "page_number": 49
+        },
+        {
+          "section_num": 139,
+          "page_number": 49
+        },
+        {
+          "section_num": 140,
+          "page_number": 50
+        },
+        {
+          "section_num": 141,
+          "page_number": 50
+        },
+        {
+          "section_num": 143,
+          "page_number": 52
+        }
+      ]
+    },
+    {
+      "article_num": 47,
+      "article_title": "No Strike Or Lockout",
+      "page_number": 53,
+      "sections": [
+        {
+          "section_num": 144,
+          "page_number": 53
+        }
+      ]
+    },
+    {
+      "article_num": 48,
+      "article_title": "Store Closing",
+      "page_number": 53,
+      "sections": [
+        {
+          "section_num": 145,
+          "page_number": 53
+        },
+        {
+          "section_num": 146,
+          "page_number": 54
+        },
+        {
+          "section_num": 147,
+          "page_number": 54
+        },
+        {
+          "section_num": 148,
+          "page_number": 54
+        },
+        {
+          "section_num": 149,
+          "page_number": 54
+        },
+        {
+          "section_num": 150,
+          "page_number": 54
+        },
+        {
+          "section_num": 151,
+          "page_number": 54
+        },
+        {
+          "section_num": 152,
+          "page_number": 54
+        },
+        {
+          "section_num": 153,
+          "page_number": 54
+        },
+        {
+          "section_num": 154,
+          "page_number": 54
+        }
+      ]
+    },
+    {
+      "article_num": 49,
+      "article_title": "Bulletin Board",
+      "page_number": 55,
+      "sections": [
+        {
+          "section_num": 155,
+          "page_number": 55
+        }
+      ]
+    },
+    {
+      "article_num": 50,
+      "article_title": "Union Store Cards",
+      "page_number": 55,
+      "sections": [
+        {
+          "section_num": 156,
+          "page_number": 55
+        }
+      ]
+    },
+    {
+      "article_num": 51,
+      "article_title": "Lie Detector Tests",
+      "page_number": 55,
+      "sections": [
+        {
+          "section_num": 157,
+          "page_number": 55
+        }
+      ]
+    },
+    {
+      "article_num": 52,
+      "article_title": "Uniforms/Equipment",
+      "page_number": 55,
+      "sections": [
+        {
+          "section_num": 158,
+          "page_number": 55
+        }
+      ]
+    },
+    {
+      "article_num": 53,
+      "article_title": "Saving Clause",
+      "page_number": 55,
+      "sections": [
+        {
+          "section_num": 159,
+          "page_number": 55
+        },
+        {
+          "section_num": 160,
+          "page_number": 55
+        }
+      ]
+    },
+    {
+      "article_num": 54,
+      "article_title": "Technological Changes",
+      "page_number": 56,
+      "sections": [
+        {
+          "section_num": 161,
+          "page_number": 56
+        }
+      ]
+    },
+    {
+      "article_num": 55,
+      "article_title": "Prodigy-Type Shopping",
+      "page_number": 57,
+      "sections": [
+        {
+          "section_num": 162,
+          "page_number": 57
+        }
+      ]
+    },
+    {
+      "article_num": 56,
+      "article_title": "Pharmacy Technicians",
+      "page_number": 57,
+      "sections": [
+        {
+          "section_num": 163,
+          "page_number": 57
+        },
+        {
+          "section_num": 164,
+          "page_number": 57
+        },
+        {
+          "section_num": 165,
+          "page_number": 57
+        },
+        {
+          "section_num": 166,
+          "page_number": 57
+        },
+        {
+          "section_num": 167,
+          "page_number": 57
+        },
+        {
+          "section_num": 168,
+          "page_number": 58
+        },
+        {
+          "section_num": 169,
+          "page_number": 58
+        },
+        {
+          "section_num": 170,
+          "page_number": 58
+        },
+        {
+          "section_num": 171,
+          "page_number": 58
+        }
+      ]
+    },
+    {
+      "article_num": 57,
+      "article_title": "Entire Agreement",
+      "page_number": 58,
+      "sections": [
+        {
+          "section_num": 172,
+          "page_number": 58
+        }
+      ]
+    },
+    {
+      "article_num": 58,
+      "article_title": "Term Of Agreement",
+      "page_number": 58,
+      "sections": [
+        {
+          "section_num": 173,
+          "page_number": 58
+        },
+        {
+          "section_num": 175,
+          "page_number": 59
+        },
+        {
+          "section_num": 1749,
+          "page_number": 59
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "article_count": 58,
+    "section_count": 171,
+    "articles_with_pages": 55,
+    "sections_with_pages": 159,
+    "total_pages": 74
+  }
+}

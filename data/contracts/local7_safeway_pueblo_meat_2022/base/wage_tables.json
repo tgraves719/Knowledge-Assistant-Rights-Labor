@@ -1,0 +1,3419 @@
+{
+  "contract_id": "local7_safeway_pueblo_meat_2022",
+  "effective_dates": [
+    "2022-02-27",
+    "2023-02-26",
+    "2024-02-25"
+  ],
+  "classifications": {
+    "head_meat_cutter": {
+      "name": "HEAD MEAT CUTTER",
+      "normalized_name": "head_meat_cutter",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 25.28,
+            "2023-02-26": 26.08,
+            "2024-02-25": 26.88
+          }
+        }
+      ]
+    },
+    "first_cutter": {
+      "name": "FIRST CUTTER",
+      "normalized_name": "first_cutter",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 23.83,
+            "2023-02-26": 24.63,
+            "2024-02-25": 25.43
+          }
+        }
+      ]
+    },
+    "seafood_manager": {
+      "name": "SEAFOOD MANAGER",
+      "normalized_name": "seafood_manager",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 21.7,
+            "2023-02-26": 22.5,
+            "2024-02-25": 23.3
+          }
+        }
+      ]
+    },
+    "deli_manager": {
+      "name": "DELI MANAGER",
+      "normalized_name": "deli_manager",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 23.24,
+            "2023-02-26": 24.04,
+            "2024-02-25": 24.84
+          }
+        }
+      ]
+    },
+    "deli_manager_after_5_20_77_directing_5_or_less_deli_employees": {
+      "name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES",
+      "normalized_name": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 21.65,
+            "2023-02-26": 22.45,
+            "2024-02-25": 23.25
+          }
+        }
+      ]
+    },
+    "assistant_deli_manager": {
+      "name": "ASSISTANT DELI MANAGER",
+      "normalized_name": "assistant_deli_manager",
+      "is_manager": true,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 21.51,
+            "2023-02-26": 22.31,
+            "2024-02-25": 23.11
+          }
+        }
+      ]
+    },
+    "starbucks_lead": {
+      "name": "STARBUCKS LEAD",
+      "normalized_name": "starbucks_lead",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Rate",
+          "hours_required": null,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 21.51,
+            "2023-02-26": 22.31,
+            "2024-02-25": 23.11
+          }
+        }
+      ]
+    },
+    "meat_cutters": {
+      "name": "MEAT CUTTERS",
+      "normalized_name": "meat_cutters",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Start",
+          "hours_required": 0,
+          "months_required": 0,
+          "rates": {
+            "2022-02-27": 16.0,
+            "2023-02-26": 16.5,
+            "2024-02-25": 17.0
+          }
+        },
+        {
+          "step_name": "After 520 hours",
+          "hours_required": 520,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 16.4,
+            "2023-02-26": 16.95,
+            "2024-02-25": 17.5
+          }
+        },
+        {
+          "step_name": "After 1560 hours",
+          "hours_required": 1560,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 16.8,
+            "2023-02-26": 17.4,
+            "2024-02-25": 18.0
+          }
+        },
+        {
+          "step_name": "After 2600 hours",
+          "hours_required": 2600,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 17.2,
+            "2023-02-26": 17.85,
+            "2024-02-25": 18.5
+          }
+        },
+        {
+          "step_name": "After 3640 hours",
+          "hours_required": 3640,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 17.6,
+            "2023-02-26": 18.3,
+            "2024-02-25": 19.0
+          }
+        },
+        {
+          "step_name": "After 4680 hours",
+          "hours_required": 4680,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.0,
+            "2023-02-26": 18.75,
+            "2024-02-25": 19.5
+          }
+        },
+        {
+          "step_name": "After 5720 hours",
+          "hours_required": 5720,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.4,
+            "2023-02-26": 19.2,
+            "2024-02-25": 20.0
+          }
+        },
+        {
+          "step_name": "After 6760 hours",
+          "hours_required": 6760,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.8,
+            "2023-02-26": 19.65,
+            "2024-02-25": 20.5
+          }
+        },
+        {
+          "step_name": "After 7800 hours",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 23.5,
+            "2023-02-26": 24.3,
+            "2024-02-25": 25.1
+          }
+        }
+      ]
+    },
+    "seafood_clerks": {
+      "name": "SEAFOOD CLERKS",
+      "normalized_name": "seafood_clerks",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Start",
+          "hours_required": 0,
+          "months_required": 0,
+          "rates": {
+            "2022-02-27": 16.0,
+            "2023-02-26": 16.5,
+            "2024-02-25": 17.0
+          }
+        },
+        {
+          "step_name": "After 520 hours",
+          "hours_required": 520,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 16.4,
+            "2023-02-26": 16.95,
+            "2024-02-25": 17.5
+          }
+        },
+        {
+          "step_name": "After 1560 hours",
+          "hours_required": 1560,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 16.8,
+            "2023-02-26": 17.4,
+            "2024-02-25": 18.0
+          }
+        },
+        {
+          "step_name": "After 2600 hours",
+          "hours_required": 2600,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 17.2,
+            "2023-02-26": 17.85,
+            "2024-02-25": 18.5
+          }
+        },
+        {
+          "step_name": "After 3640 hours",
+          "hours_required": 3640,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 17.6,
+            "2023-02-26": 18.3,
+            "2024-02-25": 19.0
+          }
+        },
+        {
+          "step_name": "After 4680 hours",
+          "hours_required": 4680,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.0,
+            "2023-02-26": 18.75,
+            "2024-02-25": 19.5
+          }
+        },
+        {
+          "step_name": "After 5720 hours",
+          "hours_required": 5720,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.4,
+            "2023-02-26": 19.2,
+            "2024-02-25": 20.0
+          }
+        },
+        {
+          "step_name": "After 6760 hours",
+          "hours_required": 6760,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.8,
+            "2023-02-26": 19.65,
+            "2024-02-25": 20.5
+          }
+        },
+        {
+          "step_name": "After 7800 hours",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 21.01,
+            "2023-02-26": 21.81,
+            "2024-02-25": 22.61
+          }
+        }
+      ]
+    },
+    "meat_wrappers": {
+      "name": "MEAT WRAPPERS",
+      "normalized_name": "meat_wrappers",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "After 520 hours",
+          "hours_required": 520,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 16.4,
+            "2023-02-26": 16.95,
+            "2024-02-25": 17.5
+          }
+        },
+        {
+          "step_name": "After 1560 hours",
+          "hours_required": 1560,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 16.8,
+            "2023-02-26": 17.4,
+            "2024-02-25": 18.0
+          }
+        },
+        {
+          "step_name": "After 2600 hours",
+          "hours_required": 2600,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 17.2,
+            "2023-02-26": 17.85,
+            "2024-02-25": 18.5
+          }
+        },
+        {
+          "step_name": "After 3640 hours",
+          "hours_required": 3640,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 17.6,
+            "2023-02-26": 18.3,
+            "2024-02-25": 19.0
+          }
+        },
+        {
+          "step_name": "After 4680 hours",
+          "hours_required": 4680,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.0,
+            "2023-02-26": 18.75,
+            "2024-02-25": 19.5
+          }
+        },
+        {
+          "step_name": "After 5720 hours",
+          "hours_required": 5720,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.4,
+            "2023-02-26": 19.2,
+            "2024-02-25": 20.0
+          }
+        },
+        {
+          "step_name": "After 6760 hours",
+          "hours_required": 6760,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.8,
+            "2023-02-26": 19.65,
+            "2024-02-25": 20.5
+          }
+        },
+        {
+          "step_name": "After 7800 hours",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 21.01,
+            "2023-02-26": 21.81,
+            "2024-02-25": 22.61
+          }
+        }
+      ]
+    },
+    "deli_clerks": {
+      "name": "DELI CLERKS",
+      "normalized_name": "deli_clerks",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Start",
+          "hours_required": 0,
+          "months_required": 0,
+          "rates": {
+            "2022-02-27": 16.0,
+            "2023-02-26": 16.5,
+            "2024-02-25": 17.0
+          }
+        },
+        {
+          "step_name": "After 520 hours",
+          "hours_required": 520,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 16.4,
+            "2023-02-26": 16.95,
+            "2024-02-25": 17.5
+          }
+        },
+        {
+          "step_name": "After 1560 hours",
+          "hours_required": 1560,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 16.8,
+            "2023-02-26": 17.4,
+            "2024-02-25": 18.0
+          }
+        },
+        {
+          "step_name": "After 2600 hours",
+          "hours_required": 2600,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 17.2,
+            "2023-02-26": 17.85,
+            "2024-02-25": 18.5
+          }
+        },
+        {
+          "step_name": "After 3640 hours",
+          "hours_required": 3640,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 17.6,
+            "2023-02-26": 18.3,
+            "2024-02-25": 19.0
+          }
+        },
+        {
+          "step_name": "After 4680 hours",
+          "hours_required": 4680,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.0,
+            "2023-02-26": 18.75,
+            "2024-02-25": 19.5
+          }
+        },
+        {
+          "step_name": "After 5720 hours",
+          "hours_required": 5720,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.4,
+            "2023-02-26": 19.2,
+            "2024-02-25": 20.0
+          }
+        },
+        {
+          "step_name": "After 6760 hours",
+          "hours_required": 6760,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.8,
+            "2023-02-26": 19.65,
+            "2024-02-25": 20.5
+          }
+        },
+        {
+          "step_name": "After 7800 hours",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 21.01,
+            "2023-02-26": 21.81,
+            "2024-02-25": 22.61
+          }
+        }
+      ]
+    },
+    "starbucks_clerks": {
+      "name": "STARBUCKS CLERKS",
+      "normalized_name": "starbucks_clerks",
+      "is_manager": false,
+      "steps": [
+        {
+          "step_name": "Start",
+          "hours_required": 0,
+          "months_required": 0,
+          "rates": {
+            "2022-02-27": 16.0,
+            "2023-02-26": 16.5,
+            "2024-02-25": 17.0
+          }
+        },
+        {
+          "step_name": "After 520 hours",
+          "hours_required": 520,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 16.4,
+            "2023-02-26": 16.95,
+            "2024-02-25": 17.5
+          }
+        },
+        {
+          "step_name": "After 1560 hours",
+          "hours_required": 1560,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 16.8,
+            "2023-02-26": 17.4,
+            "2024-02-25": 18.0
+          }
+        },
+        {
+          "step_name": "After 2600 hours",
+          "hours_required": 2600,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 17.2,
+            "2023-02-26": 17.85,
+            "2024-02-25": 18.5
+          }
+        },
+        {
+          "step_name": "After 3640 hours",
+          "hours_required": 3640,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 17.6,
+            "2023-02-26": 18.3,
+            "2024-02-25": 19.0
+          }
+        },
+        {
+          "step_name": "After 4680 hours",
+          "hours_required": 4680,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.0,
+            "2023-02-26": 18.75,
+            "2024-02-25": 19.5
+          }
+        },
+        {
+          "step_name": "After 5720 hours",
+          "hours_required": 5720,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.4,
+            "2023-02-26": 19.2,
+            "2024-02-25": 20.0
+          }
+        },
+        {
+          "step_name": "After 6760 hours",
+          "hours_required": 6760,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 18.8,
+            "2023-02-26": 19.65,
+            "2024-02-25": 20.5
+          }
+        },
+        {
+          "step_name": "After 7800 hours",
+          "hours_required": 7800,
+          "months_required": null,
+          "rates": {
+            "2022-02-27": 21.01,
+            "2023-02-26": 21.81,
+            "2024-02-25": 22.61
+          }
+        }
+      ]
+    }
+  },
+  "canonical_wage_rows": [
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "head_meat_cutter",
+      "classification_name": "HEAD MEAT CUTTER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2022-02-27",
+      "rate": 25.28,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "head_meat_cutter",
+      "classification_name": "HEAD MEAT CUTTER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2023-02-26",
+      "rate": 26.08,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "head_meat_cutter",
+      "classification_name": "HEAD MEAT CUTTER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2024-02-25",
+      "rate": 26.88,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "first_cutter",
+      "classification_name": "FIRST CUTTER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2022-02-27",
+      "rate": 23.83,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "first_cutter",
+      "classification_name": "FIRST CUTTER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2023-02-26",
+      "rate": 24.63,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "first_cutter",
+      "classification_name": "FIRST CUTTER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2024-02-25",
+      "rate": 25.43,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_manager",
+      "classification_name": "SEAFOOD MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2022-02-27",
+      "rate": 21.7,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_manager",
+      "classification_name": "SEAFOOD MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2023-02-26",
+      "rate": 22.5,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_manager",
+      "classification_name": "SEAFOOD MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2024-02-25",
+      "rate": 23.3,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_manager",
+      "classification_name": "DELI MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2022-02-27",
+      "rate": 23.24,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_manager",
+      "classification_name": "DELI MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2023-02-26",
+      "rate": 24.04,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_manager",
+      "classification_name": "DELI MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2024-02-25",
+      "rate": 24.84,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
+      "classification_name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2022-02-27",
+      "rate": 21.65,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
+      "classification_name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2023-02-26",
+      "rate": 22.45,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
+      "classification_name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2024-02-25",
+      "rate": 23.25,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "assistant_deli_manager",
+      "classification_name": "ASSISTANT DELI MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2022-02-27",
+      "rate": 21.51,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "assistant_deli_manager",
+      "classification_name": "ASSISTANT DELI MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2023-02-26",
+      "rate": 22.31,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "assistant_deli_manager",
+      "classification_name": "ASSISTANT DELI MANAGER",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2024-02-25",
+      "rate": 23.11,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_lead",
+      "classification_name": "STARBUCKS LEAD",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2022-02-27",
+      "rate": 21.51,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_lead",
+      "classification_name": "STARBUCKS LEAD",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2023-02-26",
+      "rate": 22.31,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_lead",
+      "classification_name": "STARBUCKS LEAD",
+      "step_name": "Rate",
+      "step_type": "fixed",
+      "threshold_value": null,
+      "effective_date": "2024-02-25",
+      "rate": 23.11,
+      "source_method": "table_registry",
+      "row_type": "rate_row",
+      "confidence": 0.9,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2022-02-27",
+      "rate": 16.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 8
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2023-02-26",
+      "rate": 16.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 8
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2024-02-25",
+      "rate": 17.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 8
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2022-02-27",
+      "rate": 16.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 9
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2023-02-26",
+      "rate": 16.95,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 9
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2024-02-25",
+      "rate": 17.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 9
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2022-02-27",
+      "rate": 16.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 10
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2023-02-26",
+      "rate": 17.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 10
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2024-02-25",
+      "rate": 18.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 10
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2022-02-27",
+      "rate": 17.2,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 11
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2023-02-26",
+      "rate": 17.85,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 11
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2024-02-25",
+      "rate": 18.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 11
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2022-02-27",
+      "rate": 17.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 12
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2023-02-26",
+      "rate": 18.3,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 12
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2024-02-25",
+      "rate": 19.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 12
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2022-02-27",
+      "rate": 18.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 13
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2023-02-26",
+      "rate": 18.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 13
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2024-02-25",
+      "rate": 19.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 13
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2022-02-27",
+      "rate": 18.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 14
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2023-02-26",
+      "rate": 19.2,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 14
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2024-02-25",
+      "rate": 20.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 14
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2022-02-27",
+      "rate": 18.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 15
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2023-02-26",
+      "rate": 19.65,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 15
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2024-02-25",
+      "rate": 20.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 15
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2022-02-27",
+      "rate": 23.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 16
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2023-02-26",
+      "rate": 24.3,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 16
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_cutters",
+      "classification_name": "MEAT CUTTERS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2024-02-25",
+      "rate": 25.1,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 16
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2022-02-27",
+      "rate": 16.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 18
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2023-02-26",
+      "rate": 16.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 18
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2024-02-25",
+      "rate": 17.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 18
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2022-02-27",
+      "rate": 16.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 19
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2023-02-26",
+      "rate": 16.95,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 19
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2024-02-25",
+      "rate": 17.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 19
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2022-02-27",
+      "rate": 16.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 20
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2023-02-26",
+      "rate": 17.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 20
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2024-02-25",
+      "rate": 18.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 20
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2022-02-27",
+      "rate": 17.2,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 21
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2023-02-26",
+      "rate": 17.85,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 21
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2024-02-25",
+      "rate": 18.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 21
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2022-02-27",
+      "rate": 17.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 22
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2023-02-26",
+      "rate": 18.3,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 22
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2024-02-25",
+      "rate": 19.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 22
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2022-02-27",
+      "rate": 18.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 23
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2023-02-26",
+      "rate": 18.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 23
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2024-02-25",
+      "rate": 19.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 23
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2022-02-27",
+      "rate": 18.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 24
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2023-02-26",
+      "rate": 19.2,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 24
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2024-02-25",
+      "rate": 20.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 24
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2022-02-27",
+      "rate": 18.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 25
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2023-02-26",
+      "rate": 19.65,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 25
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2024-02-25",
+      "rate": 20.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 25
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2022-02-27",
+      "rate": 21.01,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 26
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2023-02-26",
+      "rate": 21.81,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 26
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "seafood_clerks",
+      "classification_name": "SEAFOOD CLERKS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2024-02-25",
+      "rate": 22.61,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_2",
+        "row_index": 26
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2022-02-27",
+      "rate": 16.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2023-02-26",
+      "rate": 16.95,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2024-02-25",
+      "rate": 17.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 0
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2022-02-27",
+      "rate": 16.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2023-02-26",
+      "rate": 17.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2024-02-25",
+      "rate": 18.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 1
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2022-02-27",
+      "rate": 17.2,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2023-02-26",
+      "rate": 17.85,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2024-02-25",
+      "rate": 18.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 2
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2022-02-27",
+      "rate": 17.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2023-02-26",
+      "rate": 18.3,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2024-02-25",
+      "rate": 19.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 3
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2022-02-27",
+      "rate": 18.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2023-02-26",
+      "rate": 18.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2024-02-25",
+      "rate": 19.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 4
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2022-02-27",
+      "rate": 18.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2023-02-26",
+      "rate": 19.2,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2024-02-25",
+      "rate": 20.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 5
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2022-02-27",
+      "rate": 18.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2023-02-26",
+      "rate": 19.65,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2024-02-25",
+      "rate": 20.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 6
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2022-02-27",
+      "rate": 21.01,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 7
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2023-02-26",
+      "rate": 21.81,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 7
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "meat_wrappers",
+      "classification_name": "MEAT WRAPPERS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2024-02-25",
+      "rate": 22.61,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 7
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2022-02-27",
+      "rate": 16.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 9
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2023-02-26",
+      "rate": 16.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 9
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2024-02-25",
+      "rate": 17.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 9
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2022-02-27",
+      "rate": 16.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 10
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2023-02-26",
+      "rate": 16.95,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 10
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2024-02-25",
+      "rate": 17.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 10
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2022-02-27",
+      "rate": 16.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 11
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2023-02-26",
+      "rate": 17.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 11
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2024-02-25",
+      "rate": 18.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 11
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2022-02-27",
+      "rate": 17.2,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 12
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2023-02-26",
+      "rate": 17.85,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 12
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2024-02-25",
+      "rate": 18.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 12
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2022-02-27",
+      "rate": 17.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 13
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2023-02-26",
+      "rate": 18.3,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 13
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2024-02-25",
+      "rate": 19.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 13
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2022-02-27",
+      "rate": 18.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 14
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2023-02-26",
+      "rate": 18.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 14
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2024-02-25",
+      "rate": 19.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 14
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2022-02-27",
+      "rate": 18.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 15
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2023-02-26",
+      "rate": 19.2,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 15
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2024-02-25",
+      "rate": 20.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 15
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2022-02-27",
+      "rate": 18.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 16
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2023-02-26",
+      "rate": 19.65,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 16
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2024-02-25",
+      "rate": 20.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 16
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2022-02-27",
+      "rate": 21.01,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 17
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2023-02-26",
+      "rate": 21.81,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 17
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "deli_clerks",
+      "classification_name": "DELI CLERKS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2024-02-25",
+      "rate": 22.61,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 17
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2022-02-27",
+      "rate": 16.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 19
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2023-02-26",
+      "rate": 16.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 19
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "Start",
+      "step_type": "hours",
+      "threshold_value": 0,
+      "effective_date": "2024-02-25",
+      "rate": 17.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 19
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2022-02-27",
+      "rate": 16.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 20
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2023-02-26",
+      "rate": 16.95,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 20
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 520 hours",
+      "step_type": "hours",
+      "threshold_value": 520,
+      "effective_date": "2024-02-25",
+      "rate": 17.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 20
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2022-02-27",
+      "rate": 16.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 21
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2023-02-26",
+      "rate": 17.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 21
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 1560 hours",
+      "step_type": "hours",
+      "threshold_value": 1560,
+      "effective_date": "2024-02-25",
+      "rate": 18.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 21
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2022-02-27",
+      "rate": 17.2,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 22
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2023-02-26",
+      "rate": 17.85,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 22
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 2600 hours",
+      "step_type": "hours",
+      "threshold_value": 2600,
+      "effective_date": "2024-02-25",
+      "rate": 18.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 22
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2022-02-27",
+      "rate": 17.6,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 23
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2023-02-26",
+      "rate": 18.3,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 23
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 3640 hours",
+      "step_type": "hours",
+      "threshold_value": 3640,
+      "effective_date": "2024-02-25",
+      "rate": 19.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 23
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2022-02-27",
+      "rate": 18.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 24
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2023-02-26",
+      "rate": 18.75,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 24
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 4680 hours",
+      "step_type": "hours",
+      "threshold_value": 4680,
+      "effective_date": "2024-02-25",
+      "rate": 19.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 24
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2022-02-27",
+      "rate": 18.4,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 25
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2023-02-26",
+      "rate": 19.2,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 25
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 5720 hours",
+      "step_type": "hours",
+      "threshold_value": 5720,
+      "effective_date": "2024-02-25",
+      "rate": 20.0,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 25
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2022-02-27",
+      "rate": 18.8,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 26
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2023-02-26",
+      "rate": 19.65,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 26
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 6760 hours",
+      "step_type": "hours",
+      "threshold_value": 6760,
+      "effective_date": "2024-02-25",
+      "rate": 20.5,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 26
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2022-02-27",
+      "rate": 21.01,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 27
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2023-02-26",
+      "rate": 21.81,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 27
+      }
+    },
+    {
+      "schema_version": "wage_canonical_rows_v1",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "classification_key": "starbucks_clerks",
+      "classification_name": "STARBUCKS CLERKS",
+      "step_name": "After 7800 hours",
+      "step_type": "hours",
+      "threshold_value": 7800,
+      "effective_date": "2024-02-25",
+      "rate": 22.61,
+      "source_method": "table_registry",
+      "row_type": "step_row",
+      "confidence": 0.95,
+      "source_reference": {
+        "table_id": "tbl_art57_3",
+        "row_index": 27
+      }
+    }
+  ],
+  "extraction_metadata": {
+    "method": "table_registry",
+    "candidate_tables": 6,
+    "source_table_ids": [
+      "tbl_art57_2",
+      "tbl_art57_3",
+      "tbl_fallback_art57_1e1c3934",
+      "tbl_fallback_art57_39de5983",
+      "tbl_fallback_art57_44a58bf2",
+      "tbl_fallback_art57_7d2ba970"
+    ],
+    "warnings": [],
+    "row_type_counts": {
+      "rate_row": 14,
+      "classification_header": 8,
+      "step_row": 88,
+      "header": 2,
+      "separator": 7
+    },
+    "unresolved_rows": [],
+    "canonical_conflicts": [],
+    "canonical_ambiguities": [],
+    "step_conflicts": []
+  },
+  "classification_aliases": {
+    "deli_clerk": "deli_clerks",
+    "meat_cutter": "meat_cutters",
+    "assistant_deli_manager": "assistant_deli_manager",
+    "deli_clerks": "deli_clerks",
+    "deli_manager": "deli_manager",
+    "deli_manager_after_5_20_77_directing_5_or_less_deli_employees": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
+    "first_cutter": "first_cutter",
+    "head_meat_cutter": "head_meat_cutter",
+    "meat_cutters": "meat_cutters",
+    "meat_wrappers": "meat_wrappers",
+    "seafood_clerks": "seafood_clerks",
+    "seafood_manager": "seafood_manager",
+    "starbucks_clerks": "starbucks_clerks",
+    "starbucks_lead": "starbucks_lead"
+  },
+  "classification_ontology_summary": {
+    "total_manifest_classes": 5,
+    "resolved_manifest_classes": 2,
+    "clarification_manifest_classes": 0,
+    "out_of_scope_manifest_classes": 3,
+    "unresolved_manifest_classes": 0,
+    "actionable_manifest_classes": 2,
+    "covered_manifest_classes": 2,
+    "coverage": 1.0,
+    "unresolved_manifest_keys": [],
+    "clarification_manifest_keys": [],
+    "out_of_scope_manifest_keys": [
+      "cake_decorator",
+      "courtesy_clerk",
+      "pharmacy_technician"
+    ],
+    "manual_override_count": 0,
+    "manual_review_override_count": 3
+  }
+}

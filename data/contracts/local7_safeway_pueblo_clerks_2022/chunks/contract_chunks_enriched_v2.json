@@ -1,0 +1,202 @@
+[
+  {
+    "chunk_id": "art1_sec1",
+    "contract_id": "safeway_pueblo_clerks_2022",
+    "article_num": 1,
+    "article_title": "RECOGNITION AND EXCLUSIONS\n\nS",
+    "section_num": 1,
+    "subsection": null,
+    "subsection_title": null,
+    "citation": "Article 1, Section 1",
+    "parent_context": "Article 1 (RECOGNITION AND EXCLUSIONS\n\nS) > Section 1 (The Employer recognizes the Union as the sole collective bargaining representative for all employees actively engaged in the handling and selling of merchandise, including part-time workers who work regularly one (1) day or more a week, employed by the Employer in the grocery store or stores owned or operated by the Employer in the metropolitan area of Pueblo, Colorado, but excluding all store managers, two assistant store managers per store, office and clerical employees, meat department employees, delicatessen department employees, demonstrators, watchmen, guards and professional employees and supervisors as defined in the National Labor Relations Act as amended)",
+    "content": "Section 1. The Employer recognizes the Union as the sole collective bargaining representative for all employees actively engaged in the handling and selling of merchandise, including part-time workers who work regularly one (1) day or more a week, employed by the Employer in the grocery store or stores owned or operated by the Employer in the metropolitan area of Pueblo, Colorado, but excluding all store managers, two assistant store managers per store, office and clerical employees, meat department employees, delicatessen department employees, demonstrators, watchmen, guards and professional employees and supervisors as defined in the National Labor Relations Act as amended.\n\nAny new stores opened within the contractual boundaries of this contract shall be accreted to this Agreement.",
+    "char_count": 795,
+    "applies_to": [
+      "all_purpose_clerk"
+    ],
+    "topics": [
+      "job_definitions",
+      "union_rights",
+      "work_jurisdiction",
+      "definitions"
+    ],
+    "cross_references": [],
+    "summary": "Recognizes the union and defines covered employees in Pueblo, CO, excluding specific roles.",
+    "is_definition": true,
+    "is_exception": true,
+    "hire_date_sensitive": false,
+    "is_high_stakes": false,
+    "worker_questions": [
+      "Who does the union represent?",
+      "Does the union represent me?",
+      "Which jobs are covered by the union?",
+      "What kind of employees does the union work with?"
+    ],
+    "alternative_names": [
+      "union",
+      "ufcw",
+      "local 7",
+      "covered employees",
+      "jobs covered",
+      "union jobs",
+      "scope of union"
+    ]
+  },
+  {
+    "chunk_id": "art2_sec2",
+    "contract_id": "safeway_pueblo_clerks_2022",
+    "article_num": 2,
+    "article_title": "BARGAINING UNIT WORK JURISDICTION\n\nS",
+    "section_num": 2,
+    "subsection": null,
+    "subsection_title": null,
+    "citation": "Article 2, Section 2",
+    "parent_context": "Article 2 (BARGAINING UNIT WORK JURISDICTION\n\nS) > Section 2 (All work and services performed in the bargaining unit connected with the handling or selling of merchandise to the public shall be performed exclusively by bargaining unit members except as provided below)",
+    "content": "Section 2. All work and services performed in the bargaining unit connected with the handling or selling of merchandise to the public shall be performed exclusively by bargaining unit members except as provided below. Meat and delicatessen department employees, registered pharmacists, production bakers and demonstrators may continue to perform duties performed before May 1, 1982. Store Managers, Assistant Managers, **and District Operations Managers** can perform all duties in the store. Nothing in this Agreement shall be construed to\n\n1PUEBLO CLERKS\n2022-2025\n\n\n---\n\n\n\nprevent the Employer from placing cash registers in the Deli Department of the store and from assigning the employees of such department to operate the register.\n\nAUTHORIZED WORK FOR VENDORS",
+    "char_count": 766,
+    "applies_to": [
+      "all_purpose_clerk",
+      "meat_cutter",
+      "baker",
+      "all"
+    ],
+    "topics": [
+      "work_jurisdiction",
+      "management_rights",
+      "definitions"
+    ],
+    "cross_references": [],
+    "summary": "This section dictates which work can be done by bargaining unit members and management.",
+    "is_definition": false,
+    "is_exception": true,
+    "hire_date_sensitive": false,
+    "is_high_stakes": false,
+    "worker_questions": [
+      "Who can work in the store?",
+      "Can managers do my job?",
+      "What kind of work is only for union members?"
+    ],
+    "alternative_names": [
+      "work",
+      "job duties",
+      "who does what",
+      "scope of work"
+    ]
+  },
+  {
+    "chunk_id": "art2_sec3_part1",
+    "contract_id": "safeway_pueblo_clerks_2022",
+    "article_num": 2,
+    "article_title": "BARGAINING UNIT WORK JURISDICTION\n\nS",
+    "section_num": 3,
+    "subsection": "part1",
+    "subsection_title": null,
+    "citation": "Article 2, Section 3, Part part1",
+    "parent_context": "Article 2 (BARGAINING UNIT WORK JURISDICTION\n\nS) > Section 3 (Vendor Work: Direct store **delivery** vendors who deliver the product categories of beverages (including juice sold in produce/deli departments), cookies and crackers, bakery, pizza, ice cream, chips, specialty/gourmet/natural foods, **cosmetics, pet accessories,** greeting cards (and related products such as bows, wraps, candles, balloons, ribbons), newspapers, magazines, books and related products shall be allowed to perform all work in connection with the sale of their products directly delivered to the store)",
+    "content": "Section 3. Vendor Work: Direct store **delivery** vendors who deliver the product categories of beverages (including juice sold in produce/deli departments), cookies and crackers, bakery, pizza, ice cream, chips, specialty/gourmet/natural foods, **cosmetics, pet accessories,** greeting cards (and related products such as bows, wraps, candles, balloons, ribbons), newspapers, magazines, books and related products shall be allowed to perform all work in connection with the sale of their products directly delivered to the store. For purposes of this provision, the product categories as used herein shall be interpreted to include all products delivered by such vendor.",
+    "char_count": 671,
+    "applies_to": [
+      "all_purpose_clerk"
+    ],
+    "topics": [
+      "work_jurisdiction",
+      "definitions"
+    ],
+    "cross_references": [],
+    "summary": "Defines vendor work allowed in stores, specifying product categories.",
+    "is_definition": true,
+    "is_exception": false,
+    "hire_date_sensitive": false,
+    "is_high_stakes": false,
+    "worker_questions": [
+      "Who can stock cosmetics in my store?",
+      "Can vendors work in any department?",
+      "What products can vendors stock?",
+      "Can the vendor put the stuff on the shelf?"
+    ],
+    "alternative_names": [
+      "vendor work",
+      "direct store delivery",
+      "dsd",
+      "stocking",
+      "merchandising"
+    ]
+  },
+  {
+    "chunk_id": "art2_sec3_part2",
+    "contract_id": "safeway_pueblo_clerks_2022",
+    "article_num": 2,
+    "article_title": "BARGAINING UNIT WORK JURISDICTION\n\nS",
+    "section_num": 3,
+    "subsection": "part2",
+    "subsection_title": null,
+    "citation": "Article 2, Section 3, Part part2",
+    "parent_context": "Article 2 (BARGAINING UNIT WORK JURISDICTION\n\nS) > Section 3 (Vendor Work: Direct store **delivery** vendors who deliver the product categories of beverages (including juice sold in produce/deli departments), cookies and crackers, bakery, pizza, ice cream, chips, specialty/gourmet/natural foods, **cosmetics, pet accessories,** greeting cards (and related products such as bows, wraps, candles, balloons, ribbons), newspapers, magazines, books and related products shall be allowed to perform all work in connection with the sale of their products directly delivered to the store)",
+    "content": "Additionally, all vendors shall be allowed to stock and otherwise maintain any J-Hook or Chip strip program. Additionally, all vendors may perform: any work in connection with promotional and seasonal displays; facing in connection with the service of product; rotation of product; cleaning of product, shelves and racks; affixing coupons and other promotional materials to products; vendors shall be permitted to perform three (3) major resets per store per section per calendar year. Additionally, vendors may perform work, as necessary to accommodate the introduction of new items, or removal of discontinued items, from the set; checking of code dates and removal of out-dated product; and any work in connection with the opening of a new store and the two (2) week period thereafter, or during the two (2) weeks before and after a store remodel. **All the product delivered to the store from a warehouse owned or operated by, or for the benefit of, the Employer shall be stocked by bargaining unit members with the above exceptions.**",
+    "char_count": 1039,
+    "applies_to": [
+      "all_purpose_clerk",
+      "non_foods_clerk"
+    ],
+    "topics": [
+      "work_jurisdiction",
+      "definitions"
+    ],
+    "cross_references": [],
+    "summary": "Defines vendor work allowed and work to be done by bargaining unit members.",
+    "is_definition": false,
+    "is_exception": true,
+    "hire_date_sensitive": false,
+    "is_high_stakes": false,
+    "worker_questions": [
+      "Who stocks cosmetics and pet supplies?",
+      "Can vendors stock shelves?",
+      "Who stocks the products from the warehouse?"
+    ],
+    "alternative_names": [
+      "vendor work",
+      "stocking",
+      "shelf stocking"
+    ]
+  },
+  {
+    "chunk_id": "art2_sec3_part3",
+    "contract_id": "safeway_pueblo_clerks_2022",
+    "article_num": 2,
+    "article_title": "BARGAINING UNIT WORK JURISDICTION\n\nS",
+    "section_num": 3,
+    "subsection": "part3",
+    "subsection_title": null,
+    "citation": "Article 2, Section 3, Part part3",
+    "parent_context": "Article 2 (BARGAINING UNIT WORK JURISDICTION\n\nS) > Section 3 (Vendor Work: Direct store **delivery** vendors who deliver the product categories of beverages (including juice sold in produce/deli departments), cookies and crackers, bakery, pizza, ice cream, chips, specialty/gourmet/natural foods, **cosmetics, pet accessories,** greeting cards (and related products such as bows, wraps, candles, balloons, ribbons), newspapers, magazines, books and related products shall be allowed to perform all work in connection with the sale of their products directly delivered to the store)",
+    "content": "The Employer agrees not to subcontract operations currently existing within the stores. Subcontracting is defined as a contractual relationship with another employer whereby employees of that employer perform the work of bargaining unit employees. A purchase order is not a subcontracting agreement.",
+    "char_count": 299,
+    "applies_to": [
+      "all_purpose_clerk",
+      "non_foods_clerk"
+    ],
+    "topics": [
+      "work_jurisdiction",
+      "definitions"
+    ],
+    "cross_references": [],
+    "summary": "Prohibits subcontracting of existing in-store operations, defining subcontracting.",
+    "is_definition": true,
+    "is_exception": false,
+    "hire_date_sensitive": false,
+    "is_high_stakes": false,
+    "worker_questions": [
+      "Can they bring in outside workers to do my job?",
+      "What does subcontracting mean?",
+      "Can the store use purchase orders to get around union rules?",
+      "Can vendors stock shelves instead of us?"
+    ],
+    "alternative_names": [
+      "subcontract",
+      "outside workers",
+      "vendor work",
+      "contracting out",
+      "purchase order"
+    ]
+  }
+]

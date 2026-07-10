@@ -1,0 +1,113 @@
+{
+  "schema_version": "entitlement_table_evidence_test_v1",
+  "test_cases": [
+    {
+      "id": "ETE-CL-01",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "hire_date": "2004-01-15",
+      "months_employed": 24,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 2,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-CL-02",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "hire_date": "2006-01-15",
+      "months_employed": 24,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 1,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-CL-03",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "hire_date": "2006-01-15",
+      "months_employed": 36,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 2,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-CL-04",
+      "contract_id": "local7_safeway_pueblo_clerks_2022",
+      "hire_date": "2004-01-15",
+      "months_employed": 240,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 5,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-SM-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "hire_date": "2004-01-15",
+      "months_employed": 24,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 2,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-SM-02",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "hire_date": "2006-01-15",
+      "months_employed": 24,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 1,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-SM-03",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "hire_date": "2006-01-15",
+      "months_employed": 36,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 2,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-SM-04",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "hire_date": "2004-01-15",
+      "months_employed": 240,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 5,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-KS-01",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "hire_date": "2005-03-01",
+      "months_employed": 24,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 2,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-KS-02",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "hire_date": "2005-03-10",
+      "months_employed": 24,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 1,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-KS-03",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "hire_date": "2005-03-10",
+      "months_employed": 36,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 2,
+      "min_evidence_rows": 1
+    },
+    {
+      "id": "ETE-KS-04",
+      "contract_id": "local7_kingsoopers_loveland_meat_2019",
+      "hire_date": "2005-03-01",
+      "months_employed": 240,
+      "hours_worked": 1800,
+      "expected_weeks_per_year": 5,
+      "min_evidence_rows": 1
+    }
+  ]
+}

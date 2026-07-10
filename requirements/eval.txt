@@ -1,0 +1,6 @@
+# KARL evaluation profile (extends base runtime)
+-r base.txt
+
+# Evaluation (RAGAS)
+ragas==0.2.8
+datasets==3.2.0

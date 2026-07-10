@@ -39,6 +39,7 @@ from backend.config import (
     GEMINI_API_KEY,
     INTERPRETER_MODEL,
     MANIFESTS_DIR,
+    CONTRACT_ID,
 )
 
 try:
@@ -153,7 +154,7 @@ class QueryInterpreter:
     def __init__(self):
         """Initialize the query interpreter."""
         self._client = None
-        self._article_titles = None
+        self._article_titles: Dict[str, Dict[int, str]] = {}
 
     def _ensure_client(self):
         """Lazy-load the Gemini client."""
@@ -164,23 +165,23 @@ class QueryInterpreter:
             if api_key:
                 self._client = genai.Client(api_key=api_key)
 
-    def _load_article_titles(self) -> Dict[int, str]:
+    def _load_article_titles(self, contract_id: str = CONTRACT_ID) -> Dict[int, str]:
         """Load article titles for reference extraction."""
-        if self._article_titles is None:
+        if contract_id not in self._article_titles:
             try:
-                manifest_file = MANIFESTS_DIR / "safeway_pueblo_clerks_2022.json"
+                manifest_file = MANIFESTS_DIR / f"{contract_id}.json"
                 if manifest_file.exists():
                     with open(manifest_file, 'r', encoding='utf-8') as f:
                         manifest = json.load(f)
-                        self._article_titles = {
+                        self._article_titles[contract_id] = {
                             int(k): v for k, v in
                             manifest.get('article_titles', {}).items()
                         }
                 else:
-                    self._article_titles = {}
+                    self._article_titles[contract_id] = {}
             except Exception:
-                self._article_titles = {}
-        return self._article_titles
+                self._article_titles[contract_id] = {}
+        return self._article_titles[contract_id]
 
     def _extract_explicit_articles(self, query: str) -> List[int]:
         """Extract explicit article references from query."""
@@ -202,7 +203,7 @@ class QueryInterpreter:
 
         return list(set(articles))
 
-    def interpret(self, query: str) -> QueryInterpretation:
+    def interpret(self, query: str, contract_id: str = CONTRACT_ID) -> QueryInterpretation:
         """
         Interpret a user query to extract structured understanding.
 
@@ -213,6 +214,8 @@ class QueryInterpreter:
             QueryInterpretation with extracted information
         """
         start_time = time.time()
+        # Warm contract-specific manifest cache for future title-guided behavior.
+        self._load_article_titles(contract_id=contract_id)
 
         # Always extract explicit article references (fast, no LLM needed)
         explicit_articles = self._extract_explicit_articles(query)

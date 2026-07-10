@@ -17,9 +17,36 @@ CHUNKS_DIR = DATA_DIR / "chunks"
 WAGES_DIR = DATA_DIR / "wages"
 TEST_SET_DIR = DATA_DIR / "test_set"
 TABLES_DIR = DATA_DIR / "tables"
+MANIFESTS_DIR = DATA_DIR / "manifests"
+ONTOLOGIES_DIR = DATA_DIR / "ontologies"
+ENTITLEMENTS_DIR = DATA_DIR / "entitlements"
+
+
+def _discover_default_contract_id() -> str:
+    """
+    Resolve default contract in this order:
+    1) explicit env override
+    2) legacy benchmark default when present
+    3) first manifest found in data/manifests
+    4) legacy fallback for bootstrap environments
+    """
+    for env_name in ("KARL_CONTRACT_ID", "CONTRACT_ID"):
+        value = os.getenv(env_name, "").strip()
+        if value:
+            return value
+
+    legacy_default = "safeway_pueblo_clerks_2022"
+    if (MANIFESTS_DIR / f"{legacy_default}.json").exists():
+        return legacy_default
+
+    manifests = sorted(MANIFESTS_DIR.glob("*.json"))
+    if manifests:
+        return manifests[0].stem
+
+    return legacy_default
 
 # Contract settings
-CONTRACT_ID = "safeway_pueblo_clerks_2022"
+CONTRACT_ID = _discover_default_contract_id()
 CONTRACT_MD_FILE = PROJECT_ROOT / "SW+Pueblo+Clerks+2022.2025.md"
 CONTRACT_JSON_FILE = PROJECT_ROOT / "SW+Pueblo+Clerks+2022.2025.json"
 
@@ -48,13 +75,15 @@ HIGH_STAKES_TOPICS = [
 # =============================================================================
 
 # Feature flags for gradual rollout (start disabled, enable after testing)
-CAG_ENABLE_HYPOTHESIS_LAYER = True       # Phase 2: LLM hypothesis generation
-CAG_ENABLE_FULL_ARTICLE_EXPANSION = True  # Phase 3: Fetch all chunks from winning article
-CAG_ENABLE_TITLE_BOOSTING = True          # Phase 2: Boost chunks matching hypothesized titles
+# v1.5 LEAN CONFIG: Based on ablation analysis, these features were adding noise, not signal
+CAG_ENABLE_HYPOTHESIS_LAYER = False      # DISABLED: Ablation showed +1.8% accuracy without it
+CAG_ENABLE_FULL_ARTICLE_EXPANSION = False  # DISABLED: Ablation showed +5.9% on Multi-Hop without it
+CAG_ENABLE_TITLE_BOOSTING = False          # DISABLED: Depends on hypothesis layer
 
 # Hybrid Search Tuning (Phase 1)
-HYBRID_VECTOR_WEIGHT = 1.0   # Was 1.2 - equalize for better RRF fusion
-HYBRID_KEYWORD_WEIGHT = 1.0  # Was 0.8 - equalize for better RRF fusion
+# v1.5 LEAN: Pure vector search outperformed hybrid fusion
+HYBRID_VECTOR_WEIGHT = float(os.getenv("KARL_HYBRID_VECTOR_WEIGHT", "1.0"))   # Vector search (semantic)
+HYBRID_KEYWORD_WEIGHT = float(os.getenv("KARL_HYBRID_KEYWORD_WEIGHT", "0.0"))  # BM25 keyword search
 BM25_K1 = 1.8                # Was 1.5 - higher saturation for legal docs with repeated terms
 BM25_B = 0.75                # Document length normalization (keep default)
 
@@ -76,9 +105,6 @@ MULTI_QUERY_MAX_SEARCHES = 3           # Max number of search angles to try
 MULTI_QUERY_RESULTS_PER_SEARCH = 5     # Results per search angle
 MULTI_QUERY_TOTAL_RESULTS = 10         # Total unique results after merging
 
-# Manifests directory for article titles
-MANIFESTS_DIR = DATA_DIR / "manifests"
-
 # =============================================================================
 # LLM Reranker Configuration (Phase 5)
 # =============================================================================
@@ -90,4 +116,3 @@ RERANKER_ORIGINAL_WEIGHT = 0.3         # Weight for original similarity score
 RERANKER_LLM_WEIGHT = 0.7              # Weight for LLM relevance score
 RERANKER_MAX_CHUNKS = 15               # Max chunks to rerank per call
 RERANKER_CONTENT_TRUNCATE = 500        # Max chars per chunk in prompt
-

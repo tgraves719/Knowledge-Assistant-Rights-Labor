@@ -1,4 +1,13 @@
-KARL is free software developed for the benefit of workers and unions.
+KARL — Knowledge Assistant for Rights & Labor
+Free software developed for the benefit of workers and unions.
 
-Copyright © 2025 KARL Contributors
-Licensed under the GNU Affero General Public License v3.0
+Copyright © 2025–2026 Thomas Joseph Graves and KARL contributors.
+
+Contributors retain copyright to their own contributions and license them to the
+public under the GNU Affero General Public License v3.0. Under the Contributor
+License Agreement (legal/CLA.md), contributors additionally grant the Project
+Steward (Thomas Joseph Graves) a non-exclusive right to license those contributions under
+additional terms, including the commercial license (legal/COMMERCIAL-LICENSE.md).
+
+Licensed to the public under the GNU Affero General Public License v3.0.
+See the LICENSE file at the repository root.

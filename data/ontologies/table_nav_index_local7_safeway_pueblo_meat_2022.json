@@ -1,0 +1,252 @@
+{
+  "schema_version": "table_nav_index_v1",
+  "contract_id": "local7_safeway_pueblo_meat_2022",
+  "generated_at": "2026-02-19T11:31:36.382200+00:00",
+  "source_json": "safeway_local7_meat_2022.json",
+  "structured_tables": "structured_tables.json",
+  "total_pages": 70,
+  "table_pages": {
+    "tbl_art42_1": 37,
+    "tbl_art42_2": 38,
+    "tbl_art42_3": 42,
+    "tbl_art42_4": 43,
+    "tbl_art42_5": 43,
+    "tbl_art57_1": 58,
+    "tbl_art57_2": 60,
+    "tbl_art57_3": 61,
+    "tbl_art57_4": 65,
+    "tbl_art57_5": 65,
+    "tbl_art57_6": 65,
+    "tbl_art57_7": 69,
+    "tbl_art57_8": 70,
+    "tbl_art57_9": 70
+  },
+  "table_meta": {
+    "tbl_art42_1": {
+      "article_num": 42,
+      "section_num": 126,
+      "json_path": "pages[36].items[5]",
+      "heading_path": [
+        "401K PLAN"
+      ],
+      "heading_leaf": "401K PLAN",
+      "row_count": 5,
+      "is_perfect_table": false
+    },
+    "tbl_art42_2": {
+      "article_num": 42,
+      "section_num": 126,
+      "json_path": "pages[37].items[3]",
+      "heading_path": [
+        "401K PLAN"
+      ],
+      "heading_leaf": "401K PLAN",
+      "row_count": 12,
+      "is_perfect_table": false
+    },
+    "tbl_art42_3": {
+      "article_num": 42,
+      "section_num": 126,
+      "json_path": "pages[41].items[2]",
+      "heading_path": [
+        "<u>Health and Care Management</u>"
+      ],
+      "heading_leaf": "<u>Health and Care Management</u>",
+      "row_count": 0,
+      "is_perfect_table": false
+    },
+    "tbl_art42_4": {
+      "article_num": 42,
+      "section_num": 126,
+      "json_path": "pages[42].items[0]",
+      "heading_path": [
+        "<u>Health and Care Management</u>"
+      ],
+      "heading_leaf": "<u>Health and Care Management</u>",
+      "row_count": 2,
+      "is_perfect_table": false
+    },
+    "tbl_art42_5": {
+      "article_num": 42,
+      "section_num": 126,
+      "json_path": "pages[42].items[3]",
+      "heading_path": [
+        "<u>Health and Care Management</u>"
+      ],
+      "heading_leaf": "<u>Health and Care Management</u>",
+      "row_count": 7,
+      "is_perfect_table": false
+    },
+    "tbl_art57_1": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "pages[57].items[1]",
+      "heading_path": [
+        "SCHEDULE OF BENEFITS – EFFECTIVE JANUARY 1, 2016"
+      ],
+      "heading_leaf": "SCHEDULE OF BENEFITS – EFFECTIVE JANUARY 1, 2016",
+      "row_count": 14,
+      "is_perfect_table": false
+    },
+    "tbl_art57_2": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "pages[59].items[1]",
+      "heading_path": [
+        "Safeway Pueblo Meat"
+      ],
+      "heading_leaf": "Safeway Pueblo Meat",
+      "row_count": 30,
+      "is_perfect_table": false
+    },
+    "tbl_art57_3": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "pages[60].items[0]",
+      "heading_path": [
+        "Safeway Pueblo Meat"
+      ],
+      "heading_leaf": "Safeway Pueblo Meat",
+      "row_count": 28,
+      "is_perfect_table": false
+    },
+    "tbl_art57_4": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "pages[64].items[3]",
+      "heading_path": [
+        "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+      ],
+      "heading_leaf": "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH",
+      "row_count": 2,
+      "is_perfect_table": false
+    },
+    "tbl_art57_5": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "pages[64].items[10]",
+      "heading_path": [
+        "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+      ],
+      "heading_leaf": "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH",
+      "row_count": 1,
+      "is_perfect_table": false
+    },
+    "tbl_art57_6": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "pages[64].items[12]",
+      "heading_path": [
+        "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+      ],
+      "heading_leaf": "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH",
+      "row_count": 1,
+      "is_perfect_table": false
+    },
+    "tbl_art57_7": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "pages[68].items[4]",
+      "heading_path": [
+        "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+      ],
+      "heading_leaf": "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH",
+      "row_count": 2,
+      "is_perfect_table": false
+    },
+    "tbl_art57_8": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "pages[69].items[2]",
+      "heading_path": [
+        "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+      ],
+      "heading_leaf": "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH",
+      "row_count": 2,
+      "is_perfect_table": false
+    },
+    "tbl_art57_9": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "pages[69].items[4]",
+      "heading_path": [
+        "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH"
+      ],
+      "heading_leaf": "PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH",
+      "row_count": 2,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art57_fef10c83": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "chunks[239].fallback_html_tables[0]",
+      "heading_path": [
+        "Article 57 (TERM OF AGREEMENT) > Section 169 (In the event of an Act of God or natural disaster (“Emergency”) having a material and continuing impact upon either the Employer’s facilities or the geographic area defined in A) > Part 3",
+        "TERM OF AGREEMENT",
+        "Article 57, Section 169, Part 3"
+      ],
+      "heading_leaf": "Article 57, Section 169, Part 3",
+      "row_count": 14,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art57_7d2ba970": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "chunks[246].fallback_html_tables[0]",
+      "heading_path": [
+        "Article 57 (TERM OF AGREEMENT) > Section 169 (In the event of an Act of God or natural disaster (“Emergency”) having a material and continuing impact upon either the Employer’s facilities or the geographic area defined in A) > Part 10",
+        "TERM OF AGREEMENT",
+        "Article 57, Section 169, Part 10"
+      ],
+      "heading_leaf": "Article 57, Section 169, Part 10",
+      "row_count": 35,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art57_1e1c3934": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "chunks[247].fallback_html_tables[0]",
+      "heading_path": [
+        "Article 57 (TERM OF AGREEMENT) > Section 169 (In the event of an Act of God or natural disaster (“Emergency”) having a material and continuing impact upon either the Employer’s facilities or the geographic area defined in A) > Part 11",
+        "TERM OF AGREEMENT",
+        "Article 57, Section 169, Part 11"
+      ],
+      "heading_leaf": "Article 57, Section 169, Part 11",
+      "row_count": 8,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art57_39de5983": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "chunks[247].fallback_html_tables[1]",
+      "heading_path": [
+        "Article 57 (TERM OF AGREEMENT) > Section 169 (In the event of an Act of God or natural disaster (“Emergency”) having a material and continuing impact upon either the Employer’s facilities or the geographic area defined in A) > Part 11",
+        "TERM OF AGREEMENT",
+        "Article 57, Section 169, Part 11"
+      ],
+      "heading_leaf": "Article 57, Section 169, Part 11",
+      "row_count": 9,
+      "is_perfect_table": false
+    },
+    "tbl_fallback_art57_44a58bf2": {
+      "article_num": 57,
+      "section_num": 169,
+      "json_path": "chunks[247].fallback_html_tables[2]",
+      "heading_path": [
+        "Article 57 (TERM OF AGREEMENT) > Section 169 (In the event of an Act of God or natural disaster (“Emergency”) having a material and continuing impact upon either the Employer’s facilities or the geographic area defined in A) > Part 11",
+        "TERM OF AGREEMENT",
+        "Article 57, Section 169, Part 11"
+      ],
+      "heading_leaf": "Article 57, Section 169, Part 11",
+      "row_count": 9,
+      "is_perfect_table": false
+    }
+  },
+  "stats": {
+    "tables_total": 19,
+    "tables_with_page": 14,
+    "tables_with_article": 19,
+    "tables_with_section": 19,
+    "source_pages": 70
+  }
+}

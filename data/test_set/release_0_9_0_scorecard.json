@@ -1,0 +1,232 @@
+{
+  "advisories": {
+    "base_chunk_lineage": {
+      "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\base_chunk_lineage_report.json",
+      "sample_high_risk_contracts": [],
+      "schema_version": "base_chunk_lineage_report_v1",
+      "status": "ok",
+      "summary": {
+        "base_equals_effective": 0,
+        "high_risk": 0,
+        "low_risk": 4,
+        "medium_risk": 0,
+        "missing_base_chunk": 1,
+        "patched_section_equal_all": 0,
+        "total_contracts": 4
+      },
+      "warning": false
+    },
+    "contract_text_compare_amended": {
+      "coverage": {
+        "approved_replace_section_ops_covered": 2,
+        "approved_replace_section_ops_total": 2,
+        "contract_coverage_rate": 1.0,
+        "missing_targets_count": 0,
+        "operation_coverage_rate": 1.0,
+        "uncovered_contracts": []
+      },
+      "dataset_schema_version": "contract_text_compare_amended_targets_test_v1",
+      "overall": {
+        "pass": true,
+        "pass_rate": 1.0,
+        "passed": 2,
+        "total": 2
+      },
+      "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\contract_text_compare_amended_results.json",
+      "schema_version": "contract_text_compare_amended_eval_v1",
+      "status": "ok",
+      "warning": false
+    }
+  },
+  "components": {
+    "api_effective_payload_contract_history": {
+      "details": {
+        "api_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\backend\\api.py",
+        "missing_query_response_fields": [],
+        "missing_verifier_tokens": [],
+        "pass": true,
+        "query_response_fields": [
+          "active_urgent_context",
+          "amendments_applied",
+          "answer",
+          "citations",
+          "confidence",
+          "contract_id",
+          "contract_version",
+          "effective_content_hash",
+          "effective_version_id",
+          "entitlement_info",
+          "escalation_policy",
+          "escalation_required",
+          "followup_context_used",
+          "full_article_expanded",
+          "high_stakes_topic",
+          "hypothesis_latency_ms",
+          "hypothesis_titles",
+          "intent_type",
+          "interpretation_latency_ms",
+          "reranker_latency_ms",
+          "reranker_position_changes",
+          "retrieval_anchor_count",
+          "retrieval_plan",
+          "retrieval_retry_used",
+          "retrieval_strategy",
+          "role_clarification",
+          "search_angles_used",
+          "sources",
+          "union_local_id",
+          "verification_passed",
+          "wage_info",
+          "winning_article"
+        ],
+        "verifier_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\backend\\generation\\verifier.py"
+      },
+      "pass": true
+    },
+    "manifest_validation_clean": {
+      "details": {
+        "pass": true,
+        "return_code": 0,
+        "skipped": false
+      },
+      "pass": true
+    },
+    "miss_record_integrity_green": {
+      "details": {
+        "pass": true,
+        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\miss_record_integrity_results.json",
+        "records_present": true,
+        "records_total": 2,
+        "regression_added_total": 2,
+        "regression_link_coverage_rate": 1.0,
+        "regression_linked_total": 2
+      },
+      "pass": true
+    },
+    "moa_citation_provenance_source_type": {
+      "details": {
+        "pass": true,
+        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json",
+        "source_type_match_rate": 1.0,
+        "threshold": 0.95
+      },
+      "pass": true
+    },
+    "moa_deep_suite_green": {
+      "details": {
+        "commands_total": 19,
+        "pass": true,
+        "pass_rate": 1.0,
+        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deep_eval_suite_results.json"
+      },
+      "pass": true
+    },
+    "moa_deleted_vs_updated_answer_regression": {
+      "details": {
+        "dataset_schema_version": "moa_deleted_vs_updated_test_v1",
+        "deleted_clause_pass_rate": 1.0,
+        "gate_pass": true,
+        "overall_pass_rate": 1.0,
+        "pass": true,
+        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_answer_results.json",
+        "schema_version": "moa_deleted_vs_updated_answer_eval_v1",
+        "source_type_match_rate": 1.0,
+        "thresholds": {
+          "deleted_clause_pass_rate": 1.0,
+          "overall_pass_rate": 1.0,
+          "source_type_match_rate": 1.0,
+          "updated_clause_pass_rate": 1.0
+        },
+        "updated_clause_pass_rate": 1.0
+      },
+      "pass": true
+    },
+    "moa_deleted_vs_updated_regression": {
+      "details": {
+        "deleted_clause_pass_rate": 1.0,
+        "gate_pass": true,
+        "overall_pass_rate": 1.0,
+        "pass": true,
+        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json",
+        "thresholds": {
+          "deleted_clause_pass_rate": 1.0,
+          "overall_pass_rate": 1.0,
+          "updated_clause_pass_rate": 1.0,
+          "updated_moa_source_type_match_rate": 1.0
+        },
+        "updated_clause_pass_rate": 1.0,
+        "updated_moa_source_type_cases": 2,
+        "updated_moa_source_type_match_rate": 1.0
+      },
+      "pass": true
+    },
+    "moa_readiness_green": {
+      "details": {
+        "gate_pass": true,
+        "moa_deleted_vs_updated_answer_gate": true,
+        "moa_deleted_vs_updated_gate": true,
+        "moa_effective_deep_pass_rate_gate": true,
+        "moa_effective_pass_rate_gate": true,
+        "pass": true,
+        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_readiness_results.json",
+        "tests_and_commands_ok": true
+      },
+      "pass": true
+    },
+    "runner_track_all_green": {
+      "details": {
+        "command_count": 23,
+        "failing_commands": [],
+        "manifest_validation_return_code": 0,
+        "missing_required_commands": [],
+        "pass": true,
+        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\eval_run_metadata_all_20260309T103342Z.json",
+        "track": "all"
+      },
+      "pass": true
+    },
+    "v3_green": {
+      "details": {
+        "components_total": 18,
+        "pass": true,
+        "pass_rate": 1.0,
+        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\v3_results.json",
+        "retrieval_stage_consistency_pass": true,
+        "retrieval_stage_consistency_present": true
+      },
+      "pass": true
+    }
+  },
+  "inputs": {
+    "api_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\backend\\api.py",
+    "base_chunk_lineage_results": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\base_chunk_lineage_report.json",
+    "contract_text_compare_amended_results": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\contract_text_compare_amended_results.json",
+    "eval_runner_metadata": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\eval_run_metadata_all_20260309T103342Z.json",
+    "min_moa_deleted_vs_updated_answer_deleted_pass_rate": 1.0,
+    "min_moa_deleted_vs_updated_answer_overall_pass_rate": 1.0,
+    "min_moa_deleted_vs_updated_answer_source_type_match_rate": 1.0,
+    "min_moa_deleted_vs_updated_answer_updated_pass_rate": 1.0,
+    "min_moa_deleted_vs_updated_deleted_pass_rate": 1.0,
+    "min_moa_deleted_vs_updated_overall_pass_rate": 1.0,
+    "min_moa_deleted_vs_updated_updated_moa_source_type_match_rate": 1.0,
+    "min_moa_deleted_vs_updated_updated_pass_rate": 1.0,
+    "min_moa_source_type_match_rate": 0.95,
+    "miss_record_integrity_results": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\miss_record_integrity_results.json",
+    "moa_deep_results": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deep_eval_suite_results.json",
+    "moa_deleted_vs_updated_answer_results": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_answer_results.json",
+    "moa_deleted_vs_updated_results": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json",
+    "moa_effective_results": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_results.json",
+    "moa_readiness_results": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_readiness_results.json",
+    "skip_manifest_validation": false,
+    "skip_track_all_metadata": false,
+    "v3_results": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\v3_results.json",
+    "verifier_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\backend\\generation\\verifier.py"
+  },
+  "overall": {
+    "components_passed": 10,
+    "components_total": 10,
+    "pass": true,
+    "pass_rate": 1.0
+  },
+  "schema_version": "release_090_scorecard_v2"
+}
