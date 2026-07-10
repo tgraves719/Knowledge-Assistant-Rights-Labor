@@ -1786,7 +1786,7 @@ async def _synthesize_platform_query_answer(
     )
     synthesis_ms = int((time.perf_counter() - started) * 1000)
     normalized = _strip_platform_source_footer(str(answer or "").strip())
-    if not normalized or _is_unavailable_answer(normalized):
+    if not normalized or _is_unsynthesized_answer(normalized):
         detail = str((response_meta or {}).get("detail") or "").strip()
         diagnostic_bits = []
         retrieval_ms = query_state.get("retrieval_latency_ms")
@@ -2121,12 +2121,35 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
 
 
 def _is_unavailable_answer(text: str) -> bool:
-    """Detect uncertainty/unavailability phrasing in model output."""
+    """True when the answer delivers no usable contract content — a genuine abstention.
+
+    This is a *content* judgment. It must stay False for the chunk-grounded fallback produced
+    by ``generate_fallback_response`` (which surfaces real contract sections with citations):
+    that answer is degraded, not empty, and mislabeling it as an abstention causes false
+    negatives (e.g. an MOA-updated clause that KARL correctly surfaced would read as "not
+    found"). To detect that the model failed to *synthesize* — for recovery/fallback control
+    flow — use :func:`_is_unsynthesized_answer` instead.
+    """
     value = str(text or "").strip().lower()
     if not value:
         return False
     # Evaluate only opening span to avoid matching quoted contract text deep in
     # evidence-heavy responses.
+    head = value[:320]
+    return any(re.search(pattern, head) for pattern in _UNAVAILABLE_ANSWER_PATTERNS)
+
+
+def _is_unsynthesized_answer(text: str) -> bool:
+    """True when the model did not produce a synthesized answer.
+
+    Superset of :func:`_is_unavailable_answer`: also matches the deterministic chunk-grounded
+    fallback (``generate_fallback_response``), which delivers real content but explicitly did
+    not synthesize. Used only at recovery/fallback decision points to decide whether to retry
+    or substitute a deterministic answer — never as a judgment that the answer lacks content.
+    """
+    value = str(text or "").strip().lower()
+    if not value:
+        return False
     head = value[:320]
     if "i found the following relevant sections from your contract" in head:
         return True
@@ -4021,7 +4044,7 @@ async def query_contract(request: QueryRequest):
         topic=intent.topic,
         foreign_contract_reference=foreign_contract_reference,
     )
-    if _is_unavailable_answer(answer) and not escalation_required and retry_candidate_evidence_present:
+    if _is_unsynthesized_answer(answer) and not escalation_required and retry_candidate_evidence_present:
         # Recovery should be deterministic and stable. Use single-angle retrieval
         # here to avoid stochastic query-interpretation drift in second-pass rescue.
         retrieval_retry_used = True
@@ -4131,7 +4154,7 @@ async def query_contract(request: QueryRequest):
             topic=intent.topic,
             foreign_contract_reference=foreign_contract_reference,
         )
-        if _is_unavailable_answer(answer) and recovery_evidence_present:
+        if _is_unsynthesized_answer(answer) and recovery_evidence_present:
             answer = generate_fallback_response(
                 chunks,
                 question=request.question,

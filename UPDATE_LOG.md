@@ -45,10 +45,36 @@ requires. Prepares the production platform lineage for consolidation into the ca
   model and CLA requirement.
 - Project Steward of record: Thomas Joseph Graves (Colorado, USA).
 
+### Evaluation Harness & Recovery Detector Fixes (surfaced by first clean CI run)
+
+Consolidating the platform lineage onto the canonical repo ran the full eval CI for the first
+time, exposing two latent defects that shipped with the platform foundation (commit `9b15ef2`):
+
+- **Stale eval stubs.** Four evaluators (`evaluate_unanswerable`, `evaluate_false_unavailable`,
+  `evaluate_moa_deleted_vs_updated_answer`, `evaluate_followup_role_wage`) monkeypatch
+  `generate_response` and crashed with a `TypeError` once the real signature gained
+  `union_local_id`. Stubs now accept `*args, **kwargs`.
+- **Recovery answer mislabeled as unavailable.** A new `_is_unavailable_answer` rule classified
+  the deterministic chunk-grounded fallback (`generate_fallback_response`) — which surfaces real
+  contract sections with citations — as an abstention. This failed MOA "updated"-clause answer
+  cases and, in production, mislabels a content-bearing answer whenever the LLM is degraded.
+  Split into `_is_unavailable_answer` (genuine no-content abstention; consumed by
+  evals/quality judgment) and `_is_unsynthesized_answer` (LLM-failed-to-synthesize; drives
+  recovery/fallback control flow). Production control flow is unchanged — recovery decision
+  points use the latter, preserving prior behavior exactly.
+
+Verified: `moa_deep_suite` green; `unanswerable` 12/12, `false_unavailable` 15/15 (recover
+12/12, uncertain 3/3), `followup_role_wage` 14/14, `cross_contract_mentions` 9/9,
+`moa_deleted_vs_updated_answer` 4/4 (updated 2/2, deleted 2/2).
+
 ### Notes
 
 - `legal/instruments/` (print-ready CLA/acceptance document) is prepared but intentionally left
   uncommitted pending design review.
+- Known follow-up: `backend/platform/` shadows the stdlib `platform` module when a script is run
+  with `backend/` on `sys.path[0]` (e.g. `python backend/test_unavailability_recovery.py`).
+  Run such tests in module form (`python -m backend.test_unavailability_recovery`) until the
+  package is renamed or the test invocation is fixed.
 
 ## v0.9.0 - MOA Amendment Handling, Real-User Correction Infrastructure, Effective Contract Materialization (March 17, 2026)
 
