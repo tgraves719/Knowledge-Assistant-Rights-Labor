@@ -48,7 +48,8 @@ requires. Prepares the production platform lineage for consolidation into the ca
 ### Evaluation Harness & Recovery Detector Fixes (surfaced by first clean CI run)
 
 Consolidating the platform lineage onto the canonical repo ran the full eval CI for the first
-time, exposing two latent defects that shipped with the platform foundation (commit `9b15ef2`):
+time, exposing several latent defects that shipped with the v0.9.0 platform lineage
+(`e7a126b`–`9b15ef2`):
 
 - **Stale eval stubs.** Four evaluators (`evaluate_unanswerable`, `evaluate_false_unavailable`,
   `evaluate_moa_deleted_vs_updated_answer`, `evaluate_followup_role_wage`) monkeypatch
@@ -62,6 +63,10 @@ time, exposing two latent defects that shipped with the platform foundation (com
   evals/quality judgment) and `_is_unsynthesized_answer` (LLM-failed-to-synthesize; drives
   recovery/fallback control flow). Production control flow is unchanged — recovery decision
   points use the latter, preserving prior behavior exactly.
+- **Release-gate schema drift.** `evaluate_release_090` has emitted `release_090_scorecard_v2`
+  since v0.9.0, but `evaluate_gate_check`'s default `--required-release-090-schema-version` still
+  expected `v1` — and CI relies on that default — so the gate blocked on a version mismatch even
+  though every threshold passed. Default (and the README example) bumped to `v2`.
 
 Verified: `moa_deep_suite` green; `unanswerable` 12/12, `false_unavailable` 15/15 (recover
 12/12, uncertain 3/3), `followup_role_wage` 14/14, `cross_contract_mentions` 9/9,

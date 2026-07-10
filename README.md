@@ -696,7 +696,7 @@ python -m backend.evaluate_gate_check \
   --min-moa-deleted-vs-updated-updated-pass-rate 1.00 \
   --min-moa-deleted-vs-updated-deleted-pass-rate 1.00 \
   --min-moa-deleted-vs-updated-updated-moa-source-type-match-rate 1.00 \
-  --required-release-090-schema-version release_090_scorecard_v1 \
+  --required-release-090-schema-version release_090_scorecard_v2 \
   --min-release-090-components-pass-rate 1.00 \
   --required-wage-table-evidence-dataset-schema-version wage_table_evidence_test_v1 \
   --min-wage-table-evidence-total-cases 12 \

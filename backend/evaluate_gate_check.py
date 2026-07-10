@@ -1441,7 +1441,7 @@ def main():
     parser.add_argument("--min-moa-deleted-vs-updated-updated-pass-rate", type=float, default=1.0)
     parser.add_argument("--min-moa-deleted-vs-updated-deleted-pass-rate", type=float, default=1.0)
     parser.add_argument("--min-moa-deleted-vs-updated-updated-moa-source-type-match-rate", type=float, default=1.0)
-    parser.add_argument("--required-release-090-schema-version", default="release_090_scorecard_v1")
+    parser.add_argument("--required-release-090-schema-version", default="release_090_scorecard_v2")
     parser.add_argument("--min-release-090-components-pass-rate", type=float, default=1.0)
     parser.add_argument(
         "--allow-missing-cross-contamination",
