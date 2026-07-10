@@ -119,7 +119,7 @@ async def _run_async(payload: dict, bm25_only: bool) -> dict:
 
         api_module.retriever = HybridRetriever(vector_store=None)
 
-        async def _forced_unavailable(_: str, __: str, ___: Optional[list] = None) -> str:
+        async def _forced_unavailable(*_args, **_kwargs) -> str:
             return "I cannot find that specific information in your contract."
 
         # Deterministic mode: force first-pass unavailable so runtime fallback/

@@ -55,7 +55,7 @@ async def _run_async(payload: dict, bm25_only: bool) -> dict:
 
         api_module.retriever = HybridRetriever(vector_store=None)
 
-        async def _deterministic_generate(_: str, __: str, ___: Optional[list] = None) -> str:
+        async def _deterministic_generate(*_args, **_kwargs) -> str:
             return "I will use the contract wage table evidence for this question."
 
         api_module.generate_response = _deterministic_generate

@@ -72,7 +72,7 @@ async def _run_async(
 
         api_module.retriever = HybridRetriever(vector_store=None)
 
-        async def _forced_unavailable(_: str, __: str, ___: Optional[list] = None) -> str:
+        async def _forced_unavailable(*_args, **_kwargs) -> str:
             return "I cannot find that specific information in your contract."
 
         api_module.generate_response = _forced_unavailable
