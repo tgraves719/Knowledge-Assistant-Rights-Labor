@@ -148,7 +148,7 @@ jobs:
         run: python -m backend.test_contract_isolation
 
       - name: Run deterministic topic routing checks
-        run: python backend/test_topic_routing.py
+        run: python -m backend.test_topic_routing
 
       - name: Run cross-contamination evaluator
         run: python -m backend.evaluate_cross_contamination
@@ -379,7 +379,7 @@ jobs:
         run: python -m backend.evaluate_release_090 --skip-track-all-metadata
 
       - name: Run deterministic topic routing checks
-        run: python backend/test_topic_routing.py
+        run: python -m backend.test_topic_routing
 
       - name: Enforce release-gate thresholds
         run: |

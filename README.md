@@ -482,7 +482,7 @@ python -m backend.evaluate_runner --track cross_contract_mentions
 python -m backend.validate_cross_contract_mentions_dataset
 
 # Formal/non-slang routing drift checks (PF-01/PF-15-style phrasing)
-python backend/test_topic_routing.py
+python -m backend.test_topic_routing
 
 # False-unavailable guard slice (forced unavailable first pass + deterministic recovery)
 python -m backend.evaluate_runner --track false_unavailable
@@ -761,13 +761,13 @@ python -m backend.test_contract_isolation
 ### Query-routing ingestion check
 
 ```bash
-python backend/test_query_routing_ingest.py
+python -m backend.test_query_routing_ingest
 ```
 
 ### Unavailable-answer recovery check
 
 ```bash
-python backend/test_unavailability_recovery.py
+python -m backend.test_unavailability_recovery
 ```
 
 ### Cross-contamination evaluator (multi-contract scaffold)

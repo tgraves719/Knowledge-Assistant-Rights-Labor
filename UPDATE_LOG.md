@@ -71,10 +71,12 @@ Verified: `moa_deep_suite` green; `unanswerable` 12/12, `false_unavailable` 15/1
 
 - `legal/instruments/` (print-ready CLA/acceptance document) is prepared but intentionally left
   uncommitted pending design review.
-- Known follow-up: `backend/platform/` shadows the stdlib `platform` module when a script is run
-  with `backend/` on `sys.path[0]` (e.g. `python backend/test_unavailability_recovery.py`).
-  Run such tests in module form (`python -m backend.test_unavailability_recovery`) until the
-  package is renamed or the test invocation is fixed.
+- `backend/platform/` shadows the stdlib `platform` module when a test is run in *script* form
+  (`python backend/<name>.py`), which puts `backend/` on `sys.path` ahead of the stdlib; libraries
+  like `zstandard` (pulled in via `google.genai`) then fail on `platform.python_implementation()`.
+  This broke the `pr-core-eval` topic-routing step. CI (`eval-ci.yml`) and the README now invoke
+  these tests in module form (`python -m backend.<name>`), which never shadows stdlib. Renaming
+  the `backend/platform` package remains the deferred root fix.
 
 ## v0.9.0 - MOA Amendment Handling, Real-User Correction Infrastructure, Effective Contract Materialization (March 17, 2026)
 
