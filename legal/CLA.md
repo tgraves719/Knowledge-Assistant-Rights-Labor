@@ -5,7 +5,7 @@
 > ⚠️ **Template pending legal review.** Have this reviewed by an intellectual-property attorney
 > before you rely on it, especially the relicensing grant in §2 and the successor-assignment
 > clause in §8, which are the provisions that make KARL's dual-licensing model enforceable.
-> - **Project Steward:** Thomas Joseph Graves — `tgraves719@gmail.com`
+> - **Project Steward:** Thomas Joseph Graves — `karlstewardship@gmail.com`
 > - **Governing law:** Colorado, USA
 
 This Individual Contributor License Agreement ("Agreement") is entered into between
