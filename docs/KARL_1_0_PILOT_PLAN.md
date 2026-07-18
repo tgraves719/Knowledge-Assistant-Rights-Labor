@@ -80,7 +80,7 @@ New capability; everything else hangs off it.
 ## Milestone 4 — Governance & launch readiness (parallel; blocks real members, not dev)
 
 - [ ] Obtain Data Stewardship Council signatures (`legal/DATA-STEWARDSHIP-COUNCIL-SIGNOFF.md`).
-- [ ] Privacy notice on the join page consistent with tracking-preference model (`TrackingPreference`, member choice mode already in the data model — surface it in enrollment).
+- [x] Privacy notice on the join page consistent with tracking-preference model. *(2026-07-18: rewrote the `.privacy` block in `frontend/modular/join.html` to reflect the actual model — anonymous session (no name/email), run by the union not the employer, anonymized-by-default + conversations not stored by default, and member control (change/turn off optional tracking in Settings, delete data any time). Verified those controls exist: member tracking-preference UI in `frontend/modular/src/app.js`, `POST` tracking-preference in `auth.py`, and `DELETE /me/data` in `member.py`. Still to add once it exists: a link to the full public Privacy Policy (org-site section — pending decision).)*
 - [ ] UFCW Local 7 pilot agreement: who at the local approves the poster, who is the steward contact for escalations KARL flags.
 - [ ] (Not launch-blocking) Michael Meiskey CLA signature for future commercial licensing.
 
