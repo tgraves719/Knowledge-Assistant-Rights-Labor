@@ -35,6 +35,10 @@ x-karl-env: &karl-env
   # Must match the pgvector column width (migration 20260718_0007).
   KARL_EMBEDDING_DIMENSIONS: ${KARL_EMBEDDING_DIMENSIONS:-768}
   KARL_GOOGLE_EMBEDDING_API_KEY: ${KARL_GOOGLE_EMBEDDING_API_KEY:?set KARL_GOOGLE_EMBEDDING_API_KEY in .env (may equal GEMINI_API_KEY)}
+  # Synthesis timeout. The code default of 15s silently truncates gemini-2.5-pro
+  # on contract-sized prompts: generation times out and the member gets the
+  # deterministic chunk-concatenation fallback instead of a real answer.
+  KARL_INFERENCE_REQUEST_TIMEOUT_SECONDS: ${KARL_INFERENCE_REQUEST_TIMEOUT_SECONDS:-60}
 
 services:
   api:
