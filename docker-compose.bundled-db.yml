@@ -1,0 +1,40 @@
+# Optional override: runs Postgres in a container alongside the app.
+#
+#     docker compose -f docker-compose.prod.yml -f docker-compose.bundled-db.yml up -d
+#
+# KARL_POSTGRES_URL is still required (the base file guards it, and Compose
+# interpolates before merging overrides). Point it at this container:
+#
+#     KARL_POSTGRES_URL=postgresql+psycopg://karl:<POSTGRES_PASSWORD>@postgres:5432/karl
+#
+# NOT for production. The pilot uses a managed database (D2) because the plan
+# requires automated backups and a tested restore, which this container has no
+# story for. Use this only to exercise a prod-shaped stack locally.
+#
+# It lives in a separate file rather than a compose profile because Compose
+# interpolates the whole file before profiles are applied — a required-variable
+# guard (`:?`) on the bundled password would fire even for managed deploys.
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-karl}
+      POSTGRES_USER: ${POSTGRES_USER:-karl}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-karl} -d ${POSTGRES_DB:-karl}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

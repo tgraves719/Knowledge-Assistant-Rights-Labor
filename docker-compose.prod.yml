@@ -1,34 +1,29 @@
-services:
-  postgres:
-    image: pgvector/pgvector:pg16
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-karl}
-      POSTGRES_USER: ${POSTGRES_USER:-karl}
-      # No insecure fallback: compose refuses to start until this is set in .env.
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-karl} -d ${POSTGRES_DB:-karl}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+# Production deployment (D2): app on a VPS, Postgres on a managed,
+# pgvector-capable service with automated backups.
+#
+#     cp .env.example .env   # fill in, including KARL_POSTGRES_URL
+#     docker compose -f docker-compose.prod.yml up -d
+#
+# To run a prod-shaped stack locally with a throwaway bundled Postgres, add the
+# override file (see docker-compose.bundled-db.yml — not for production, it has
+# no backup story):
+#
+#     docker compose -f docker-compose.prod.yml -f docker-compose.bundled-db.yml up -d
 
+services:
   api:
     build:
       context: .
       dockerfile: Dockerfile.prod
     restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
     command: >
       sh -lc "alembic upgrade head &&
       python -m uvicorn backend.api:app --host 0.0.0.0 --port 8000"
     environment:
       PYTHONPATH: /app
-      KARL_POSTGRES_URL: postgresql+psycopg://${POSTGRES_USER:-karl}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/${POSTGRES_DB:-karl}
+      # Managed database, e.g.
+      #   postgresql+psycopg://user:pass@host:5432/karl?sslmode=require
+      KARL_POSTGRES_URL: ${KARL_POSTGRES_URL:?set KARL_POSTGRES_URL in .env}
       # Schema + RLS are owned by alembic migrations (through head); the app-startup
       # paths stay disabled so prod never diverges from the migration lineage.
       KARL_AUTO_CREATE_TABLES: "false"
@@ -58,5 +53,4 @@ services:
       start_period: 40s
 
 volumes:
-  postgres_data:
   uploads_data:
