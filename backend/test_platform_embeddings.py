@@ -203,3 +203,116 @@ def test_google_embedder_requires_an_api_key():
         embedder.embed("anything")
 
     assert "KARL_GOOGLE_EMBEDDING_API_KEY" in str(excinfo.value)
+
+
+def _seed_two_contracts(db):
+    union = Union(slug="local-7", name="UFCW Local 7", union_local_id="local7")
+    db.add(union)
+    db.flush()
+    docs = {}
+    for contract_id, title, text in (
+        ("clerks_2022", "clerks.md", "Courtesy clerks receive a meal period after five hours."),
+        ("meat_2022", "meat.md", "Meat cutters receive a meal period after five hours."),
+    ):
+        document = Document(
+            union_id=union.id,
+            title=title,
+            contract_id=contract_id,
+            storage_key=f"local-7/{title}",
+            content_type="text/markdown",
+            bytes_size=len(text),
+            status=DocumentStatus.ACTIVE,
+            metadata_json={"ready_for_query": True, "member_visible": True},
+        )
+        db.add(document)
+        db.flush()
+        docs[contract_id] = (document, text)
+    return union, docs
+
+
+def test_search_never_crosses_contract_boundaries():
+    """A meat question must not be answerable from the clerks book.
+
+    This is the pilot's core safety property: the two Pueblo agreements cover
+    different bargaining units, and presenting one unit's terms to the other --
+    with a citation, which reads as verified -- is the failure this project
+    exists to prevent.
+    """
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+        future=True,
+    )
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+    Base.metadata.create_all(engine)
+
+    retrieval = TenantRetrievalService(embedder=DeterministicTextEmbedder(dimensions=768))
+
+    with SessionLocal() as db:
+        union, docs = _seed_two_contracts(db)
+        for contract_id, (document, text) in docs.items():
+            retrieval.ingest_document(db, union_id=union.id, document_id=document.id, text=text)
+        db.commit()
+
+        for scope in ("clerks_2022", "meat_2022"):
+            hits = retrieval.search(
+                db, union_id=union.id, query="meal period after five hours", contract_id=scope, limit=10
+            )
+            assert hits, f"expected hits within {scope}"
+            returned = {
+                db.get(Document, hit.document_id).contract_id for hit in hits
+            }
+            assert returned == {scope}, f"{scope} query leaked into {returned}"
+
+        # Unscoped queries still see everything, so nothing is silently hidden
+        # from an admin or a union with a single contract.
+        unscoped = retrieval.search(
+            db, union_id=union.id, query="meal period after five hours", limit=10
+        )
+        assert len({db.get(Document, hit.document_id).contract_id for hit in unscoped}) == 2
+
+
+def test_search_excludes_unscoped_documents_when_a_contract_is_requested():
+    """A document with no contract_id must not leak into a scoped query.
+
+    It could belong to any book; including it would reintroduce exactly the
+    cross-contract bleed the scope is there to stop.
+    """
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+        future=True,
+    )
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+    Base.metadata.create_all(engine)
+
+    retrieval = TenantRetrievalService(embedder=DeterministicTextEmbedder(dimensions=768))
+
+    with SessionLocal() as db:
+        union, docs = _seed_two_contracts(db)
+        loose = Document(
+            union_id=union.id,
+            title="unfiled_notice.md",
+            contract_id=None,
+            storage_key="local-7/unfiled_notice.md",
+            content_type="text/markdown",
+            bytes_size=40,
+            status=DocumentStatus.ACTIVE,
+            metadata_json={"ready_for_query": True, "member_visible": True},
+        )
+        db.add(loose)
+        db.flush()
+        retrieval.ingest_document(
+            db, union_id=union.id, document_id=loose.id, text="Meal period after five hours applies generally."
+        )
+        for contract_id, (document, text) in docs.items():
+            retrieval.ingest_document(db, union_id=union.id, document_id=document.id, text=text)
+        db.commit()
+
+        hits = retrieval.search(
+            db, union_id=union.id, query="meal period after five hours", contract_id="meat_2022", limit=10
+        )
+        assert hits
+        assert all(db.get(Document, hit.document_id).contract_id == "meat_2022" for hit in hits)

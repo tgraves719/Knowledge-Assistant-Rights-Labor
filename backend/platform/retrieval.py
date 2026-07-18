@@ -261,16 +261,22 @@ class TenantRetrievalService:
         query: str,
         limit: int = 5,
         document_id: str | None = None,
+        contract_id: str | None = None,
         preferred_article_num: str | None = None,
         preferred_topic_tags: list[str] | None = None,
         member_safe_only: bool = True,
     ) -> list[RetrievedChunk]:
-        ready_documents = db.scalars(
-            select(Document).where(
-                Document.union_id == union_id,
-                Document.status == DocumentStatus.ACTIVE,
-            )
-        ).all()
+        stmt = select(Document).where(
+            Document.union_id == union_id,
+            Document.status == DocumentStatus.ACTIVE,
+        )
+        if contract_id:
+            # Hard scope, not a preference: a meat-department member must never
+            # be answered out of the clerks agreement. Documents with no
+            # contract_id are excluded too — an unscoped document could be from
+            # any book, and guessing is exactly the failure being prevented.
+            stmt = stmt.where(Document.contract_id == contract_id)
+        ready_documents = db.scalars(stmt).all()
         ready_document_ids = [
             document.id
             for document in ready_documents

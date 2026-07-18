@@ -263,6 +263,49 @@ def _build_followup_routing_query(
     ).routing_query
 
 
+def _resolve_scoped_contract_id(
+    db, auth, requested_contract_id: str | None, union_id: str | None = None
+) -> str | None:
+    """Decide which contract a member's query may be answered from.
+
+    An invite code can be pinned to a contract: the QR taped to the meat
+    department's board scopes every session that joined through it. That pin
+    wins over whatever the client sends, because the client is untrusted —
+    otherwise a member (or a crafted request) could read out of the other
+    bargaining unit's agreement just by changing a field. Scoping only ever
+    narrows, so honouring a client value is safe; letting one escape a pin is
+    not.
+
+    The requested contract is only applied when the union actually has
+    documents filed under it. QueryRequest.contract_id is required, so every
+    query carries one even against a corpus whose documents predate contract
+    scoping and are all NULL — treating that as a hard filter would match
+    nothing and make KARL answer nothing at all.
+    """
+    from backend.platform.models import AuthSession, Document, InviteCode
+
+    session_id = getattr(auth, "session_id", None)
+    if session_id:
+        session = db.get(AuthSession, session_id)
+        invite_id = getattr(session, "invite_code_id", None) if session is not None else None
+        if invite_id:
+            invite = db.get(InviteCode, invite_id)
+            pinned = (getattr(invite, "contract_id", None) or "").strip() if invite is not None else ""
+            if pinned:
+                return pinned
+
+    requested = (requested_contract_id or "").strip()
+    if not requested or not union_id:
+        return None
+
+    filed = db.scalar(
+        select(Document.id)
+        .where(Document.union_id == union_id, Document.contract_id == requested)
+        .limit(1)
+    )
+    return requested if filed else None
+
+
 def _platform_followup_scope(previous_retrieval_context: dict | None) -> dict:
     context = dict(previous_retrieval_context or {})
     document_ids = [
@@ -1893,6 +1936,10 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
     with container.session_factory() as db:
         apply_request_context(db, get_current_auth_context())
         followup_scope = _platform_followup_scope(previous_retrieval_context if followup_context_used else {})
+        scoped_contract_id = _resolve_scoped_contract_id(
+            db, get_current_auth_context(), request.contract_id, query_state["union_id"]
+        )
+        query_state["scoped_contract_id"] = scoped_contract_id
         retrieved = []
         if followup_context_used and followup_scope.get("document_id"):
             retrieved = container.retrieval.search(
@@ -1901,6 +1948,7 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
                 query=routing_question,
                 limit=12,
                 document_id=followup_scope.get("document_id"),
+                contract_id=scoped_contract_id,
                 preferred_article_num=followup_scope.get("article_num"),
                 preferred_topic_tags=followup_scope.get("topic_tags") or [],
             )
@@ -1910,6 +1958,7 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
                 union_id=query_state["union_id"],
                 query=routing_question,
                 limit=12,
+                contract_id=scoped_contract_id,
                 preferred_article_num=followup_scope.get("article_num") if followup_context_used else None,
                 preferred_topic_tags=followup_scope.get("topic_tags") if followup_context_used else None,
             )

@@ -9,7 +9,7 @@ import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import insert, or_, select
@@ -1786,6 +1786,9 @@ async def upload_document(
     request: Request,
     background_tasks: BackgroundTasks,
     file: UploadFile,
+    # Which contract book this document is. Retrieval filters on it so a
+    # member is never answered out of another bargaining unit's agreement.
+    contract_id: str | None = Form(default=None),
     _auth=Depends(require_roles(Role.UNION_ADMIN.value, Role.SUPER_ADMIN.value)),
 ):
     db = get_db(request)
@@ -1811,6 +1814,9 @@ async def upload_document(
             storage_key=stored.key,
         )
         document = result.document
+        scoped_contract_id = (contract_id or "").strip()
+        if scoped_contract_id:
+            document.contract_id = scoped_contract_id
         ingestion_job = result.ingestion_job
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Document ingestion failed: {exc}") from exc

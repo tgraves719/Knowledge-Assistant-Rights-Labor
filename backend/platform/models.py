@@ -206,6 +206,12 @@ class Document(Base):
     union_id: Mapped[str] = mapped_column(ForeignKey("unions.id"), nullable=False, index=True)
     uploaded_by_user_id: Mapped[str | None] = mapped_column(ForeignKey("users.id"))
     title: Mapped[str] = mapped_column(String(255), nullable=False)
+    # Which contract this document belongs to, e.g.
+    # "local7_safeway_pueblo_meat_2022". Retrieval filters on this so a meat
+    # member is never answered from the clerks book and vice versa. NULL means
+    # "not scoped to a contract" and the document is only reachable by queries
+    # that ask for no particular contract.
+    contract_id: Mapped[str | None] = mapped_column(String(255), index=True)
     storage_key: Mapped[str] = mapped_column(String(500), nullable=False)
     content_type: Mapped[str] = mapped_column(String(120), nullable=False)
     bytes_size: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

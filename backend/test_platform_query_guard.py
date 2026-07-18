@@ -927,7 +927,7 @@ def test_platform_query_prefers_article_cluster_over_single_noisy_section(tmp_pa
             doc_id = document.id
             union_local_id = union.union_local_id
 
-        def _fake_search(db, *, union_id, query, limit=5, document_id=None, preferred_article_num=None, preferred_topic_tags=None):
+        def _fake_search(db, *, union_id, query, limit=5, document_id=None, contract_id=None, preferred_article_num=None, preferred_topic_tags=None):
             return [
                 RetrievedChunk(
                     chunk_id="seniority-noise",

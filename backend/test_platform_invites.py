@@ -409,3 +409,67 @@ def test_guest_join_is_zero_friction_and_disconnectable(tmp_path):
         )
     finally:
         api.app.state.platform = prior
+
+
+def test_invite_pinned_contract_overrides_client_supplied_contract():
+    """The invite's contract pin must win over the request body.
+
+    The QR code taped to the meat department's board is the union's control
+    over which agreement its scanners can read. The request body is attacker
+    controlled, so if the client could override the pin, a member could read
+    the other bargaining unit's contract by editing one field.
+    """
+    from types import SimpleNamespace
+
+    from backend.api import _resolve_scoped_contract_id
+
+    class _FakeDB:
+        def __init__(self, objects, filed=None):
+            self._objects = objects
+            self._filed = filed or set()
+
+        def get(self, model, key):
+            return self._objects.get(key)
+
+        def scalar(self, *_args, **_kwargs):
+            return "doc-1" if self._filed else None
+
+    session = SimpleNamespace(invite_code_id="invite-1")
+    invite = SimpleNamespace(contract_id="meat_2022")
+    db = _FakeDB({"session-1": session, "invite-1": invite}, filed={"clerks_2022"})
+    auth = SimpleNamespace(session_id="session-1")
+
+    # Even though the union does have clerks documents filed, the pin wins.
+    assert _resolve_scoped_contract_id(db, auth, "clerks_2022", "union-1") == "meat_2022"
+    assert _resolve_scoped_contract_id(db, auth, None, "union-1") == "meat_2022"
+
+
+def test_unpinned_invite_falls_back_to_requested_contract():
+    from types import SimpleNamespace
+
+    from backend.api import _resolve_scoped_contract_id
+
+    class _FakeDB:
+        def __init__(self, objects, has_filed_documents):
+            self._objects = objects
+            self._has_filed_documents = has_filed_documents
+
+        def get(self, model, key):
+            return self._objects.get(key)
+
+        def scalar(self, *_args, **_kwargs):
+            return "doc-1" if self._has_filed_documents else None
+
+    session = SimpleNamespace(invite_code_id="invite-1")
+    invite = SimpleNamespace(contract_id=None)
+    auth = SimpleNamespace(session_id="session-1")
+    objects = {"session-1": session, "invite-1": invite}
+
+    filed = _FakeDB(objects, has_filed_documents=True)
+    assert _resolve_scoped_contract_id(filed, auth, "clerks_2022", "union-1") == "clerks_2022"
+    assert _resolve_scoped_contract_id(filed, auth, "  ", "union-1") is None
+
+    # Corpus predates contract scoping: every document is NULL, so a required
+    # request field must not be allowed to filter everything out.
+    unfiled = _FakeDB(objects, has_filed_documents=False)
+    assert _resolve_scoped_contract_id(unfiled, auth, "clerks_2022", "union-1") is None
