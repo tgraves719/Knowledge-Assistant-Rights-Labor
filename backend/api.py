@@ -27,6 +27,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import select
+from sqlalchemy.engine import make_url
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -2612,7 +2613,14 @@ async def lifespan(app: FastAPI):
     vector_store = None
     _legacy_retriever_failed = False
     if settings.postgres_url:
-        print(f"Tenant database configured: {settings.postgres_url}")
+        # Never log the raw URL — it carries the database password, and startup
+        # output lands in container logs/journald where it gets rotated,
+        # shipped and read. render_as_string() masks the password by default.
+        try:
+            _safe_db_url = make_url(settings.postgres_url).render_as_string(hide_password=True)
+        except Exception:
+            _safe_db_url = "<unparseable KARL_POSTGRES_URL>"
+        print(f"Tenant database configured: {_safe_db_url}")
     else:
         print("Warning: KARL_POSTGRES_URL is not set. Tenant member/admin workspaces will be unavailable.")
     if _legacy_contract_pipeline_enabled():
