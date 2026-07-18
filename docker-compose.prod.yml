@@ -10,6 +10,29 @@
 #
 #     docker compose -f docker-compose.prod.yml -f docker-compose.bundled-db.yml up -d
 
+# Shared by the api and worker services. Anchored so the two can never drift
+# apart on database, embedding or key configuration — they must agree.
+x-karl-env: &karl-env
+  PYTHONPATH: /app
+  # Managed database, e.g.
+  #   postgresql+psycopg://user:pass@host:5432/karl?sslmode=require
+  KARL_POSTGRES_URL: ${KARL_POSTGRES_URL:?set KARL_POSTGRES_URL in .env}
+  # Schema + RLS are owned by alembic migrations (through head); the app-startup
+  # paths stay disabled so prod never diverges from the migration lineage.
+  KARL_AUTO_CREATE_TABLES: "false"
+  KARL_APPLY_RLS_POLICIES: "false"
+  KARL_STORAGE_ROOT: /var/lib/karl/storage
+  # Real origin(s) of the deployed site, e.g. https://karlstewardship.com
+  KARL_ALLOWED_ORIGINS: ${KARL_ALLOWED_ORIGINS:?set KARL_ALLOWED_ORIGINS in .env}
+  KARL_SECRET_ENCRYPTION_KEY: ${KARL_SECRET_ENCRYPTION_KEY:?set KARL_SECRET_ENCRYPTION_KEY in .env}
+  # Answer generation (Gemini) — without this the app boots but cannot answer.
+  GEMINI_API_KEY: ${GEMINI_API_KEY:?set GEMINI_API_KEY in .env}
+  # Embeddings MUST be a real backend in production. The code default is
+  # "deterministic" (a test stub) which silently destroys retrieval quality.
+  KARL_EMBEDDING_BACKEND: ${KARL_EMBEDDING_BACKEND:-google}
+  KARL_GOOGLE_EMBEDDING_MODEL: ${KARL_GOOGLE_EMBEDDING_MODEL:-text-embedding-004}
+  KARL_GOOGLE_EMBEDDING_API_KEY: ${KARL_GOOGLE_EMBEDDING_API_KEY:?set KARL_GOOGLE_EMBEDDING_API_KEY in .env (may equal GEMINI_API_KEY)}
+
 services:
   api:
     build:
@@ -20,25 +43,13 @@ services:
       sh -lc "alembic upgrade head &&
       python -m uvicorn backend.api:app --host 0.0.0.0 --port 8000"
     environment:
-      PYTHONPATH: /app
-      # Managed database, e.g.
-      #   postgresql+psycopg://user:pass@host:5432/karl?sslmode=require
-      KARL_POSTGRES_URL: ${KARL_POSTGRES_URL:?set KARL_POSTGRES_URL in .env}
-      # Schema + RLS are owned by alembic migrations (through head); the app-startup
-      # paths stay disabled so prod never diverges from the migration lineage.
-      KARL_AUTO_CREATE_TABLES: "false"
-      KARL_APPLY_RLS_POLICIES: "false"
-      KARL_STORAGE_ROOT: /var/lib/karl/storage
-      # Real origin(s) of the deployed site, e.g. https://karlstewardship.com
-      KARL_ALLOWED_ORIGINS: ${KARL_ALLOWED_ORIGINS:?set KARL_ALLOWED_ORIGINS in .env}
-      KARL_SECRET_ENCRYPTION_KEY: ${KARL_SECRET_ENCRYPTION_KEY:?set KARL_SECRET_ENCRYPTION_KEY in .env}
-      # Answer generation (Gemini) — without this the app boots but cannot answer.
-      GEMINI_API_KEY: ${GEMINI_API_KEY:?set GEMINI_API_KEY in .env}
-      # Embeddings MUST be a real backend in production. The code default is
-      # "deterministic" (a test stub) which silently destroys retrieval quality.
-      KARL_EMBEDDING_BACKEND: ${KARL_EMBEDDING_BACKEND:-google}
-      KARL_GOOGLE_EMBEDDING_MODEL: ${KARL_GOOGLE_EMBEDDING_MODEL:-text-embedding-004}
-      KARL_GOOGLE_EMBEDDING_API_KEY: ${KARL_GOOGLE_EMBEDDING_API_KEY:?set KARL_GOOGLE_EMBEDDING_API_KEY in .env (may equal GEMINI_API_KEY)}
+      <<: *karl-env
+      # Connection budget is PER PROCESS and the managed plan caps total
+      # connections (~22 usable). api 5+5=10 and worker 2+2=4 leaves headroom
+      # for migrations and an admin session. Raise these only together, and
+      # only against the cap.
+      KARL_DB_POOL_SIZE: ${KARL_DB_POOL_SIZE:-5}
+      KARL_DB_MAX_OVERFLOW: ${KARL_DB_MAX_OVERFLOW:-5}
     ports:
       # Loopback by default: the public face is the TLS reverse proxy, not uvicorn.
       # Override KARL_BIND_ADDRESS=0.0.0.0 only if the proxy runs on another host.
@@ -51,6 +62,27 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  # Document ingestion. backend.platform.worker is a one-shot batch that drains
+  # pending jobs and exits, so it needs something to run it on a loop —
+  # without this service, uploaded documents queue forever and never become
+  # queryable. Depends on api so migrations have run before it touches tables.
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    command: >
+      sh -lc "while true; do python -m backend.platform.worker || true; sleep 20; done"
+    environment:
+      <<: *karl-env
+      KARL_DB_POOL_SIZE: ${KARL_WORKER_DB_POOL_SIZE:-2}
+      KARL_DB_MAX_OVERFLOW: ${KARL_WORKER_DB_MAX_OVERFLOW:-2}
+    volumes:
+      - uploads_data:/var/lib/karl/storage
 
 volumes:
   uploads_data:
