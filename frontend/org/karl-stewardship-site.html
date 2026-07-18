@@ -2518,11 +2518,43 @@ a:hover {
 </style>
 
 <style>
+  html { scroll-behavior:smooth; scroll-padding-top:76px; }
   body { margin:0; background:#ffffff; }
   a { color:#111; text-decoration:none; }
   a:hover { color:#000; }
   .ks-nav a:hover { border-bottom-color:#111 !important; }
   @keyframes ks-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+  /* Sticky top bar — always available for navigation while scrolling */
+  .ks-nav { position:sticky; top:0; z-index:50; background:#ffffff; }
+  .ks-brand { display:flex; align-items:center; gap:12px; cursor:pointer; color:#050505; }
+  .ks-brand:hover { color:#050505; }
+
+  /* Mobile / narrow viewports */
+  @media (max-width:820px) {
+    html { scroll-padding-top:104px; }
+    .ks-nav { flex-wrap:wrap !important; gap:12px 0 !important; padding:14px 20px !important; }
+    .ks-navlinks { width:100%; justify-content:space-between !important; gap:0 !important; font-size:11px !important; }
+    .ks-sec { padding:52px 20px !important; }
+    .ks-hero { padding:48px 20px 44px !important; }
+    .ks-hero-mark { width:84px !important; height:84px !important; margin-bottom:26px !important; }
+    .ks-hero-eyebrow { font-size:10px !important; letter-spacing:.28em !important; margin-bottom:24px !important; }
+    .ks-hero-h1 { font-size:clamp(44px,13vw,72px) !important; }
+    .ks-hero-sub { font-size:15px !important; }
+    .ks-cta { width:100%; justify-content:stretch !important; }
+    .ks-cta a { flex:1; text-align:center; }
+    .ks-grid-2, .ks-grid-4 { grid-template-columns:1fr !important; gap:24px !important; }
+    .ks-grid-3 { grid-template-columns:1fr !important; gap:1px !important; }
+    .ks-grid-3 > div { min-height:0 !important; padding:26px 22px !important; }
+    .ks-h2-lg { font-size:34px !important; }
+    .ks-h2 { font-size:30px !important; }
+    .ks-lead { font-size:26px !important; }
+    .ks-footer { flex-direction:column !important; align-items:flex-start !important; gap:10px !important; padding:22px 20px !important; }
+  }
+  @media (max-width:420px) {
+    .ks-navlinks { font-size:10px !important; letter-spacing:.02em !important; }
+    .ks-brand div { font-size:13px !important; }
+  }
 </style>
 
 </head>
@@ -2531,17 +2563,17 @@ a:hover {
 
 
 
-<section style="font-family:var(--font-mono);">
+<section id="top" style="font-family:var(--font-mono);">
   <!-- ===================== OPTION 2a — MERGED (evolved 1b) ===================== -->
   <div id="2a" style="position:relative;width:100%;background:#ffffff;color:#050505;background-image:linear-gradient(rgba(0,0,0,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.035) 1px,transparent 1px);background-size:44px 44px;">
 
     <!-- nav -->
     <div class="ks-nav" style="display:flex;align-items:center;justify-content:space-between;padding:22px 44px;border-bottom:1px solid #050505;">
-      <div style="display:flex;align-items:center;gap:12px;">
+      <a href="#top" class="ks-brand">
         <img src="assets/karl-stewardship-mark.svg" alt="KARL Stewardship" style="width:32px;height:32px;display:block;flex-shrink:0;">
         <div style="font-size:15px;font-weight:700;letter-spacing:.14em;">KARL&nbsp;STEWARDSHIP</div>
-      </div>
-      <div style="display:flex;gap:26px;font-size:12px;letter-spacing:.04em;color:#555;">
+      </a>
+      <div class="ks-navlinks" style="display:flex;gap:26px;font-size:12px;letter-spacing:.04em;color:#555;">
         <a href="#c-about" style="color:#555;border-bottom:1px solid transparent;padding-bottom:2px;">ABOUT</a>
         <a href="#c-access" style="color:#555;border-bottom:1px solid transparent;padding-bottom:2px;">ACCESS</a>
         <a href="#c-principles" style="color:#555;border-bottom:1px solid transparent;padding-bottom:2px;">PRINCIPLES</a>
@@ -2551,33 +2583,33 @@ a:hover {
     </div>
 
     <!-- hero -->
-    <div style="padding:88px 44px 76px;text-align:center;border-bottom:1px solid #050505;">
-      <img src="assets/karl-stewardship-mark.svg" alt="KARL Stewardship mark" style="width:128px;height:128px;display:block;margin:0 auto 40px;">
-      <div style="font-size:12px;letter-spacing:.4em;color:#888;margin-bottom:34px;">KNOWLEDGE ASSISTANT FOR RIGHTS AND LABOR</div>
-      <h1 style="font-size:110px;line-height:.92;font-weight:800;margin:0;letter-spacing:-.03em;">KNOW YOUR<br>CONTRACT.</h1>
-      <p style="font-size:17px;line-height:1.65;color:#444;max-width:60ch;margin:38px auto 0;">Worker-owned, worker-controlled, open-source AI infrastructure for unions. KARL is a contract intelligence engine built to strengthen collective bargaining.</p>
-      <div style="display:flex;gap:16px;justify-content:center;margin-top:44px;flex-wrap:wrap;">
+    <div class="ks-hero" style="padding:88px 44px 76px;text-align:center;border-bottom:1px solid #050505;">
+      <img src="assets/karl-stewardship-mark.svg" alt="KARL Stewardship mark" class="ks-hero-mark" style="width:128px;height:128px;display:block;margin:0 auto 40px;">
+      <div class="ks-hero-eyebrow" style="font-size:12px;letter-spacing:.4em;color:#888;margin-bottom:34px;">KNOWLEDGE ASSISTANT FOR RIGHTS AND LABOR</div>
+      <h1 class="ks-hero-h1" style="font-size:110px;line-height:.92;font-weight:800;margin:0;letter-spacing:-.03em;">KNOW YOUR<br>CONTRACT.</h1>
+      <p class="ks-hero-sub" style="font-size:17px;line-height:1.65;color:#444;max-width:60ch;margin:38px auto 0;">Worker-owned, worker-controlled, open-source AI infrastructure for unions. KARL is a contract intelligence engine built to strengthen collective bargaining.</p>
+      <div class="ks-cta" style="display:flex;gap:16px;justify-content:center;margin-top:44px;flex-wrap:wrap;">
         <a href="#c-access" style="background:#050505;color:#fff;padding:16px 28px;font-size:13px;font-weight:800;letter-spacing:.06em;">TALK TO YOUR STEWARD →</a>
         <a href="#c-code" style="background:transparent;color:#050505;border:1px solid #050505;padding:16px 28px;font-size:13px;font-weight:800;letter-spacing:.06em;">EXPLORE THE CODE</a>
       </div>
     </div>
 
     <!-- about -->
-    <div id="c-about" style="padding:80px 44px;border-bottom:1px solid #050505;">
+    <div id="c-about" class="ks-sec" style="padding:80px 44px;border-bottom:1px solid #050505;">
       <div style="font-size:11px;letter-spacing:.34em;color:#888;margin-bottom:28px;">ABOUT</div>
-      <p style="font-size:38px;line-height:1.25;font-weight:600;margin:0;max-width:24ch;">A steward in your pocket.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:44px;font-size:15px;line-height:1.75;color:#444;">
+      <p class="ks-lead" style="font-size:38px;line-height:1.25;font-weight:600;margin:0;max-width:24ch;">A steward in your pocket.</p>
+      <div class="ks-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:44px;font-size:15px;line-height:1.75;color:#444;">
         <p style="margin:0;">KARL is two things. An <span style="color:#050505;font-weight:700;">engine</span> that answers from contract text, wage tables, MOAs, and side letters. And a <span style="color:#050505;font-weight:700;">platform</span> where each union runs its own isolated instance.</p>
         <p style="margin:0;">KARL Stewardship maintains KARL and serves it to union representatives, stewards, and members. When KARL can't find an answer, it says so.</p>
       </div>
     </div>
 
     <!-- access (inverted black block for rhythm) -->
-    <div id="c-access" style="padding:80px 44px;border-bottom:1px solid #050505;background:#050505;color:#f5f5f5;">
+    <div id="c-access" class="ks-sec" style="padding:80px 44px;border-bottom:1px solid #050505;background:#050505;color:#f5f5f5;">
       <div style="font-size:11px;letter-spacing:.34em;color:#888;margin-bottom:24px;">HOW TO GET ACCESS</div>
-      <h2 style="font-size:52px;line-height:1.05;font-weight:800;margin:0 0 12px;letter-spacing:-.02em;">Access comes<br>from your union.</h2>
+      <h2 class="ks-h2-lg" style="font-size:52px;line-height:1.05;font-weight:800;margin:0 0 12px;letter-spacing:-.02em;">Access comes<br>from your union.</h2>
       <p style="font-size:16px;line-height:1.6;color:#aaa;max-width:52ch;margin:0 0 48px;">Not from us. Reach KARL through a QR code or link your steward gives you. No public sign-up.</p>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+      <div class="ks-grid-4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
         <div><div style="font-size:56px;font-weight:800;line-height:1;">01</div><div style="height:1px;background:#f5f5f5;margin:16px 0;"></div><div style="font-size:14px;line-height:1.55;color:#ccc;">Your union licenses KARL and runs its own isolated instance.</div></div>
         <div><div style="font-size:56px;font-weight:800;line-height:1;">02</div><div style="height:1px;background:#f5f5f5;margin:16px 0;"></div><div style="font-size:14px;line-height:1.55;color:#ccc;">Your local decides who gets access.</div></div>
         <div><div style="font-size:56px;font-weight:800;line-height:1;">03</div><div style="height:1px;background:#f5f5f5;margin:16px 0;"></div><div style="font-size:14px;line-height:1.55;color:#ccc;">Ask your steward for your local's KARL QR code.</div></div>
@@ -2586,9 +2618,9 @@ a:hover {
     </div>
 
     <!-- principles -->
-    <div id="c-principles" style="padding:80px 44px 44px;border-bottom:1px solid #050505;">
+    <div id="c-principles" class="ks-sec" style="padding:80px 44px 44px;border-bottom:1px solid #050505;">
       <div style="font-size:11px;letter-spacing:.34em;color:#888;margin-bottom:36px;">PRINCIPLES</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#050505;border:1px solid #050505;">
+      <div class="ks-grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#050505;border:1px solid #050505;">
         <div style="background:#fff;padding:34px 28px;min-height:180px;"><div style="font-size:24px;font-weight:800;margin-bottom:14px;">Union-first</div><div style="font-size:14px;line-height:1.6;color:#555;">Built by and for the rank-and-file.</div></div>
         <div style="background:#fff;padding:34px 28px;min-height:180px;"><div style="font-size:24px;font-weight:800;margin-bottom:14px;">Worker-controlled</div><div style="font-size:14px;line-height:1.6;color:#555;">Unions run their own instance, choose their own model, control their own data.</div></div>
         <div style="background:#fff;padding:34px 28px;min-height:180px;"><div style="font-size:24px;font-weight:800;margin-bottom:14px;">Privacy, verified</div><div style="font-size:14px;line-height:1.6;color:#555;">Retention off by default. Anonymized telemetry with a real opt-out. Delete your own data.</div></div>
@@ -2599,9 +2631,9 @@ a:hover {
     </div>
 
     <!-- code / tree explorer (black) -->
-    <div id="c-code" style="padding:80px 44px;border-bottom:1px solid #050505;background:#050505;color:#f5f5f5;">
+    <div id="c-code" class="ks-sec" style="padding:80px 44px;border-bottom:1px solid #050505;background:#050505;color:#f5f5f5;">
       <div style="font-size:11px;letter-spacing:.34em;color:#888;margin-bottom:16px;">OPEN SOURCE</div>
-      <h2 style="font-size:40px;font-weight:800;margin:0 0 14px;letter-spacing:-.02em;">Read every line.</h2>
+      <h2 class="ks-h2" style="font-size:40px;font-weight:800;margin:0 0 14px;letter-spacing:-.02em;">Read every line.</h2>
       <p style="font-size:15px;line-height:1.7;color:#aaa;max-width:62ch;margin:0 0 30px;">KARL is open source, AGPL-3.0. Browse the repository here, or open it on GitHub.</p>
       <div style="border:1px solid #262626;">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #262626;background:#111;">
@@ -2613,11 +2645,11 @@ a:hover {
     </div>
 
     <!-- contact + form -->
-    <div id="c-contact" style="padding:80px 44px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;">
+    <div id="c-contact" class="ks-sec" style="padding:80px 44px;">
+      <div class="ks-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:56px;">
         <div>
           <div style="font-size:11px;letter-spacing:.34em;color:#888;margin-bottom:16px;">CONTACT</div>
-          <h2 style="font-size:40px;font-weight:800;margin:0 0 20px;letter-spacing:-.02em;">Get in touch.</h2>
+          <h2 class="ks-h2" style="font-size:40px;font-weight:800;margin:0 0 20px;letter-spacing:-.02em;">Get in touch.</h2>
           <p style="font-size:15px;line-height:1.7;color:#444;max-width:44ch;margin:0 0 28px;">For unions and press, email us. Members: talk to your steward for access.</p>
           <a href="mailto:karlstewardship@gmail.com" style="color:#050505;font-size:22px;font-weight:700;border-bottom:1px solid #050505;padding-bottom:4px;">karlstewardship@gmail.com</a>
           <div style="margin-top:26px;font-size:13px;line-height:1.9;">
@@ -2644,7 +2676,7 @@ a:hover {
     </div>
 
     <!-- footer -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:24px 44px;border-top:1px solid #050505;font-size:11px;color:#888;letter-spacing:.04em;">
+    <div class="ks-footer" style="display:flex;align-items:center;justify-content:space-between;padding:24px 44px;border-top:1px solid #050505;font-size:11px;color:#888;letter-spacing:.04em;">
       <span>© 2026 KARL STEWARDSHIP</span>
       <span>UNION-FIRST · WORKER-CONTROLLED · ANTI-SURVEILLANCE</span>
       <span>AGPL-3.0 / COMMERCIAL</span>
