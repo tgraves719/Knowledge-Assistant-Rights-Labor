@@ -29,7 +29,8 @@ class TenantRetrievalService:
         *,
         chunk_size: int = 800,
         overlap: int = 120,
-        embedding_dimensions: int = 384,
+        # Must match the pgvector column width in models.ChunkEmbedding.
+        embedding_dimensions: int = 768,
         embedder: TextEmbedder | None = None,
     ):
         self.chunk_size = max(200, int(chunk_size))

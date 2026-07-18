@@ -118,7 +118,7 @@ def _settings(tmp_path: Path) -> PlatformSettings:
         document_parser_backend="auto",
         liteparse_executable="",
         embedding_backend="deterministic",
-        embedding_dimensions=384,
+        embedding_dimensions=768,
         google_embedding_model="text-embedding-004",
         google_embedding_api_key="",
         inference_request_timeout_seconds=8,

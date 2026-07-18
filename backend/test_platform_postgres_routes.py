@@ -117,7 +117,7 @@ def postgres_route_env(tmp_path):
             document_parser_backend="auto",
             liteparse_executable="",
             embedding_backend="deterministic",
-            embedding_dimensions=384,
+            embedding_dimensions=768,
             google_embedding_model="text-embedding-004",
             google_embedding_api_key="",
             legacy_contract_pipeline_enabled=False,

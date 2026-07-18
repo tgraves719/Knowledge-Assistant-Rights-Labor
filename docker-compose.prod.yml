@@ -30,7 +30,10 @@ x-karl-env: &karl-env
   # Embeddings MUST be a real backend in production. The code default is
   # "deterministic" (a test stub) which silently destroys retrieval quality.
   KARL_EMBEDDING_BACKEND: ${KARL_EMBEDDING_BACKEND:-google}
-  KARL_GOOGLE_EMBEDDING_MODEL: ${KARL_GOOGLE_EMBEDDING_MODEL:-text-embedding-004}
+  # gemini-embedding-001 is current; text-embedding-004 was retired and 404s.
+  KARL_GOOGLE_EMBEDDING_MODEL: ${KARL_GOOGLE_EMBEDDING_MODEL:-gemini-embedding-001}
+  # Must match the pgvector column width (migration 20260718_0007).
+  KARL_EMBEDDING_DIMENSIONS: ${KARL_EMBEDDING_DIMENSIONS:-768}
   KARL_GOOGLE_EMBEDDING_API_KEY: ${KARL_GOOGLE_EMBEDDING_API_KEY:?set KARL_GOOGLE_EMBEDDING_API_KEY in .env (may equal GEMINI_API_KEY)}
 
 services:

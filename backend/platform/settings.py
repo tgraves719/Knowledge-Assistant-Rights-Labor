@@ -108,8 +108,12 @@ def get_platform_settings() -> PlatformSettings:
         document_parser_backend=os.getenv("KARL_DOCUMENT_PARSER_BACKEND", "auto").strip().lower() or "auto",
         liteparse_executable=_discover_liteparse_executable(project_root),
         embedding_backend=os.getenv("KARL_EMBEDDING_BACKEND", "deterministic").strip().lower() or "deterministic",
-        embedding_dimensions=max(32, int(os.getenv("KARL_EMBEDDING_DIMENSIONS", "384"))),
-        google_embedding_model=os.getenv("KARL_GOOGLE_EMBEDDING_MODEL", "text-embedding-004").strip() or "text-embedding-004",
+        # Must match the pgvector column width in models.ChunkEmbedding (768).
+        embedding_dimensions=max(32, int(os.getenv("KARL_EMBEDDING_DIMENSIONS", "768"))),
+        # text-embedding-004 was retired and now 404s; gemini-embedding-001 is
+        # the current model. Verify against `client.models.list()` before
+        # changing this — a stale name fails only at ingest time.
+        google_embedding_model=os.getenv("KARL_GOOGLE_EMBEDDING_MODEL", "gemini-embedding-001").strip() or "gemini-embedding-001",
         google_embedding_api_key=os.getenv("KARL_GOOGLE_EMBEDDING_API_KEY", "").strip(),
         inference_request_timeout_seconds=max(3, int(os.getenv("KARL_INFERENCE_REQUEST_TIMEOUT_SECONDS", "15"))),
         legacy_contract_pipeline_enabled=_as_bool(os.getenv("KARL_LEGACY_CONTRACT_PIPELINE_ENABLED"), default=False),

@@ -43,7 +43,7 @@ def _settings(tmp_path: Path) -> PlatformSettings:
         document_parser_backend="auto",
         liteparse_executable=f"node {VENDORED_LITEPARSE.resolve()}",
         embedding_backend="deterministic",
-        embedding_dimensions=384,
+        embedding_dimensions=768,
         google_embedding_model="text-embedding-004",
         google_embedding_api_key="",
         legacy_contract_pipeline_enabled=False,

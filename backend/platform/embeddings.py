@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import math
 import re
+import time
 from dataclasses import dataclass
 
 
@@ -64,13 +65,31 @@ class DeterministicTextEmbedder(TextEmbedder):
         return _normalize_vector(vector)
 
 
+class EmbeddingProviderError(RuntimeError):
+    """Raised when the embedding provider cannot produce a usable vector."""
+
+
 class GoogleTextEmbedder(TextEmbedder):
-    """Reserved adapter boundary for future Google text embeddings."""
+    """Google text embeddings via the google-genai SDK.
+
+    Vectors are requested at exactly ``dimensions`` using the API's
+    output_dimensionality parameter, so the returned width always matches the
+    pgvector column. text-embedding-004 is natively 768; asking for fewer
+    truncates a Matryoshka representation, which then needs renormalizing —
+    the API does not renormalize truncated output for you.
+    """
+
+    # Retries cover transient 429/5xx only. Failing loudly beats returning a
+    # zero or random vector: a silently wrong embedding is indistinguishable
+    # from a working one until retrieval quality quietly collapses.
+    _MAX_ATTEMPTS = 4
+    _BACKOFF_SECONDS = (1.0, 3.0, 8.0)
 
     def __init__(self, *, model_name: str, api_key: str | None = None, dimensions: int = 768):
         self.model_name = str(model_name or "").strip() or "text-embedding-004"
         self.api_key = str(api_key or "").strip()
         self.dimensions = max(32, int(dimensions))
+        self._client = None
 
     @property
     def descriptor(self) -> EmbedderDescriptor:
@@ -80,11 +99,94 @@ class GoogleTextEmbedder(TextEmbedder):
             model_name=self.model_name,
         )
 
+    def _get_client(self):
+        if self._client is not None:
+            return self._client
+        if not self.api_key:
+            raise EmbeddingProviderError(
+                "KARL_GOOGLE_EMBEDDING_API_KEY is not set; cannot embed with backend 'google'."
+            )
+        try:
+            from google import genai
+        except ImportError as exc:  # pragma: no cover - dependency is pinned
+            raise EmbeddingProviderError(
+                "google-genai is not installed; required for embedding backend 'google'."
+            ) from exc
+        self._client = genai.Client(api_key=self.api_key)
+        return self._client
+
     def embed(self, text: str) -> list[float]:
-        raise RuntimeError(
-            "Google text embeddings are not wired into runtime calls yet. "
-            "Use the embedder abstraction now; add the provider client later."
+        payload = str(text or "").strip()
+        if not payload:
+            # An all-zero vector is a legitimate "no content" answer here and
+            # keeps chunk indexes aligned; normalizing it would divide by zero.
+            return [0.0] * self.dimensions
+
+        client = self._get_client()
+        from google.genai import types as genai_types
+
+        last_error: Exception | None = None
+        for attempt in range(self._MAX_ATTEMPTS):
+            try:
+                response = client.models.embed_content(
+                    model=self.model_name,
+                    contents=payload,
+                    config=genai_types.EmbedContentConfig(
+                        output_dimensionality=self.dimensions
+                    ),
+                )
+            except Exception as exc:
+                last_error = exc
+                if attempt < len(self._BACKOFF_SECONDS) and _is_retryable(exc):
+                    time.sleep(self._BACKOFF_SECONDS[attempt])
+                    continue
+                raise EmbeddingProviderError(
+                    f"Google embedding request failed after {attempt + 1} attempt(s): {exc}"
+                ) from exc
+
+            values = _extract_embedding_values(response)
+            if len(values) != self.dimensions:
+                # Width drift silently corrupts the index, so refuse it rather
+                # than padding or truncating behind the caller's back.
+                raise EmbeddingProviderError(
+                    f"Google embedding returned {len(values)} dimensions, expected {self.dimensions}. "
+                    "Check KARL_EMBEDDING_DIMENSIONS against the model and the pgvector column width."
+                )
+            return _normalize_vector(values)
+
+        raise EmbeddingProviderError(
+            f"Google embedding request failed: {last_error}"
         )
+
+
+def _is_retryable(exc: Exception) -> bool:
+    text = f"{type(exc).__name__}: {exc}".lower()
+    return any(
+        marker in text
+        for marker in ("429", "rate limit", "resource_exhausted", "timeout", "deadline", "unavailable", "500", "503")
+    )
+
+
+def _extract_embedding_values(response) -> list[float]:
+    """Pull the float list out of an embed_content response.
+
+    The SDK has moved this around between versions, so accept the shapes it
+    has used rather than pinning to one and breaking on upgrade.
+    """
+    embeddings = getattr(response, "embeddings", None)
+    if embeddings:
+        first = embeddings[0]
+        values = getattr(first, "values", None) or getattr(first, "value", None)
+        if values:
+            return [float(v) for v in values]
+    embedding = getattr(response, "embedding", None)
+    if embedding is not None:
+        values = getattr(embedding, "values", None) or embedding
+        if values:
+            return [float(v) for v in values]
+    raise EmbeddingProviderError(
+        f"Could not read embedding values from response of type {type(response).__name__}."
+    )
 
 
 def build_text_embedder(

@@ -249,7 +249,10 @@ class ChunkEmbedding(Base):
     chunk_text: Mapped[str] = mapped_column(Text, nullable=False)
     metadata_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict, nullable=False)
     if Vector is not None:
-        embedding: Mapped[list[float] | None] = mapped_column(Vector(384))
+        # Must equal KARL_EMBEDDING_DIMENSIONS. 768 is a documented output
+        # width for gemini-embedding-001; changing one without the other, or
+        # without a migration, breaks inserts at ingest time.
+        embedding: Mapped[list[float] | None] = mapped_column(Vector(768))
     else:  # pragma: no cover - used only when pgvector unavailable
         embedding: Mapped[list[float] | None] = mapped_column(JSON)
 
