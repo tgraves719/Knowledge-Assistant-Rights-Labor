@@ -27,4 +27,4 @@ AND any of the following apply:
 ## Contact
 
 For commercial licensing inquiries:
-📧 stewardkarlteam@gmail.com
+📧 karlstewardship@gmail.com
