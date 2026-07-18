@@ -93,11 +93,24 @@ class TenantRetrievalService:
     def _chunk_page(self, page_text: str) -> list[str]:
         return self.split_text(page_text)
 
+    # Words that appear in nearly every chunk of a contract. Left in the term
+    # list they add a flat lexical bonus to everything, which drowns the
+    # embedding signal (whose useful spread between right and wrong passages
+    # is only ~0.05-0.15).
+    _STOPWORDS = frozenset(
+        """the and for are but not with that this from have has had was were
+        will shall may can could would should when what where which while whom
+        whose been being than then them they their there here also any all
+        each other into onto upon about after before during under over between
+        per you your our its his her him she who how why does did doing get
+        got""".split()
+    )
+
     def _search_terms(self, query: str) -> list[str]:
         tokens = [
             token
             for token in re.findall(r"[a-z0-9]+", str(query or "").lower())
-            if len(token) >= 3
+            if len(token) >= 3 and token not in self._STOPWORDS
         ]
         seen: set[str] = set()
         ordered: list[str] = []
@@ -355,6 +368,15 @@ class TenantRetrievalService:
             if normalized_preferred_topics and metadata.get("topic_tags"):
                 row_topics = {str(tag or "").strip().lower() for tag in (metadata.get("topic_tags") or []) if str(tag or "").strip()}
                 lexical_bonus += 0.2 * sum(1 for tag in normalized_preferred_topics if tag in row_topics)
+            # The lexical signal is a tiebreaker, not the ranking. Measured on
+            # the live index: pure embedding similarity put the correct
+            # "Premium Pay for Holiday Work" section first at 0.79 vs 0.72 for
+            # the runner-up, while uncapped term bonuses (+0.2 per matched
+            # word) let an unrelated jury-duty chunk outscore it. Positive
+            # bonus is capped; penalties (sensitive data, prompt injection)
+            # stay uncapped because they exist to bury a chunk, not nudge it.
+            if lexical_bonus > 0:
+                lexical_bonus = min(lexical_bonus, 0.05)
             scored.append(
                 RetrievedChunk(
                     chunk_id=row.id,

@@ -1761,9 +1761,15 @@ def _platform_chunks_have_strong_match(question: str, chunks: list[dict]) -> boo
         hit_count = sum(1 for term in terms if term in text)
         best_term_hits = max(best_term_hits, hit_count)
 
+    # Thresholds match the post-cap score scale: retrieval now caps the
+    # positive lexical bonus at 0.05, so a chunk's score is essentially its
+    # embedding similarity. The old 0.15/0.25 values assumed bonus-inflated
+    # scores and made this gate abstain on genuinely strong matches. The
+    # term-hit requirement is what actually rejects irrelevant questions;
+    # the similarity floor just filters near-zero noise.
     if len(terms) <= 2:
-        return best_term_hits >= 1 and top_similarity >= 0.15
-    return best_term_hits >= 2 and top_similarity >= 0.25
+        return best_term_hits >= 1 and top_similarity >= 0.10
+    return best_term_hits >= 2 and top_similarity >= 0.18
 
 
 def _build_deterministic_platform_answer(question: str, chunks: list[dict]) -> str:
