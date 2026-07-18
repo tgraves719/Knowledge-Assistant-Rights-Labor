@@ -76,7 +76,11 @@ def postgres_env():
         conn.execute(text(f'CREATE DATABASE "{db_name}"'))
 
     old_postgres_url = os.environ.get("KARL_POSTGRES_URL")
-    os.environ["KARL_POSTGRES_URL"] = str(db_url)
+    # NOT str(url): SQLAlchemy's URL.__str__ masks the password as "***", which
+    # alembic below would then try to authenticate with. A local Postgres using
+    # trust auth accepts it anyway, so this only fails against a server that
+    # actually checks passwords — i.e. managed/production.
+    os.environ["KARL_POSTGRES_URL"] = db_url.render_as_string(hide_password=False)
     try:
         alembic_cfg = Config("alembic.ini")
         command.upgrade(alembic_cfg, "head")
@@ -102,8 +106,8 @@ def postgres_env():
                 "app_engine": app_engine,
                 "owner_session_factory": OwnerSessionLocal,
                 "app_session_factory": AppSessionLocal,
-                "db_url": str(db_url),
-                "app_db_url": str(app_db_url),
+                "db_url": db_url.render_as_string(hide_password=False),
+                "app_db_url": app_db_url.render_as_string(hide_password=False),
                 "db_name": db_name,
                 "app_role": app_role,
             }
