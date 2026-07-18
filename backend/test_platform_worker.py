@@ -161,3 +161,67 @@ def test_worker_prioritizes_lightweight_jobs_before_heavy_ocr_jobs(tmp_path):
         assert updated_light_job.status == IngestionJobStatus.SUCCEEDED
         assert updated_heavy_job is not None
         assert updated_heavy_job.status == IngestionJobStatus.PENDING
+
+
+def test_worker_reclaims_jobs_orphaned_in_running():
+    """A job stuck in RUNNING must become retryable.
+
+    Nothing else rescues it: the worker only selects PENDING, and the admin
+    retry endpoint returns 409 for a running job. Before this reclaim, a crash
+    or a failed inline ingest stranded the document permanently.
+    """
+    from datetime import datetime, timedelta
+
+    from backend.platform.worker import reclaim_stale_running_jobs
+
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+        future=True,
+    )
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+    Base.metadata.create_all(engine)
+
+    with SessionLocal() as db:
+        union = Union(slug="local-1", name="Local 1", union_local_id="local-1")
+        db.add(union)
+        db.flush()
+        document = Document(
+            union_id=union.id,
+            title="contract.md",
+            storage_key="local-1/contract.md",
+            content_type="text/markdown",
+            bytes_size=10,
+            status=DocumentStatus.PROCESSING,
+        )
+        db.add(document)
+        db.flush()
+
+        stale = IngestionJob(
+            union_id=union.id,
+            document_id=document.id,
+            status=IngestionJobStatus.RUNNING,
+            started_at=datetime.utcnow() - timedelta(hours=2),
+        )
+        fresh = IngestionJob(
+            union_id=union.id,
+            document_id=document.id,
+            status=IngestionJobStatus.RUNNING,
+            started_at=datetime.utcnow(),
+        )
+        db.add_all([stale, fresh])
+        db.commit()
+
+        reclaimed = reclaim_stale_running_jobs(db)
+        db.commit()
+
+        assert reclaimed == 1
+        db.refresh(stale)
+        db.refresh(fresh)
+        # The old one is retryable again...
+        assert stale.status == IngestionJobStatus.PENDING
+        assert stale.started_at is None
+        # ...while a job that only just started is left alone, so we never pull
+        # a legitimately long ingest out from under itself.
+        assert fresh.status == IngestionJobStatus.RUNNING
