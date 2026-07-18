@@ -1,61 +1,149 @@
 {
-  "schema_version": "moa_effective_test_v1",
-  "description": "Effective-state and MOA-specific retrieval checks for amended and removed language.",
-  "contract_id": "local7_safeway_pueblo_clerks_2022",
-  "test_cases": [
-    {
-      "id": "MOA-CL-TERM-01",
-      "contract_id": "local7_safeway_pueblo_clerks_2022",
-      "expectation": "present",
-      "question": "What is the expiration date of the current agreement?",
-      "expected_citations": [
-        "Article 58, Section 1749"
-      ],
-      "expected_keywords": [
-        "January 16, 2027"
-      ],
-      "min_expected_keyword_hits": 1,
-      "expected_source_type": "moa",
-      "expected_intent_type": "contract",
-      "require_no_wage_info": true
-    },
-    {
-      "id": "MOA-CL-NIGHT-01",
-      "contract_id": "local7_safeway_pueblo_clerks_2022",
-      "expectation": "present",
-      "question": "All Courtesy Clerks shall receive how much per hour in addition to the hourly rate for all work performed between 12:00 midnight and 6:00 a.m.?",
-      "expected_citations": [
-        "Article 15, Section 34"
-      ],
-      "expected_keywords": [
-        "fifty cents",
-        "$0.50"
-      ],
-      "min_expected_keyword_hits": 1,
-      "expected_intent_type": "contract",
-      "require_no_wage_info": true
-    },
-    {
-      "id": "MOA-CL-REMOVED-01",
-      "contract_id": "local7_safeway_pueblo_clerks_2022",
-      "expectation": "absent",
-      "question": "Is it true that the Employer will send the Union a copy of the full time request list?",
-      "forbidden_keywords": [
-        "full time request list"
-      ],
-      "expected_intent_type": "contract",
-      "require_no_wage_info": true
-    },
-    {
-      "id": "MOA-CL-REMOVED-02",
-      "contract_id": "local7_safeway_pueblo_clerks_2022",
-      "expectation": "absent",
-      "question": "The Sunday premium shall not be averaged into the employee's straight-time rate for determining overtime. Is that in the current effective agreement?",
-      "forbidden_keywords": [
-        "shall not be averaged into the employee's straight-time rate"
-      ],
-      "expected_intent_type": "contract",
-      "require_no_wage_info": true
-    }
-  ]
+ "schema_version": "moa_effective_test_v1",
+ "description": "Effective-state and MOA-specific retrieval checks for amended and removed language (clerks + meat).",
+ "contract_id": "local7_safeway_pueblo_clerks_2022",
+ "test_cases": [
+  {
+   "id": "MOA-CL-TERM-01",
+   "contract_id": "local7_safeway_pueblo_clerks_2022",
+   "expectation": "present",
+   "question": "What is the expiration date of the current agreement?",
+   "expected_citations": [
+    "Article 58, Section 1749"
+   ],
+   "expected_keywords": [
+    "January 22, 2028"
+   ],
+   "min_expected_keyword_hits": 1,
+   "expected_source_type": "moa",
+   "expected_intent_type": "contract",
+   "require_no_wage_info": true
+  },
+  {
+   "id": "MOA-CL-NIGHT-01",
+   "contract_id": "local7_safeway_pueblo_clerks_2022",
+   "expectation": "present",
+   "question": "All Courtesy Clerks shall receive how much per hour in addition to the hourly rate for all work performed between 12:00 midnight and 6:00 a.m.?",
+   "expected_citations": [
+    "Article 15, Section 34"
+   ],
+   "expected_keywords": [
+    "fifty cents",
+    "$0.50"
+   ],
+   "min_expected_keyword_hits": 1,
+   "expected_intent_type": "contract",
+   "require_no_wage_info": true
+  },
+  {
+   "id": "MOA-CL-REMOVED-01",
+   "contract_id": "local7_safeway_pueblo_clerks_2022",
+   "expectation": "absent",
+   "question": "Is it true that the Employer will send the Union a copy of the full time request list?",
+   "forbidden_keywords": [
+    "full time request list"
+   ],
+   "expected_intent_type": "contract",
+   "require_no_wage_info": true
+  },
+  {
+   "id": "MOA-CL-REMOVED-02",
+   "contract_id": "local7_safeway_pueblo_clerks_2022",
+   "expectation": "absent",
+   "question": "The Sunday premium shall not be averaged into the employee's straight-time rate for determining overtime. Is that in the current effective agreement?",
+   "forbidden_keywords": [
+    "shall not be averaged into the employee's straight-time rate"
+   ],
+   "expected_intent_type": "contract",
+   "require_no_wage_info": true
+  },
+  {
+   "id": "MOA-MT-TERM-01",
+   "contract_id": "local7_safeway_pueblo_meat_2022",
+   "expectation": "present",
+   "question": "What is the expiration date of the current meat agreement?",
+   "expected_citations": [
+    "Article 57, Section 168"
+   ],
+   "expected_keywords": [
+    "February 26, 2028"
+   ],
+   "min_expected_keyword_hits": 1,
+   "expected_source_type": "moa",
+   "expected_intent_type": "contract",
+   "require_no_wage_info": true
+  },
+  {
+   "id": "MOA-MT-BID-01",
+   "contract_id": "local7_safeway_pueblo_meat_2022",
+   "expectation": "present",
+   "question": "What does Article 27, Section 71 of the meat agreement say about department bidding?",
+   "expected_citations": [
+    "Article 27, Section 71"
+   ],
+   "expected_keywords": [
+    "first fifteen (15) days of February",
+    "Department Bidding"
+   ],
+   "min_expected_keyword_hits": 1,
+   "expected_source_type": "moa",
+   "expected_intent_type": "contract",
+   "require_no_wage_info": true
+  },
+  {
+   "id": "MOA-MT-STEW-01",
+   "contract_id": "local7_safeway_pueblo_meat_2022",
+   "expectation": "present",
+   "question": "How many union stewards can our store have in the meat department?",
+   "expected_citations": [
+    "Article 49, Section 143"
+   ],
+   "expected_keywords": [
+    "two (2) Stewards",
+    "20 or more employees"
+   ],
+   "min_expected_keyword_hits": 1,
+   "expected_source_type": "moa",
+   "expected_intent_type": "contract",
+   "require_no_wage_info": true
+  },
+  {
+   "id": "MOA-MT-TIPS-01",
+   "contract_id": "local7_safeway_pueblo_meat_2022",
+   "expectation": "present",
+   "question": "How are tips handled for coffee bar employees?",
+   "expected_citations": [
+    "Article 8, Section 26"
+   ],
+   "expected_keywords": [
+    "pooled weekly"
+   ],
+   "min_expected_keyword_hits": 1,
+   "expected_source_type": "moa",
+   "expected_intent_type": "contract",
+   "require_no_wage_info": true
+  },
+  {
+   "id": "MOA-MT-REMOVED-01",
+   "contract_id": "local7_safeway_pueblo_meat_2022",
+   "expectation": "absent",
+   "question": "Does the Employer have to send the Union a copy of the full-time request list by March 1 and September 1?",
+   "forbidden_keywords": [
+    "no later than March 1 and September 1"
+   ],
+   "expected_intent_type": "contract",
+   "require_no_wage_info": true
+  },
+  {
+   "id": "MOA-MT-REMOVED-02",
+   "contract_id": "local7_safeway_pueblo_meat_2022",
+   "expectation": "absent",
+   "question": "Am I limited to signing up for three positions I wish to be promoted to?",
+   "forbidden_keywords": [
+    "three (3) positions"
+   ],
+   "expected_intent_type": "contract",
+   "require_no_wage_info": true
+  }
+ ]
 }

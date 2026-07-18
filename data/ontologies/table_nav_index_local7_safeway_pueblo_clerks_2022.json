@@ -1,7 +1,7 @@
 {
   "schema_version": "table_nav_index_v1",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
-  "generated_at": "2026-02-19T11:31:36.347950+00:00",
+  "generated_at": "2026-07-17T19:47:05.138567+00:00",
   "source_json": "safeway_pueblo_clerks_2022.json",
   "structured_tables": "structured_tables.json",
   "total_pages": 74,

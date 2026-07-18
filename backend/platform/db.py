@@ -58,6 +58,14 @@ PERMISSIVE_WRITE_RLS_TABLES = frozenset(
 # null-union escape hatch used by the tracking tables.
 SESSION_RLS_TABLES = ("auth_sessions",)
 
+# Invite codes are strictly tenant-owned (union_id NOT NULL) but must be resolvable by the
+# anonymous join flow, which runs before any tenant context exists. Reads therefore permit the
+# no-context case (current_setting returns NULL/'' for unset app.current_union_id) while an
+# established tenant context stays isolated to its own union. Writes are app-controlled: the
+# join endpoint increments use_count pre-auth, so WITH CHECK stays permissive like the other
+# app-managed tables.
+INVITE_RLS_TABLES = ("invite_codes",)
+
 _SUPER_ADMIN_PREDICATE = "current_setting('app.current_role', true) = 'super_admin'"
 _UNION_MATCH_PREDICATE = "union_id::text = current_setting('app.current_union_id', true)"
 
@@ -109,6 +117,22 @@ def tracking_and_session_rls_statements() -> list[str]:
         using_expr = _session_read_predicate()
         check_expr = "true" if table in PERMISSIVE_WRITE_RLS_TABLES else using_expr
         statements.append(_policy_statement(table, using_expr=using_expr, check_expr=check_expr))
+    return statements
+
+
+def invite_rls_statements() -> list[str]:
+    """RLS enable/force + policy statements for the invite-code table.
+
+    Kept separate (like :func:`tracking_and_session_rls_statements`) so the Alembic migration
+    that introduces invite codes applies exactly the same SQL to existing databases.
+    """
+    no_context_predicate = "coalesce(current_setting('app.current_union_id', true), '') = ''"
+    using_expr = f"{_SUPER_ADMIN_PREDICATE} OR {no_context_predicate} OR {_UNION_MATCH_PREDICATE}"
+    statements: list[str] = []
+    for table in INVITE_RLS_TABLES:
+        statements.append(f"ALTER TABLE {table} ENABLE ROW LEVEL SECURITY")
+        statements.append(f"ALTER TABLE {table} FORCE ROW LEVEL SECURITY")
+        statements.append(_policy_statement(table, using_expr=using_expr, check_expr="true"))
     return statements
 
 
@@ -219,6 +243,7 @@ def get_rls_statements() -> list[str]:
     return [
         *foundation_rls_statements(),
         *tracking_and_session_rls_statements(),
+        *invite_rls_statements(),
     ]
 
 

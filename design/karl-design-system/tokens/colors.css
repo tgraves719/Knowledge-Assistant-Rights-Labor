@@ -1,0 +1,119 @@
+/* ==========================================================================
+   KARL — Color tokens
+   --------------------------------------------------------------------------
+   Two layers, matching how the product actually works:
+
+   1. STEWARDSHIP tokens (--ink-*, --paper, --black) — the parent org's own
+      identity. KARLS/KARL Stewardship uses black + white for all of its own
+      collateral (governance docs, org site, this design system's chrome).
+
+   2. UNION tokens (--union-*) — the per-tenant palette the KARL app itself
+      is skinned in. Each union brings its own colors; the values below are
+      the shipped default/demo tenant (UFCW Local 7), lifted directly from
+      frontend/modular/styles/generated.css (--ufcw-blue, --ufcw-gold, etc).
+      When prototyping a specific union, swap these — never hardcode a
+      union's palette as if it were KARL's own brand.
+   ========================================================================== */
+
+:root {
+  /* ---- Neutral scale (slate) — used everywhere: text, borders, surfaces --- */
+  --ink-950: #020617;
+  --ink-900: #0f172a;
+  --ink-800: #1e293b;
+  --ink-700: #334155;
+  --ink-600: #475569;
+  --ink-500: #64748b;
+  --ink-400: #94a3b8;
+  --ink-300: #cbd5e1;
+  --ink-200: #e2e8f0;
+  --ink-100: #f1f5f9;
+  --ink-50:  #f8fafc;
+  --paper:   #ffffff;
+  --black:   #000000;
+
+  /* ---- Stewardship (org) semantic aliases — black & white, no accent ---- */
+  --steward-bg: var(--paper);
+  --steward-fg: var(--black);
+  --steward-surface: var(--ink-50);
+  --steward-border: var(--ink-200);
+  --steward-muted: var(--ink-500);
+
+  /* ---- Union tenant palette (default demo tenant: UFCW Local 7) --------- */
+  --union-blue-dark:  #0D3B54; /* --ufcw-blue */
+  --union-blue-mid:   #14506E; /* --ufcw-blue-mid */
+  --union-blue-light: #1B6B8A; /* --ufcw-blue-light */
+  --union-gold:       #D4A029; /* --ufcw-gold */
+  --union-gold-light: #E8B84A; /* --ufcw-gold-light */
+
+  /* Shield mark halves (karl-shield-left / karl-shield-right in product code) */
+  --union-shield-left:  #4A7A9F;
+  --union-shield-right: #EECF6D;
+
+  /* ---- Semantic aliases used across app surfaces ------------------------ */
+  --text-primary:   var(--ink-900);
+  --text-secondary: var(--ink-600);
+  --text-tertiary:  var(--ink-400);
+  --text-on-accent: var(--paper);
+  --text-link: var(--union-blue-dark);
+  --text-link-hover: var(--union-gold);
+
+  --surface-page:    var(--ink-50);
+  --surface-card:    var(--paper);
+  --surface-sunken:  var(--ink-100);
+  --surface-overlay: rgba(30, 58, 138, 0.8);
+  --surface-accent:  var(--union-blue-dark);
+
+  --border-default: var(--ink-200);
+  --border-strong:  var(--ink-300);
+  --border-on-accent: rgba(255, 255, 255, 0.1);
+
+  --accent: var(--union-gold);
+  --accent-deep: var(--union-blue-mid);
+  --blue: var(--union-blue-dark);
+  --gold: var(--union-gold);
+
+  /* ---- Semantic status colors (contract Q&A confidence / states) ------- */
+  --success-bg: #ecfdf5;
+  --success-border: #a7f3d0;
+  --success-text: #047857;
+  --success-strong: #10b981;
+
+  --warning-bg: #fffbeb;
+  --warning-border: #fde68a;
+  --warning-text: #b45309;
+  --warning-strong: #f59e0b;
+
+  --danger-bg: #fef2f2;
+  --danger-border: #fecaca;
+  --danger-text: #b91c1c;
+  --danger-strong: #dc2626;
+
+  --info-bg: #eff6ff;
+  --info-border: #bfdbfe;
+  --info-text: #1e3a8a;
+  --info-strong: #3b82f6;
+
+  --citation-bg: rgba(212, 160, 41, 0.15);
+  --citation-text: var(--union-gold);
+}
+
+/* Dark mode — the product ships a toggled dark theme (see index.html
+   `.dark` overrides). Accent flips to the lighter gold; surfaces invert. */
+.dark {
+  --text-primary: var(--ink-100);
+  --text-secondary: var(--ink-300);
+  --text-tertiary: var(--ink-500);
+  --text-link: var(--union-gold-light);
+  --text-link-hover: var(--union-gold);
+
+  --surface-page: #111827;
+  --surface-card: #1f2937;
+  --surface-sunken: #0f172a;
+
+  --border-default: #374151;
+  --border-strong: #4b5563;
+
+  --accent: var(--union-gold-light);
+  --citation-bg: rgba(212, 160, 41, 0.2);
+  --citation-text: var(--union-gold-light);
+}

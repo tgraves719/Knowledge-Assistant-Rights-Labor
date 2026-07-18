@@ -433,3 +433,43 @@ def test_postgres_rls_blocks_cross_tenant_insert(postgres_env):
                 )
             )
             db.commit()
+
+
+def test_postgres_rls_invite_codes_anonymous_resolution_and_tenant_isolation(postgres_env):
+    from backend.platform.models import InviteCode
+
+    seeded = _seed_sample_data(postgres_env["owner_session_factory"])
+
+    with postgres_env["owner_session_factory"]() as db:
+        apply_request_context(db, _auth(role=Role.SUPER_ADMIN.value))
+        db.add_all(
+            [
+                InviteCode(union_id=seeded["union_one_id"], code="unionone12", label="poster A"),
+                InviteCode(union_id=seeded["union_two_id"], code="uniontwo34", label="poster B"),
+            ]
+        )
+        db.commit()
+
+    # Anonymous join flow (no tenant context established): both codes must resolve so a
+    # scanned QR can find its union before any auth exists.
+    with postgres_env["app_session_factory"]() as db:
+        apply_request_context(db, None)
+        anon_codes = {item.code for item in db.scalars(select(InviteCode)).all()}
+    assert {"unionone12", "uniontwo34"} <= anon_codes
+
+    # Established tenant context: union A sees only its own codes.
+    with postgres_env["app_session_factory"]() as db:
+        apply_request_context(
+            db,
+            _auth(role=Role.UNION_ADMIN.value, union_id=seeded["union_one_id"], user_id=seeded["user_one_id"]),
+        )
+        tenant_codes = {item.code for item in db.scalars(select(InviteCode)).all()}
+        cross = db.scalar(select(InviteCode).where(InviteCode.code == "uniontwo34"))
+    assert tenant_codes == {"unionone12"}
+    assert cross is None
+
+    # Super-admin sees everything.
+    with postgres_env["app_session_factory"]() as db:
+        apply_request_context(db, _auth(role=Role.SUPER_ADMIN.value))
+        all_codes = {item.code for item in db.scalars(select(InviteCode)).all()}
+    assert {"unionone12", "uniontwo34"} <= all_codes

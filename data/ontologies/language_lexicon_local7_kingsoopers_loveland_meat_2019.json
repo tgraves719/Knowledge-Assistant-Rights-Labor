@@ -1,6 +1,6 @@
 {
   "schema_version": "language_lexicon_v1",
-  "generated_at_utc": "2026-03-08T21:43:30.326317+00:00",
+  "generated_at_utc": "2026-07-17T19:47:02.464103+00:00",
   "contract_id": "local7_kingsoopers_loveland_meat_2019",
   "region_id": "region-loveland",
   "union_local_id": "UFCW LOCAL 7",
@@ -92,6 +92,15 @@
         "pension delinquencies",
         "welfare pension",
         "welfare pension delinquencies"
+      ]
+    },
+    {
+      "canonical": "health benefits",
+      "aliases": [
+        "health and welfare",
+        "health benefits",
+        "insurance",
+        "medical"
       ]
     },
     {
@@ -272,6 +281,16 @@
       ]
     },
     {
+      "canonical": "personal holiday",
+      "aliases": [
+        "float day",
+        "float days",
+        "floater",
+        "personal holiday",
+        "personal holidays"
+      ]
+    },
+    {
       "canonical": "personal_holiday",
       "aliases": [
         "float day",
@@ -399,7 +418,10 @@
     {
       "canonical": "sick leave",
       "aliases": [
-        "sick leave"
+        "call in sick",
+        "sick day",
+        "sick leave",
+        "sick pay"
       ]
     },
     {
@@ -600,12 +622,12 @@
     "pension delinquencies": "health and welfare or pension delinquencies",
     "welfare pension": "health and welfare or pension delinquencies",
     "welfare pension delinquencies": "health and welfare or pension delinquencies",
-    "benefits plan": "health benefits plan",
-    "health benefits": "health benefits",
-    "health benefits plan": "health benefits plan",
     "health and welfare": "health benefits",
+    "health benefits": "health benefits",
     "insurance": "health benefits",
     "medical": "health benefits",
+    "benefits plan": "health benefits plan",
+    "health benefits plan": "health benefits plan",
     "holidays": "holidays",
     "injury job": "injury on the job",
     "injury on the job": "injury on the job",
@@ -711,9 +733,9 @@
     "service in meat departments plants": "service in meat departments plants",
     "service meat": "service in meat departments plants",
     "service meat departments": "service in meat departments plants",
-    "sick leave": "sick leave",
     "call in sick": "sick leave",
     "sick day": "sick leave",
+    "sick leave": "sick leave",
     "sick pay": "sick leave",
     "split shifts": "split shifts",
     "store meetings": "store meetings",

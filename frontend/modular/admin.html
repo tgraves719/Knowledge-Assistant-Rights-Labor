@@ -274,6 +274,24 @@
                             </div>
                         </div>
                     </section>
+
+                    <div class="panel rounded-[28px] p-6">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                <div class="section-title">Invite Codes</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">QR join codes for member enrollment</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">Each printed QR placement (break-room poster, union board, steward hand-cards) gets its own code, so you can see where members are joining from and shut down any single placement without reprinting the rest.</p>
+                            </div>
+                            <button id="refresh-invites" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
+                        </div>
+                        <form id="invite-create-form" class="mt-5 grid gap-3 md:grid-cols-2">
+                            <input id="invite-label" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Label (e.g. Pueblo West break room poster)">
+                            <input id="invite-max-uses" type="number" min="1" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Max uses (optional)">
+                            <input id="invite-expires" type="date" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" title="Expiry date (optional)">
+                            <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Create Invite Code</button>
+                        </form>
+                        <div id="invite-list" class="mt-4 grid gap-3"></div>
+                    </div>
                 </div>
 
                 <div class="space-y-6">

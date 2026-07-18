@@ -1,18 +1,18 @@
 # MOA Deep Eval Summary
 
-Generated: 2026-03-09T10:32:55.035246+00:00
+Generated: 2026-07-17T20:08:04.805287+00:00
 
 ## Suite Status
 - Commands passed: 19/19 (100.0%)
 - All commands passed: True
 
 ## MOA Effective Scores
-- Baseline dataset: 4/4 (100.0%)
-- Deep dataset: 17/18 (94.4%)
+- Baseline dataset: 10/10 (100.0%)
+- Deep dataset: 16/18 (88.9%)
 
 ## Track Scores
-- `moa_effective_baseline`: rc=0, pass=4/4 (100.0%)
-- `moa_effective_deep`: rc=0, pass=17/18 (94.4%)
+- `moa_effective_baseline`: rc=0, pass=10/10 (100.0%)
+- `moa_effective_deep`: rc=0, pass=16/18 (88.9%)
 - `moa_deleted_vs_updated`: rc=0, pass=4/4 (100.0%), gate=True
 - `moa_deleted_vs_updated_answer`: rc=0, pass=4/4 (100.0%), gate=True
 - `moa_readiness`: rc=0
@@ -32,10 +32,13 @@ Generated: 2026-03-09T10:32:55.035246+00:00
 - `topic_routing_test`: rc=0
 
 ## Deep Dataset Failures
+- `MOA-CL-NIGHT-02`: What is the overnight premium for courtesy clerks from midnight to 6 a.m.?
+  - citation_hit=False keywords_ok=False source_type_ok=False intent=contract
+  - top citations: Article 16, Section 35, Article 16, Section 37, Article 4, Section 8, Article 5, Section 11
 - `MOA-CL-WAGE-02`: What is the courtesy clerk start rate effective January 21, 2024?
   - citation_hit=True keywords_ok=False source_type_ok=True intent=wage
   - top citations: Article 8, Section 18, Article 8, Section 19, Article 4, Section 8, Article 5, Section 12
 
 ## Priority Gaps
+- `moa_effective_deep`: 16/18 (88.9%)
 - `side_letter_retrieval`: 15/16 (93.8%)
-- `moa_effective_deep`: 17/18 (94.4%)

@@ -148,6 +148,7 @@ class AuthSession(Base):
     )
     ip_address: Mapped[str | None] = mapped_column(String(120))
     user_agent: Mapped[str | None] = mapped_column(String(500))
+    invite_code_id: Mapped[str | None] = mapped_column(ForeignKey("invite_codes.id"), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
     last_seen_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
@@ -416,3 +417,21 @@ class Notification(Base):
         default=NotificationStatus.PENDING,
     )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class InviteCode(Base):
+    __tablename__ = "invite_codes"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    union_id: Mapped[str] = mapped_column(ForeignKey("unions.id"), nullable=False, index=True)
+    code: Mapped[str] = mapped_column(String(64), unique=True, nullable=False, index=True)
+    label: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    contract_id: Mapped[str | None] = mapped_column(String(255))
+    created_by: Mapped[str | None] = mapped_column(ForeignKey("users.id"))
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime, index=True)
+    max_uses: Mapped[int | None] = mapped_column(Integer)
+    use_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime, index=True)
+    metadata_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)

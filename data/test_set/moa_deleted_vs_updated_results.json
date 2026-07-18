@@ -64,7 +64,7 @@
       ],
       "expected_intent_type": "contract",
       "expected_keywords": [
-        "January 16, 2027"
+        "January 22, 2028"
       ],
       "expected_rank": 2,
       "expected_source_type": "moa",
@@ -212,6 +212,6 @@
     }
   ],
   "schema_version": "moa_deleted_vs_updated_eval_v1",
-  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_test.json",
-  "timestamp_utc": "2026-03-09T10:33:41.750014+00:00"
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_test.json",
+  "timestamp_utc": "2026-07-17T20:10:56.635514+00:00"
 }

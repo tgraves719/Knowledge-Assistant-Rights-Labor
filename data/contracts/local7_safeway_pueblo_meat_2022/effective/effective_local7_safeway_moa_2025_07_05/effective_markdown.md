@@ -96,23 +96,9 @@ Section 13. The Employer retains the right to manage its business, to establish 
 
 The Company retains the right to develop, implement and establish a Bonus Plan for Department Managers at its sole discretion including the right to determine bonus amounts, payment criteria, measurements and the right to make changes and modifications to the program including termination of the program. The Union will withdraw with prejudice all grievances related to the Company's department manager bonus program.
 
-PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a7_s14, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p7;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p5@albertsons_safeway_moa_2025_07_05])
+PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a7_s14, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p7])
 
-Section 14.
-
-For the purposes of this Agreement, the terms set forth below shall have the following meanings:
-
-h. DRIVE UP AND GO. It is expressly understood and agreed that DUG Shopper work is and will remain bargaining unit work within the scope of the applicable "Clerks" collective bargaining agreements between Safeway Inc., Albertsons LLC., and UFCW Local 7 The Company agrees that it will not subcontract the shopping work involved in curbside customer pickup service (e.g. Drive Up and Go).
-
-If the Company makes any changes to the DUG Program resulting in the elimination of the DUG department at a store, the Company shall inform the Union at least sixty (60) days prior to implementation of any such change or elimination.
-
-DUG Shoppers will select and pack customer-ready products to fulfill customer orders. The DUG Shoppers will perform no preparation or cutting of food or meat.
-
-DUG Shoppers shall be considered a separate classification in the Clerks Agreement for all purposes, including but not limited to seniority and scheduling.
-
-Wage rates for DUG Shoppers will be the same as the Non-Food/GM classification wage rate progression of the applicable Clerks Agreement for the Store.
-
-Where 3 or more DUG Shoppers are regularly assigned to that department, and where the Store does not already have such a position, the Company will post and select the most qualified individual to fill the role of DUG Supervisor (resulting in 1 supervisor and 2 clerks). The wage rate for the DUG Supervisor will be the same as the Head Clerk wage rate of the applicable Clerks agreement for the store.
+Section 14. Head Meat Cutter: Shall be considered the employee responsible for the operation of the market and the union will not recognize any employee as Head Meat Cutter who is not employed full-time in any store covered by this Agreement.
 
 PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a7_s15, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p7])
 
@@ -124,9 +110,9 @@ During an apprentice's three (3) years training period, he shall be assigned fro
 
 One (1) apprentice shall be allowed to every two (2) Journeymen or a fraction thereof in each market, and one (1) additional apprentice to every two (2) additional Journeymen in said market. This limitation on apprentices may be relaxed during emergency periods when the Union is unable to furnish qualified Journeymen to the Employer.
 
-PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a7_s16, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p7;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p4@albertsons_safeway_moa_2025_07_05])
+PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a7_s16, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p7])
 
-Section 16. New Classifications. When a new job is created by the Employer, the Union shall be notified immediately, and shall meet within thirty (30) days to determine a wage rate for such job, unless otherwise extended by mutual agreement of the parties or as a result of an Act of God.
+Section 16. First Cutter: A First Cutter may be designated at the discretion of the Employer and is not a required classification.
 
 PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a7_s17, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p8])
 
@@ -202,9 +188,9 @@ National Guard shall be given credit for one thousand forty (1040) hours per yea
 
 Any grievance over recognition given an employee for comparable work experience at the time of his employment must be filed pursuant to the terms and conditions of the grievance procedure of this Agreement (excluding the employee's trial period).
 
-PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a8_s26, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p10])
+PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a8_s26, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p10;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p5@albertsons_safeway_moa_2025_07_05])
 
-**Section 26. Tips. Coffee Bar Employees shall be permitted to accept tips. The Employer shall not assert any tip credit in order to reduce these employees’ wages.**
+Section 26. Tips. Coffee Bar Employees shall be permitted to accept tips. The Employer shall not assert any tip credit in order to reduce these employees' wages. Tips for coffee bar employees shall be pooled weekly and divided proportionally among coffee bar employees based on hours worked in the week.
 
 PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a9_s27, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p10])
 
@@ -524,15 +510,9 @@ PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a27_s70, effective_v
 
 <u>Section 70.</u> (Denver Only) The written request shall set forth the classification or classifications the employee wishes to be promoted to and the store(s) that the employee would be willing to accept a promotion.
 
-PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a27_s71, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p20;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p11@albertsons_safeway_moa_2025_07_05])
+PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a27_s71, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p20;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p7@albertsons_safeway_moa_2025_07_05])
 
-Section 71. Promotions, Lateral Transfers, and Assignment to Full-Time. The Employer agrees to make promotions and lateral transfers to non-management classifications and full-time status to the most senior qualified employee as provided herein. Management will post a list of openings on and within the store where the opening exists for ( ) hours and said posting shall list the date and time the notice is posted. Employees may sign the posting and be considered for promotion. Upon completion of the ( ) hour period, management shall record the time it removed the posting and maintain a record of the posting for a period of no less than thirty (30) days. The Company shall offer the promotion/lateral transfer/full-time to the senior qualified employee within both the bargaining unit within the store, and, if none, then to the senior qualified employee within the store, and, if none, to the senior qualified employee not within the store, but within the bargaining unit, prior to hiring off-the-street.
-
-The Employer agrees during this trial period to ensure employees can utilize computers in the stores to apply for promotions, lateral transfers, and assignment to full time.
-
-The Employer shall not make promotional assignments to probationary employees or to an employee on a Leave of Absence.
-
-Promotions to shall be granted according to the Contract regardless of age. Promotions to Bakery Classification or All Purpose Clerk Classification shall be granted according to the Contract, provided the employee has attained the age of 18 years. Upon attaining 18 years of age, employees shall be entitled to apply for promotions and lateral transfers as provided for with respect to any other employee.
+Section 71. Department Bidding. The Company shall allow during the first fifteen (15) days of February, to be effective the first workweek in March, and the first fifteen (15) days in August, to be effective the first workweek in September, non-management employees to bid within the store to another meat bargaining unit department. Management retains the right to determine the number of full-time and part-time positions in each department. If a senior employee from a department bids into another department, the least senior employee in the department and status affected shall be moved to the department vacated by the bidder. Employees may not displace a meatcutter. All non-management clerks shall be deemed eligible to bid into any meat position, except for meatcutter. The Employer agrees to provide training to an employee who is granted a bid into another department.
 
 PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a27_s72, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p21])
 
@@ -544,9 +524,17 @@ PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a27_s73, effective_v
 
 A Delicatessen Manager who is being demoted (voluntarily or involuntarily) shall have the option of accepting a Delicatessen Clerk position, or in the case where the Delicatessen Manager previously was a Journeyman Meat Cutter for that Employer, may return to the Meat Department to preserve his rate of pay. Any employee, as of May 1, 1980, who has been demoted and has not had his pay reduced, shall be red circled during the term of this Agreement. A Journeyman Meat Cutter shall not be forced to accept a Delicatessen Manager position which pays a lesser hourly rate of pay than the Journeyman Meat Cutter Rate.
 
-PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a27_s74, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p21;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p8@albertsons_safeway_moa_2025_07_05])
+PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a27_s74, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p21])
 
-Section 74. Sister Company Credit. When an employee transfers into the bargaining unit from any Albertson's store in Colorado or Wyoming, the Company shall honor the employee's most recent hire date with Albertson's and/or Safeway for all purposes except scheduling, layoffs, vacation bidding, department bidding, full-time status, promotions, and overtime. Specifically, eligibility for health care benefits shall be from the employee's most recent hire date with Albertson's and/or Safeway.
+<u>Section 74.</u> Nothing herein shall be construed to prohibit the Employer from hiring into a Journeyman or top rate position should the Employer deem it necessary.
+
+**<u>Section 75.</u> <u>Sister Company Credit.</u> When an employee transfers into the bargaining unit from any [Albertson’s] store in Colorado or Wyoming, the Company shall honor the employee’s most recent hire date with Albertson’s and/or Safeway for all purposes except scheduling, layoffs, vacation bidding, department bidding, full-time status, promotions, and overtime. Specifically, eligibility for health care benefits shall be from the employee’s most recent hire date with Albertson’s and/or Safeway.**
+
+**BARGAINING NOTE: For purposes of this provision, the phrase “most recent hire date with Albertson’s and/or Safeway” means the most recent date of continuous employment with either banner.**
+
+**<u>Section 76.</u> In the event an employee transfers from one area in the State of Colorado to a bargaining unit in the State of Colorado in the jurisdiction of Local 634 (now Local 7), then all continuous employment seniority with the Company shall be recognized by both the Union and the Company after thirty (30) days in the bargaining unit to which the employee transfers. In the event the transferred employee is laid off in the new location, then the transferred employee shall retain the right to return to the area from which the employee transferred during this thirty (30) day period in the new bargaining unit.**
+
+It is agreed that this provision shall become effective on January 10, 1978, and shall not be retroactive for employees who have previously transferred into a new bargaining unit.
 
 PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a28_s77, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p22])
 
@@ -604,9 +592,9 @@ PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a28_s84, effective_v
 
 Section 84. It is understood and agreed the Employer retains the right to require hours of work even though an employee has not requested additional hours.
 
-PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a28_s85, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p23])
+PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a28_s85, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p23;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p32@albertsons_safeway_moa_2025_07_05])
 
-Section 85. The Employer will send the Union a copy of the "full-time request" list, no later than March 1 and September 1 of each calendar year.
+Section 85. [Deleted by the Memorandum of Agreement dated July 5, 2025.]
 
 PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a28_s86_p1, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p23])
 
@@ -734,11 +722,9 @@ PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a32_s94_p4, effectiv
 
 4. <u>Effect of not exercising option within time limits.</u> If the affected person does not notify the Company of his/her chosen option within the time limits set forth above, the affected person will be deemed to have exercised the first option specified in Section 94 (retail meat) or Section 77 (retail clerks) that is available, assuming that the affected person qualifies for such option when the contract requires qualifications. For example, if a retail clerk employee does not notify the Company of his/her chosen option within the time limits, he/she will be deemed to have chosen the option in Section 77 of displacing a less senior employee within the same classification in the store or, if such option is unavailable, of displacing the least senior employee within the same classification in the bargaining unit.
 
-PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a33_s95, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p28;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p14@albertsons_safeway_moa_2025_07_05])
+PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a33_s95, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p28])
 
-Section 95. Upon request, an employee covered by this Agreement shall be granted the necessary time off with pay at his regular straight-time rate of pay in order to make arrangements for and/or attend a funeral occasioned by a death in his immediate family. Such time off with pay shall in no event exceed three (3) regularly scheduled working days. The immediate family is defined as the employee's father, mother, step-parents, grandparents, grandchildren, spouse, common-law spouse, an individual in a civil union with that employee if recognized by State law, children, step-child, brother, sister; and father, mother, brother and sister of the then existing spouse. Payments shall not be made hereunder where the relative's death occurs while the employee is on vacation or on a leave of absence.
-
-Additional time, without pay, shall be granted as is needed by the employee up to seven (7) days for the above defined immediate family as well as for aunts, uncles, nieces, nephews, first cousins, step-brother, step-sisters, co-parents, fiancés/fiancées and grandparent of the then existing spouse.
+<u>Section 95.</u> <u>Transfers from Store to Store.</u> Transfers from store to store shall not be made or denied for capricious, arbitrary or discriminatory reasons. Full-time employees desiring a transfer to another store within the bargaining unit, in order to be nearer their residence, may indicate their desire for transfer in writing to the person designated by the Employer. Such transfer requests will be considered at the time an opening occurs within their classification and status.
 
 PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a34_s96, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p28])
 
@@ -1288,7 +1274,7 @@ PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a48_s142, effective_
 
 <u>Section 142</u>. The Chief Executive Officer of the Union, the Deputy Secretary, or the Business Representative, thereof shall have the right of entering the premises of the Employer for the purpose of interviewing employees in such a way as to not interfere with the service of the Employer. The said representatives shall make their presence known to the supervisory person in charge upon entering the premises. The Employer shall, upon the request of an authorized Union representative, furnish satisfactory evidence to ascertain whether employees are being paid in accordance with the terms of this Agreement. The Chief Executive Officer, or his Deputy, may inspect the dues books of employees during working hours.
 
-PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a49_s143, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p48;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p40@albertsons_safeway_moa_2025_07_05])
+PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a49_s143, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p48;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p32@albertsons_safeway_moa_2025_07_05])
 
 Section 143. The Union shall have the right to designate one (1) Steward per store (stores that have 20 or more employees in the meat bargaining unit may have two (2) Stewards) who shall perform their Steward duties in such a way as not to interfere with the service of the Employer. In stores with more than one Steward, it is agreed that one Steward may come from a given subdepartment (meat, deli). Such Stewards shall have top seniority for the purpose of layoff within their classification in that store. The designated representative of the Employer must be advised in writing by the Union of the name of the Steward in the store before the employee will be recognized as a Steward.
 
@@ -1318,7 +1304,7 @@ If the issuance of a verbal or written warning is grieved, the Union will notify
 
 **Safeway's Store Managers and the Union Store Stewards shall be allowed to settle grievances at the store level with no precedent.**
 
-PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a50_s149, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p48;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p14@albertsons_safeway_moa_2025_07_05])
+PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a50_s149, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p48;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p20@albertsons_safeway_moa_2025_07_05])
 
 Section 149. Step 2. In an instance where an employee feels he has not been paid in accordance with the wage progression scales set forth herein, such employee shall have an obligation to bring this to the attention of the Store Manager as soon as the employee first has knowledge of such alleged error. In the event the employee has been improperly paid, said payment error shall be corrected on a retroactive basis, but not beyond ninety (90) days prior to the date on which the grievance is presented in writing. This ninety (90) day retroactive liability shall not be applicable to situations covered by Article 8, Section 25a, second paragraph. In such situations, in accordance with Article 8, Section 25a, the retroactive liability will be adjusted to the first Sunday after the employee delivers documentation to the Company substantiating the prior experience.
 
@@ -1533,9 +1519,9 @@ PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a57_s167, effective_
 
 Section 167. The parties acknowledge that during the negotiations which resulted in this Agreement, each had the unlimited right and opportunity to make demands and proposals with respect to any subject or matter not removed by law from the area of collective bargaining, and that the understandings and agreements arrived at by the parties after the exercise of that right and opportunity are set forth in this Agreement. Therefore, the Employer and the Union, for the life of this Agreement, each voluntarily and unqualifiedly waives the right and each agrees that the other shall not be obligated to bargain collectively with respect to any subject or matter referred to, or covered in this Agreement, or with respect to any subject or matter not specifically referred to or covered in this Agreement even though such subject or matter may not have been within the knowledge or contemplation of either or both of the parties at the time that they negotiated or signed this Agreement.
 
-PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a57_s168, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p55])
+PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a57_s168, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p55;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p36@albertsons_safeway_moa_2025_07_05])
 
-Section 168. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **February 27, 2022** and shall remain in full force and effect until midnight on **February 22, 2025** and shall be automatically renewed from year to year thereafter, unless either party desires change or termination at the expiration of said Agreement. In such event, the party desiring such change or termination shall notify the other party in writing sixty (60) days prior to the expiration date.
+Section 168. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **February 27, 2022** and shall remain in full force and effect until 11:59 p.m. on **February 26, 2028** and shall be automatically renewed from year to year thereafter, unless either party desires change or termination at the expiration of said Agreement. In such event, the party desiring such change or termination shall notify the other party in writing sixty (60) days prior to the expiration date.
 
 PROV(contract_id=local7_safeway_pueblo_meat_2022, anchor_id=a57_s169_p1, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Meat+2022.2025.pdf#p56])
 

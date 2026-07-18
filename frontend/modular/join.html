@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>__UNION_NAME__ | Ask Karl</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        /* KARL app surface — permanent dark theme, tenant palette (UFCW Local 7 blue/gold).
+           This is the onboarding scene from the design system: dark union-blue gradient,
+           soft gold/blue radial glow, Playfair italic hero, gold reserved for the one CTA. */
+        :root {
+            color-scheme: dark;
+            --union-blue-dark: #0D3B54;
+            --union-blue-mid: #14506E;
+            --union-blue-light: #1B6B8A;
+            --union-gold: #D4A029;
+            --union-gold-light: #E8B84A;
+            --ink-100: #f1f5f9;
+            --ink-300: #cbd5e1;
+            --ink-400: #94a3b8;
+            --err-bg: rgba(220, 38, 38, 0.14);
+            --err-border: rgba(252, 165, 165, 0.35);
+            --err-text: #fecaca;
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--ink-100);
+            background:
+                radial-gradient(circle at 22% 14%, rgba(212, 160, 41, 0.14), transparent 32%),
+                radial-gradient(circle at 80% 6%, rgba(27, 107, 138, 0.35), transparent 34%),
+                linear-gradient(-45deg, #081420, var(--union-blue-dark), var(--union-blue-mid), var(--union-blue-dark));
+            background-size: 100% 100%, 100% 100%, 400% 400%;
+            animation: scene-drift 14s ease infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 28px 18px 44px;
+        }
+        @keyframes scene-drift {
+            0% { background-position: 0 0, 0 0, 0% 50%; }
+            50% { background-position: 0 0, 0 0, 100% 50%; }
+            100% { background-position: 0 0, 0 0, 0% 50%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            body { animation: none; }
+        }
+        .scene {
+            width: 100%;
+            max-width: 430px;
+            margin-top: 4vh;
+        }
+        .eyebrow {
+            font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
+            color: var(--union-gold-light); text-align: center; margin: 0 0 18px;
+            font-weight: 600;
+        }
+        .hero {
+            font-family: "Playfair Display", serif;
+            font-style: italic;
+            font-weight: 600;
+            font-size: 40px;
+            line-height: 1.15;
+            text-align: center;
+            margin: 0 0 10px;
+            color: #ffffff;
+        }
+        .hero-sub {
+            font-size: 15.5px; line-height: 1.6; color: var(--ink-300);
+            text-align: center; margin: 0 auto 26px; max-width: 340px;
+        }
+        .hero-sub strong { color: var(--ink-100); font-weight: 600; }
+        .tiles { display: grid; gap: 10px; margin: 0 0 18px; }
+        .tile {
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            backdrop-filter: blur(6px);
+            border-radius: 16px;
+            padding: 13px 16px;
+            font-size: 14.5px;
+            line-height: 1.55;
+            color: var(--ink-100);
+        }
+        .tile .k { color: var(--union-gold-light); font-weight: 600; }
+        .privacy {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 13px 16px;
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: var(--ink-300);
+            margin-bottom: 24px;
+        }
+        .privacy strong { color: var(--ink-100); }
+        .start {
+            display: block; width: 100%;
+            font-size: 17.5px; font-weight: 700; letter-spacing: .01em;
+            color: #1a1305;
+            background: linear-gradient(180deg, var(--union-gold-light) 0%, var(--union-gold) 100%);
+            border: none; border-radius: 14px; padding: 17px 16px; cursor: pointer;
+            min-height: 58px;
+            box-shadow: 0 8px 26px -12px rgba(212, 160, 41, 0.55);
+            transition: filter .15s;
+        }
+        .start:hover { filter: brightness(1.06); }
+        .start:disabled { opacity: .55; cursor: default; }
+        .start:focus-visible { outline: 3px solid #ffffff; outline-offset: 2px; }
+        .start-hint { font-size: 12.5px; color: var(--ink-400); text-align: center; margin-top: 11px; }
+        .error {
+            display: none; margin-top: 16px; padding: 12px 14px; border-radius: 12px;
+            background: var(--err-bg); color: var(--err-text); font-size: 14px; line-height: 1.5;
+            border: 1px solid var(--err-border);
+        }
+        .error.show { display: block; }
+        .placement { font-size: 11.5px; color: var(--ink-400); text-align: center; margin-top: 18px; }
+        .footer {
+            margin-top: auto; padding-top: 30px;
+            font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+            font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: rgba(203, 213, 225, 0.45);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <main class="scene">
+        <p class="eyebrow">__UNION_NAME__ &middot; Karl</p>
+        <h1 class="hero">Know your contract.</h1>
+        <p class="hero-sub"><strong>Karl</strong> answers questions about your union contract — wages, scheduling,
+            seniority, discipline, vacation — and cites the exact article and section every answer comes from.</p>
+
+        <div class="tiles">
+            <div class="tile"><span class="k">Ask in plain language,</span> any time, from your phone.</div>
+            <div class="tile"><span class="k">Every answer cites</span> the contract text it came from.</div>
+            <div class="tile"><span class="k">Serious issues are flagged</span> to talk to your steward.</div>
+        </div>
+
+        <div class="privacy">
+            <strong>Privacy:</strong> Karl is run for your union, not your employer. No sign-up, no name, no email —
+            tapping Start gives you an anonymous member session. Your questions are never shared with management,
+            and you can adjust what Karl keeps in Settings once you're in.
+        </div>
+
+        <button class="start" id="start-button" type="button">Start asking Karl</button>
+        <p class="start-hint">No account needed. One tap and you're in.</p>
+        <div class="error" id="join-error" role="alert"></div>
+        <p class="placement" id="placement-label"></p>
+    </main>
+
+    <footer class="footer">
+        <span>KARL STEWARDSHIP &middot; KNOWLEDGE ASSISTANT &middot; RIGHTS &amp; LABOR</span>
+    </footer>
+
+    <script>
+    (function () {
+        var code = "__JOIN_CODE__";
+        var unionSlug = "__UNION_SLUG__";
+        var label = "__INVITE_LABEL__";
+        if (label) {
+            document.getElementById("placement-label").textContent = "Join code: " + code + " (" + label + ")";
+        }
+        var button = document.getElementById("start-button");
+        var errorBox = document.getElementById("join-error");
+        button.addEventListener("click", function () {
+            errorBox.classList.remove("show");
+            button.disabled = true;
+            button.textContent = "Opening Karl…";
+            fetch("/api/auth/session/join-guest", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "same-origin",
+                body: JSON.stringify({ code: code })
+            }).then(function (response) {
+                return response.json().then(function (body) { return { ok: response.ok, body: body }; });
+            }).then(function (result) {
+                if (result.ok) {
+                    window.location.href = "/u/" + unionSlug + "/";
+                    return;
+                }
+                errorBox.textContent = (result.body && result.body.detail) || "Something went wrong. Please try again.";
+                errorBox.classList.add("show");
+                button.disabled = false;
+                button.textContent = "Start asking Karl";
+            }).catch(function () {
+                errorBox.textContent = "Could not reach Karl. Check your connection and try again.";
+                errorBox.classList.add("show");
+                button.disabled = false;
+                button.textContent = "Start asking Karl";
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

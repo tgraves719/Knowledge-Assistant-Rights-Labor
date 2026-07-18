@@ -1,6 +1,6 @@
 {
   "schema_version": "role_catalog_v2",
-  "generated_at_utc": "2026-03-08T21:43:31.616042+00:00",
+  "generated_at_utc": "2026-07-17T19:46:45.628844+00:00",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "roles": [
     {
@@ -271,9 +271,9 @@
       "label": "Deli Clerk",
       "wage_available": false,
       "wage_key": null,
-      "source": "ontology_unresolved",
-      "mapping_method": "unresolved_low_score",
-      "review_state": "unresolved",
+      "source": "ontology_reviewed_out_of_scope",
+      "mapping_method": "reviewed_out_of_scope",
+      "review_state": "out_of_scope",
       "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false
@@ -283,9 +283,9 @@
       "label": "Meat Cutter",
       "wage_available": false,
       "wage_key": null,
-      "source": "ontology_unresolved",
-      "mapping_method": "unresolved",
-      "review_state": "unresolved",
+      "source": "ontology_reviewed_out_of_scope",
+      "mapping_method": "reviewed_out_of_scope",
+      "review_state": "out_of_scope",
       "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false
@@ -295,9 +295,9 @@
       "label": "Pharmacy Technician",
       "wage_available": false,
       "wage_key": null,
-      "source": "ontology_unresolved",
-      "mapping_method": "unresolved",
-      "review_state": "unresolved",
+      "source": "ontology_reviewed_clarification",
+      "mapping_method": "reviewed_needs_clarification",
+      "review_state": "needs_clarification",
       "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false
@@ -307,9 +307,9 @@
       "label": "Sanitation Clerk",
       "wage_available": false,
       "wage_key": null,
-      "source": "ontology_unresolved",
-      "mapping_method": "unresolved_low_score",
-      "review_state": "unresolved",
+      "source": "ontology_reviewed_out_of_scope",
+      "mapping_method": "reviewed_out_of_scope",
+      "review_state": "out_of_scope",
       "clarification_wage_keys": [],
       "manifest_present": true,
       "onboarding_default": false
@@ -320,14 +320,15 @@
     "onboarding_default_roles": 14,
     "wage_available_roles": 21,
     "manifest_roles": 16,
-    "actionable_manifest_roles": 16,
-    "clarification_manifest_roles": [],
-    "out_of_scope_manifest_roles": [],
-    "unresolved_manifest_roles": [
+    "actionable_manifest_roles": 13,
+    "clarification_manifest_roles": [
+      "pharmacy_technician"
+    ],
+    "out_of_scope_manifest_roles": [
       "deli_clerk",
       "meat_cutter",
-      "pharmacy_technician",
       "sanitation_clerk"
-    ]
+    ],
+    "unresolved_manifest_roles": []
   }
 }

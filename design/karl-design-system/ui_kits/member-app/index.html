@@ -1,0 +1,226 @@
+<!-- @dsCard group="Member App" viewport="420x840" name="Karl Member Chat" subtitle="Interactive recreation — chat, contract viewer, settings tabs" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karl — Union Document Assistant</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-sans); background: var(--ink-950); display: flex; justify-content: center; padding: 20px; }
+  #phone { width: 390px; height: 800px; background: var(--surface-page); border-radius: 32px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.5); display: flex; flex-direction: column; position: relative; border: 8px solid #111; }
+  #phone.dark { background: #111827; }
+
+  @keyframes drift { 0% { background-position: 0% 50%; } 50% { background-position: 30% 50%; } 100% { background-position: 0% 50%; } }
+  @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+  #header {
+    flex-shrink: 0; padding: 14px 16px; color: #fff; display: flex; flex-direction: column;
+    background: radial-gradient(ellipse 80% 150% at 38% 50%, rgba(27,107,138,.34) 0%, transparent 50%), linear-gradient(-45deg,#0D3B54,#14506E,#1B6B8A,#14506E,#0D3B54);
+    background-size: 100% 100%, 300% 300%;
+    animation: drift 14s linear infinite;
+  }
+  #header.thinking { animation: gradientShift 3.2s linear infinite; background-size: 100% 100%, 400% 400%; }
+  #header h1 { font-size: 15px; margin: 0; font-weight: 600; }
+  #header p { font-size: 11px; margin: 0; color: rgba(255,255,255,0.75); }
+  #header-top { display: flex; align-items: center; gap: 10px; }
+  #header #quick-actions { padding: 12px 0 0; }
+
+  #tabbar { display: flex; border-top: 1px solid var(--border-default); background: var(--surface-card); flex-shrink: 0; }
+  .tab-btn { flex: 1; border: none; background: transparent; padding: 10px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; font-family: var(--font-sans); position: relative; }
+  .tab-btn .ic { font-size: 19px; color: var(--ink-400); }
+  .tab-btn .lb { font-size: 10px; font-weight: 600; color: var(--ink-400); }
+  .tab-btn.active::before { content:''; position:absolute; inset:2px 8px; background: rgba(212,160,41,0.15); border-radius: 8px; }
+  .tab-btn.active .ic, .tab-btn.active .lb { color: var(--union-gold); filter: var(--glow-gold-sm); text-shadow: var(--glow-gold-text); }
+
+  #panes { flex: 1; min-height: 0; position: relative; }
+  .pane { position: absolute; inset: 0; display: none; flex-direction: column; }
+  .pane.active { display: flex; }
+
+  /* Chat pane */
+  #quick-actions { padding: 10px 12px; display: grid; gap: 8px; }
+  .qa { background: rgba(255,255,255,0.1); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.12); color: #fff; border-radius: 12px; padding: 10px 12px; font-size: 12.5px; text-align: left; cursor: pointer; font-family: var(--font-sans); }
+  .qa:hover { background: rgba(212,160,41,0.3); }
+
+  #chat-scroll { flex: 1; overflow-y: auto; padding: 14px 12px; background: var(--surface-page); }
+  #phone.dark #chat-scroll { background: #111827; }
+  .msg-row { display: flex; margin-bottom: 10px; }
+  .msg-row.user { justify-content: flex-end; }
+  .bubble { max-width: 85%; padding: 10px 13px; font-size: 13px; line-height: 1.55; }
+  .bubble.assistant { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: 16px 16px 16px 4px; box-shadow: var(--shadow-sm); color: var(--text-primary); }
+  .bubble.user { background: var(--union-blue-dark); color: #fff; border-radius: 16px 16px 4px 16px; }
+  .cite { color: var(--union-blue-dark); text-decoration: underline dotted; text-underline-offset: 3px; cursor: pointer; font-weight: 500; }
+  #phone.dark .cite { color: var(--union-gold-light); }
+
+  #composer { flex-shrink: 0; padding: 10px 12px; background: var(--union-blue-dark); display: flex; gap: 8px; }
+  #composer input { flex: 1; border-radius: 999px; border: 1px solid rgba(255,255,255,0.25); padding: 9px 14px; font-size: 13px; background: rgba(255,255,255,0.12); color: #fff; outline: none; }
+  #composer input::placeholder { color: rgba(255,255,255,0.6); }
+  #composer button { background: var(--union-gold); border: none; color: #fff; border-radius: 999px; width: 38px; height: 38px; flex-shrink: 0; cursor: pointer; font-size: 15px; }
+
+  /* Contract pane */
+  #toc { border-bottom: 1px solid var(--border-default); padding: 10px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-secondary); background: var(--surface-sunken); }
+  #toc-list { overflow-y: auto; flex: 1; }
+  .toc-item { display: block; width: 100%; text-align: left; border: none; background: transparent; padding: 10px 14px; font-size: 13px; color: var(--text-primary); cursor: pointer; border-bottom: 1px solid var(--border-default); font-family: var(--font-sans); }
+  .toc-item:hover { background: var(--surface-sunken); }
+  .toc-item.sel { background: rgba(212,160,41,0.15); color: var(--union-blue-dark); font-weight: 600; }
+  #phone.dark .toc-item.sel { color: var(--union-gold-light); }
+
+  /* Settings pane */
+  #settings-scroll { flex: 1; overflow-y: auto; padding: 16px; }
+  .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-default); font-size: 13px; }
+  .toggle { width: 40px; height: 22px; border-radius: 999px; position: relative; cursor: pointer; transition: background-color 150ms; flex-shrink:0; }
+  .toggle .knob { position: absolute; top: 2px; width: 18px; height: 18px; border-radius: 999px; background: #fff; box-shadow: var(--shadow-sm); transition: left 150ms; }
+
+  /* Citation popover */
+  #popover-backdrop { position: absolute; inset: 0; background: rgba(30,58,138,0.8); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  #popover-backdrop.show { display: flex; }
+  #popover { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-2xl); width: 100%; }
+  #popover .ph { background: linear-gradient(to right, var(--union-blue-dark), #1d4ed8); padding: 12px 14px; color: #fff; display:flex; justify-content:space-between; align-items:flex-start; }
+  #popover .ph h3 { margin: 0; font-size: 13px; }
+  #popover .ph p { margin: 2px 0 0; font-size: 11px; color: #bfdbfe; }
+  #popover .pb { padding: 14px; font-size: 12.5px; line-height: 1.6; color: var(--text-primary); max-height: 160px; overflow-y: auto; }
+  #popover .pf { border-top: 1px solid var(--border-default); padding: 10px 14px; background: var(--surface-sunken); font-size: 11px; color: var(--union-blue-dark); font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="phone">
+  <div id="header">
+    <div id="header-top">
+      <svg width="34" height="34" viewBox="0 0 200 200"><path d="M100 190C50 190,20 150,20 40Q60 40,100 30Z" fill="#4a7a9f"/><path d="M100 190C150 190,180 150,180 40Q140 40,100 30Z" fill="#eecf6d"/></svg>
+      <div><h1>Karl</h1><p>Union Document Assistant</p></div>
+    </div>
+    <div id="quick-actions">
+      <button class="qa" data-q="What does this agreement say about scheduling?">What does this agreement say about scheduling?</button>
+      <button class="qa" data-q="What's the Sunday premium for a courtesy clerk?">What's the Sunday premium for a courtesy clerk?</button>
+    </div>
+  </div>
+
+  <div id="panes">
+    <!-- CHAT -->
+    <div class="pane active" id="pane-chat">
+      <div id="chat-scroll"></div>
+      <div id="composer">
+        <input id="composer-input" placeholder="Ask about your contract…">
+        <button id="composer-send">→</button>
+      </div>
+    </div>
+
+    <!-- CONTRACT -->
+    <div class="pane" id="pane-contract">
+      <div id="toc">Table of Contents — Safeway Pueblo Clerks 2022</div>
+      <div id="toc-list">
+        <button class="toc-item">Art. 1 — Recognition</button>
+        <button class="toc-item">Art. 8 — Hours of Work</button>
+        <button class="toc-item sel">Art. 12 — Wages</button>
+        <button class="toc-item">Art. 15 — Seniority</button>
+        <button class="toc-item">Art. 19 — Grievance Procedure</button>
+        <button class="toc-item">Appendix A — Wage Schedule</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="pane" id="pane-settings">
+      <div id="settings-scroll">
+        <div class="setting-row"><span>Dark mode</span><div class="toggle" id="toggle-dark" style="background:var(--ink-300)"><div class="knob" style="left:2px"></div></div></div>
+        <div class="setting-row"><span>Contribute anonymized data</span><div class="toggle" id="toggle-contrib" style="background:var(--union-gold)"><div class="knob" style="left:20px"></div></div></div>
+        <div class="setting-row"><span>Employer</span><span style="color:var(--text-secondary)">Safeway</span></div>
+        <div class="setting-row"><span>Classification</span><span style="color:var(--text-secondary)">Courtesy Clerk</span></div>
+        <div class="setting-row" style="border-bottom:none"><span style="color:var(--danger-strong);font-weight:600">Delete my data</span><span style="color:var(--danger-strong)">→</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tabbar">
+    <button class="tab-btn active" data-tab="chat"><span class="ic">💬</span><span class="lb">Chat</span></button>
+    <button class="tab-btn" data-tab="contract"><span class="ic">📄</span><span class="lb">Contract</span></button>
+    <button class="tab-btn" data-tab="settings"><span class="ic">⚙️</span><span class="lb">Settings</span></button>
+  </div>
+
+  <div id="popover-backdrop">
+    <div id="popover">
+      <div class="ph">
+        <div><h3>Article 12, Section 3</h3><p>Wages — Premium Pay</p></div>
+        <button onclick="hidePopover()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;">✕</button>
+      </div>
+      <div class="pb">"Employees regularly scheduled to work on Sunday shall receive one dollar fifty cents ($1.50) per hour in addition to their regular straight-time hourly rate."</div>
+      <div class="pf">Open In Contract Viewer →</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const phone = document.getElementById('phone');
+  const header = document.getElementById('header');
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('pane-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.toc-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.toc-item').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+    });
+  });
+
+  function addMessage(role, html) {
+    const scroll = document.getElementById('chat-scroll');
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + role;
+    row.innerHTML = `<div class="bubble ${role}">${html}</div>`;
+    scroll.appendChild(row);
+    scroll.scrollTop = scroll.scrollHeight;
+  }
+
+  function askQuestion(q) {
+    addMessage('user', q);
+    header.classList.add('thinking');
+    setTimeout(() => {
+      header.classList.remove('thinking');
+      addMessage('assistant', `Courtesy clerks earn a $1.50/hr Sunday premium on top of their base rate. <span class="cite" onclick="showPopover()">Art. 12, Sec. 3</span>`);
+    }, 900);
+  }
+
+  document.querySelectorAll('.qa').forEach(btn => btn.addEventListener('click', () => askQuestion(btn.dataset.q)));
+  document.getElementById('composer-send').addEventListener('click', () => {
+    const input = document.getElementById('composer-input');
+    if (!input.value.trim()) return;
+    askQuestion(input.value.trim());
+    input.value = '';
+  });
+  document.getElementById('composer-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('composer-send').click();
+  });
+
+  function showPopover() { document.getElementById('popover-backdrop').classList.add('show'); }
+  function hidePopover() { document.getElementById('popover-backdrop').classList.remove('show'); }
+  document.getElementById('popover-backdrop').addEventListener('click', (e) => {
+    if (e.target.id === 'popover-backdrop') hidePopover();
+  });
+
+  function setToggle(el, on, color) {
+    el.style.background = on ? color : 'var(--ink-300)';
+    el.querySelector('.knob').style.left = on ? '20px' : '2px';
+  }
+  let darkOn = false, contribOn = true;
+  document.getElementById('toggle-dark').addEventListener('click', () => {
+    darkOn = !darkOn;
+    setToggle(document.getElementById('toggle-dark'), darkOn, 'var(--union-gold)');
+    phone.classList.toggle('dark', darkOn);
+  });
+  document.getElementById('toggle-contrib').addEventListener('click', () => {
+    contribOn = !contribOn;
+    setToggle(document.getElementById('toggle-contrib'), contribOn, 'var(--union-gold)');
+  });
+
+  // seed initial assistant greeting
+  addMessage('assistant', "Hi, I'm Karl. Ask me anything about your contract — I'll cite the article and section every time.");
+</script>
+</body>
+</html>

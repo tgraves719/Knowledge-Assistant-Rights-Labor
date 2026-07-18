@@ -12,7 +12,13 @@ import types
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-if "fastapi" not in sys.modules:
+try:
+    import fastapi as _real_fastapi  # noqa: F401
+    _HAVE_FASTAPI = True
+except ImportError:
+    _HAVE_FASTAPI = False
+
+if not _HAVE_FASTAPI and "fastapi" not in sys.modules:
     fastapi_module = types.ModuleType("fastapi")
     middleware_module = types.ModuleType("fastapi.middleware")
     cors_module = types.ModuleType("fastapi.middleware.cors")
@@ -54,11 +60,24 @@ if "fastapi" not in sys.modules:
         def __init__(self, *args, **kwargs):
             pass
 
+    class _DummyRequest:
+        def __init__(self, *args, **kwargs):
+            pass
+
+    class _DummyResponse:
+        def __init__(self, *args, **kwargs):
+            pass
+
     fastapi_module.FastAPI = _DummyFastAPI
     fastapi_module.HTTPException = _DummyHTTPException
+    fastapi_module.Request = _DummyRequest
     cors_module.CORSMiddleware = _DummyCORSMiddleware
     staticfiles_module.StaticFiles = _DummyStaticFiles
     responses_module.FileResponse = _DummyFileResponse
+    responses_module.HTMLResponse = _DummyResponse
+    responses_module.JSONResponse = _DummyResponse
+    responses_module.RedirectResponse = _DummyResponse
+    responses_module.Response = _DummyResponse
 
     sys.modules["fastapi"] = fastapi_module
     sys.modules["fastapi.middleware"] = middleware_module
@@ -66,7 +85,13 @@ if "fastapi" not in sys.modules:
     sys.modules["fastapi.staticfiles"] = staticfiles_module
     sys.modules["fastapi.responses"] = responses_module
 
-if "pydantic" not in sys.modules:
+try:
+    import pydantic as _real_pydantic  # noqa: F401
+    _HAVE_PYDANTIC = True
+except ImportError:
+    _HAVE_PYDANTIC = False
+
+if not _HAVE_PYDANTIC and "pydantic" not in sys.modules:
     pydantic_module = types.ModuleType("pydantic")
 
     class _DummyBaseModel:
@@ -369,7 +394,14 @@ def test_vacation_followup_full_time_override_is_deterministic() -> None:
     )
     entitlement_info = dict(followup.entitlement_info or {})
     assert entitlement_info, "Expected deterministic entitlement info for full-time follow-up."
-    expected_hours = int(24 * 4.33 * 36)
+    # Mirror UserProfile.months_employed: calendar months from the fixed hire_date to today,
+    # so the expectation tracks the clock the same way production does.
+    from datetime import date as _date
+
+    _hire = _date(2024, 3, 8)
+    _today = _date.today()
+    _months = max(0, (_today.year - _hire.year) * 12 + (_today.month - _hire.month))
+    expected_hours = int(_months * 4.33 * 36)
     assert int(entitlement_info.get("hours_worked") or 0) == expected_hours, (
         "Expected full-time override to replace part-time hour estimate."
     )

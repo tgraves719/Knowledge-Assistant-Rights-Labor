@@ -1,10 +1,10 @@
 {
   "schema_version": "contract_outline_v1",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
-  "generated_at": "2026-02-19T11:00:32.145470+00:00",
+  "generated_at": "2026-07-17T19:47:05.180223+00:00",
   "sources": {
     "manifest": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\manifests\\local7_safeway_pueblo_clerks_2022.json",
-    "chunks": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+    "chunks": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
     "pdf_nav_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\pdf_nav_index_local7_safeway_pueblo_clerks_2022.json"
   },
   "article_titles": {

@@ -6514,9 +6514,19 @@ async def serve_modular_asset(asset_path: str):
     return FileResponse(asset_file)
 
 
+ORG_SITE_PATH = Path(__file__).parent.parent / "frontend" / "org" / "karl-stewardship-site.html"
+
+
 @app.get("/")
 async def serve_frontend():
-    """Redirect root traffic to the superadmin surface."""
+    """Serve the KARL Stewardship org site at the root (what you see without a QR code).
+
+    The org site carries the stewardship identity (black/white, monospace) — the tenant
+    app lives under /u/{slug}/ and /j/{code}. Falls back to the superadmin redirect only
+    if the org page file is missing (e.g. stripped-down internal deployments).
+    """
+    if ORG_SITE_PATH.exists():
+        return HTMLResponse(content=ORG_SITE_PATH.read_text(encoding="utf-8"))
     return RedirectResponse(url="/karl/", status_code=307)
 
 
@@ -6558,6 +6568,57 @@ async def serve_tenant_member_frontend(union_slug: str):
             "__UNION_NAME__": union.name,
         },
     )
+
+
+@app.get("/j/{join_code}")
+async def serve_join_page(join_code: str):
+    """QR-code landing page: validate the invite and render the mobile join flow.
+
+    Printed QR codes point here permanently; the code resolves to its union at
+    request time so placements can be repointed without reprinting posters.
+    """
+    container = getattr(app.state, "platform", None)
+    if container is None or container.session_factory is None:
+        return _render_frontend_unavailable(
+            title="Karl Unavailable",
+            heading="Karl is not ready yet",
+            detail="The service started without its database connection. Please try again shortly.",
+            back_href="/",
+        )
+    from backend.platform.models import InviteCode, Union as PlatformUnion
+
+    now = datetime.datetime.utcnow()
+    with container.session_factory() as db:
+        invite = db.scalar(select(InviteCode).where(InviteCode.code == str(join_code or "").strip()))
+        union = db.get(PlatformUnion, invite.union_id) if invite is not None else None
+        invite_closed = invite is not None and (
+            invite.revoked_at is not None
+            or (invite.expires_at is not None and invite.expires_at <= now)
+            or (invite.max_uses is not None and invite.use_count >= invite.max_uses)
+        )
+        if invite is None or union is None or not union.is_active:
+            return _render_frontend_not_found(
+                title="Join Code Not Recognized",
+                heading="This join code is not recognized",
+                detail="The QR code you scanned does not match an active Karl workspace. Ask your steward for a current poster or card.",
+                back_href="/",
+            )
+        if invite_closed:
+            return _render_frontend_not_found(
+                title="Join Code Closed",
+                heading="This join code is no longer open",
+                detail="This QR code has been closed by your union. Ask your steward for a current poster or card.",
+                back_href="/",
+            )
+        return _render_modular_html(
+            "join.html",
+            replacements={
+                "__JOIN_CODE__": invite.code,
+                "__INVITE_LABEL__": invite.label or "",
+                "__UNION_SLUG__": union.slug,
+                "__UNION_NAME__": union.name,
+            },
+        )
 
 
 @app.get("/embed/member-frame/{union_slug}")

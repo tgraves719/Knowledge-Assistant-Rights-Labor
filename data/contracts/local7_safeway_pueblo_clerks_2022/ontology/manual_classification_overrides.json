@@ -6,5 +6,23 @@
     "drive_up_and_go": "nonfood_gm_floral",
     "nonfood_clerk": "nonfood_gm_floral"
   },
-  "notes": "Add source_key -> wage_key overrides after reviewing ingestion_review_queue.json"
+  "classification_review_overrides": {
+    "meat_cutter": {
+      "action": "out_of_scope",
+      "comment": "Meat bargaining-unit classification per the 2025 MOA pay schedules (Safeway Denver Metro Meat, booklet p.3 / PDF p.39; store group includes Pueblo). Wages live in local7_safeway_pueblo_meat_2022 (wage key meat_cutters); mentions in the clerks book are jurisdictional, not payable under the clerks agreement."
+    },
+    "deli_clerk": {
+      "action": "out_of_scope",
+      "comment": "Deli Clerks are a meat/deli bargaining-unit classification per the 2025 MOA pay schedules (Meat Wrappers/Seafood Clerks/Butcher Block/Deli Clerks progression, Safeway Denver Metro Meat, PDF p.39). Wages live in local7_safeway_pueblo_meat_2022 (wage key deli_clerks)."
+    },
+    "sanitation_clerk": {
+      "action": "out_of_scope",
+      "comment": "No sanitation classification exists in any 2025 MOA pay schedule (closest is 'Meat Clean Up (ABS only)', Albertsons-only, PDF p.40 - not applicable to Safeway Pueblo). Treated as legacy contract-text mention with no payable wage class."
+    },
+    "pharmacy_technician": {
+      "action": "needs_clarification",
+      "comment": "Pharmacy Techs are clerks-unit classifications in the 2025 MOA (Pharmacy Tech / Certified / Senior Certified, SWY only, Denver Metro clerks schedule whose store group includes Pueblo), but the Pueblo clerks base book has no pharmacy wage table and the pack has no pharmacy wage key. Confirm with Local 7 whether Pueblo West Safeway has in-unit pharmacy technicians; if yes, pharmacy rows need to be added to the pack before mapping."
+    }
+  },
+  "notes": "Review decisions applied 2026-07-17 per Thomas: categorize the four unresolved manifest classes according to the pay sections of the ratified 2025-07-05 MOA."
 }

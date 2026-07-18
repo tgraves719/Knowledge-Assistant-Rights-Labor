@@ -1,0 +1,81 @@
+{
+  "contract_id": "local7_safeway_pueblo_meat_2022",
+  "effective_date": "2025-07-05",
+  "parent_effective_version_id": "base_snapshot_v0_9_0",
+  "patch_id": "local7_safeway_moa_2025_07_05",
+  "ratified_date": "2025-07-05",
+  "schema_version": "moa_patch_v0_9_0",
+  "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+  "source_pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+  "metadata": {
+    "redraft_note": "Corrected redraft 2026-07-17 replacing the quarantined auto-generated patch whose 7 ops mis-anchored Denver Retail MOA language onto meat sections by section-number coincidence. Every op below was verified against the signed MOA page by page. All ops are review_status=pending: Thomas must review, set approved, move this file up to amendments/, and re-run materialize + onboarding. Wage-row ops are intentionally absent: the MOA wage booklet (40 pp.) has no Denver Metro or Pueblo MEAT table (Denver Metro clerks explicitly lists Pueblo; no meat counterpart exists in the attachment) - see drafts/REDRAFT_2026_07_17_REVIEW.md."
+  },
+  "operations": [
+    {
+      "op": "replace_section",
+      "target": { "anchor_id": "a57_s168", "article_num": 57, "section_num": 168 },
+      "expected_prev_hash": "fbd4c770b55dccad11a6964d7e2cbebbdaa0f3828b5f188e2cc785470cddd06f",
+      "new_text_markdown": "Section 168. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **February 27, 2022** and shall remain in full force and effect until 11:59 p.m. on **February 26, 2028** and shall be automatically renewed from year to year thereafter, unless either party desires change or termination at the expiration of said Agreement. In such event, the party desiring such change or termination shall notify the other party in writing sixty (60) days prior to the expiration date.",
+      "confidence": 0.97,
+      "review_status": "pending",
+      "source_refs": [
+        { "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf", "pdf_page": 36, "source_doc_id": "albertsons_safeway_moa_2025_07_05", "source_type": "moa", "note": "Contract date table: Safeway / Pueblo / Meat / start 2/22/2025 / end 2/26/2028. Term clause form per MOA p.23 (Art 57 S174 Denver Retail) with footnote 13 conforming-date rule." }
+      ]
+    },
+    {
+      "op": "replace_section",
+      "target": { "anchor_id": "a27_s71", "article_num": 27, "section_num": 71 },
+      "expected_prev_hash": "d08c78f074441f859cdca3c4d03dc46054bbe6a6365cc9e2f58197aa2144f03d",
+      "new_text_markdown": "Section 71. Department Bidding. The Company shall allow during the first fifteen (15) days of February, to be effective the first workweek in March, and the first fifteen (15) days in August, to be effective the first workweek in September, non-management employees to bid within the store to another meat bargaining unit department. Management retains the right to determine the number of full-time and part-time positions in each department. If a senior employee from a department bids into another department, the least senior employee in the department and status affected shall be moved to the department vacated by the bidder. Employees may not displace a meatcutter. All non-management clerks shall be deemed eligible to bid into any meat position, except for meatcutter. The Employer agrees to provide training to an employee who is granted a bid into another department.",
+      "confidence": 0.9,
+      "review_status": "pending",
+      "source_refs": [
+        { "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf", "pdf_page": 7, "source_doc_id": "albertsons_safeway_moa_2025_07_05", "source_type": "moa", "note": "(TA 1/4/25) (Applies only to Meat contracts) Revisions to Article 27 (Meat): New Section Department Bidding. Placed at the S71 slot because the MEAT ONLY TA (TA 11/6/24, MOA pp.31-32) strikes the entire former Section 71 promotion-request-list text (intro + items 1, 2(a)-(d)), which matches the meat base art27_sec71 verbatim." }
+      ]
+    },
+    {
+      "op": "replace_section",
+      "target": { "anchor_id": "a28_s85", "article_num": 28, "section_num": 85 },
+      "expected_prev_hash": "0d200c0e74abd0b7ff027dc77e15444b216b23eb2368cee9d23f63ad1f683f04",
+      "new_text_markdown": "Section 85. [Deleted by the Memorandum of Agreement dated July 5, 2025.]",
+      "confidence": 0.92,
+      "review_status": "pending",
+      "source_refs": [
+        { "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf", "pdf_page": 32, "source_doc_id": "albertsons_safeway_moa_2025_07_05", "source_type": "moa", "note": "MEAT ONLY TA (TA 11/6/24) Revisions to Article 28 Available Hours: Section 85 shown struck through in full (Employer sending Union the full-time request list)." }
+      ]
+    },
+    {
+      "op": "replace_section",
+      "target": { "anchor_id": "a49_s143", "article_num": 49, "section_num": 143 },
+      "expected_prev_hash": "4f7b593f46b8f543defff2e054ba18dd0ca9dcfcd1f9ef70964e7312ccce795b",
+      "new_text_markdown": "Section 143. The Union shall have the right to designate one (1) Steward per store (stores that have 20 or more employees in the meat bargaining unit may have two (2) Stewards) who shall perform their Steward duties in such a way as not to interfere with the service of the Employer. In stores with more than one Steward, it is agreed that one Steward may come from a given subdepartment (meat, deli). Such Stewards shall have top seniority for the purpose of layoff within their classification in that store. The designated representative of the Employer must be advised in writing by the Union of the name of the Steward in the store before the employee will be recognized as a Steward.\n\nStewards shall not be bumped from their respective stores by employees exercising their second (2nd) or their eleventh (11th) week bump, unless the Steward chooses to do so.",
+      "confidence": 0.9,
+      "review_status": "pending",
+      "source_refs": [
+        { "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf", "pdf_page": 32, "source_doc_id": "albertsons_safeway_moa_2025_07_05", "source_type": "moa", "note": "MEAT ONLY TA (TA 11/21/24) Revisions to Article 49 Union Steward, Section 143. Carried over from quarantined patch; this op's anchoring was verified correct against the signed MOA." }
+      ]
+    },
+    {
+      "op": "replace_section",
+      "target": { "anchor_id": "a50_s149", "article_num": 50, "section_num": 149 },
+      "expected_prev_hash": "ab73cd1ecbf6622bb7e9259fb09a6e3a53aaf1501788131d57ca065d2f199668",
+      "new_text_markdown": "Section 149. Step 2. In an instance where an employee feels he has not been paid in accordance with the wage progression scales set forth herein, such employee shall have an obligation to bring this to the attention of the Store Manager as soon as the employee first has knowledge of such alleged error. In the event the employee has been improperly paid, said payment error shall be corrected on a retroactive basis, but not beyond ninety (90) days prior to the date on which the grievance is presented in writing. This ninety (90) day retroactive liability shall not be applicable to situations covered by Article 8, Section 25a, second paragraph. In such situations, in accordance with Article 8, Section 25a, the retroactive liability will be adjusted to the first Sunday after the employee delivers documentation to the Company substantiating the prior experience.",
+      "confidence": 0.85,
+      "review_status": "pending",
+      "source_refs": [
+        { "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf", "pdf_page": 20, "source_doc_id": "albertsons_safeway_moa_2025_07_05", "source_type": "moa", "note": "(TA 12/18/24) (applies only to Meat contracts) Revisions to Article 50 (Meat), Section 149 Step 2. Carried over from quarantined patch; anchoring verified correct. REVIEW: the internal cross-reference 'Article 8, Section 25a' is quoted as signed - confirm the Pueblo Meat book's prior-experience section carries that number." }
+      ]
+    },
+    {
+      "op": "replace_section",
+      "target": { "anchor_id": "a8_s26", "article_num": 8, "section_num": 26 },
+      "expected_prev_hash": "119eb381a9550af90306590b601e83006283e5ed7d5e7ccb00a3363b24a4cac9",
+      "new_text_markdown": "Section 26. Tips. Coffee Bar Employees shall be permitted to accept tips. The Employer shall not assert any tip credit in order to reduce these employees' wages. Tips for coffee bar employees shall be pooled weekly and divided proportionally among coffee bar employees based on hours worked in the week.",
+      "confidence": 0.95,
+      "review_status": "pending",
+      "source_refs": [
+        { "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf", "pdf_page": 5, "source_doc_id": "albertsons_safeway_moa_2025_07_05", "source_type": "moa", "note": "(Applies only to Meat Contracts) Article 8 Rates of Pay, Section 26 Tips - added weekly pooling sentence. Base art8_sec26 text matches the MOA's unmarked text verbatim." }
+      ]
+    }
+  ]
+}

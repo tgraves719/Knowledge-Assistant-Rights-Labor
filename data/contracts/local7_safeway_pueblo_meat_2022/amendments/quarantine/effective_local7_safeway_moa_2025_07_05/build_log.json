@@ -1,0 +1,184 @@
+{
+  "amendments_applied": [
+    "local7_safeway_moa_2025_07_05"
+  ],
+  "artifact_hashes": {
+    "effective_contract_sha256": "980fa03d9257ea952d6ff280778d0e75a4f7425f653c24bd9eca7fbf20909f1a",
+    "effective_markdown_sha256": "a988cf244777b75ce9390e14a7ae76721b49f76b161f6dbdfeff66c1676e580b",
+    "index_chunks_sha256": "1cb446297cf1a63346f5a43fe7102d1ade5615a7d404bfaa30364d006cb13794",
+    "index_entitlements_sha256": "fff346ee2271a7af8a16c61d8cfb1676dd5a1185ab8fba8eb7d70a0e04ca02f8",
+    "index_wages_sha256": "eea464aa2526969901d72a4efcde432e5cee173b95cac1d67749e95624569175",
+    "patch_chain_sha256": "984ed722a4fdcb447fcc398d29e89d3b98c27ac2abad3da0d427479ee4c778c4"
+  },
+  "contract_id": "local7_safeway_pueblo_meat_2022",
+  "effective_content_hash": "bd0a2a21b8c365449f2fcfe32114246f48f6bea1b578bd339ac7caa494187e19",
+  "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
+  "errors": [],
+  "materializer_version": "0.9.0",
+  "operations": [
+    {
+      "after_hash": "f875abdc193d8fb22e971692b1e5f71f98c2138e29013beae21d635c3515263e",
+      "applied": true,
+      "before_hash": "f160d2c023243e3b97b5fc76a87f9b1bf2dabd4fd1852d28e983c8030b736ac5",
+      "diagnostics": {},
+      "errors": [],
+      "op": "replace_section",
+      "op_id": "local7_safeway_moa_2025_07_05#1",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 5,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "anchor_id": "a7_s14",
+        "article_num": 7,
+        "section_num": 14,
+        "subsection": null
+      }
+    },
+    {
+      "after_hash": "a619c2874230bb0e479c2785608039caf33a069a7ffdc35ce51b7c071c92645a",
+      "applied": true,
+      "before_hash": "e200f602c43e3386bf5da1f22d95adde351c70964c6aa89bab7e84b362326b71",
+      "diagnostics": {},
+      "errors": [],
+      "op": "replace_section",
+      "op_id": "local7_safeway_moa_2025_07_05#2",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 4,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "anchor_id": "a7_s16",
+        "article_num": 7,
+        "section_num": 16,
+        "subsection": null
+      }
+    },
+    {
+      "after_hash": "62d773637688b7882d29f97a49c1a587c6105b4c22ea5825a8dce34333314fdd",
+      "applied": true,
+      "before_hash": "d08c78f074441f859cdca3c4d03dc46054bbe6a6365cc9e2f58197aa2144f03d",
+      "diagnostics": {},
+      "errors": [],
+      "op": "replace_section",
+      "op_id": "local7_safeway_moa_2025_07_05#3",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 11,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "anchor_id": "a27_s71",
+        "article_num": 27,
+        "section_num": 71,
+        "subsection": null
+      }
+    },
+    {
+      "after_hash": "3b9927157afe56ffc9fbd04274b9b2eed3a09102bbf02c6995cbe09dd1fd3d33",
+      "applied": true,
+      "before_hash": "8b39721e77be1bb08b3002140f06f408abee3b0edcc39b6e79ae955edf5bc3af",
+      "diagnostics": {},
+      "errors": [],
+      "op": "replace_section",
+      "op_id": "local7_safeway_moa_2025_07_05#4",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 8,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "anchor_id": "a27_s74",
+        "article_num": 27,
+        "section_num": 74,
+        "subsection": null
+      }
+    },
+    {
+      "after_hash": "6c3d849ca14959b28a92c5e0d20d3d879d1eef68f879070906ea5c507e0c3695",
+      "applied": true,
+      "before_hash": "54c8e68a9c49a166b25f0983616c2ecd6b918bd5c47389c1eb5d775ffa65bb5c",
+      "diagnostics": {},
+      "errors": [],
+      "op": "replace_section",
+      "op_id": "local7_safeway_moa_2025_07_05#5",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 14,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "anchor_id": "a33_s95",
+        "article_num": 33,
+        "section_num": 95,
+        "subsection": null
+      }
+    },
+    {
+      "after_hash": "a606df2d84d9e6e66c020d82ee92d69bde3caaf6e6441ad13feb48ab9ba4b40f",
+      "applied": true,
+      "before_hash": "4f7b593f46b8f543defff2e054ba18dd0ca9dcfcd1f9ef70964e7312ccce795b",
+      "diagnostics": {},
+      "errors": [],
+      "op": "replace_section",
+      "op_id": "local7_safeway_moa_2025_07_05#6",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 40,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "anchor_id": "a49_s143",
+        "article_num": 49,
+        "section_num": 143,
+        "subsection": null
+      }
+    },
+    {
+      "after_hash": "9c57c1a5e1a3ef9f2e807fdbf89a554c7baf65001f39d2a560accb43b49f6da5",
+      "applied": true,
+      "before_hash": "ab73cd1ecbf6622bb7e9259fb09a6e3a53aaf1501788131d57ca065d2f199668",
+      "diagnostics": {},
+      "errors": [],
+      "op": "replace_section",
+      "op_id": "local7_safeway_moa_2025_07_05#7",
+      "sources": [
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 14,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        }
+      ],
+      "target": {
+        "anchor_id": "a50_s149",
+        "article_num": 50,
+        "section_num": 149,
+        "subsection": null
+      }
+    }
+  ],
+  "parent_effective_version_id": "base_snapshot_v0_9_0",
+  "schema_version": "materializer_build_log_v0_9_0",
+  "status": "success"
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": "classification_ontology_v2",
-  "generated_at_utc": "2026-03-08T21:43:31.605042+00:00",
+  "generated_at_utc": "2026-07-17T19:46:45.606870+00:00",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "manifest_classifications": [
     {
@@ -249,27 +249,11 @@
         "Deli Clerk"
       ],
       "mapped_wage_key": null,
-      "mapping_method": "unresolved_low_score",
-      "score": 0.485,
-      "candidate_scores": [
-        {
-          "wage_key": "head_clerk",
-          "score": 0.485
-        },
-        {
-          "wage_key": "courtesy_clerk",
-          "score": 0.45
-        },
-        {
-          "wage_key": "all_purpose_clerk",
-          "score": 0.375556
-        },
-        {
-          "wage_key": "bakery_fresh_cut_liquor_clerk",
-          "score": 0.295604
-        }
-      ],
-      "review_state": "unresolved"
+      "mapping_method": "reviewed_out_of_scope",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "out_of_scope",
+      "review_comment": "Deli Clerks are a meat/deli bargaining-unit classification per the 2025 MOA pay schedules (Meat Wrappers/Seafood Clerks/Butcher Block/Deli Clerks progression, Safeway Denver Metro Meat, PDF p.39). Wages live in local7_safeway_pueblo_meat_2022 (wage key deli_clerks)."
     },
     {
       "source_key": "drive_up_and_go",
@@ -331,10 +315,11 @@
         "Meat Cutter"
       ],
       "mapped_wage_key": null,
-      "mapping_method": "unresolved",
-      "score": 0.0,
+      "mapping_method": "reviewed_out_of_scope",
+      "score": 1.0,
       "candidate_scores": [],
-      "review_state": "unresolved"
+      "review_state": "out_of_scope",
+      "review_comment": "Meat bargaining-unit classification per the 2025 MOA pay schedules (Safeway Denver Metro Meat, booklet p.3 / PDF p.39; store group includes Pueblo). Wages live in local7_safeway_pueblo_meat_2022 (wage key meat_cutters); mentions in the clerks book are jurisdictional, not payable under the clerks agreement."
     },
     {
       "source_key": "nonfood_clerk",
@@ -358,10 +343,11 @@
         "Pharmacy Technician"
       ],
       "mapped_wage_key": null,
-      "mapping_method": "unresolved",
+      "mapping_method": "reviewed_needs_clarification",
       "score": 0.0,
       "candidate_scores": [],
-      "review_state": "unresolved"
+      "review_state": "needs_clarification",
+      "review_comment": "Pharmacy Techs are clerks-unit classifications in the 2025 MOA (Pharmacy Tech / Certified / Senior Certified, SWY only, Denver Metro clerks schedule whose store group includes Pueblo), but the Pueblo clerks base book has no pharmacy wage table and the pack has no pharmacy wage key. Confirm with Local 7 whether Pueblo West Safeway has in-unit pharmacy technicians; if yes, pharmacy rows need to be added to the pack before mapping."
     },
     {
       "source_key": "produce_department_manager",
@@ -412,27 +398,11 @@
         "Sanitation Clerk"
       ],
       "mapped_wage_key": null,
-      "mapping_method": "unresolved_low_score",
-      "score": 0.4365,
-      "candidate_scores": [
-        {
-          "wage_key": "head_clerk",
-          "score": 0.436538
-        },
-        {
-          "wage_key": "courtesy_clerk",
-          "score": 0.415
-        },
-        {
-          "wage_key": "all_purpose_clerk",
-          "score": 0.347273
-        },
-        {
-          "wage_key": "bakery_fresh_cut_liquor_clerk",
-          "score": 0.277143
-        }
-      ],
-      "review_state": "unresolved"
+      "mapping_method": "reviewed_out_of_scope",
+      "score": 1.0,
+      "candidate_scores": [],
+      "review_state": "out_of_scope",
+      "review_comment": "No sanitation classification exists in any 2025 MOA pay schedule (closest is 'Meat Clean Up (ABS only)', Albertsons-only, PDF p.40 - not applicable to Safeway Pueblo). Treated as legacy contract-text mention with no payable wage class."
     }
   ],
   "alias_to_wage_key": {
@@ -461,21 +431,22 @@
   "summary": {
     "total_manifest_classes": 16,
     "resolved_manifest_classes": 12,
-    "clarification_manifest_classes": 0,
-    "out_of_scope_manifest_classes": 0,
-    "unresolved_manifest_classes": 4,
-    "actionable_manifest_classes": 16,
-    "covered_manifest_classes": 12,
-    "coverage": 0.75,
-    "unresolved_manifest_keys": [
+    "clarification_manifest_classes": 1,
+    "out_of_scope_manifest_classes": 3,
+    "unresolved_manifest_classes": 0,
+    "actionable_manifest_classes": 13,
+    "covered_manifest_classes": 13,
+    "coverage": 1.0,
+    "unresolved_manifest_keys": [],
+    "clarification_manifest_keys": [
+      "pharmacy_technician"
+    ],
+    "out_of_scope_manifest_keys": [
       "deli_clerk",
       "meat_cutter",
-      "pharmacy_technician",
       "sanitation_clerk"
     ],
-    "clarification_manifest_keys": [],
-    "out_of_scope_manifest_keys": [],
     "manual_override_count": 3,
-    "manual_review_override_count": 0
+    "manual_review_override_count": 4
   }
 }

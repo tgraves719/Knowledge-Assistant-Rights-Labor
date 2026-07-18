@@ -8,13 +8,20 @@
       "selected_schedule_label": "FSAR",
       "source": "output.json Denver Metro clerks pages 37-39 wage schedule",
       "source_doc_id": "albertsons_safeway_moa_2025_07_05"
+    },
+    "term_end_date_correction": {
+      "applied": "2026-07-17",
+      "from": "January 16, 2027",
+      "to": "January 22, 2028",
+      "evidence": "signed MOA date table p.36 (157-week conforming rule, footnote 13 p.23)",
+      "approved_by": "Thomas"
     }
   },
   "operations": [
     {
       "confidence": 0.94,
       "expected_prev_hash": "1d9ff92a03614028f438e28e3d83b7e8b834684a94686dd306f5f51a6c90b7a7",
-      "new_text_markdown": "Section 1749. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **January 23, 2022** and shall remain in full force and effect until midnight on **January 16, 2027** and shall be automatically renewed from year to year thereafter, unless either party desires change or termination at the expiration of said Agreement. In such event, the party desiring such change or termination shall notify the other party in writing sixty (60) days prior to the expiration date, specifying the changes desired. Changes in the Agreement shall be limited to those outlined in writing by either party and the negotiations shall begin within fifteen (15) days after receipt of such notice.",
+      "new_text_markdown": "Section 1749. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **January 23, 2022** and shall remain in full force and effect until 11:59 p.m. on **January 22, 2028** and shall be automatically renewed from year to year thereafter, unless either party desires change or termination at the expiration of said Agreement. In such event, the party desiring such change or termination shall notify the other party in writing sixty (60) days prior to the expiration date, specifying the changes desired. Changes in the Agreement shall be limited to those outlined in writing by either party and the negotiations shall begin within fifteen (15) days after receipt of such notice.",
       "op": "replace_section",
       "review_status": "approved",
       "source_refs": [
@@ -23,6 +30,13 @@
           "pdf_page": 7,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
+        },
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 36,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa",
+          "note": "Date table row: Safeway / Pueblo / Clerks / 1/18/2025 / 1/22/2028"
         }
       ],
       "target": {

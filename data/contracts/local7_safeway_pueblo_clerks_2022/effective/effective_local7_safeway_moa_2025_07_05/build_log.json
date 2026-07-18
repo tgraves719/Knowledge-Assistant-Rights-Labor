@@ -3,21 +3,21 @@
     "local7_safeway_moa_2025_07_05"
   ],
   "artifact_hashes": {
-    "effective_contract_sha256": "5991270ce41c915b51d4dd57e83eed29a46ed0c2d22ef3d5b2c0f4207a8ead81",
-    "effective_markdown_sha256": "647d9c7ccc9238574fb47e1d1b2d665492800b50b0a15810bd8ccb9b5bf8f873",
-    "index_chunks_sha256": "1783646cf068a47342971b8defaad7e8749950eadcff4a15c29dd78343a7543c",
+    "effective_contract_sha256": "3287edc09b35fbc67dc55c3a3120dbf56a4ea64673b9d1d83e520efc125abec7",
+    "effective_markdown_sha256": "9d204b3e4afae644b54ff0681b2af34bf520dac12048c0eff2ff24e555e960cf",
+    "index_chunks_sha256": "627ad8ced378c4525a92f60842cfbfc69d1da8cce5194081715e1714a0279ec6",
     "index_entitlements_sha256": "04df65d6601805b34521de4d781177d62a86c88055f6d8f3b1a48f7a3294466a",
     "index_wages_sha256": "be34636e06fd5db0e31199d8c1b5cc91c7f7e1cacdc7a2d8d247613fd7193997",
-    "patch_chain_sha256": "de50b5a86bb545238c8aac44d2948e54d2305ae24ba8fe21d41b72681e43ab73"
+    "patch_chain_sha256": "e571ec7a518974cf883ee990970349e6fee48c07508e40a9926c763a77cd187f"
   },
   "contract_id": "local7_safeway_pueblo_clerks_2022",
-  "effective_content_hash": "c7ac70517a0e90b86d26aa4d5bae069a207ed900f16199ebe6d8fbdab0c87800",
+  "effective_content_hash": "58b6b95230bf76a9245666aa1b0389e9958109afdf8a5b626e4530bbe82e2606",
   "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
   "errors": [],
   "materializer_version": "0.9.0",
   "operations": [
     {
-      "after_hash": "91390c97d0c8f81d4b16981a8423c2d65328f1579a07db21d521397f7bfef785",
+      "after_hash": "cb6728cec448ccd004d80d125b607a2062d862e4fea165c96cd4025fbec2640d",
       "applied": true,
       "before_hash": "1d9ff92a03614028f438e28e3d83b7e8b834684a94686dd306f5f51a6c90b7a7",
       "diagnostics": {},
@@ -28,6 +28,12 @@
         {
           "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
           "pdf_page": 7,
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "source_type": "moa"
+        },
+        {
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "pdf_page": 36,
           "source_doc_id": "albertsons_safeway_moa_2025_07_05",
           "source_type": "moa"
         }

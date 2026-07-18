@@ -777,7 +777,6 @@
         "Article 57, Section 169, Part 5",
         "Article 57, Section 169, Part 7",
         "Article 32, Section 94, Part 2-2",
-        "Article 7, Section 14",
         "Article 32, Section 94, Part 4-4",
         "Article 32, Section 94",
         "Article 7, Section 21",
@@ -791,7 +790,8 @@
         "Article 28, Section 81",
         "Article 15, Section 37",
         "Article 39, Section 114",
-        "Article 29, Section 87"
+        "Article 29, Section 87",
+        "Article 39, Section 117"
       ],
       "retrieved_citations_topk": [
         "Article 32, Section 94, Part 5+",
@@ -799,9 +799,9 @@
         "Article 57, Section 169, Part 5",
         "Article 57, Section 169, Part 7",
         "Article 32, Section 94, Part 2-2",
-        "Article 7, Section 14",
         "Article 32, Section 94, Part 4-4",
-        "Article 32, Section 94"
+        "Article 32, Section 94",
+        "Article 7, Section 21"
       ],
       "topk_pass": true,
       "topk_window_size": 8
@@ -899,8 +899,8 @@
         "Article 32, Section 94",
         "Article 32, Section 94, Part 5+",
         "Article 32, Section 94, Part 4-4",
+        "Article 27, Section 67, Part 1",
         "Article 27, Section 69, Part 3",
-        "Article 27, Section 68",
         "Article 50, Section 155",
         "Article 27, Section 69, Part 2",
         "Article 50, Section 156, Part 6",
@@ -921,8 +921,8 @@
         "Article 32, Section 94",
         "Article 32, Section 94, Part 5+",
         "Article 32, Section 94, Part 4-4",
+        "Article 27, Section 67, Part 1",
         "Article 27, Section 69, Part 3",
-        "Article 27, Section 68",
         "Article 50, Section 155"
       ],
       "topk_pass": true,
@@ -1076,12 +1076,12 @@
         "Article 27, Section 68",
         "Article 57, Section 169, Part 10",
         "Article 27, Section 69, Part 2",
+        "Article 27, Section 74",
         "Article 57, Section 169, Part 1",
         "Article 50, Section 156, Part 6",
         "Article 56, Section 165",
         "Article 27, Section 70",
         "Article 4, Section 10",
-        "Article 27, Section 71",
         "Article 27, Section 69, Part 1",
         "Article 50, Section 150",
         "Article 4, Section 11",
@@ -1103,6 +1103,6 @@
     }
   ],
   "schema_version": "side_letter_retrieval_eval_v2",
-  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\side_letter_retrieval_test.json",
-  "timestamp_utc": "2026-03-09T10:32:45.002551+00:00"
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\side_letter_retrieval_test.json",
+  "timestamp_utc": "2026-07-17T20:07:32.881832+00:00"
 }

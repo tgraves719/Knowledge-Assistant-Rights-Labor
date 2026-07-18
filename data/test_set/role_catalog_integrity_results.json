@@ -1,8 +1,8 @@
 {
   "schema_version": "role_catalog_integrity_eval_v1",
   "dataset_schema_version": "role_catalog_integrity_test_v1",
-  "timestamp_utc": "2026-03-09T10:33:33.162287+00:00",
-  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_test.json",
+  "timestamp_utc": "2026-07-17T20:10:32.431996+00:00",
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_test.json",
   "overall": {
     "passed": 20,
     "total": 20,
@@ -157,7 +157,7 @@
       "contract_id": "local7_kingsoopers_loveland_meat_2019",
       "pass": true,
       "details": {
-        "role_catalog_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\role_catalog_local7_kingsoopers_loveland_meat_2019.json",
+        "role_catalog_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\role_catalog_local7_kingsoopers_loveland_meat_2019.json",
         "schema_version": "role_catalog_v2",
         "catalog_contract_id": "local7_kingsoopers_loveland_meat_2019",
         "role_count": 11
@@ -212,7 +212,7 @@
       "contract_id": "local7_safeway_pueblo_clerks_2022",
       "pass": true,
       "details": {
-        "role_catalog_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\role_catalog_local7_safeway_pueblo_clerks_2022.json",
+        "role_catalog_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\role_catalog_local7_safeway_pueblo_clerks_2022.json",
         "schema_version": "role_catalog_v2",
         "catalog_contract_id": "local7_safeway_pueblo_clerks_2022",
         "role_count": 25
@@ -275,7 +275,7 @@
       "contract_id": "local7_safeway_pueblo_meat_2022",
       "pass": true,
       "details": {
-        "role_catalog_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\role_catalog_local7_safeway_pueblo_meat_2022.json",
+        "role_catalog_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\role_catalog_local7_safeway_pueblo_meat_2022.json",
         "schema_version": "role_catalog_v2",
         "catalog_contract_id": "local7_safeway_pueblo_meat_2022",
         "role_count": 17

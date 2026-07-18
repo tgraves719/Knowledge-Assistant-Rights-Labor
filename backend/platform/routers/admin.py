@@ -26,6 +26,7 @@ from backend.platform.models import (
     DocumentStatus,
     IngestionJob,
     IngestionJobStatus,
+    InviteCode,
     LocalAuthCredential,
     Message,
     Notification,
@@ -2340,3 +2341,171 @@ def get_chat_detail(
         }
         for message in messages
     ]}
+
+
+# --- Invite codes (QR enrollment) -------------------------------------------------
+
+_INVITE_CODE_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"  # no confusables (i/l/1/o/0)
+
+
+def _generate_invite_code(db) -> str:
+    import secrets as _secrets
+
+    for _ in range(20):
+        candidate = "".join(_secrets.choice(_INVITE_CODE_ALPHABET) for _ in range(10))
+        if db.scalar(select(InviteCode).where(InviteCode.code == candidate)) is None:
+            return candidate
+    raise HTTPException(status_code=500, detail="Could not generate a unique join code.")
+
+
+def _serialize_invite(invite: InviteCode) -> dict:
+    now = datetime.utcnow()
+    expired = invite.expires_at is not None and invite.expires_at <= now
+    exhausted = invite.max_uses is not None and invite.use_count >= invite.max_uses
+    if invite.revoked_at is not None:
+        status = "revoked"
+    elif expired:
+        status = "expired"
+    elif exhausted:
+        status = "exhausted"
+    else:
+        status = "active"
+    return {
+        "id": invite.id,
+        "code": invite.code,
+        "join_path": f"/j/{invite.code}",
+        "label": invite.label,
+        "contract_id": invite.contract_id,
+        "status": status,
+        "use_count": invite.use_count,
+        "max_uses": invite.max_uses,
+        "expires_at": invite.expires_at.isoformat() if invite.expires_at else None,
+        "revoked_at": invite.revoked_at.isoformat() if invite.revoked_at else None,
+        "created_by": invite.created_by,
+        "created_at": invite.created_at.isoformat(),
+    }
+
+
+class InviteCreateRequest(BaseModel):
+    label: str = ""
+    contract_id: str | None = None
+    expires_at: str | None = None
+    max_uses: int | None = Field(default=None, ge=1)
+
+
+@router.get("/unions/{union_id}/invites")
+def list_union_invites(
+    union_id: str,
+    request: Request,
+    _auth=Depends(require_roles(Role.UNION_ADMIN.value, Role.SUPER_ADMIN.value)),
+):
+    db = get_db(request)
+    if db is None:
+        return {"items": []}
+    auth = get_auth_context(request)
+    _require_union_scope(auth, union_id)
+    invites = db.scalars(
+        select(InviteCode).where(InviteCode.union_id == union_id).order_by(InviteCode.created_at.desc())
+    ).all()
+    return {"items": [_serialize_invite(invite) for invite in invites]}
+
+
+@router.post("/unions/{union_id}/invites")
+def create_union_invite(
+    union_id: str,
+    payload: InviteCreateRequest,
+    request: Request,
+    _auth=Depends(require_roles(Role.UNION_ADMIN.value, Role.SUPER_ADMIN.value)),
+):
+    db = get_db(request)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database is not configured.")
+    auth = get_auth_context(request)
+    _require_union_scope(auth, union_id)
+    union = db.get(Union, union_id)
+    if union is None or not union.is_active:
+        raise HTTPException(status_code=404, detail="Union not found.")
+
+    expires_at = None
+    if payload.expires_at:
+        try:
+            expires_at = datetime.fromisoformat(str(payload.expires_at).replace("Z", "+00:00")).replace(tzinfo=None)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="expires_at must be an ISO-8601 timestamp.") from exc
+
+    invite = InviteCode(
+        union_id=union_id,
+        code=_generate_invite_code(db),
+        label=str(payload.label or "").strip(),
+        contract_id=(str(payload.contract_id or "").strip() or None),
+        created_by=auth.user_id,
+        expires_at=expires_at,
+        max_uses=payload.max_uses,
+    )
+    db.add(invite)
+    db.flush()
+    db.add(
+        AuditEvent(
+            union_id=union_id,
+            actor_user_id=auth.user_id,
+            event_type="invite_code_created",
+            event_payload={"invite_id": invite.id, "label": invite.label, "max_uses": invite.max_uses},
+        )
+    )
+    return _serialize_invite(invite)
+
+
+class InviteRevokeRequest(BaseModel):
+    disconnect_sessions: bool = False
+
+
+@router.post("/unions/{union_id}/invites/{invite_id}/revoke")
+def revoke_union_invite(
+    union_id: str,
+    invite_id: str,
+    request: Request,
+    payload: InviteRevokeRequest | None = None,
+    _auth=Depends(require_roles(Role.UNION_ADMIN.value, Role.SUPER_ADMIN.value)),
+):
+    db = get_db(request)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database is not configured.")
+    auth = get_auth_context(request)
+    _require_union_scope(auth, union_id)
+    invite = db.get(InviteCode, invite_id)
+    if invite is None or invite.union_id != union_id:
+        raise HTTPException(status_code=404, detail="Invite code not found.")
+    disconnect = bool(payload.disconnect_sessions) if payload is not None else False
+    disconnected = 0
+    now = datetime.utcnow()
+    if invite.revoked_at is None:
+        invite.revoked_at = now
+        invite.updated_at = now
+    if disconnect:
+        # Misuse response: also cut off everyone who joined through this placement.
+        sessions = db.scalars(
+            select(AuthSession).where(
+                AuthSession.invite_code_id == invite.id,
+                AuthSession.revoked_at.is_(None),
+            )
+        ).all()
+        for session in sessions:
+            session.revoked_at = now
+            disconnected += 1
+    db.add(
+        AuditEvent(
+            union_id=union_id,
+            actor_user_id=auth.user_id,
+            event_type="invite_code_revoked",
+            event_payload={
+                "invite_id": invite.id,
+                "label": invite.label,
+                "use_count": invite.use_count,
+                "disconnect_sessions": disconnect,
+                "sessions_disconnected": disconnected,
+            },
+        )
+    )
+    result = _serialize_invite(invite)
+    result["sessions_disconnected"] = disconnected
+    return result

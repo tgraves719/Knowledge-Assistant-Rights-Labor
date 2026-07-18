@@ -4743,33 +4743,18 @@ const EMBED_THEME_OVERRIDES = (() => {
             renderContractHistoryPanel();
         }
 
-        // Dark mode
+        // Dark mode is permanent per the KARL design system — the app always runs the
+        // dark theme (gold accent lightens for contrast). toggleDarkMode is kept as a
+        // no-op so any stale onclick references degrade safely.
         function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            savePreference('darkMode', isDark);
-            updateDarkModeUI(isDark);
+            initDarkMode();
         }
 
-        function updateDarkModeUI(isDark) {
-            const toggle = document.getElementById('dark-mode-toggle');
-            const dot = document.getElementById('dark-mode-dot');
-            if (isDark) {
-                toggle?.classList.remove('bg-slate-200');
-                toggle?.classList.add('bg-ufcw-blue');
-                dot?.classList.add('translate-x-5');
-            } else {
-                toggle?.classList.add('bg-slate-200');
-                toggle?.classList.remove('bg-ufcw-blue');
-                dot?.classList.remove('translate-x-5');
-            }
-        }
+        function updateDarkModeUI(_isDark) {}
 
         function initDarkMode() {
-            const isDark = preferences.darkMode || false;
-            if (isDark) {
-                document.documentElement.classList.add('dark');
-            }
-            updateDarkModeUI(isDark);
+            document.documentElement.classList.add('dark');
+            savePreference('darkMode', true);
         }
 
         function getKarlAvatar() {

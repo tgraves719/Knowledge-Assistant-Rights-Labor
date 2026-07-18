@@ -1,11 +1,11 @@
 {
   "schema_version": "contract_outline_v1",
   "contract_id": "local7_kingsoopers_loveland_meat_2019",
-  "generated_at": "2026-03-08T21:43:30.428830+00:00",
+  "generated_at": "2026-07-17T19:47:03.428034+00:00",
   "sources": {
-    "manifest": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\manifests\\local7_kingsoopers_loveland_meat_2019.json",
-    "chunks": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\chunks\\contract_chunks_enriched_local7_kingsoopers_loveland_meat_2019.json",
-    "pdf_nav_index": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_kingsoopers_loveland_meat_2019\\ontology\\pdf_nav_index.json"
+    "manifest": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\manifests\\local7_kingsoopers_loveland_meat_2019.json",
+    "chunks": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\chunks\\contract_chunks_enriched_local7_kingsoopers_loveland_meat_2019.json",
+    "pdf_nav_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\ontologies\\pdf_nav_index_local7_kingsoopers_loveland_meat_2019.json"
   },
   "article_titles": {
     "1": "Recognition And Exclusions",

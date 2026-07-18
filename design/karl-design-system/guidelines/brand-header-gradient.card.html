@@ -1,0 +1,14 @@
+<!-- @dsCard group="Brand" viewport="700x160" name="Header gradient" subtitle="Animated diagonal union-blue flow — idle vs thinking speed" -->
+<!DOCTYPE html>
+<html><head><link rel="stylesheet" href="../styles.css">
+<style>
+body{margin:0;padding:20px;background:var(--surface-page);font-family:var(--font-sans);}
+@keyframes drift{0%{background-position:0% 50%}50%{background-position:30% 50%}100%{background-position:0% 50%}}
+.hdr{height:100px;border-radius:12px;color:#fff;display:flex;align-items:center;padding:0 16px;font-weight:600;
+background:radial-gradient(ellipse 80% 150% at 38% 50%, rgba(27,107,138,.34) 0%, transparent 50%), linear-gradient(-45deg,#0D3B54,#14506E,#1B6B8A,#14506E,#0D3B54);
+background-size:100% 100%, 300% 300%;
+animation:drift 14s linear infinite;}
+</style></head>
+<body>
+<div class="hdr">Karl — Union Document Assistant</div>
+</body></html>

@@ -1,13 +1,13 @@
 {
   "schema_version": "moa_effective_eval_v1",
   "dataset_schema_version": "moa_effective_test_v1",
-  "timestamp_utc": "2026-03-09T10:32:14.545180+00:00",
-  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_test.json",
+  "timestamp_utc": "2026-07-17T20:05:49.180887+00:00",
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_test.json",
   "n_results": 8,
   "bm25_only": true,
   "overall": {
-    "passed": 4,
-    "total": 4,
+    "passed": 10,
+    "total": 10,
     "pass_rate": 1.0,
     "citation_hit_rate": 1.0,
     "source_type_match_rate": 1.0,
@@ -17,6 +17,11 @@
     "local7_safeway_pueblo_clerks_2022": {
       "passed": 4,
       "total": 4,
+      "pass_rate": 1.0
+    },
+    "local7_safeway_pueblo_meat_2022": {
+      "passed": 6,
+      "total": 6,
       "pass_rate": 1.0
     }
   },
@@ -42,7 +47,7 @@
       "expected_rank": 2,
       "citation_hit": true,
       "expected_keywords": [
-        "January 16, 2027"
+        "January 22, 2028"
       ],
       "min_expected_keyword_hits": 1,
       "best_expected_keyword_hits": 1,
@@ -161,6 +166,238 @@
       "keywords_ok": true,
       "forbidden_keywords": [
         "shall not be averaged into the employee's straight-time rate"
+      ],
+      "forbidden_ok": true,
+      "expected_source_type": null,
+      "source_type_observed": null,
+      "source_type_ok": true,
+      "expected_intent_type": "contract",
+      "observed_intent_type": "contract",
+      "intent_ok": true,
+      "require_no_wage_info": true,
+      "wage_info_present": false,
+      "wage_info_ok": true,
+      "pass": true
+    },
+    {
+      "id": "MOA-MT-TERM-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What is the expiration date of the current meat agreement?",
+      "expectation": "present",
+      "expected_citations": [
+        "Article 57, Section 168"
+      ],
+      "retrieved_citations": [
+        "Article 57, Section 167",
+        "Article 57, Section 169, Part 1",
+        "Article 57, Section 168",
+        "Article 57, Section 169 (Table: PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH)",
+        "Article 57, Section 169 (Table: PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH)",
+        "Article 57, Section 169 (Table: PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH)",
+        "Article 57, Section 169 (Table: PROCEDURE FOR SCHEDULING EMPLOYEES WITH CONSCIENTIOUS OBJECTIONS TO WORKING ON THEIR DAY OF SABBATH)",
+        "Article 57, Section 169, Part 9"
+      ],
+      "expected_rank": 2,
+      "citation_hit": true,
+      "expected_keywords": [
+        "February 26, 2028"
+      ],
+      "min_expected_keyword_hits": 1,
+      "best_expected_keyword_hits": 1,
+      "keywords_ok": true,
+      "forbidden_keywords": [],
+      "forbidden_ok": true,
+      "expected_source_type": "moa",
+      "source_type_observed": "moa",
+      "source_type_ok": true,
+      "expected_intent_type": "contract",
+      "observed_intent_type": "contract",
+      "intent_ok": true,
+      "require_no_wage_info": true,
+      "wage_info_present": false,
+      "wage_info_ok": true,
+      "pass": true
+    },
+    {
+      "id": "MOA-MT-BID-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "What does Article 27, Section 71 of the meat agreement say about department bidding?",
+      "expectation": "present",
+      "expected_citations": [
+        "Article 27, Section 71"
+      ],
+      "retrieved_citations": [
+        "Article 27, Section 70",
+        "Article 27, Section 72",
+        "Article 27, Section 71",
+        "Article 27, Section 73",
+        "Article 27, Section 74",
+        "Article 7, Section 16",
+        "Article 7, Section 18",
+        "Article 57, Section 168"
+      ],
+      "expected_rank": 2,
+      "citation_hit": true,
+      "expected_keywords": [
+        "first fifteen (15) days of February",
+        "Department Bidding"
+      ],
+      "min_expected_keyword_hits": 1,
+      "best_expected_keyword_hits": 2,
+      "keywords_ok": true,
+      "forbidden_keywords": [],
+      "forbidden_ok": true,
+      "expected_source_type": "moa",
+      "source_type_observed": "moa",
+      "source_type_ok": true,
+      "expected_intent_type": "contract",
+      "observed_intent_type": "contract",
+      "intent_ok": true,
+      "require_no_wage_info": true,
+      "wage_info_present": false,
+      "wage_info_ok": true,
+      "pass": true
+    },
+    {
+      "id": "MOA-MT-STEW-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "How many union stewards can our store have in the meat department?",
+      "expectation": "present",
+      "expected_citations": [
+        "Article 49, Section 143"
+      ],
+      "retrieved_citations": [
+        "Article 28, Section 78",
+        "Article 50, Section 155, Part 4-4",
+        "Article 49, Section 143",
+        "Article 52, Section 161",
+        "Article 49, Section 146",
+        "Article 50, Section 148",
+        "Article 8, Section 25",
+        "Article 39, Section 113"
+      ],
+      "expected_rank": 2,
+      "citation_hit": true,
+      "expected_keywords": [
+        "two (2) Stewards",
+        "20 or more employees"
+      ],
+      "min_expected_keyword_hits": 1,
+      "best_expected_keyword_hits": 2,
+      "keywords_ok": true,
+      "forbidden_keywords": [],
+      "forbidden_ok": true,
+      "expected_source_type": "moa",
+      "source_type_observed": "moa",
+      "source_type_ok": true,
+      "expected_intent_type": "contract",
+      "observed_intent_type": "contract",
+      "intent_ok": true,
+      "require_no_wage_info": true,
+      "wage_info_present": false,
+      "wage_info_ok": true,
+      "pass": true
+    },
+    {
+      "id": "MOA-MT-TIPS-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "How are tips handled for coffee bar employees?",
+      "expectation": "present",
+      "expected_citations": [
+        "Article 8, Section 26"
+      ],
+      "retrieved_citations": [
+        "Article 39, Section 119, Part 4",
+        "Article 39, Section 119, Part 3",
+        "Article 39, Section 113",
+        "Article 38, Section 110, Part 7+",
+        "Article 39, Section 119, Part 5",
+        "Article 8, Section 26",
+        "Article 50, Section 156, Part 6",
+        "Article 57, Section 169, Part 9"
+      ],
+      "expected_rank": 5,
+      "citation_hit": true,
+      "expected_keywords": [
+        "pooled weekly"
+      ],
+      "min_expected_keyword_hits": 1,
+      "best_expected_keyword_hits": 1,
+      "keywords_ok": true,
+      "forbidden_keywords": [],
+      "forbidden_ok": true,
+      "expected_source_type": "moa",
+      "source_type_observed": "moa",
+      "source_type_ok": true,
+      "expected_intent_type": "contract",
+      "observed_intent_type": "contract",
+      "intent_ok": true,
+      "require_no_wage_info": true,
+      "wage_info_present": false,
+      "wage_info_ok": true,
+      "pass": true
+    },
+    {
+      "id": "MOA-MT-REMOVED-01",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "Does the Employer have to send the Union a copy of the full-time request list by March 1 and September 1?",
+      "expectation": "absent",
+      "expected_citations": [],
+      "retrieved_citations": [
+        "Article 17, Section 51, Part 2",
+        "Article 27, Section 71",
+        "Article 17, Section 48, Part 2",
+        "Article 17, Section 48, Part 1",
+        "Article 52, Section 160, Part 3",
+        "Article 27, Section 69, Part 3",
+        "Article 28, Section 86, Part 3",
+        "Article 49, Section 146"
+      ],
+      "expected_rank": null,
+      "citation_hit": true,
+      "expected_keywords": [],
+      "min_expected_keyword_hits": 1,
+      "best_expected_keyword_hits": 0,
+      "keywords_ok": true,
+      "forbidden_keywords": [
+        "no later than March 1 and September 1"
+      ],
+      "forbidden_ok": true,
+      "expected_source_type": null,
+      "source_type_observed": null,
+      "source_type_ok": true,
+      "expected_intent_type": "contract",
+      "observed_intent_type": "contract",
+      "intent_ok": true,
+      "require_no_wage_info": true,
+      "wage_info_present": false,
+      "wage_info_ok": true,
+      "pass": true
+    },
+    {
+      "id": "MOA-MT-REMOVED-02",
+      "contract_id": "local7_safeway_pueblo_meat_2022",
+      "question": "Am I limited to signing up for three positions I wish to be promoted to?",
+      "expectation": "absent",
+      "expected_citations": [],
+      "retrieved_citations": [
+        "Article 7, Section 15",
+        "Article 8, Section 25",
+        "Article 7, Section 14",
+        "Article 7, Section 16",
+        "Article 8, Section 25",
+        "Article 8, Section 26",
+        "Article 5, Section 12",
+        "Article 57, Section 169, Part 6"
+      ],
+      "expected_rank": null,
+      "citation_hit": true,
+      "expected_keywords": [],
+      "min_expected_keyword_hits": 1,
+      "best_expected_keyword_hits": 0,
+      "keywords_ok": true,
+      "forbidden_keywords": [
+        "three (3) positions"
       ],
       "forbidden_ok": true,
       "expected_source_type": null,

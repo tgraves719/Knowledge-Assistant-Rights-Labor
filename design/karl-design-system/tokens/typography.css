@@ -1,0 +1,57 @@
+/* ==========================================================================
+   KARL — Typography tokens
+   --------------------------------------------------------------------------
+   FONT SUBSTITUTION FLAG: the project's uploads listed SGr-Iosevka-*.ttc
+   (Thin → ExtraBold) as the intended organizational typeface, but the font
+   binaries were not actually present in uploads/ (only a logo PNG was).
+   Iosevka is not distributed on Google Fonts under its own name, so this
+   system substitutes **JetBrains Mono** (Google Fonts, weights 100–800,
+   true italics) as the closest open, full-weight-range monospace match for
+   the KARL Stewardship org typeface. Please re-attach the real SGr-Iosevka
+   .ttc/.ttf files and we'll swap the @font-face src below — everything
+   downstream (tokens, components) already points at the --font-mono alias
+   so the swap is a one-file change.
+
+   The KARL *app* itself (frontend/modular/index.html) ships Inter for UI
+   text and Playfair Display (italic) for onboarding headlines — both kept
+   here unchanged since they come from real product code, not a guess.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,400;1,700&display=swap');
+
+:root {
+  /* ---- Font stacks -------------------------------------------------- */
+  --font-mono: 'JetBrains Mono', 'SGr Iosevka', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; /* org/stewardship typeface (substituted) */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; /* app UI typeface (verified from product) */
+  --font-serif-display: 'Playfair Display', Georgia, serif; /* app onboarding headline face, italic weight 600 */
+
+  /* ---- Type scale (rem) ---------------------------------------------- */
+  --text-2xs: 0.625rem;   /* 10px — citation micro-labels */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+  --text-4xl: 2.25rem;    /* 36px */
+  --text-5xl: 3rem;       /* 48px — onboarding hero, clamp(2.5rem,8vw,4rem) in product */
+
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  --tracking-tight: -0.025em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.18em; /* uppercase eyebrow labels */
+
+  --weight-thin: 100;
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+}

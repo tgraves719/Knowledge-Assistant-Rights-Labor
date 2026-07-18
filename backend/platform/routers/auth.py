@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from fastapi import APIRouter, Header, HTTPException, Request, Response
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -9,7 +11,16 @@ from sqlalchemy import select
 from backend.platform.auth import AuthContext
 from backend.platform.deps import get_auth_context, get_container, get_db
 from backend.platform.local_auth import LocalAuthError
-from backend.platform.models import LocalAuthCredential, MemberTrackingChoiceMode, Role, TrackingPreference, Union, UnionMembership, User
+from backend.platform.models import (
+    InviteCode,
+    LocalAuthCredential,
+    MemberTrackingChoiceMode,
+    Role,
+    TrackingPreference,
+    Union,
+    UnionMembership,
+    User,
+)
 
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -31,6 +42,14 @@ class SessionRegisterRequest(BaseModel):
 
 class SessionPreferenceUpdateRequest(BaseModel):
     tracking_preference: str
+
+
+class SessionJoinRequest(BaseModel):
+    code: str
+    username: str
+    password: str
+    email: str
+    full_name: str
 
 
 def _resolve_login_target(db, container, *, user, union_slug: str | None):
@@ -429,4 +448,245 @@ def auth_me(request: Request):
         "union_id": auth.union_id,
         "union_slug": auth.union_slug,
         "source": auth.source,
+    }
+
+
+def _resolve_active_invite(db, code: str) -> tuple[InviteCode, Union]:
+    """Resolve a join code to an active invite + union, or raise a join-flow HTTP error.
+
+    404 for unknown/retired workspaces (indistinguishable from a bad code on purpose);
+    410 for codes that once worked but are now closed (revoked, expired, or full).
+    """
+    normalized = str(code or "").strip()
+    if not normalized:
+        raise HTTPException(status_code=404, detail="This join code is not recognized.")
+    invite = db.scalar(select(InviteCode).where(InviteCode.code == normalized))
+    if invite is None:
+        raise HTTPException(status_code=404, detail="This join code is not recognized.")
+    if invite.revoked_at is not None:
+        raise HTTPException(status_code=410, detail="This join code has been deactivated.")
+    if invite.expires_at is not None and invite.expires_at <= datetime.utcnow():
+        raise HTTPException(status_code=410, detail="This join code has expired.")
+    if invite.max_uses is not None and invite.use_count >= invite.max_uses:
+        raise HTTPException(status_code=410, detail="This join code has reached its member limit.")
+    union = db.get(Union, invite.union_id)
+    if union is None or not union.is_active:
+        raise HTTPException(status_code=404, detail="This join code is not recognized.")
+    return invite, union
+
+
+@router.get("/join/{code}")
+def join_code_info(code: str, request: Request):
+    """Public pre-enrollment check for a QR join code (no auth required)."""
+    db = get_db(request)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database is not configured.")
+    invite, union = _resolve_active_invite(db, code)
+    return {
+        "valid": True,
+        "code": invite.code,
+        "label": invite.label,
+        "contract_id": invite.contract_id,
+        "union": {"slug": union.slug, "name": union.name},
+    }
+
+
+@router.post("/session/join")
+def join_session(payload: SessionJoinRequest, request: Request, response: Response):
+    """Enroll a member via a QR invite code and start their session.
+
+    Mirrors /session/register, but the union is resolved from the invite (never
+    from client-supplied tenant fields) and the resulting session is attributed
+    to the invite for per-placement usage visibility.
+    """
+    db = get_db(request)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database is not configured.")
+    container = get_container(request)
+    invite, union = _resolve_active_invite(db, payload.code)
+
+    username = str(payload.username or "").strip().lower()
+    email = str(payload.email or "").strip().lower()
+    full_name = str(payload.full_name or "").strip()
+    password = str(payload.password or "")
+
+    if not username or not email or not full_name or not password:
+        raise HTTPException(status_code=400, detail="Full name, email, username, and password are required.")
+    if len(password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
+
+    existing_credential = db.scalar(select(LocalAuthCredential).where(LocalAuthCredential.username == username))
+    if existing_credential is not None:
+        raise HTTPException(status_code=409, detail="That username is already in use.")
+
+    existing_user = db.scalar(select(User).where(User.email == email))
+    if existing_user is not None:
+        existing_membership = db.scalar(
+            select(UnionMembership).where(
+                UnionMembership.user_id == existing_user.id,
+                UnionMembership.union_id == union.id,
+            )
+        )
+        if existing_membership is not None:
+            raise HTTPException(status_code=409, detail="An account already exists for that email in this union.")
+        user = existing_user
+        user.full_name = full_name
+        user.is_active = True
+    else:
+        user = User(email=email, full_name=full_name, is_active=True)
+        db.add(user)
+        db.flush()
+
+    membership = db.scalar(
+        select(UnionMembership).where(
+            UnionMembership.user_id == user.id,
+            UnionMembership.union_id == union.id,
+        )
+    )
+    if membership is None:
+        membership = UnionMembership(union_id=union.id, user_id=user.id, role=Role.USER, is_active=True)
+        db.add(membership)
+    else:
+        membership.role = Role.USER
+        membership.is_active = True
+
+    try:
+        container.local_auth.create_or_update_credential(
+            db,
+            user=user,
+            username=username,
+            password=password,
+        )
+        auth_session, session_secret = container.session_auth.create_session(
+            db,
+            user=user,
+            union=union,
+            role=Role.USER.value,
+            ip_address=request.client.host if request.client else None,
+            user_agent=request.headers.get("User-Agent"),
+        )
+    except LocalAuthError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    auth_session.invite_code_id = invite.id
+    invite.use_count = int(invite.use_count or 0) + 1
+    invite.updated_at = datetime.utcnow()
+
+    _set_session_cookie(response, request, container, session_secret=session_secret)
+    container.telemetry.record_event(
+        db,
+        AuthContext(
+            user_id=user.id,
+            email=user.email,
+            full_name=user.full_name,
+            role=Role.USER.value,
+            union_id=union.id,
+            union_slug=union.slug,
+            source="session_join",
+            is_authenticated=True,
+        ),
+        category="bug_journey",
+        event_type="session_join_success",
+        route="/api/auth/session/join",
+        metadata={
+            "user_role": Role.USER.value,
+            "invite_code_id": invite.id,
+            "invite_code": invite.code,
+            "invite_label": invite.label,
+        },
+        is_member=True,
+    )
+    return {
+        "authenticated": True,
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "full_name": user.full_name,
+            "role": Role.USER.value,
+            "union_id": union.id,
+            "union_slug": union.slug,
+        },
+        "invite": {"code": invite.code, "label": invite.label, "contract_id": invite.contract_id},
+    }
+
+
+class SessionGuestJoinRequest(BaseModel):
+    code: str
+
+
+@router.post("/session/join-guest")
+def join_session_guest(payload: SessionGuestJoinRequest, request: Request, response: Response):
+    """Zero-friction QR enrollment: scanning a valid code starts a member session directly.
+
+    No credentials are collected — the invite code itself is the admission ticket. Each join
+    creates a lightweight guest identity so quotas, tracking preferences, and telemetry keep
+    working per-member, and the session is attributed to the invite so a misused QR placement
+    can be shut off (and optionally disconnected) individually from the admin console.
+    """
+    db = get_db(request)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database is not configured.")
+    container = get_container(request)
+    invite, union = _resolve_active_invite(db, payload.code)
+
+    import uuid as _uuid
+
+    guest_tag = _uuid.uuid4().hex[:12]
+    user = User(
+        email=f"guest-{guest_tag}@join.karl.invalid",
+        full_name="Union member",
+        is_active=True,
+    )
+    db.add(user)
+    db.flush()
+    db.add(UnionMembership(union_id=union.id, user_id=user.id, role=Role.USER, is_active=True))
+
+    auth_session, session_secret = container.session_auth.create_session(
+        db,
+        user=user,
+        union=union,
+        role=Role.USER.value,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("User-Agent"),
+    )
+    auth_session.invite_code_id = invite.id
+    invite.use_count = int(invite.use_count or 0) + 1
+    invite.updated_at = datetime.utcnow()
+
+    _set_session_cookie(response, request, container, session_secret=session_secret)
+    container.telemetry.record_event(
+        db,
+        AuthContext(
+            user_id=user.id,
+            email=user.email,
+            full_name=user.full_name,
+            role=Role.USER.value,
+            union_id=union.id,
+            union_slug=union.slug,
+            source="session_join_guest",
+            is_authenticated=True,
+        ),
+        category="bug_journey",
+        event_type="session_join_guest_success",
+        route="/api/auth/session/join-guest",
+        metadata={
+            "user_role": Role.USER.value,
+            "invite_code_id": invite.id,
+            "invite_code": invite.code,
+            "invite_label": invite.label,
+        },
+        is_member=True,
+    )
+    return {
+        "authenticated": True,
+        "guest": True,
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "full_name": user.full_name,
+            "role": Role.USER.value,
+            "union_id": union.id,
+            "union_slug": union.slug,
+        },
+        "invite": {"code": invite.code, "label": invite.label, "contract_id": invite.contract_id},
     }

@@ -1,6 +1,6 @@
 {
   "schema_version": "v3_eval_v7",
-  "timestamp_utc": "2026-03-09T10:33:42.574649+00:00",
+  "timestamp_utc": "2026-07-17T20:10:58.247734+00:00",
   "mode": "full",
   "active_contract_ids": [
     "local7_kingsoopers_loveland_meat_2019",
@@ -9,111 +9,111 @@
   ],
   "commands": [
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_multi_contract --bm25-only",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_multi_contract --bm25-only",
       "return_code": 0,
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL Multi-Contract Evaluation\n========================================================================\nOverall: 18/18 (100.0%)\n- local7_kingsoopers_loveland_meat_2019: 6/6 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 6/6 (100.0%)\n- local7_safeway_pueblo_meat_2022: 6/6 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\multi_contract_v2_results.json\n",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL Multi-Contract Evaluation\n========================================================================\nOverall: 18/18 (100.0%)\n- local7_kingsoopers_loveland_meat_2019: 6/6 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 6/6 (100.0%)\n- local7_safeway_pueblo_meat_2022: 6/6 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\multi_contract_v2_results.json\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_cross_contamination --require-multi-contract",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_cross_contamination --require-multi-contract",
       "return_code": 0,
-      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Cross-Contamination Evaluation\n========================================================================\nContracts tested: ['local7_kingsoopers_loveland_meat_2019', 'local7_safeway_pueblo_clerks_2022', 'local7_safeway_pueblo_meat_2022']\nPairs tested: 6\nQueries per pair: 4\n[OK] No cross-contract contamination detected.\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contamination_results.json\n",
+      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Cross-Contamination Evaluation\n========================================================================\nContracts tested: ['local7_kingsoopers_loveland_meat_2019', 'local7_safeway_pueblo_clerks_2022', 'local7_safeway_pueblo_meat_2022']\nPairs tested: 6\nQueries per pair: 4\n[OK] No cross-contract contamination detected.\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contamination_results.json\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_paraphrase --bm25-only",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_paraphrase --bm25-only",
       "return_code": 0,
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL Paraphrase Robustness Evaluation\n========================================================================\nFamilies: 15/15 (100.0%)\nVariants: 45/45 (100.0%)\nWorker slang pass rate: 1.0\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\paraphrase_results.json\n",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL Paraphrase Robustness Evaluation\n========================================================================\nFamilies: 15/15 (100.0%)\nVariants: 45/45 (100.0%)\nWorker slang pass rate: 1.0\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\paraphrase_results.json\n",
+      "stderr_tail": "Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.\n"
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.validate_adversarial_dataset",
+      "return_code": 0,
+      "stdout_tail": "========================================================================\nKARL Adversarial Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_test.json\nSchema version: adversarial_precedence_test_v1\nTotal cases: 12\nPrecedence cases: 4\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.validate_adversarial_dataset",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_adversarial_precedence --bm25-only",
       "return_code": 0,
-      "stdout_tail": "========================================================================\nKARL Adversarial Dataset Validation\n========================================================================\nDataset: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_test.json\nSchema version: adversarial_precedence_test_v1\nTotal cases: 12\nPrecedence cases: 4\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
+      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Adversarial Formal-Precedence Evaluation\n========================================================================\nPass: 12/12 (100.0%)\nCitation hit rate: 1.0\nKeyword hit rate: 1.0\nPrecedence pass rate: 1.0\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_results.json\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_adversarial_precedence --bm25-only",
+      "command": "C:\\Python313\\python.exe -m backend.validate_unanswerable_dataset",
       "return_code": 0,
-      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Adversarial Formal-Precedence Evaluation\n========================================================================\nPass: 12/12 (100.0%)\nCitation hit rate: 1.0\nKeyword hit rate: 1.0\nPrecedence pass rate: 1.0\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_results.json\n",
+      "stdout_tail": "========================================================================\nKARL Unanswerable Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_multi_contract_test.json\nSchema version: unanswerable_multi_contract_test_v1\nTotal cases: 12\nScenario counts: {'fictional_benefit': 6, 'external_policy': 3, 'cross_contract_reference': 3}\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.validate_unanswerable_dataset",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_unanswerable --bm25-only",
       "return_code": 0,
-      "stdout_tail": "========================================================================\nKARL Unanswerable Dataset Validation\n========================================================================\nDataset: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_multi_contract_test.json\nSchema version: unanswerable_multi_contract_test_v1\nTotal cases: 12\nScenario counts: {'fictional_benefit': 6, 'external_policy': 3, 'cross_contract_reference': 3}\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
+      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Unanswerable Multi-Contract Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nAbstention rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_results.json\n",
+      "stderr_tail": "Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.\n"
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.validate_cross_contract_mentions_dataset",
+      "return_code": 0,
+      "stdout_tail": "========================================================================\nKARL Cross-Contract Mentions Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_test.json\nSchema version: cross_contract_mentions_test_v1\nTotal cases: 9\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 3, 'local7_safeway_pueblo_clerks_2022': 3, 'local7_safeway_pueblo_meat_2022': 3}\n\nValidation status: PASS\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_unanswerable --bm25-only",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_cross_contract_mentions --bm25-only",
       "return_code": 0,
-      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\n========================================================================\nKARL Unanswerable Multi-Contract Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nAbstention rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_results.json\n",
+      "stdout_tail": "========================================================================\nKARL Cross-Contract Mention Evaluation\n========================================================================\nOverall: 9/9 (100.0%)\nNo-citation rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 3/3 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 3/3 (100.0%)\n- local7_safeway_pueblo_meat_2022: 3/3 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_results.json\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.validate_cross_contract_mentions_dataset",
+      "command": "C:\\Python313\\python.exe -m backend.validate_false_unavailable_dataset",
       "return_code": 0,
-      "stdout_tail": "========================================================================\nKARL Cross-Contract Mentions Dataset Validation\n========================================================================\nDataset: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_test.json\nSchema version: cross_contract_mentions_test_v1\nTotal cases: 9\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 3, 'local7_safeway_pueblo_clerks_2022': 3, 'local7_safeway_pueblo_meat_2022': 3}\n\nValidation status: PASS\n",
+      "stdout_tail": "========================================================================\nKARL False-Unavailable Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_test.json\nSchema version: false_unavailable_test_v1\nTotal cases: 15\nExpectation counts: {'recover': 12, 'uncertain': 3}\nBy contract total: {'local7_safeway_pueblo_clerks_2022': 5, 'local7_safeway_pueblo_meat_2022': 5, 'local7_kingsoopers_loveland_meat_2019': 5}\nBy contract recover: {'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4, 'local7_kingsoopers_loveland_meat_2019': 4}\n\nValidation status: PASS\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_cross_contract_mentions --bm25-only",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_false_unavailable --bm25-only",
       "return_code": 0,
-      "stdout_tail": "========================================================================\nKARL Cross-Contract Mention Evaluation\n========================================================================\nOverall: 9/9 (100.0%)\nNo-citation rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 3/3 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 3/3 (100.0%)\n- local7_safeway_pueblo_meat_2022: 3/3 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_results.json\n",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL False-Unavailable Guard Evaluation\n========================================================================\nOverall: 15/15 (100.0%)\nRecovered (evidence-present): 12/12 (100.0%)\nProper uncertainty (evidence-absent): 3/3 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_results.json\n",
+      "stderr_tail": "Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.\n"
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_needle --bm25-only",
+      "return_code": 0,
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL Needle Retrieval Evaluation\n========================================================================\nPass: 5/5 (100.0%)\nCitation match rate: 1.0\nKeyword pass rate: 1.0\n- bottom: 1/1 (100.0%)\n- middle: 2/2 (100.0%)\n- top: 2/2 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\needle_results.json\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.validate_false_unavailable_dataset",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_wage_table_evidence --bm25-only",
       "return_code": 0,
-      "stdout_tail": "========================================================================\nKARL False-Unavailable Dataset Validation\n========================================================================\nDataset: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_test.json\nSchema version: false_unavailable_test_v1\nTotal cases: 15\nExpectation counts: {'recover': 12, 'uncertain': 3}\nBy contract total: {'local7_safeway_pueblo_clerks_2022': 5, 'local7_safeway_pueblo_meat_2022': 5, 'local7_kingsoopers_loveland_meat_2019': 5}\nBy contract recover: {'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4, 'local7_kingsoopers_loveland_meat_2019': 4}\n\nValidation status: PASS\n",
+      "stdout_tail": "========================================================================\nKARL Wage-Table Evidence Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nSource-method pass rate: 100.0%\nTable evidence presence rate: 100.0%\nTable ID presence rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\wage_table_evidence_results.json\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_false_unavailable --bm25-only",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_entitlement_table_evidence",
       "return_code": 0,
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL False-Unavailable Guard Evaluation\n========================================================================\nOverall: 15/15 (100.0%)\nRecovered (evidence-present): 12/12 (100.0%)\nProper uncertainty (evidence-absent): 3/3 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_results.json\n",
+      "stdout_tail": "========================================================================\nKARL Entitlement-Table Evidence Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nWeeks-resolution pass rate: 100.0%\nSource-method pass rate: 100.0%\nEvidence presence rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\entitlement_table_evidence_results.json\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_needle --bm25-only",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_role_catalog_integrity",
       "return_code": 0,
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL Needle Retrieval Evaluation\n========================================================================\nPass: 5/5 (100.0%)\nCitation match rate: 1.0\nKeyword pass rate: 1.0\n- bottom: 1/1 (100.0%)\n- middle: 2/2 (100.0%)\n- top: 2/2 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\needle_results.json\n",
+      "stdout_tail": "========================================================================\nKARL Role-Catalog Integrity Evaluation\n========================================================================\nOverall: 20/20 (100.0%)\nDataset-case pass rate: 100.0%\nDefault wage-ready rate: 100.0%\nUnresolved-not-default rate: 100.0%\nDefault wage-key-unique rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 6/6 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 8/8 (100.0%)\n- local7_safeway_pueblo_meat_2022: 6/6 (100.0%)\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_results.json\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_wage_table_evidence --bm25-only",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_followup_role_wage --bm25-only",
       "return_code": 0,
-      "stdout_tail": "========================================================================\nKARL Wage-Table Evidence Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nSource-method pass rate: 100.0%\nTable evidence presence rate: 100.0%\nTable ID presence rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\wage_table_evidence_results.json\n",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL Follow-Up Role Wage Evaluation\n========================================================================\nOverall: 14/14 (100.0%)\nTarget resolution rate: 92.9%\nIntent wage rate: 100.0%\nAppendix citation rate: 92.9%\nTable evidence presence rate: 92.9%\nExplicit override rate: 100.0%\nProfile fallback rate: 100.0%\nRole clarification rate: 100.0%\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\followup_role_wage_results.json\n",
+      "stderr_tail": "Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.\n"
+    },
+    {
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_retrieval_stage_consistency --bm25-only",
+      "return_code": 0,
+      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL Retrieval Stage Consistency Evaluation\n========================================================================\nOverall: 5/5 (100.0%)\nPlanned strategy match rate: 100.0%\nPolicy strategy match rate: 100.0%\nFollow-up strategy match rate: 100.0%\nRequired plan flag rate: 100.0%\nRequired executed stage rate: 100.0%\nPlan-to-execution alignment rate: 100.0%\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\retrieval_stage_consistency_results.json\n",
       "stderr_tail": ""
     },
     {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_entitlement_table_evidence",
+      "command": "C:\\Python313\\python.exe -m backend.evaluate_moa_deleted_vs_updated --bm25-only",
       "return_code": 0,
-      "stdout_tail": "========================================================================\nKARL Entitlement-Table Evidence Evaluation\n========================================================================\nOverall: 12/12 (100.0%)\nWeeks-resolution pass rate: 100.0%\nSource-method pass rate: 100.0%\nEvidence presence rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 4/4 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 4/4 (100.0%)\n- local7_safeway_pueblo_meat_2022: 4/4 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\entitlement_table_evidence_results.json\n",
-      "stderr_tail": ""
-    },
-    {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_role_catalog_integrity",
-      "return_code": 0,
-      "stdout_tail": "========================================================================\nKARL Role-Catalog Integrity Evaluation\n========================================================================\nOverall: 20/20 (100.0%)\nDataset-case pass rate: 100.0%\nDefault wage-ready rate: 100.0%\nUnresolved-not-default rate: 100.0%\nDefault wage-key-unique rate: 100.0%\n- local7_kingsoopers_loveland_meat_2019: 6/6 (100.0%)\n- local7_safeway_pueblo_clerks_2022: 8/8 (100.0%)\n- local7_safeway_pueblo_meat_2022: 6/6 (100.0%)\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\role_catalog_integrity_results.json\n",
-      "stderr_tail": ""
-    },
-    {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_followup_role_wage --bm25-only",
-      "return_code": 0,
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\n========================================================================\nKARL Follow-Up Role Wage Evaluation\n========================================================================\nOverall: 14/14 (100.0%)\nTarget resolution rate: 92.9%\nIntent wage rate: 100.0%\nAppendix citation rate: 92.9%\nTable evidence presence rate: 92.9%\nExplicit override rate: 100.0%\nProfile fallback rate: 100.0%\nRole clarification rate: 100.0%\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\followup_role_wage_results.json\n",
-      "stderr_tail": ""
-    },
-    {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_retrieval_stage_consistency --bm25-only",
-      "return_code": 0,
-      "stdout_tail": "Loaded concept index (concept_index_local7_kingsoopers_loveland_meat_2019.json) with 146 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_meat_2022.json) with 163 concepts\nLoaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL Retrieval Stage Consistency Evaluation\n========================================================================\nOverall: 5/5 (100.0%)\nPlanned strategy match rate: 100.0%\nPolicy strategy match rate: 100.0%\nFollow-up strategy match rate: 100.0%\nRequired plan flag rate: 100.0%\nRequired executed stage rate: 100.0%\nPlan-to-execution alignment rate: 100.0%\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\retrieval_stage_consistency_results.json\n",
-      "stderr_tail": ""
-    },
-    {
-      "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.evaluate_moa_deleted_vs_updated --bm25-only",
-      "return_code": 0,
-      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Deleted-vs-Updated Eval\n========================================================================\nOverall: 4/4 (100.0%)\n- updated: 2/2 (100.0%)\n- deleted: 2/2 (100.0%)\nGate: True\nResults: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json\n",
+      "stdout_tail": "Loaded concept index (concept_index_local7_safeway_pueblo_clerks_2022.json) with 149 concepts\n========================================================================\nKARL MOA Deleted-vs-Updated Eval\n========================================================================\nOverall: 4/4 (100.0%)\n- updated: 2/2 (100.0%)\n- deleted: 2/2 (100.0%)\nGate: True\nResults: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_deleted_vs_updated_results.json\n",
       "stderr_tail": ""
     }
   ],
@@ -208,36 +208,36 @@
     "false_unavailable_dataset_validation": {
       "pass": true,
       "details": {
-        "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.validate_false_unavailable_dataset",
+        "command": "C:\\Python313\\python.exe -m backend.validate_false_unavailable_dataset",
         "return_code": 0,
-        "stdout_tail": "========================================================================\nKARL False-Unavailable Dataset Validation\n========================================================================\nDataset: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_test.json\nSchema version: false_unavailable_test_v1\nTotal cases: 15\nExpectation counts: {'recover': 12, 'uncertain': 3}\nBy contract total: {'local7_safeway_pueblo_clerks_2022': 5, 'local7_safeway_pueblo_meat_2022': 5, 'local7_kingsoopers_loveland_meat_2019': 5}\nBy contract recover: {'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4, 'local7_kingsoopers_loveland_meat_2019': 4}\n\nValidation status: PASS\n",
+        "stdout_tail": "========================================================================\nKARL False-Unavailable Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\false_unavailable_test.json\nSchema version: false_unavailable_test_v1\nTotal cases: 15\nExpectation counts: {'recover': 12, 'uncertain': 3}\nBy contract total: {'local7_safeway_pueblo_clerks_2022': 5, 'local7_safeway_pueblo_meat_2022': 5, 'local7_kingsoopers_loveland_meat_2019': 5}\nBy contract recover: {'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4, 'local7_kingsoopers_loveland_meat_2019': 4}\n\nValidation status: PASS\n",
         "stderr_tail": ""
       }
     },
     "adversarial_dataset_validation": {
       "pass": true,
       "details": {
-        "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.validate_adversarial_dataset",
+        "command": "C:\\Python313\\python.exe -m backend.validate_adversarial_dataset",
         "return_code": 0,
-        "stdout_tail": "========================================================================\nKARL Adversarial Dataset Validation\n========================================================================\nDataset: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_test.json\nSchema version: adversarial_precedence_test_v1\nTotal cases: 12\nPrecedence cases: 4\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
+        "stdout_tail": "========================================================================\nKARL Adversarial Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\adversarial_test.json\nSchema version: adversarial_precedence_test_v1\nTotal cases: 12\nPrecedence cases: 4\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
         "stderr_tail": ""
       }
     },
     "unanswerable_dataset_validation": {
       "pass": true,
       "details": {
-        "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.validate_unanswerable_dataset",
+        "command": "C:\\Python313\\python.exe -m backend.validate_unanswerable_dataset",
         "return_code": 0,
-        "stdout_tail": "========================================================================\nKARL Unanswerable Dataset Validation\n========================================================================\nDataset: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_multi_contract_test.json\nSchema version: unanswerable_multi_contract_test_v1\nTotal cases: 12\nScenario counts: {'fictional_benefit': 6, 'external_policy': 3, 'cross_contract_reference': 3}\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
+        "stdout_tail": "========================================================================\nKARL Unanswerable Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\unanswerable_multi_contract_test.json\nSchema version: unanswerable_multi_contract_test_v1\nTotal cases: 12\nScenario counts: {'fictional_benefit': 6, 'external_policy': 3, 'cross_contract_reference': 3}\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 4, 'local7_safeway_pueblo_clerks_2022': 4, 'local7_safeway_pueblo_meat_2022': 4}\n\nValidation status: PASS\n",
         "stderr_tail": ""
       }
     },
     "cross_contract_mentions_dataset_validation": {
       "pass": true,
       "details": {
-        "command": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\.venv\\Scripts\\python.exe -m backend.validate_cross_contract_mentions_dataset",
+        "command": "C:\\Python313\\python.exe -m backend.validate_cross_contract_mentions_dataset",
         "return_code": 0,
-        "stdout_tail": "========================================================================\nKARL Cross-Contract Mentions Dataset Validation\n========================================================================\nDataset: C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_test.json\nSchema version: cross_contract_mentions_test_v1\nTotal cases: 9\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 3, 'local7_safeway_pueblo_clerks_2022': 3, 'local7_safeway_pueblo_meat_2022': 3}\n\nValidation status: PASS\n",
+        "stdout_tail": "========================================================================\nKARL Cross-Contract Mentions Dataset Validation\n========================================================================\nDataset: D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\cross_contract_mentions_test.json\nSchema version: cross_contract_mentions_test_v1\nTotal cases: 9\nBy contract total: {'local7_kingsoopers_loveland_meat_2019': 3, 'local7_safeway_pueblo_clerks_2022': 3, 'local7_safeway_pueblo_meat_2022': 3}\n\nValidation status: PASS\n",
         "stderr_tail": ""
       }
     },

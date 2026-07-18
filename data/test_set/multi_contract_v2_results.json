@@ -1,7 +1,7 @@
 {
   "schema_version": "multi_contract_eval_v1",
-  "timestamp_utc": "2026-03-09T10:33:08.511865+00:00",
-  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\multi_contract_v2.json",
+  "timestamp_utc": "2026-07-17T20:09:08.335424+00:00",
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\multi_contract_v2.json",
   "bm25_only": true,
   "n_results": 5,
   "overall": {
@@ -178,8 +178,8 @@
       "retrieved_articles": [
         "Article 17",
         "Article 16",
-        "Article 27",
         "Article 31",
+        "Article 27",
         "Article 38"
       ],
       "pass": true

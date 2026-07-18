@@ -1,31 +1,31 @@
 {
   "scorecard_version": "contract_pack_scorecard_v3",
-  "generated_at_utc": "2026-03-09T10:11:24.140694+00:00",
-  "strict_mode": false,
+  "generated_at_utc": "2026-07-17T19:46:47.021506+00:00",
+  "strict_mode": true,
   "contract_id": "local7_safeway_pueblo_clerks_2022",
-  "package_path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022",
+  "package_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022",
   "artifacts": {
-    "source_md": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\source\\safeway_pueblo_clerks_2022.md",
-    "source_json": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\source\\safeway_pueblo_clerks_2022.json",
-    "source_pdf": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\source\\Signed+MOA+-+July+5,+2025+(Safeway).pdf",
-    "manifest": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\manifests\\local7_safeway_pueblo_clerks_2022.json",
-    "chunks_enriched": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
-    "chunks_smart": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_smart_local7_safeway_pueblo_clerks_2022.json",
-    "chunks_base": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_local7_safeway_pueblo_clerks_2022.json",
-    "concept_index": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\concept_index_local7_safeway_pueblo_clerks_2022.json",
-    "tables": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\tables\\structured_tables.json",
-    "wages": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\wages\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
-    "entitlements": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\entitlements\\entitlement_tables_local7_safeway_pueblo_clerks_2022.json",
-    "classification_ontology": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\classification_ontology.json",
-    "language_lexicon": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\language_lexicon.json",
-    "pdf_nav_index": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\pdf_nav_index.json",
-    "contract_outline": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\outline\\contract_outline.json",
-    "role_catalog": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\role_catalog.json",
-    "ingestion_review_queue": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\ingestion_review_queue.json",
-    "manual_classification_overrides": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\manual_classification_overrides.json"
+    "source_md": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\source\\safeway_pueblo_clerks_2022.md",
+    "source_json": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\source\\safeway_pueblo_clerks_2022.json",
+    "source_pdf": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\source\\Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+    "manifest": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\manifests\\local7_safeway_pueblo_clerks_2022.json",
+    "chunks_enriched": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+    "chunks_smart": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_smart_local7_safeway_pueblo_clerks_2022.json",
+    "chunks_base": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_local7_safeway_pueblo_clerks_2022.json",
+    "concept_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\concept_index_local7_safeway_pueblo_clerks_2022.json",
+    "tables": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\tables\\structured_tables.json",
+    "wages": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\wages\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
+    "entitlements": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\entitlements\\entitlement_tables_local7_safeway_pueblo_clerks_2022.json",
+    "classification_ontology": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\classification_ontology.json",
+    "language_lexicon": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\language_lexicon.json",
+    "pdf_nav_index": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\pdf_nav_index.json",
+    "contract_outline": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\outline\\contract_outline.json",
+    "role_catalog": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\role_catalog.json",
+    "ingestion_review_queue": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\ingestion_review_queue.json",
+    "manual_classification_overrides": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\manual_classification_overrides.json"
   },
   "artifact_hashes": {
-    "source_md": "f11c5b4ffa788b223f4c54aa442d7712e9118cf921ab18bf5e69dbe6eaf94e4e",
+    "source_md": "567e1c9bf36160275e7598fb937b1327cc13ec0fc496af522a7655ae359f4d3a",
     "source_json": "64ab08556965c0f8daf0e92fc871da0322bafe184b7e90ddc150efd975ecf482",
     "source_pdf": "952aa398d3119a65a6f1e504259e617f9809bb762e50d20eca52333ccd6ba17b",
     "manifest": "8ed83d72ba6737a7f0a01a773ffcbd887a9933ab6b30032c5f45bf8159440f4f",
@@ -34,17 +34,17 @@
     "chunks_base": "44accac90d0099d3a33e5c9deaf8bac7c741ced66f4d334acf76ff5b3a390178",
     "concept_index": "22991adbf83764a11e989f10d1852c84a5506061e93ab6904165a1ac0fcdd23a",
     "tables": "f7f51a73c460e0186bb0c1bfa0e334516f001010f89ff76658152c147ff54c89",
-    "wages": "1ee86a7d6c0258f136503c1d368fe538953a959fd3b3debff852a5cb5681911b",
+    "wages": "5f05fefc220c23159d06214c1b96efb7fce81c81590c1d4881452855ef08d1ad",
     "entitlements": "2ce47aca5e8417a80d55da410c7c4839f2e695cccaf51c91b23f8528088520e5",
-    "classification_ontology": "b247992df6458c5f7258d799d623ffbc831d819fbaca1e37461fb747a79116da",
-    "language_lexicon": "44f7d48f194e6e59f5e22ec2dbce8b3f51013b3419c24e6734d436d7c44c7094",
-    "pdf_nav_index": "ca59a12e93076499325f145ead46d811ab2d12af799dbc857e3af439c1423f98",
-    "contract_outline": "b54acd6c9d71caa7817345dc5e25188cabe5b90fe4895aec0836f031979e3653",
-    "role_catalog": "f4ae04f2166de3501da36ea367a8d5bdff3dae113f307618eeef90c5f66faae9",
-    "ingestion_review_queue": "24b4c4f0e38e9e2ccf3506cde69af6299be8c4a5e55bd6183c9676818100207e",
-    "manual_classification_overrides": "0990f755f6f98bba97c8db923697be19614e359297f9b05e2428da4078464030"
+    "classification_ontology": "6c765bffd09be4151eb5cfc15c52ac36893f4dbb8dfe609a0b26ebbd00ae4ddc",
+    "language_lexicon": "ff1a63aab61d7368cebc65c851ebe4130a662a9716dd00118cbf5d1a80512b68",
+    "pdf_nav_index": "1d6ef5ee0d672af5d33f0449120d739d34f31b2e13c178c96fb7949c4546d7b2",
+    "contract_outline": "76600050d3fe713add67d1e370f40264aeb82ab11c6f918dae5f0c59aa44c4f9",
+    "role_catalog": "6056432fe9de49b5bc4737f9fefd2e7a921d529e73be904c52eefb5012fe4f1d",
+    "ingestion_review_queue": "3ede8dc3abd8974be4a2b117a391afc52df853f19f0310639a0c8b3f72c1e033",
+    "manual_classification_overrides": "6310559593a118399258d1f8137af93d5352934bcc121fdd5d567822114b8085"
   },
-  "pack_hash": "a1b84964bab8fbac23c678149d0755bf2efc1c5fd4578b3dda8460e35ae7d634",
+  "pack_hash": "cea8607c48198718e86fe70714635a1012477b1138e626ffd24cbd03ebdc154e",
   "checks": [
     {
       "id": "manifest_exists",
@@ -52,7 +52,7 @@
       "status": "pass",
       "message": "Manifest artifact is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\manifests\\local7_safeway_pueblo_clerks_2022.json"
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\manifests\\local7_safeway_pueblo_clerks_2022.json"
       }
     },
     {
@@ -70,7 +70,7 @@
       "status": "pass",
       "message": "Source PDF artifact is present and non-empty.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\source\\Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\source\\Signed+MOA+-+July+5,+2025+(Safeway).pdf",
         "size_bytes": 16176643
       }
     },
@@ -103,7 +103,7 @@
       "status": "pass",
       "message": "Chunk artifact is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json"
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json"
       }
     },
     {
@@ -211,7 +211,7 @@
       "status": "pass",
       "message": "Structured table registry is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\tables\\structured_tables.json"
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\tables\\structured_tables.json"
       }
     },
     {
@@ -229,7 +229,7 @@
       "status": "pass",
       "message": "Contract-scoped concept index is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\concept_index_local7_safeway_pueblo_clerks_2022.json"
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\chunks\\concept_index_local7_safeway_pueblo_clerks_2022.json"
       }
     },
     {
@@ -248,7 +248,7 @@
       "status": "pass",
       "message": "Language lexicon artifact is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\language_lexicon.json"
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\language_lexicon.json"
       }
     },
     {
@@ -276,7 +276,7 @@
       "status": "pass",
       "message": "PDF navigation index artifact is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\pdf_nav_index.json"
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\pdf_nav_index.json"
       }
     },
     {
@@ -305,7 +305,7 @@
       "status": "pass",
       "message": "Contract outline artifact is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\outline\\contract_outline.json"
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\outline\\contract_outline.json"
       }
     },
     {
@@ -346,7 +346,7 @@
       "status": "pass",
       "message": "Wage artifact is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\wages\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\wages\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
         "requires_wages": true
       }
     },
@@ -426,17 +426,12 @@
       "status": "pass",
       "message": "Manifest classification wage coverage meets advisory threshold.",
       "metrics": {
-        "coverage": 0.75,
-        "resolved_or_clarified": 12,
-        "clarification_required": 0,
-        "out_of_scope": 0,
-        "total": 16,
-        "unresolved": [
-          "deli_clerk",
-          "meat_cutter",
-          "pharmacy_technician",
-          "sanitation_clerk"
-        ]
+        "coverage": 1.0,
+        "resolved_or_clarified": 13,
+        "clarification_required": 1,
+        "out_of_scope": 3,
+        "total": 13,
+        "unresolved": []
       }
     },
     {
@@ -454,7 +449,7 @@
       "status": "pass",
       "message": "Entitlement artifact is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\entitlements\\entitlement_tables_local7_safeway_pueblo_clerks_2022.json",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\entitlements\\entitlement_tables_local7_safeway_pueblo_clerks_2022.json",
         "requires_entitlements": true
       }
     },
@@ -486,7 +481,7 @@
       "message": "Effective snapshot includes effective_contract.json.",
       "metrics": {
         "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\effective_contract.json"
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\effective_contract.json"
       }
     },
     {
@@ -496,10 +491,10 @@
       "message": "Effective snapshot includes chunk index input.",
       "metrics": {
         "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
         "candidates": [
-          "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
-          "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_local7_safeway_pueblo_clerks_2022.json"
+          "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+          "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_local7_safeway_pueblo_clerks_2022.json"
         ]
       }
     },
@@ -509,7 +504,7 @@
       "status": "pass",
       "message": "Effective chunk index input is non-empty.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\contract_chunks_enriched_local7_safeway_pueblo_clerks_2022.json",
         "chunk_count": 315
       }
     },
@@ -520,7 +515,7 @@
       "message": "Effective snapshot includes wage index input.",
       "metrics": {
         "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
         "required": true
       }
     },
@@ -530,7 +525,7 @@
       "status": "pass",
       "message": "Effective wage index input is non-empty.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
         "canonical_wage_row_count": 208
       }
     },
@@ -541,7 +536,7 @@
       "message": "Effective snapshot includes entitlement index input.",
       "metrics": {
         "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\entitlement_tables_local7_safeway_pueblo_clerks_2022.json",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\entitlement_tables_local7_safeway_pueblo_clerks_2022.json",
         "required": true
       }
     },
@@ -551,7 +546,7 @@
       "status": "pass",
       "message": "Effective entitlement index input is non-empty.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\entitlement_tables_local7_safeway_pueblo_clerks_2022.json",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\entitlement_tables_local7_safeway_pueblo_clerks_2022.json",
         "vacation_schedule_count": 2
       }
     },
@@ -561,7 +556,7 @@
       "status": "pass",
       "message": "Classification ontology artifact is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\classification_ontology.json",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\classification_ontology.json",
         "requires_ontology": true
       }
     },
@@ -599,19 +594,14 @@
       "status": "pass",
       "message": "Ontology mapping coverage meets advisory threshold.",
       "metrics": {
-        "coverage": 0.75,
-        "covered_manifest_classes": 12,
-        "actionable_manifest_classes": 16,
+        "coverage": 1.0,
+        "covered_manifest_classes": 13,
+        "actionable_manifest_classes": 13,
         "resolved_manifest_classes": 12,
-        "clarification_manifest_classes": 0,
-        "out_of_scope_manifest_classes": 0,
+        "clarification_manifest_classes": 1,
+        "out_of_scope_manifest_classes": 3,
         "total_manifest_classes": 16,
-        "unresolved_manifest_keys": [
-          "deli_clerk",
-          "meat_cutter",
-          "pharmacy_technician",
-          "sanitation_clerk"
-        ]
+        "unresolved_manifest_keys": []
       }
     },
     {
@@ -620,7 +610,7 @@
       "status": "pass",
       "message": "Role catalog artifact is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\role_catalog.json",
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\role_catalog.json",
         "requires_role_catalog": true
       }
     },
@@ -650,17 +640,18 @@
       "status": "pass",
       "message": "Role catalog unresolved-manifest rate is within advisory threshold.",
       "metrics": {
-        "manifest_roles_total": 16,
-        "unresolved_manifest_roles": 4,
-        "unresolved_manifest_rate": 0.25,
-        "clarification_manifest_roles": [],
-        "out_of_scope_manifest_roles": [],
-        "unresolved_manifest_role_values": [
+        "manifest_roles_total": 13,
+        "unresolved_manifest_roles": 0,
+        "unresolved_manifest_rate": 0.0,
+        "clarification_manifest_roles": [
+          "pharmacy_technician"
+        ],
+        "out_of_scope_manifest_roles": [
           "deli_clerk",
           "meat_cutter",
-          "pharmacy_technician",
           "sanitation_clerk"
-        ]
+        ],
+        "unresolved_manifest_role_values": []
       }
     },
     {
@@ -669,9 +660,9 @@
       "status": "pass",
       "message": "Ingestion review queue artifact is present.",
       "metrics": {
-        "path": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\ingestion_review_queue.json",
-        "review_required": true,
-        "unresolved_manifest_classes": 4,
+        "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\ontology\\ingestion_review_queue.json",
+        "review_required": false,
+        "unresolved_manifest_classes": 0,
         "canonical_ambiguities": 0,
         "canonical_conflicts": 0,
         "unresolved_rows": 0
@@ -685,7 +676,7 @@
       "metrics": {
         "schema_version": "ingestion_review_queue_v1",
         "queue_contract_id": "local7_safeway_pueblo_clerks_2022",
-        "item_count": 1
+        "item_count": 0
       }
     },
     {
@@ -694,12 +685,8 @@
       "status": "pass",
       "message": "Ingestion review queue covers all unresolved ingestion issue categories.",
       "metrics": {
-        "required_issue_ids": [
-          "ontology_unresolved_manifest_classes"
-        ],
-        "queue_issue_ids": [
-          "ontology_unresolved_manifest_classes"
-        ],
+        "required_issue_ids": [],
+        "queue_issue_ids": [],
         "missing_issue_ids": []
       }
     },
@@ -754,7 +741,7 @@
       "metrics": {
         "required": true,
         "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
-        "moa_ref_count": 54,
+        "moa_ref_count": 55,
         "missing_page_ref_count": 0,
         "sections_missing_page": [],
         "tables_missing_page": [],
@@ -767,40 +754,25 @@
       "id": "miss_record_backlog_linkage",
       "severity": "advisory",
       "status": "pass",
-      "message": "Contract-scoped reviewed miss backlog is linked cleanly.",
+      "message": "No contract-scoped miss backlog records present.",
       "metrics": {
-        "miss_record_count": 2,
-        "regression_added_count": 2,
+        "miss_record_count": 0,
+        "regression_added_count": 0,
         "missing_regression_case_ids": [],
         "load_errors": [],
-        "taxonomy_counts": {
-          "deterministic_answer_binding_defect": 1,
-          "retrieval_followup_defect": 1
-        }
+        "taxonomy_counts": {}
       }
     },
     {
       "id": "miss_record_signal_alignment",
       "severity": "advisory",
       "status": "pass",
-      "message": "Known contract-scoped miss signals align with current green pack capabilities.",
+      "message": "No contract-scoped miss signals to align.",
       "metrics": {
-        "miss_record_count": 2,
-        "mapped_related_checks": [
-          "chunks_exists",
-          "chunks_non_empty",
-          "manifest_classification_wage_coverage",
-          "query_routing_article_ref_integrity",
-          "query_routing_coverage",
-          "vacation_entitlement_non_empty",
-          "wages_exists",
-          "wages_json_load"
-        ],
+        "miss_record_count": 0,
+        "mapped_related_checks": [],
         "active_related_failures": [],
-        "taxonomy_counts": {
-          "deterministic_answer_binding_defect": 1,
-          "retrieval_followup_defect": 1
-        }
+        "taxonomy_counts": {}
       }
     }
   ],
@@ -814,8 +786,8 @@
     "moa_wage_schedule_sync_registration": "pass",
     "effective_moa_provenance_page_integrity": "pass",
     "ingestion_review_queue_issue_coverage": "pass",
-    "miss_records_present": true,
-    "miss_record_count": 2,
+    "miss_records_present": false,
+    "miss_record_count": 0,
     "miss_record_backlog_linkage": "pass",
     "miss_record_signal_alignment": "pass"
   },

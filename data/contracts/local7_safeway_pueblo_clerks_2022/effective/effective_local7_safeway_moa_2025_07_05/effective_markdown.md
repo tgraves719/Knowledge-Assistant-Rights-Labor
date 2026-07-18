@@ -2433,9 +2433,9 @@ PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a58_s175_p9, effec
 
 Safeway Pueblo Clerks
 
-PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a58_s1749, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p59;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p7@albertsons_safeway_moa_2025_07_05])
+PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a58_s1749, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p59;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p7@albertsons_safeway_moa_2025_07_05;moa:Signed+MOA+-+July+5,+2025+(Safeway).pdf#p36@albertsons_safeway_moa_2025_07_05])
 
-Section 1749. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **January 23, 2022** and shall remain in full force and effect until midnight on **January 16, 2027** and shall be automatically renewed from year to year thereafter, unless either party desires change or termination at the expiration of said Agreement. In such event, the party desiring such change or termination shall notify the other party in writing sixty (60) days prior to the expiration date, specifying the changes desired. Changes in the Agreement shall be limited to those outlined in writing by either party and the negotiations shall begin within fifteen (15) days after receipt of such notice.
+Section 1749. This Agreement shall be in full force and effect beginning at 12:01 a.m. on **January 23, 2022** and shall remain in full force and effect until 11:59 p.m. on **January 22, 2028** and shall be automatically renewed from year to year thereafter, unless either party desires change or termination at the expiration of said Agreement. In such event, the party desiring such change or termination shall notify the other party in writing sixty (60) days prior to the expiration date, specifying the changes desired. Changes in the Agreement shall be limited to those outlined in writing by either party and the negotiations shall begin within fifteen (15) days after receipt of such notice.
 
 PROV(contract_id=local7_safeway_pueblo_clerks_2022, anchor_id=a58_s175_p10, effective_version_id=effective_local7_safeway_moa_2025_07_05, sources=[base:SW+Pueblo+Clerks+2022.2025.pdf#p59])
 

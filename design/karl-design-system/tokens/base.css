@@ -1,0 +1,24 @@
+/* ==========================================================================
+   KARL — Base element resets (minimal; app itself sits on Tailwind reset)
+   ========================================================================== */
+
+body {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background: var(--surface-page);
+}
+
+a {
+  color: var(--text-link);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+a:hover {
+  color: var(--text-link-hover);
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ink-300); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-400); }

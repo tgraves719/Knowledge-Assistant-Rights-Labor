@@ -279,6 +279,7 @@
       ],
       "chunk_ids": [
         "art10_sec21_seg_001",
+        "art10_sec21_seg_010",
         "art10_sec21_seg_002",
         "art10_sec21_seg_003",
         "art10_sec21_seg_004",
@@ -287,7 +288,6 @@
         "art10_sec21_seg_007",
         "art10_sec21_seg_008",
         "art10_sec21_seg_009",
-        "art10_sec21_seg_010",
         "art10_sec22",
         "art10_sec23",
         "art10_sec24",
@@ -885,9 +885,9 @@
         "art29_sec77",
         "art29_sec78",
         "art29_sec78_seg_001_001",
-        "art29_sec78_seg_002_001",
-        "art29_sec78_seg_002_000",
         "art29_sec78_seg_001_004",
+        "art29_sec78_seg_002_000",
+        "art29_sec78_seg_002_001",
         "art29_sec78_seg_005_008",
         "art29_sec78_seg_009",
         "art29_sec80",
@@ -1238,22 +1238,22 @@
       "chunk_ids": [
         "art40_sec116",
         "art40_sec116_seg_001_001",
-        "art40_sec116_seg_002_000",
-        "art40_sec116_seg_001_002",
-        "art40_sec116_seg_003_003",
-        "art40_sec116_seg_004_000",
-        "art40_sec116_seg_001_004",
-        "art40_sec116_seg_005_000",
-        "art40_sec116_seg_001_002__dup1",
-        "art40_sec116_seg_003_004",
-        "art40_sec116_seg_005_005",
-        "art40_sec116_seg_006_006",
-        "art40_sec116_seg_007_000",
         "art40_sec116_seg_001_001__dup1",
+        "art40_sec116_seg_001_002",
+        "art40_sec116_seg_001_002__dup1",
+        "art40_sec116_seg_001_004",
+        "art40_sec116_seg_002_000",
         "art40_sec116_seg_002_003",
+        "art40_sec116_seg_003_003",
+        "art40_sec116_seg_003_004",
+        "art40_sec116_seg_004_000",
         "art40_sec116_seg_004_004",
+        "art40_sec116_seg_005_000",
+        "art40_sec116_seg_005_005",
         "art40_sec116_seg_005_005__dup1",
-        "art40_sec116_seg_006"
+        "art40_sec116_seg_006",
+        "art40_sec116_seg_006_006",
+        "art40_sec116_seg_007_000"
       ]
     },
     "41": {
@@ -1434,8 +1434,8 @@
         "art46_sec141_seg_001_002",
         "art46_sec141_seg_003_003",
         "art46_sec141_seg_004_004",
-        "art46_sec141_seg_005",
-        "art46_sec143"
+        "art46_sec143",
+        "art46_sec141_seg_005"
       ]
     },
     "47": {
@@ -1751,9 +1751,14 @@
       ],
       "chunk_ids": [
         "art58_sec173",
-        "art58_sec1749",
         "art58_sec175_seg_001",
+        "art58_sec175_seg_010",
+        "art58_sec175_seg_011",
+        "art58_sec175_seg_012",
+        "art58_sec175_seg_013",
+        "tbl_art58_1_chunk",
         "art58_sec175_seg_002",
+        "tbl_fallback_art58_824d8365_chunk",
         "art58_sec175_seg_003",
         "art58_sec175_seg_004",
         "art58_sec175_seg_005",
@@ -1761,16 +1766,11 @@
         "art58_sec175_seg_007",
         "art58_sec175_seg_008",
         "art58_sec175_seg_009",
-        "art58_sec175_seg_010",
-        "art58_sec175_seg_011",
-        "art58_sec175_seg_012",
-        "art58_sec175_seg_013",
-        "tbl_art58_1_chunk",
-        "tbl_art58_2_chunk",
-        "tbl_art58_3_chunk",
-        "tbl_fallback_art58_824d8365_chunk",
+        "art58_sec1749",
         "tbl_fallback_art58_c1c0ffd7_chunk",
-        "tbl_fallback_art58_dc31b2ca_chunk"
+        "tbl_fallback_art58_dc31b2ca_chunk",
+        "tbl_art58_2_chunk",
+        "tbl_art58_3_chunk"
       ]
     }
   },
@@ -2395,6 +2395,11 @@
     "scheduling assignment hours": [
       10
     ],
+    "head clerk": [
+      10,
+      29,
+      58
+    ],
     "overtime": [
       10,
       12,
@@ -2515,11 +2520,6 @@
       27,
       35,
       36,
-      58
-    ],
-    "head clerk": [
-      10,
-      29,
       58
     ],
     "reduction pay": [
@@ -2841,16 +2841,16 @@
       56,
       58
     ],
-    "meat cutter": [
-      58
-    ],
-    "deli clerk": [
-      58
-    ],
     "floral manager": [
       58
     ],
     "produce department manager": [
+      58
+    ],
+    "meat cutter": [
+      58
+    ],
+    "deli clerk": [
       58
     ]
   },

@@ -1,0 +1,16 @@
+<!-- @dsCard group="Colors" viewport="700x180" name="Semantic states" subtitle="Success / warning / danger / info — contract confidence states" -->
+<!DOCTYPE html>
+<html><head><link rel="stylesheet" href="../styles.css">
+<style>
+body{margin:0;padding:20px;background:var(--surface-page);font-family:var(--font-sans);}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.sw{border-radius:10px;padding:12px;font-size:11px;font-weight:700;border:1px solid;}
+</style></head>
+<body>
+<div class="grid">
+  <div class="sw" style="background:var(--success-bg);color:var(--success-text);border-color:var(--success-border)">Success<br><span style="font-weight:400">Recovered / evidence found</span></div>
+  <div class="sw" style="background:var(--warning-bg);color:var(--warning-text);border-color:var(--warning-border)">Warning<br><span style="font-weight:400">Needs review</span></div>
+  <div class="sw" style="background:var(--danger-bg);color:var(--danger-text);border-color:var(--danger-border)">Danger<br><span style="font-weight:400">Unavailable / abstain</span></div>
+  <div class="sw" style="background:var(--info-bg);color:var(--info-text);border-color:var(--info-border)">Info<br><span style="font-weight:400">Neutral notice</span></div>
+</div>
+</body></html>

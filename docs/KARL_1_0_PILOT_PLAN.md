@@ -1,0 +1,108 @@
+# KARL 1.0 Pilot Plan — UFCW Local 7, Pueblo West Safeway
+
+**Status:** ACTIVE — this is the working plan of record for the 1.0 launch.
+**Written:** 2026-07-17. Update milestone checkboxes and the Decision Log in place; do not fork this document.
+
+## Orientation for future sessions (read first)
+
+- **Canonical checkout:** `D:\Projects\karl\Knowledge-Assistant-Rights-Labor` (origin = `tgraves719/Knowledge-Assistant-Rights-Labor`, tracks `origin/main`, current as of 2026-07-10, PR #1 merged).
+- **Stale checkout:** `D:\Projects\karl\KARL2\Knowledge-Assistant-Rights-Labor` is a second clone of the same GitHub repo, frozen at 2026-02-07 (`a022a08`). Do not develop there. Its `backend/platform/` contains only orphaned `.pyc` files. Candidate for archival once anything unique (if any) is confirmed merged.
+- **Pilot scope:** one store — Safeway Pueblo West, UFCW Local 7 — two contracts:
+  - `local7_safeway_pueblo_clerks_2022`
+  - `local7_safeway_pueblo_meat_2022`
+- **Access model:** QR codes posted in the store open a public HTTPS join link; members self-enroll with minimal friction; usage is controlled per invite code (expiry, revocation, caps) and per-tenant quotas.
+
+## Current state (verified 2026-07-17)
+
+| Area | State |
+|---|---|
+| Contract packs | Both Pueblo packs **accepted** in `data/contracts/pack_registry.json` (2026-03-08), zero required failures — but `strict_mode: false` |
+| Retrieval quality | 55/55 golden benchmark (clerks lineage); eval CI ran clean after July fixes |
+| Multi-tenant platform | Built: Postgres + pgvector, tenant models, RLS **verified 6/6 against live Postgres 16** through migration `20260613_0005` |
+| Auth | Local username/password login + session cookies + `POST /api/auth/session/register`; roles: super-admin / union-admin / member (`backend/platform/routers/auth.py`) |
+| Usage control | Quotas, deterministic guardrails, sentinel events, telemetry (`backend/platform/`) |
+| Ops tooling | `Dockerfile.dev/.prod`, `docker-compose.dev/.prod.yml`, seed scripts (`scripts/seed_demo_*.py`), `docs/DEMO_RUNBOOK.md` |
+| Frontend | `frontend/modular/` — member, admin, superadmin pages + embed demo; Tailwind via `npm run build:css` |
+| Governance | Privacy remediation technical gates closed; **Data Stewardship Council signatures pending** (`legal/DATA-STEWARDSHIP-COUNCIL-SIGNOFF.md`); Michael Meiskey CLA pending for commercial offering (AGPL use unaffected) |
+| Deployment | **Nothing hosted. No domain.** |
+| QR/invite flow | **Does not exist** — only password login and full signup form |
+
+## What "KARL 1.0" means
+
+1.0 = the version a stranger in a break room can scan, join, and get cited contract answers from, with tenant isolation and usage controls enforced in production. Concretely:
+
+1. Both Pueblo contracts live in a deployed multi-tenant instance under a UFCW Local 7 tenant.
+2. QR → join → ask a question works end-to-end on a phone over HTTPS.
+3. Invite codes are revocable and capped; quotas and guardrails active.
+4. Benchmarks green for **both** contracts, packs regenerated in strict mode.
+5. Governance sign-off complete for real member data.
+
+---
+
+## Milestone 0 — Consolidation & hygiene (prereq, ~1–2 days)
+
+- [x] Confirm nothing unique remains in the KARL2 checkout; archive or delete it to remove the split-brain risk. *(2026-07-17: all local branches + `michael` remote fully merged into `origin/main`; stash was benchmark-result churn except `legal/instruments/karl_instruments.html`, rescued to canonical `legal/instruments/`. Marker `ARCHIVED-DO-NOT-DEVELOP-HERE.md` dropped in KARL2; folder rename blocked by an open handle — close editors/terminals pointing there, then rename or delete.)*
+- [x] Repo cleanup in canonical checkout: stray `NUL` file, `pytest-cache-files-*` dirs, `tmp_uvicorn.*` logs, `tmp_test_work/`. *(2026-07-17: `NUL`, uvicorn logs, one cache dir deleted. Seven `pytest-cache-files-*` dirs + `tmp_test_work/` are owned by another/elevated account and need an elevated shell to remove — all gitignored, cosmetic only. From an admin PowerShell: `takeown /f <dir> /r /d y; icacls <dir> /reset /T; rmdir /s /q <dir>`.)*
+- [x] Re-run the recovery checklist in `docs/PRODUCTION_HANDOFF.md` (focused platform tests + `alembic heads`) to confirm a clean baseline on the current machine. *(2026-07-17: fresh `.venv` created in canonical checkout (Python 3.13.6, platform deps only); `pytest backend/test_platform_*.py` → 86 passed, 24 skipped (live-Postgres RLS skips, expected), 0 failed — the old `test_platform_worker.py` failure is gone; `alembic heads` → single head `20260613_0005`.)*
+
+## Milestone 1 — Contracts pilot-grade (~3–5 days)
+
+Packs are accepted but were validated in non-strict mode, and benchmark depth on the Meat contract is unverified.
+
+- [x] Regenerate both Pueblo pack scorecards with `strict_mode: true`; resolve any required failures. *(2026-07-17: both packs re-accepted strict, 67/67 checks pass each, registry updated. PM: the 4 unmapped clerks classes resolved per Thomas using the 2025 MOA pay schedules (`ontology/manual_classification_overrides.json`): `meat_cutter` + `deli_clerk` → out_of_scope (meat-unit classes, wages live in the meat pack), `sanitation_clerk` → out_of_scope (no MOA pay category), `pharmacy_technician` → needs_clarification (clerks-unit in MOA Denver Metro schedule, but Pueblo book has no pharmacy wage table — confirm with Local 7 whether Pueblo West has in-unit pharmacy techs). Clerks ontology coverage 0.75 → 1.0, review queue empty.)*
+- [x] Verify/extend golden test coverage for `local7_safeway_pueblo_meat_2022`. *(2026-07-17: meat was absent from the vector index (clerks-only collection) — rebuilt, all 3 contracts indexed. Six meat MOA golden cases added to `moa_effective_test.json` (term, department bidding, stewards, tips, two deleted-language checks) — 10/10 with clerks. **Known routing gap:** concept/query-routing indexes are built from BASE text at onboarding, so brand-new MOA topics (e.g. "department bidding", which replaced a promotions section) don't route on paraphrase queries — the bidding test uses a section-targeted query as a workaround. Follow-up: regenerate routing/concept enrichment from effective chunks after materialization.)*
+- [x] Verify the `amendments/` + `effective/` lineage in both packs reflects the current in-force contract text. **(2026-07-17 PM: corrections APPROVED by Thomas and APPLIED — meat redraft installed (6 verified section ops + 51 wage-row ops synced from the Safeway Denver Metro Meat schedule, MOA booklet p.3/PDF p.39, whose store group includes Pueblo; see `scripts/sync_meat_moa_wage_rows.py`), clerks term end date corrected to Jan 22 2028 in the live patch, both re-materialized, re-onboarded strict (gates PASS), re-indexed, full suite green. Earlier morning findings below for the record.)** *(AM: FOUND CORRUPTION — the meat pack's MOA patch mis-anchored Denver-Retail-numbered MOA sections onto meat sections by number coincidence (e.g. Head Meat Cutter definition overwritten by the Clerks DUG clause; transfers section overwritten by funeral leave). Patch + corrupted effective state quarantined to `local7_safeway_pueblo_meat_2022/amendments/quarantine/`; meat now serves 2022 base text; strict gates + full eval suite still green. Corrected redraft with page-by-page verification awaiting Thomas's review: `amendments/drafts/redraft_local7_safeway_moa_2025_07_05_meat_corrected.json` + `REDRAFT_2026_07_17_REVIEW.md`. ALSO: the live clerks term op says the contract runs to Jan 16 2027, but the signed date table says Pueblo Clerks ends Jan 22 2028 (104-vs-157-week miscalc) — correction draft in clerks `amendments/drafts/correction_term_end_date_2026_07_17.json`, golden test MOA-CL-TERM-01 must change with it. Open: no Pueblo/Denver-Metro MEAT wage table exists in the MOA booklet — ask Local 7 which meat schedule governs Pueblo; meat wage answers are 2022-stale until then — RESOLVED PM: the Denver Metro Meat table was on booklet p.3 all along, store group includes Pueblo; 51 wage rows applied.)*
+- [ ] Confirm classification routing: a member who self-identifies as meat-department gets the meat contract, clerks get clerks, and cross-contract questions fail gracefully. *(2026-07-17: deterministic suites covering this (cross_contract_mentions, unanswerable_multi_contract, role_catalog_integrity, retrieval_stage_consistency) all pass post-reindex; end-to-end phone-flow confirmation still to do in M2.)*
+
+## Milestone 2 — QR enrollment flow (the main build, ~1–2 weeks)
+
+New capability; everything else hangs off it.
+
+- [x] **Invite-token model:** *(2026-07-17: `InviteCode` model + migration `20260717_0006_invite_codes` (table, indexes, `auth_sessions.invite_code_id` attribution column) with RLS (`invite_rls_statements` in `db.py` — anonymous join resolution permitted pre-tenant-context, tenant reads isolated, super-admin global). Live-PG RLS test added to `test_platform_postgres_rls.py` (runs when `KARL_TEST_POSTGRES_ADMIN_URL` is set — re-verify against live Postgres before production, same gate as before).)*
+- [x] **Join endpoint + page:** *(2026-07-17, revised per Thomas: **zero-friction guest join** — `GET /j/{code}` renders a one-tap onboarding page (what Karl is + privacy note, no form); tapping Start calls `POST /api/auth/session/join-guest`, which mints an anonymous per-scan guest identity + member session attributed to the invite. No name/email/password. The credentialed `POST /api/auth/session/join` remains for a future "claim your account" path. Union always resolved from the code, never client input.)*
+- [x] **Admin surface:** *(2026-07-17: `GET/POST /api/admin/unions/{id}/invites` + `/revoke` (union-admin/super-admin, union-scoped, audit-evented) and an Invite Codes panel in `admin.html`/`admin.js` — create with label/max-uses/expiry, per-code join counts, status badges, copy-link, revoke, and "Revoke + Disconnect" (also signs out every session that joined via that code — the per-placement misuse kill switch).)*
+- [x] **Attribution:** *(2026-07-17: joined sessions carry `invite_code_id`; `session_join_success` telemetry carries invite code + label; per-code `use_count` in the admin list. Per-query rollups by code can ride existing telemetry later.)*
+- [x] **Design system applied (2026-07-17):** Thomas's KARL Design System vendored at `design/karl-design-system/`; working rules + org-vs-app identity split documented in `docs/DESIGN_SYSTEM_NOTES.md`. App is now **permanently dark** (toggle removed, `initDarkMode` forces dark, member-host shell dark union-blue). `join.html` rebuilt as the design system's onboarding scene (animated union-blue gradient, Playfair italic "Know your contract." hero, single gold CTA); one tap → guest session → member app auto-opens onboarding for fresh profiles.
+- [ ] **Mobile pass:** member UI audited on a real phone (small viewport, touch targets, citation popovers) — do against the deployed instance in M3/M5 dress rehearsal, including the new join page.
+- [ ] Thomas has HTML sketches for the landing page — not yet in repo (D5); current `join.html` is a clean-room build, swap/merge styling when the sketches land.
+
+## Milestone 3 — Domain + production deployment (~3–5 days, can start in parallel now)
+
+- [ ] **Buy the domain now** (Decision D1 — name TBD). Printed QR codes are permanent; all QR URLs go through short redirect paths (`/j/{code}`) so destinations can be repointed without reprinting.
+- [ ] Provision host (Decision D2) + managed Postgres 16 with pgvector; run migrations to head; enable automated backups + tested restore.
+- [ ] TLS everywhere (session cookie is `secure` on HTTPS only). HSTS on.
+- [ ] Secrets: Gemini API key, session/crypto keys via host secret store — never in repo.
+- [ ] Deploy via `docker-compose.prod.yml`; wire health checks (`/api/health`) + uptime alerting.
+- [ ] Swap the root route: `/` currently redirects to the superadmin surface — replace with the KARL org landing site (Thomas's D5 sketches) before the domain goes live.
+- [ ] Load both contract packs into the production instance under the UFCW Local 7 tenant; seed super-admin and union-admin (adapt `scripts/seed_demo_*.py` — real credentials, not demo).
+- [ ] Set Gemini API spend caps/alerts; confirm platform quotas are tuned for pilot scale (~dozens of members).
+
+## Milestone 4 — Governance & launch readiness (parallel; blocks real members, not dev)
+
+- [ ] Obtain Data Stewardship Council signatures (`legal/DATA-STEWARDSHIP-COUNCIL-SIGNOFF.md`).
+- [ ] Privacy notice on the join page consistent with tracking-preference model (`TrackingPreference`, member choice mode already in the data model — surface it in enrollment).
+- [ ] UFCW Local 7 pilot agreement: who at the local approves the poster, who is the steward contact for escalations KARL flags.
+- [ ] (Not launch-blocking) Michael Meiskey CLA signature for future commercial licensing.
+
+## Milestone 5 — Pilot launch (~2–3 days once M1–M4 done)
+
+- [ ] Generate QR codes (one per placement: break room, union board, steward hand-cards) → distinct invite codes for per-placement attribution.
+- [ ] End-to-end dress rehearsal: fresh phone, scan, join, ask wage + discipline + seniority questions against both contracts, verify citations and escalation language.
+- [ ] Brief stewards; give union-admin a 1-page runbook (revoke a code, read usage, escalate).
+- [ ] Launch. Daily telemetry check first week: query volume per code, guardrail/sentinel events, unanswerable rate, API spend.
+- [ ] Rollback lever: revoking all invite codes + disabling registration closes the front door without taking the service down.
+
+## Sequencing & rough calendar
+
+M0 → (M1 ∥ M3-domain ∥ M4) → M2 → M3-deploy → M5.
+Focused effort: **~3–4 weeks to pilot launch** (mid-August 2026). Critical path is M2 (invite flow) and council signatures (M4).
+
+## Decision Log (update in place)
+
+| # | Decision | Status |
+|---|---|---|
+| D1 | Domain name (and whether root page is org site or straight to join flow) | RESOLVED 2026-07-17 — Thomas owns **karlstewardship.com**. QR URLs use short redirect paths (`https://karlstewardship.com/j/{code}`). Root-page content still open (org site vs join flow). |
+| D2 | Hosting provider (VPS vs PaaS; managed Postgres source) | OPEN |
+| D3 | Contract currency: is a successor to the 2022–2025 agreements in force? | RESOLVED 2026-07-17 — the July 5, 2025 strike-settlement MOA was ratified (Pueblo voted from July 9, 2025); no successor contract book exists. UFCW 7's own contracts page still posts the 2022–2025 Pueblo books + "SW ALB MOA MEAT & RETAIL 2025". So "2022–2025 book as amended by the 2025 MOA" is the correct in-force structure — which the packs model. New terms per signed date table: Pueblo Clerks → 1/22/2028, Pueblo Meat → 2/26/2028. |
+| D4 | Enrollment friction: what's the minimum to join? | RESOLVED 2026-07-17 per Thomas — **zero sign-in**: scanning a QR and tapping Start creates an anonymous guest member session (per-scan guest identity keeps quotas/tracking-preferences per-member). Misuse lever: per-code revoke, plus "Revoke + Disconnect" which also signs out every session that joined through that code. Credentialed join kept as a dormant endpoint for a future account-claim flow. |
+| D5 | Landing-page HTML sketches from Thomas | CLARIFIED 2026-07-17 — the sketches are the **root site** (what you see at karlstewardship.com *without* a QR code), i.e. the KARL org landing page, not the join flow. Still to land in repo. Until then, note: `/` currently redirects to the superadmin surface — must be swapped to the org site (or a neutral page) before production launch (added to M3). |

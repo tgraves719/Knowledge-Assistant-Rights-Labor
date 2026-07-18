@@ -1,23 +1,23 @@
 {
   "schema_version": "moa_effective_eval_v1",
   "dataset_schema_version": "moa_effective_test_v2_deep",
-  "timestamp_utc": "2026-03-09T10:32:21.893581+00:00",
-  "test_file": "C:\\Projects\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_test.json",
+  "timestamp_utc": "2026-07-17T20:06:14.832279+00:00",
+  "test_file": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\test_set\\moa_effective_deep_test.json",
   "n_results": 8,
   "bm25_only": true,
   "overall": {
-    "passed": 17,
+    "passed": 16,
     "total": 18,
-    "pass_rate": 0.9444,
-    "citation_hit_rate": 1.0,
-    "source_type_match_rate": 1.0,
+    "pass_rate": 0.8889,
+    "citation_hit_rate": 0.9444,
+    "source_type_match_rate": 0.9091,
     "intent_match_rate": 1.0
   },
   "by_contract": {
     "local7_safeway_pueblo_clerks_2022": {
-      "passed": 17,
+      "passed": 16,
       "total": 18,
-      "pass_rate": 0.9444
+      "pass_rate": 0.8889
     }
   },
   "results": [
@@ -42,7 +42,7 @@
       "expected_rank": 2,
       "citation_hit": true,
       "expected_keywords": [
-        "January 16, 2027"
+        "January 22, 2028"
       ],
       "min_expected_keyword_hits": 1,
       "best_expected_keyword_hits": 1,
@@ -81,7 +81,7 @@
       "expected_rank": 2,
       "citation_hit": true,
       "expected_keywords": [
-        "January 16, 2027"
+        "January 22, 2028"
       ],
       "min_expected_keyword_hits": 1,
       "best_expected_keyword_hits": 1,
@@ -192,29 +192,29 @@
         "Article 7, Section 14, Subsection g (COURTESY CLERK DUTIES)",
         "Article 4, Section 9",
         "Article 16, Section 36",
-        "Article 15, Section 34"
+        "Article 16, Section 43"
       ],
-      "expected_rank": 7,
-      "citation_hit": true,
+      "expected_rank": null,
+      "citation_hit": false,
       "expected_keywords": [
         "fifty cents",
         "$0.50"
       ],
       "min_expected_keyword_hits": 1,
-      "best_expected_keyword_hits": 2,
-      "keywords_ok": true,
+      "best_expected_keyword_hits": 0,
+      "keywords_ok": false,
       "forbidden_keywords": [],
       "forbidden_ok": true,
       "expected_source_type": "moa",
-      "source_type_observed": "moa",
-      "source_type_ok": true,
+      "source_type_observed": null,
+      "source_type_ok": false,
       "expected_intent_type": "contract",
       "observed_intent_type": "contract",
       "intent_ok": true,
       "require_no_wage_info": true,
       "wage_info_present": false,
       "wage_info_ok": true,
-      "pass": true
+      "pass": false
     },
     {
       "id": "MOA-CL-NIGHT-03",
@@ -663,7 +663,7 @@
       "citation_hit": true,
       "expected_keywords": [
         "sixty (60) days",
-        "January 16, 2027"
+        "January 22, 2028"
       ],
       "min_expected_keyword_hits": 1,
       "best_expected_keyword_hits": 2,

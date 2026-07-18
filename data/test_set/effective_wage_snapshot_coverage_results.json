@@ -342,12 +342,320 @@
       "wage_effective_dates": [
         "2022-02-27",
         "2023-02-26",
-        "2024-02-25"
+        "2024-02-25",
+        "2025-07-05"
       ],
-      "wage_patch_op_count": 0,
-      "wage_patch_ops": []
+      "wage_patch_op_count": 51,
+      "wage_patch_ops": [
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#7",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "assistant_deli_manager|fixed:na|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#8",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_clerks|hours:0|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#9",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_clerks|hours:520|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#10",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_clerks|hours:1560|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#11",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_clerks|hours:2600|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#12",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_clerks|hours:3640|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#13",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_clerks|hours:4680|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#14",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_clerks|hours:5720|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#15",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_clerks|hours:6760|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#16",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_clerks|hours:7800|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#17",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_manager|fixed:na|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#18",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees|fixed:na|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#19",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "first_cutter|fixed:na|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#20",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "head_meat_cutter|fixed:na|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#21",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_cutters|hours:0|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#22",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_cutters|hours:520|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#23",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_cutters|hours:1560|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#24",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_cutters|hours:2600|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#25",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_cutters|hours:3640|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#26",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_cutters|hours:4680|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#27",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_cutters|hours:5720|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#28",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_cutters|hours:6760|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#29",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_cutters|hours:7800|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#30",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_wrappers|hours:520|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#31",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_wrappers|hours:1560|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#32",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_wrappers|hours:2600|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#33",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_wrappers|hours:3640|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#34",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_wrappers|hours:4680|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#35",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_wrappers|hours:5720|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#36",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_wrappers|hours:6760|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#37",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "meat_wrappers|hours:7800|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#38",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "seafood_clerks|hours:0|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#39",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "seafood_clerks|hours:520|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#40",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "seafood_clerks|hours:1560|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#41",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "seafood_clerks|hours:2600|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#42",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "seafood_clerks|hours:3640|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#43",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "seafood_clerks|hours:4680|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#44",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "seafood_clerks|hours:5720|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#45",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "seafood_clerks|hours:6760|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#46",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "seafood_clerks|hours:7800|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#47",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "seafood_manager|fixed:na|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#48",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "starbucks_clerks|hours:0|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#49",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "starbucks_clerks|hours:520|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#50",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "starbucks_clerks|hours:1560|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#51",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "starbucks_clerks|hours:2600|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#52",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "starbucks_clerks|hours:3640|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#53",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "starbucks_clerks|hours:4680|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#54",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "starbucks_clerks|hours:5720|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#55",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "starbucks_clerks|hours:6760|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#56",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "starbucks_clerks|hours:7800|2024-02-25"
+        },
+        {
+          "op_id": "local7_safeway_moa_2025_07_05#57",
+          "patch_effective_date": "2025-07-05",
+          "patch_id": "local7_safeway_moa_2025_07_05",
+          "target_row_key": "starbucks_lead|fixed:na|2024-02-25"
+        }
+      ]
     }
   ],
   "schema_version": "effective_wage_snapshot_coverage_v1",
-  "timestamp_utc": "2026-03-09T10:32:22.526631+00:00"
+  "timestamp_utc": "2026-07-17T20:06:16.458963+00:00"
 }

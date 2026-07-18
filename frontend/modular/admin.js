@@ -1512,6 +1512,7 @@ async function openUnionWorkspace(unionId, targetSectionId = null) {
         loadSelectedAlerts(),
         loadUnionDebugConfig(),
         loadDashboard(),
+        loadInvites(),
         loadUnionTrackingPolicy(),
         loadPlatformOps(),
         loadPlatformDashboard(),
@@ -2847,5 +2848,92 @@ async function run(fn) {
         window.alert(error.message || String(error));
     }
 }
+
+function inviteStatusBadge(item) {
+    const styles = {
+        active: 'bg-emerald-100 text-emerald-900',
+        revoked: 'bg-rose-100 text-rose-900',
+        expired: 'bg-amber-100 text-amber-900',
+        exhausted: 'bg-slate-200 text-slate-700',
+    };
+    return `<span class="rounded-full ${styles[item.status] || 'bg-slate-100'} px-3 py-1 text-xs font-semibold">${escapeHtml(item.status)}</span>`;
+}
+
+async function loadInvites() {
+    const unionId = requireUnion();
+    const data = await api(`/api/admin/unions/${unionId}/invites`);
+    renderList('invite-list', data.items, (item) => `
+        <div class="rounded-[24px] border border-slate-200 bg-white p-4">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-mono text-base font-bold tracking-wide text-slate-900">${escapeHtml(item.code)}</span>
+                        ${inviteStatusBadge(item)}
+                    </div>
+                    <div class="mt-1 text-sm text-slate-600">${escapeHtml(item.label || 'No label')}</div>
+                    <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-600">
+                        <span class="rounded-full bg-slate-100 px-3 py-1">joined ${item.use_count}${item.max_uses ? ` / ${item.max_uses}` : ''}</span>
+                        ${item.expires_at ? `<span class="rounded-full bg-slate-100 px-3 py-1">expires ${escapeHtml(String(item.expires_at).slice(0, 10))}</span>` : ''}
+                        <span class="rounded-full bg-slate-100 px-3 py-1">${escapeHtml(item.join_path)}</span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" class="copy-invite-link rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-900 hover:bg-slate-100" data-join-path="${escapeHtml(item.join_path)}">Copy Link</button>
+                    ${item.status === 'active' ? `<button type="button" class="revoke-invite rounded-full border border-rose-300 bg-white px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-50" data-invite-id="${item.id}" data-invite-code="${escapeHtml(item.code)}" data-disconnect="false">Revoke</button>` : ''}
+                    ${item.status === 'active' || item.use_count > 0 ? `<button type="button" class="revoke-invite rounded-full border border-rose-400 bg-rose-600 px-3 py-1 text-xs font-semibold text-white hover:bg-rose-700" data-invite-id="${item.id}" data-invite-code="${escapeHtml(item.code)}" data-disconnect="true">Revoke + Disconnect</button>` : ''}
+                </div>
+            </div>
+        </div>
+    `, 'No invite codes yet. Create one per QR placement.');
+    document.querySelectorAll('.copy-invite-link').forEach((button) => {
+        button.addEventListener('click', () => {
+            const url = `${window.location.origin}${button.dataset.joinPath}`;
+            navigator.clipboard?.writeText(url).then(
+                () => { button.textContent = 'Copied!'; window.setTimeout(() => { button.textContent = 'Copy Link'; }, 1500); },
+                () => window.prompt('Copy this join link:', url),
+            );
+        });
+    });
+    document.querySelectorAll('.revoke-invite').forEach((button) => {
+        button.addEventListener('click', () => run(async () => {
+            const disconnect = button.dataset.disconnect === 'true';
+            const message = disconnect
+                ? `Revoke join code ${button.dataset.inviteCode} AND sign out everyone who joined through it? Use this if the QR code is being misused. Members can rejoin through a different active code.`
+                : `Revoke join code ${button.dataset.inviteCode}? Members who already joined stay signed in; the QR placement stops accepting new joins.`;
+            if (!window.confirm(message)) return;
+            const unionIdNow = requireUnion();
+            const result = await api(`/api/admin/unions/${unionIdNow}/invites/${button.dataset.inviteId}/revoke`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ disconnect_sessions: disconnect }),
+            });
+            if (disconnect) {
+                window.alert(`Code revoked. ${result.sessions_disconnected || 0} member session(s) disconnected.`);
+            }
+            await loadInvites();
+        }));
+    });
+}
+
+async function createInvite(event) {
+    event.preventDefault();
+    const unionId = requireUnion();
+    const label = document.getElementById('invite-label').value.trim();
+    const maxUsesRaw = document.getElementById('invite-max-uses').value;
+    const expiresRaw = document.getElementById('invite-expires').value;
+    const payload = { label };
+    if (maxUsesRaw) payload.max_uses = Number(maxUsesRaw);
+    if (expiresRaw) payload.expires_at = `${expiresRaw}T23:59:59`;
+    await api(`/api/admin/unions/${unionId}/invites`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
+    document.getElementById('invite-create-form').reset();
+    await loadInvites();
+}
+
+document.getElementById('refresh-invites')?.addEventListener('click', () => run(loadInvites));
+document.getElementById('invite-create-form')?.addEventListener('submit', (event) => run(() => createInvite(event)));
 
 wire();
