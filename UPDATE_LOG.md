@@ -1,5 +1,49 @@
 # Karl Update Log
 
+## Unreleased - Org Landing Page & Legal Contact Cleanup (July 18, 2026)
+
+### Overview
+
+Landed the public KARL Stewardship org site (Decision D5) as a clean, dependency-free static
+page, and corrected the contact addresses across the legal docs. Advances Milestone 2 (the QR/
+enrollment build) and clears the D5 blocker; the remaining path to 1.0 is deployment (M3) and
+governance sign-off (M4).
+
+### Org landing page (`frontend/org/`)
+
+- Reverse-engineered Thomas's org-site sketch — delivered as a ~908KB proprietary "bundled"
+  HTML export (a runtime bundler reconstructing the page from an embedded template + gzipped
+  asset manifest, loading React from a CDN and fetching data via the GitHub API) — into a clean
+  static page at `frontend/org/karl-stewardship-site.html` (~117KB). Fonts served same-origin
+  from `frontend/org/fonts/` (27 woff2: Inter / JetBrains Mono / Playfair Display); logo at
+  `frontend/org/assets/karl-stewardship-mark.svg`. Dropped the bundler runtime + React/CDN
+  entirely.
+- Rebuilt the one live feature — a GitHub repository file-tree in the CODE section — in vanilla
+  JS. It still fetches the repo tree from `api.github.com` at runtime (the sole external call);
+  folders expand/collapse, files open on GitHub. The contact form composes a `mailto:` draft to
+  `karlstewardship@gmail.com` (client-side handoff; no backend yet).
+- **Sticky top nav** locked to the viewport for always-available navigation; the KARL
+  STEWARDSHIP brand is now a back-to-top link; smooth scrolling with anchor offset so sections
+  land below the bar.
+- **Mobile responsive pass** (the page previously had zero media queries): nav reflows to brand
+  + spaced links, hero scales (110px → clamp), the 4/3/2-column grids collapse to single column,
+  principles cards tighten, footer stacks. Desktop layout unchanged.
+- Minimal footer: single centered "© 2026 KARL STEWARDSHIP".
+- Verified render, fonts, live file-tree, and back-to-top across desktop and mobile viewports
+  over local HTTP with no console errors.
+
+### Legal contact cleanup
+
+- `legal/COMMERCIAL-LICENSE.md`: corrected the commercial-licensing contact from the scrambled
+  `stewardkarlteam@gmail.com` to the canonical `karlstewardship@gmail.com`.
+- `legal/CLA.md`: replaced the Project Steward's personal `tgraves719@gmail.com` with the project
+  address `karlstewardship@gmail.com` (legal identity — full name + Colorado governing law —
+  unchanged). All project-facing contacts now use one consistent address.
+
+### Pilot plan
+
+- `docs/KARL_1_0_PILOT_PLAN.md` Decision D5 marked **LANDED** with implementation notes.
+
 ## Unreleased - Live-Postgres RLS Verification, Licensing Correction & Contributor Governance (July 10, 2026)
 
 ### Overview
