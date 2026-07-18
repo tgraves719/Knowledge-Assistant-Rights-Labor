@@ -21,12 +21,18 @@ import re
 PROV_PATTERN = re.compile(r"PROV\((?P<body>[^)]*(?:\)[^)]*)*?)\)\s*", re.DOTALL)
 
 # A running header/footer like "9 PUEBLO CLERKS 2022-2025": a page number, an
-# all-caps title, and a term year range, alone on a line. Deliberately narrow --
-# real contract lines are mixed case and rarely end in a bare year range, and
-# over-stripping would delete actual contract language.
+# all-caps title, and a term year range.
+#
+# NOT line-anchored, on purpose. Structured section extraction collapses the
+# source's line breaks, so by the time text reaches here the furniture is
+# stranded mid-sentence ("...twenty-four (24) hours or less 9 PUEBLO CLERKS
+# 2022-2025 --- 10 PUEBLO CLERKS 2022-2025 for the involved workweek").
+#
+# Kept narrow by requiring an all-caps run *and* a term year range: contract
+# prose is mixed case, so "The term of this Agreement is 2022-2025" cannot
+# match. Over-stripping here would silently delete terms members rely on.
 PAGE_FURNITURE_PATTERN = re.compile(
-    r"^\s*\d{1,4}\s+[A-Z][A-Z0-9 \-&'/]{3,60}\s+\d{4}\s*[-–—]\s*\d{4}\s*$",
-    re.MULTILINE,
+    r"\s*\d{1,4}\s+[A-Z][A-Z0-9 \-&'/]{3,60}?\s+\d{4}\s*[-–—]\s*\d{4}\s*(?:[-–—]{2,}\s*)?"
 )
 
 _SOURCES_PATTERN = re.compile(r"sources=\[(?P<sources>[^\]]*)\]")
@@ -66,7 +72,7 @@ def extract_provenance(text: str) -> tuple[str, dict]:
         provenance = _parse_prov_body(first.group("body"))
 
     cleaned = PROV_PATTERN.sub(" ", source)
-    cleaned = PAGE_FURNITURE_PATTERN.sub("", cleaned)
+    cleaned = PAGE_FURNITURE_PATTERN.sub(" ", cleaned)
     cleaned = re.sub(r"^\s*[-–—]{3,}\s*$", "", cleaned, flags=re.MULTILINE)
     # Collapse the blank runs left behind, without joining separate paragraphs.
     cleaned = re.sub(r"[ \t]{2,}", " ", cleaned)

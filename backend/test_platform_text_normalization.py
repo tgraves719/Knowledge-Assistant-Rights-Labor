@@ -52,6 +52,26 @@ def test_extract_provenance_strips_running_page_furniture():
     assert "Employees may bid by seniority." in cleaned
 
 
+def test_strips_page_furniture_stranded_mid_sentence():
+    """Structured extraction collapses line breaks before text reaches us.
+
+    By then the running header sits inside a sentence, so a line-anchored rule
+    misses it and the member reads contract language interrupted by page
+    numbers.
+    """
+    text = (
+        "unless the average scheduled hours of all part-time employees is "
+        "twenty-four (24) hours or less 9 PUEBLO CLERKS 2022-2025 --- "
+        "10 PUEBLO CLERKS 2022-2025 for the involved workweek."
+    )
+
+    cleaned, _ = extract_provenance(text)
+
+    assert "PUEBLO CLERKS" not in cleaned
+    assert "2022-2025" not in cleaned
+    assert cleaned.endswith("hours or less for the involved workweek.")
+
+
 def test_extract_provenance_leaves_ordinary_contract_language_alone():
     """The furniture rule must not eat real clauses.
 
