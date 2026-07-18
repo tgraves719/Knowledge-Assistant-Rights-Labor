@@ -31,8 +31,11 @@ PROV_PATTERN = re.compile(r"PROV\((?P<body>[^)]*(?:\)[^)]*)*?)\)\s*", re.DOTALL)
 # Kept narrow by requiring an all-caps run *and* a term year range: contract
 # prose is mixed case, so "The term of this Agreement is 2022-2025" cannot
 # match. Over-stripping here would silently delete terms members rely on.
+# The separator after the page number is optional: the source runs them
+# together ("23PUEBLO CLERKS 2022-2025") often enough that requiring
+# whitespace left furniture in member-visible chunks.
 PAGE_FURNITURE_PATTERN = re.compile(
-    r"\s*\d{1,4}\s+[A-Z][A-Z0-9 \-&'/]{3,60}?\s+\d{4}\s*[-–—]\s*\d{4}\s*(?:[-–—]{2,}\s*)?"
+    r"\s*\d{1,4}\s*[A-Z][A-Z0-9 \-&'/]{3,60}?\s+\d{4}\s*[-–—]\s*\d{4}\s*(?:[-–—]{2,}\s*)?"
 )
 
 _SOURCES_PATTERN = re.compile(r"sources=\[(?P<sources>[^\]]*)\]")
