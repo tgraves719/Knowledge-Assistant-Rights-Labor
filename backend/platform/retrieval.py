@@ -213,12 +213,34 @@ class TenantRetrievalService:
                 section_text = str(section.get("text") or "").strip()
                 if not section_text:
                     continue
+                # Strip provenance BEFORE splitting so every sub-chunk of the
+                # section inherits the anchor; stripping afterwards would leave
+                # the marker at the head of only the first piece and lose the
+                # anchor for the rest.
+                cleaned_text, provenance = extract_provenance(section_text)
+                if not cleaned_text:
+                    continue
                 section_metadata = {
                     **metadata,
                     **{key: value for key, value in section.items() if key != "text"},
+                    **provenance_metadata(provenance),
                     "structure_mode": "legal_structured",
                 }
-                chunk_rows.append((section_text, section_metadata))
+                # A "section" here can be a 50KB slab (the source books have
+                # sections that big). One embedding cannot represent that much
+                # text, and retrieval then cannot discriminate within it —
+                # measured in production as a holiday-premium question
+                # returning scheduling text. Split to the same budget every
+                # other branch uses; siblings share the section metadata and
+                # record their position so citations stay traceable.
+                pieces = self.split_text(cleaned_text)
+                total = len(pieces)
+                for part_index, piece in enumerate(pieces):
+                    piece_metadata = dict(section_metadata)
+                    if total > 1:
+                        piece_metadata["section_part"] = part_index + 1
+                        piece_metadata["section_parts_total"] = total
+                    chunk_rows.append((piece, piece_metadata))
         elif pages:
             for page in pages:
                 page_text = str(page.get("text") or "").strip()

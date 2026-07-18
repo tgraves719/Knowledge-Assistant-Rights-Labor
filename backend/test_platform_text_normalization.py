@@ -155,3 +155,74 @@ def test_ingest_stores_cleaned_text_and_skips_marker_only_chunks():
         assert chunks[0].metadata_json["anchor_id"] == "a10_s25_p2"
         # chunk_index must stay contiguous after the skip.
         assert chunks[0].chunk_index == 0
+
+
+def test_oversize_structured_sections_are_split_and_share_the_anchor():
+    """A 50KB section must not become one chunk.
+
+    One embedding cannot represent that much text, so retrieval finds the
+    right region but cannot find the right passage inside it -- measured in
+    production as a holiday-premium question answered with scheduling text.
+    Every piece keeps the section's anchor so citations stay traceable.
+    """
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+        future=True,
+    )
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+    Base.metadata.create_all(engine)
+
+    retrieval = TenantRetrievalService(embedder=DeterministicTextEmbedder(dimensions=768))
+
+    paragraphs = "\n\n".join(
+        f"Section clause {i}: employees receive benefit number {i} under this article."
+        for i in range(200)
+    )
+    big_section = f"{PROV_LINE}\n\n{paragraphs}"
+
+    with SessionLocal() as db:
+        union = Union(slug="local-7", name="UFCW Local 7", union_local_id="local7")
+        db.add(union)
+        db.flush()
+        document = Document(
+            union_id=union.id,
+            title="clerks.md",
+            contract_id="clerks_2022",
+            storage_key="local-7/clerks.md",
+            content_type="text/markdown",
+            bytes_size=10,
+            status=DocumentStatus.ACTIVE,
+            metadata_json={"ready_for_query": True},
+        )
+        db.add(document)
+        db.flush()
+
+        count = retrieval.ingest_document(
+            db,
+            union_id=union.id,
+            document_id=document.id,
+            text="",
+            structured_sections=[{"text": big_section, "anchor": "kept"}],
+        )
+        db.commit()
+
+        chunks = db.scalars(
+            select(ChunkEmbedding)
+            .where(ChunkEmbedding.document_id == document.id)
+            .order_by(ChunkEmbedding.chunk_index)
+        ).all()
+
+        assert count == len(chunks)
+        assert len(chunks) > 5, "an oversize section must split into many chunks"
+        assert all(len(c.chunk_text) <= retrieval.chunk_size for c in chunks)
+        # Every sibling keeps the section's provenance anchor.
+        assert all(c.metadata_json.get("anchor_id") == "a10_s25_p2" for c in chunks)
+        # Position within the section is recorded for traceability.
+        parts = [c.metadata_json.get("section_part") for c in chunks]
+        assert parts == list(range(1, len(chunks) + 1))
+        assert all(
+            c.metadata_json.get("section_parts_total") == len(chunks) for c in chunks
+        )
+        assert all("PROV(" not in c.chunk_text for c in chunks)
