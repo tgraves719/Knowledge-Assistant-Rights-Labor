@@ -142,15 +142,23 @@ Prints "Hello from Docker!" when working.
 
 ## Phase 3 — Get the code onto the droplet
 
-The deploy branch must be pushed to GitHub first (see the chat thread — this
-needs Thomas's explicit go-ahead, and the repo is public, so pushing publishes
-the work).
+The deploy branch is `test/m2-invite-flow-and-m1-corrections`, pushed to GitHub
+on 2026-07-18. `main` is deliberately still at `4a94fd5` — the pilot runs from
+the branch until it's proven in production, then it gets merged.
 
 ```bash
 karl@droplet$ git clone https://github.com/tgraves719/Knowledge-Assistant-Rights-Labor.git karl
 karl@droplet$ cd karl
-karl@droplet$ git checkout <deploy-branch>
+karl@droplet$ git checkout test/m2-invite-flow-and-m1-corrections
+karl@droplet$ git log --oneline -1
 ```
+
+That last line should print `f707a0d docs: add first-time production deployment
+runbook` (or newer). If it shows `4a94fd5`, the checkout didn't take and you're
+on `main` — re-run the checkout.
+
+Because the app is deployed from a branch, later updates are
+`git pull origin test/m2-invite-flow-and-m1-corrections`, not a bare `git pull`.
 
 ---
 
@@ -344,8 +352,9 @@ docker compose -f docker-compose.prod.yml logs -f
 # Restart after changing .env
 docker compose -f docker-compose.prod.yml up -d
 
-# Deploy new code
-git pull && docker compose -f docker-compose.prod.yml up -d --build
+# Deploy new code (note the explicit branch — the app runs from a branch)
+git pull origin test/m2-invite-flow-and-m1-corrections
+docker compose -f docker-compose.prod.yml up -d --build
 
 # Stop the app (data is safe; it lives in the managed database)
 docker compose -f docker-compose.prod.yml down
