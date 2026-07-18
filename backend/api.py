@@ -6666,9 +6666,13 @@ async def serve_admin_frontend():
     return _render_modular_html("admin.html", inline_script_asset="admin.js")
 
 
-@app.get("/u/{union_slug}/")
-@app.get("/u/{union_slug}/index.html")
+@app.get("/u/{union_slug}/host-shell")
 async def serve_tenant_member_frontend(union_slug: str):
+    """Reference page hosting the embeddable widget (see /embed/karl-member.js).
+
+    Members no longer land here: /u/{slug}/ serves the app full-page. The
+    widget-in-iframe shell exists for unions embedding KARL on their own
+    sites, and this route remains as a live example of that integration."""
     container = getattr(app.state, "platform", None)
     if container is None or container.session_factory is None:
         return _render_frontend_unavailable(
@@ -6746,6 +6750,8 @@ async def serve_join_page(join_code: str):
 
 
 @app.get("/embed/member-frame/{union_slug}")
+@app.get("/u/{union_slug}/")
+@app.get("/u/{union_slug}/index.html")
 @app.get("/u/{union_slug}/app")
 async def serve_tenant_member_embed_frame(union_slug: str, request: Request):
     container = getattr(app.state, "platform", None)
@@ -6776,7 +6782,9 @@ async def serve_tenant_member_embed_frame(union_slug: str, request: Request):
     global_config = {
         "apiBase": api_base,
         "routeContext": {"mode": "tenant_member", "unionSlug": union.slug},
-        "embedMode": True,
+        # Embed mode only when actually iframed via the widget; the direct
+        # member routes serve the same app full-page.
+        "embedMode": request.url.path.startswith("/embed/"),
         "embedTheme": embed_theme,
         "debug": query.get("debug") == "1",
     }

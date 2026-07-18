@@ -461,10 +461,18 @@ def test_tenant_routes_and_bootstrap_resolve_demo_union(tmp_path):
         assert payload["auth_policy"]["member_login_required"] is True
         assert payload["branding"]["theme_color"] == "#123456"
 
+        # /u/{slug}/ serves the full app directly (not the widget shell): the
+        # widget-in-iframe wrapper is for third-party embedding, and wrapping
+        # our own front door in it cost members the full-page experience.
         member_page = client.get("/u/demo-local/")
         assert member_page.status_code == 200
-        assert "karl-member-widget" in member_page.text
-        assert "/static/embed/karl-member.js" in member_page.text
+        assert "karl-member-widget" not in member_page.text
+        assert '"embedMode": false' in member_page.text or "__KARL_EMBED_MODE__ = false" in member_page.text
+
+        host_shell = client.get("/u/demo-local/host-shell")
+        assert host_shell.status_code == 200
+        assert "karl-member-widget" in host_shell.text
+        assert "/static/embed/karl-member.js" in host_shell.text
 
         member_frame = client.get("/embed/member-frame/demo-local")
         assert member_frame.status_code == 200
