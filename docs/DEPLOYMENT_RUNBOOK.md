@@ -287,12 +287,16 @@ karlstewardship.com, www.karlstewardship.com {
 
     header {
         # HSTS: tells browsers to only ever use HTTPS for this domain.
-        # Only enable once HTTPS is confirmed working — it is sticky and
-        # browsers will refuse plain HTTP for max-age afterwards.
+        # Add this only AFTER confirming HTTPS works — it is sticky, and
+        # browsers will refuse plain HTTP for max-age afterwards. Deploy the
+        # block without this line first, verify, then add it and reload.
         Strict-Transport-Security "max-age=31536000; includeSubDomains"
-        X-Content-Type-Options "nosniff"
-        X-Frame-Options "DENY"
-        Referrer-Policy "strict-origin-when-cross-origin"
+        # ">" REPLACES rather than appends. The app already sets these three
+        # itself; without ">" every response carries two copies, and a
+        # duplicated X-Frame-Options can be treated as invalid.
+        >X-Content-Type-Options "nosniff"
+        >X-Frame-Options "DENY"
+        >Referrer-Policy "strict-origin-when-cross-origin"
     }
 }
 ```
