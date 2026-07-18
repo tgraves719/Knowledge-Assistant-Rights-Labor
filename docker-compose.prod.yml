@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: pgvector/pgvector:pg16
@@ -7,7 +5,8 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-karl}
       POSTGRES_USER: ${POSTGRES_USER:-karl}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      # No insecure fallback: compose refuses to start until this is set in .env.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -29,16 +28,34 @@ services:
       python -m uvicorn backend.api:app --host 0.0.0.0 --port 8000"
     environment:
       PYTHONPATH: /app
-      KARL_POSTGRES_URL: postgresql+psycopg://${POSTGRES_USER:-karl}:${POSTGRES_PASSWORD:-change-me}@postgres:5432/${POSTGRES_DB:-karl}
+      KARL_POSTGRES_URL: postgresql+psycopg://${POSTGRES_USER:-karl}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/${POSTGRES_DB:-karl}
+      # Schema + RLS are owned by alembic migrations (through head); the app-startup
+      # paths stay disabled so prod never diverges from the migration lineage.
       KARL_AUTO_CREATE_TABLES: "false"
       KARL_APPLY_RLS_POLICIES: "false"
       KARL_STORAGE_ROOT: /var/lib/karl/storage
-      KARL_ALLOWED_ORIGINS: ${KARL_ALLOWED_ORIGINS:-http://localhost:8000}
-      KARL_SECRET_ENCRYPTION_KEY: ${KARL_SECRET_ENCRYPTION_KEY:-change-me}
+      # Real origin(s) of the deployed site, e.g. https://karlstewardship.com
+      KARL_ALLOWED_ORIGINS: ${KARL_ALLOWED_ORIGINS:?set KARL_ALLOWED_ORIGINS in .env}
+      KARL_SECRET_ENCRYPTION_KEY: ${KARL_SECRET_ENCRYPTION_KEY:?set KARL_SECRET_ENCRYPTION_KEY in .env}
+      # Answer generation (Gemini) — without this the app boots but cannot answer.
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?set GEMINI_API_KEY in .env}
+      # Embeddings MUST be a real backend in production. The code default is
+      # "deterministic" (a test stub) which silently destroys retrieval quality.
+      KARL_EMBEDDING_BACKEND: ${KARL_EMBEDDING_BACKEND:-google}
+      KARL_GOOGLE_EMBEDDING_MODEL: ${KARL_GOOGLE_EMBEDDING_MODEL:-text-embedding-004}
+      KARL_GOOGLE_EMBEDDING_API_KEY: ${KARL_GOOGLE_EMBEDDING_API_KEY:?set KARL_GOOGLE_EMBEDDING_API_KEY in .env (may equal GEMINI_API_KEY)}
     ports:
-      - "8000:8000"
+      # Loopback by default: the public face is the TLS reverse proxy, not uvicorn.
+      # Override KARL_BIND_ADDRESS=0.0.0.0 only if the proxy runs on another host.
+      - "${KARL_BIND_ADDRESS:-127.0.0.1}:8000:8000"
     volumes:
       - uploads_data:/var/lib/karl/storage
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
   postgres_data:

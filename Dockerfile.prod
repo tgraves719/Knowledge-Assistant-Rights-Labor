@@ -26,6 +26,14 @@ COPY data/ ./data/
 COPY frontend/ ./frontend/
 COPY README.md ./README.md
 
+# Run as a non-root user; pre-create the storage root so the named volume
+# inherits writable ownership on first mount.
+RUN useradd --create-home --uid 10001 karl \
+    && mkdir -p /var/lib/karl/storage \
+    && chown -R karl:karl /var/lib/karl /app
+
+USER karl
+
 EXPOSE 8000
 
 CMD ["python", "-m", "uvicorn", "backend.api:app", "--host", "0.0.0.0", "--port", "8000"]
