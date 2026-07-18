@@ -73,7 +73,7 @@ New capability; everything else hangs off it.
 - [ ] TLS everywhere (session cookie is `secure` on HTTPS only). HSTS on.
 - [ ] Secrets: Gemini API key, session/crypto keys via host secret store — never in repo.
 - [ ] Deploy via `docker-compose.prod.yml`; wire health checks (`/api/health`) + uptime alerting.
-- [ ] Swap the root route: `/` currently redirects to the superadmin surface — replace with the KARL org landing site (Thomas's D5 sketches) before the domain goes live.
+- [x] Swap the root route: `/` now serves the KARL org landing site (`backend/api.py` `serve_frontend`), falling back to the `/karl/` superadmin redirect only if the page file is missing. Added same-origin `/fonts/{path}` and `/assets/{path}` routes (traversal-guarded) so the page's web fonts + logo load through the app, not just standalone. *(2026-07-18: verified end-to-end against a live app boot — `/` 200 text/html, logo 200 image/svg+xml, fonts 200 font/woff2, traversal + missing-file both 404; page renders with all 3 font families + logo, no console errors.)*
 - [ ] Load both contract packs into the production instance under the UFCW Local 7 tenant; seed super-admin and union-admin (adapt `scripts/seed_demo_*.py` — real credentials, not demo).
 - [ ] Set Gemini API spend caps/alerts; confirm platform quotas are tuned for pilot scale (~dozens of members).
 

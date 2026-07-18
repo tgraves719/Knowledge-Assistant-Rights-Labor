@@ -6514,7 +6514,19 @@ async def serve_modular_asset(asset_path: str):
     return FileResponse(asset_file)
 
 
-ORG_SITE_PATH = Path(__file__).parent.parent / "frontend" / "org" / "karl-stewardship-site.html"
+ORG_SITE_DIR = FRONTEND_DIR / "org"
+ORG_SITE_PATH = ORG_SITE_DIR / "karl-stewardship-site.html"
+
+
+def _safe_org_asset_path(asset_path: str) -> Path | None:
+    candidate = (ORG_SITE_DIR / asset_path).resolve()
+    try:
+        candidate.relative_to(ORG_SITE_DIR.resolve())
+    except ValueError:
+        return None
+    if not candidate.exists() or not candidate.is_file():
+        return None
+    return candidate
 
 
 @app.get("/")
@@ -6528,6 +6540,24 @@ async def serve_frontend():
     if ORG_SITE_PATH.exists():
         return HTMLResponse(content=ORG_SITE_PATH.read_text(encoding="utf-8"))
     return RedirectResponse(url="/karl/", status_code=307)
+
+
+@app.get("/fonts/{asset_path:path}")
+async def serve_org_font(asset_path: str):
+    """Serve the org site's same-origin web fonts (referenced as fonts/*.woff2)."""
+    asset_file = _safe_org_asset_path(f"fonts/{asset_path}")
+    if asset_file is None:
+        raise HTTPException(status_code=404, detail="Font not found.")
+    return FileResponse(asset_file, media_type="font/woff2")
+
+
+@app.get("/assets/{asset_path:path}")
+async def serve_org_asset(asset_path: str):
+    """Serve the org site's static assets (e.g. the stewardship logo mark)."""
+    asset_file = _safe_org_asset_path(f"assets/{asset_path}")
+    if asset_file is None:
+        raise HTTPException(status_code=404, detail="Asset not found.")
+    return FileResponse(asset_file)
 
 
 @app.get("/modular")
