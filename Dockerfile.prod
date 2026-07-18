@@ -18,8 +18,12 @@ COPY requirements/ ./requirements/
 COPY alembic.ini ./alembic.ini
 COPY alembic/ ./alembic/
 
+# Production runtime profile only. requirements/full.txt is the local
+# engineering profile — it resolves to eval.txt and would ship ragas, datasets
+# and the torch-backed ML stack into the production image for code that never
+# runs on the platform path. See requirements/prod.txt for what is omitted.
 RUN python -m pip install --upgrade pip setuptools wheel \
-    && python -m pip install --prefer-binary -r requirements/full.txt
+    && python -m pip install --prefer-binary -r requirements/prod.txt
 
 COPY backend/ ./backend/
 COPY data/ ./data/

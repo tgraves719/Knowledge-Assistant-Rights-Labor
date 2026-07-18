@@ -1,0 +1,49 @@
+# KARL production runtime profile.
+#
+# Deliberately NOT `-r base.txt`. Production runs the platform path, where
+# embeddings and generation are HTTP calls to Google — there is no local model
+# inference — so the heavy ML stack is dead weight in the image.
+#
+# Omitted relative to base.txt, and why:
+#
+#   chromadb, sentence-transformers, transformers
+#       Only used by the legacy contract pipeline in
+#       backend/retrieval/vector_store.py, which imports them lazily and is
+#       gated behind KARL_LEGACY_CONTRACT_PIPELINE_ENABLED (default off).
+#       The pilot serves answers through the platform path on pgvector.
+#       If you ever enable the legacy pipeline in production, install
+#       base.txt instead — the lazy import will otherwise fail at runtime.
+#
+#   llm-guard
+#       Optional guardrail scanners behind KARL_ENABLE_LLM_GUARD (default
+#       off); pulls transformers + torch. GuardrailService wraps the import
+#       in try/except and falls back to its deterministic regex scanners.
+#       NOTE: that fallback is SILENT. Setting KARL_ENABLE_LLM_GUARD=true on
+#       an image built from this file does not error — it quietly runs with
+#       regex guardrails only. Use base.txt if you want the model scanners.
+#
+# Kept: openai is a small pure-python SDK used by get_openai_client() for
+# unions configured with an OpenAI-compatible inference provider. No bloat.
+
+# FastAPI backend
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+pydantic==2.10.3
+python-multipart==0.0.18
+
+# Vector storage (pgvector SQLAlchemy adapter; the server-side extension lives
+# in the managed database)
+pgvector==0.3.6
+
+# LLM integration
+# backend/retrieval/reranker.py uses the newer Google GenAI SDK
+google-genai>=1.0.0
+openai==1.58.1
+
+# Data / HTTP utilities
+python-dotenv==1.0.1
+httpx==0.28.1
+SQLAlchemy==2.0.36
+alembic==1.14.0
+psycopg[binary]==3.2.3
+cryptography==44.0.0

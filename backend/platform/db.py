@@ -140,10 +140,18 @@ def create_session_factory(settings: PlatformSettings) -> tuple[Engine | None, s
     if not settings.db_enabled:
         return None, None
 
+    # Pool sizing applies only to real server-backed pools. SQLite (used by the
+    # test suite) gets SingletonThreadPool/StaticPool, which reject max_overflow.
+    pool_kwargs: dict[str, int] = {}
+    if not settings.postgres_url.startswith("sqlite"):
+        pool_kwargs["pool_size"] = settings.db_pool_size
+        pool_kwargs["max_overflow"] = settings.db_max_overflow
+
     engine = create_engine(
         settings.postgres_url,
         future=True,
         pool_pre_ping=True,
+        **pool_kwargs,
     )
     return engine, sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
 

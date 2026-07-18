@@ -70,6 +70,10 @@ class PlatformSettings:
     member_session_idle_seconds: int = 604800
     union_admin_session_idle_seconds: int = 259200
     super_admin_session_idle_seconds: int = 3600
+    # Connection budget PER PROCESS (pool_size + max_overflow = 10 by default).
+    # Defaulted so existing callers that build settings directly keep working.
+    db_pool_size: int = 5
+    db_max_overflow: int = 5
 
     @property
     def db_enabled(self) -> bool:
@@ -82,6 +86,14 @@ def get_platform_settings() -> PlatformSettings:
     return PlatformSettings(
         project_root=project_root,
         postgres_url=os.getenv("KARL_POSTGRES_URL", "").strip(),
+        # Pinned rather than left to SQLAlchemy's defaults (5 + 10 overflow = 15
+        # per process), because managed Postgres plans cap connections low — the
+        # pilot's tier allows 22. These defaults cap one process at 10, leaving
+        # room for alembic, an admin psql session, and provider overhead.
+        # NOTE: this budget is PER PROCESS. Raising uvicorn's worker count
+        # multiplies it; keep workers at 1 or lower these to match.
+        db_pool_size=max(1, int(os.getenv("KARL_DB_POOL_SIZE", "5"))),
+        db_max_overflow=max(0, int(os.getenv("KARL_DB_MAX_OVERFLOW", "5"))),
         auto_create_tables=_as_bool(os.getenv("KARL_AUTO_CREATE_TABLES"), default=False),
         apply_rls_policies=_as_bool(os.getenv("KARL_APPLY_RLS_POLICIES"), default=False),
         allowed_origins=_split_csv(os.getenv("KARL_ALLOWED_ORIGINS")) or ["*"],
