@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from backend.platform.embeddings import DeterministicTextEmbedder, TextEmbedder
 from backend.platform.models import ChunkEmbedding, Document, DocumentStatus
+from backend.platform.text_normalization import extract_provenance, provenance_metadata
 
 
 @dataclass
@@ -234,7 +235,16 @@ class TenantRetrievalService:
             for chunk_text in self.split_text(text):
                 chunk_rows.append((chunk_text, dict(metadata)))
 
-        for index, (chunk_text, chunk_metadata) in enumerate(chunk_rows):
+        index = 0
+        for raw_chunk_text, chunk_metadata in chunk_rows:
+            # Strip machine annotations before the text is stored, embedded, or
+            # shown. Doing it here covers every branch above, and means the
+            # embedding is computed over what the member actually reads rather
+            # than over marker noise.
+            chunk_text, provenance = extract_provenance(raw_chunk_text)
+            if not chunk_text:
+                # The chunk was nothing but markers/page furniture.
+                continue
             db.add(
                 ChunkEmbedding(
                     union_id=union_id,
@@ -243,6 +253,7 @@ class TenantRetrievalService:
                     chunk_text=chunk_text,
                     metadata_json={
                         **chunk_metadata,
+                        **provenance_metadata(provenance),
                         "content_length": len(chunk_text),
                         "embedding_backend": self.embedder.descriptor.backend,
                         "embedding_model": self.embedder.descriptor.model_name,
@@ -250,8 +261,9 @@ class TenantRetrievalService:
                     embedding=self.embedder.embed(chunk_text),
                 )
             )
+            index += 1
         db.flush()
-        return len(chunk_rows)
+        return index
 
     def search(
         self,
