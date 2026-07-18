@@ -6191,6 +6191,32 @@ async def get_section(
 _rate_limit_until = 0
 
 
+_GEMINI_THINKING_BUDGET = 512
+
+
+def _gemini_generation_config(system_prompt: str, max_output_tokens: Optional[int]):
+    """Build a generation config that accounts for thinking tokens.
+
+    gemini-2.5-pro is a thinking model, and its thoughts draw from
+    max_output_tokens. With the platform default of 420 the model spent the
+    entire budget thinking and returned an EMPTY response.text -- which the
+    caller read as "synthesis unavailable" and silently downgraded every
+    member answer to the deterministic chunk-concatenation fallback. Seen in
+    production as raw contract fragments where a synthesized answer should be.
+
+    The thinking budget is bounded and added on top of the answer budget, so
+    the verbosity setting keeps meaning "visible answer length".
+    """
+    answer_budget = max_output_tokens or 220
+    return _genai_sdk.types.GenerateContentConfig(
+        system_instruction=system_prompt,
+        max_output_tokens=answer_budget + _GEMINI_THINKING_BUDGET,
+        thinking_config=_genai_sdk.types.ThinkingConfig(
+            thinking_budget=_GEMINI_THINKING_BUDGET
+        ),
+    )
+
+
 async def generate_response(
     question: str,
     system_prompt: str,
@@ -6305,10 +6331,7 @@ async def generate_response(
                     provider_client.models.generate_content,
                     model=provider_config.model_name or LLM_MODEL,
                     contents=question,
-                    config=_genai_sdk.types.GenerateContentConfig(
-                        system_instruction=system_prompt,
-                        max_output_tokens=max_output_tokens or 220,
-                    ),
+                    config=_gemini_generation_config(system_prompt, max_output_tokens),
                 )
                 return (response.text, {"detail": f"provider=gemini model={provider_config.model_name or LLM_MODEL}"}) if return_meta else response.text
             elif gemini_client:
@@ -6316,10 +6339,7 @@ async def generate_response(
                     gemini_client.models.generate_content,
                     model=LLM_MODEL,
                     contents=question,
-                    config=_genai_sdk.types.GenerateContentConfig(
-                        system_instruction=system_prompt,
-                        max_output_tokens=max_output_tokens or 220,
-                    ),
+                    config=_gemini_generation_config(system_prompt, max_output_tokens),
                 )
                 return (response.text, {"detail": f"provider=gemini model={LLM_MODEL}"}) if return_meta else response.text
             fallback = generate_fallback_response(chunks, question=question)

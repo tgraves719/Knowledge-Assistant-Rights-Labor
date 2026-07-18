@@ -1004,7 +1004,13 @@ def test_platform_query_prefers_article_cluster_over_single_noisy_section(tmp_pa
         api.retriever = prior_retriever
 
 
-def test_platform_query_path_abstains_on_weak_irrelevant_match(tmp_path):
+def test_platform_query_path_abstains_on_weak_irrelevant_match(tmp_path, monkeypatch):
+    # This test exercises the deterministic no-synthesis path. Without
+    # patching the provider away it calls the real Gemini API whenever the
+    # dev .env carries a key -- it previously passed only because a
+    # thinking-budget bug made real synthesis return empty text.
+    monkeypatch.setattr(api, "get_genai_client", lambda: None)
+    monkeypatch.setattr(api, "get_union_inference_config", lambda *_a, **_k: None)
     platform = _build_platform(tmp_path)
     prior_platform = getattr(api.app.state, "platform", None)
     prior_retriever = api.retriever
@@ -1055,7 +1061,13 @@ def test_platform_query_path_abstains_on_weak_irrelevant_match(tmp_path):
         api.retriever = prior_retriever
 
 
-def test_platform_query_path_refuses_prompt_exfiltration(tmp_path):
+def test_platform_query_path_refuses_prompt_exfiltration(tmp_path, monkeypatch):
+    # This test exercises the deterministic no-synthesis path. Without
+    # patching the provider away it calls the real Gemini API whenever the
+    # dev .env carries a key -- it previously passed only because a
+    # thinking-budget bug made real synthesis return empty text.
+    monkeypatch.setattr(api, "get_genai_client", lambda: None)
+    monkeypatch.setattr(api, "get_union_inference_config", lambda *_a, **_k: None)
     platform = _build_platform(tmp_path)
     prior_platform = getattr(api.app.state, "platform", None)
     prior_retriever = api.retriever
