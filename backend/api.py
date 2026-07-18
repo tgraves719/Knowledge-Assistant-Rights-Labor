@@ -6542,6 +6542,17 @@ async def serve_frontend():
     return RedirectResponse(url="/karl/", status_code=307)
 
 
+ORG_PRIVACY_PATH = ORG_SITE_DIR / "privacy.html"
+
+
+@app.get("/privacy")
+async def serve_privacy_policy():
+    """Serve the public KARL Stewardship privacy policy (org-site style)."""
+    if ORG_PRIVACY_PATH.exists():
+        return HTMLResponse(content=ORG_PRIVACY_PATH.read_text(encoding="utf-8"))
+    raise HTTPException(status_code=404, detail="Privacy policy not found.")
+
+
 @app.get("/fonts/{asset_path:path}")
 async def serve_org_font(asset_path: str):
     """Serve the org site's same-origin web fonts (referenced as fonts/*.woff2)."""

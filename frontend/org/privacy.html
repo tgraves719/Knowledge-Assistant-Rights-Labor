@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — KARL Stewardship</title>
+<meta name="description" content="How KARL handles your data: anonymous by default, never shared with your employer, and always under your control.">
+<!-- DRAFT v0.1 — plain-language policy pending Thomas + legal review before the site goes live. -->
+<style>
+  @font-face { font-family:'JetBrains Mono'; font-style:normal; font-weight:100 800; font-display:swap;
+    src:url("/fonts/50335bf0-2d58-4ade-bb5f-97fa2b479b6d.woff2") format('woff2');
+    unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+2074,U+20AC,U+2122,U+2212,U+2215; }
+  @font-face { font-family:'Inter'; font-style:normal; font-weight:100 900; font-display:swap;
+    src:url("/fonts/9f2de9db-582d-42f8-b932-403b137822ed.woff2") format('woff2');
+    unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+2074,U+20AC,U+2122,U+2212,U+2215; }
+  @font-face { font-family:'Playfair Display'; font-style:italic; font-weight:400 700; font-display:swap;
+    src:url("/fonts/bb7bae38-b286-45e4-9eae-e37575242f81.woff2") format('woff2');
+    unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+2074,U+20AC,U+2122,U+2212,U+2215; }
+
+  :root {
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --serif:'Playfair Display',Georgia,serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; scroll-padding-top:76px; }
+  body {
+    background:#ffffff; color:#050505; font-family:var(--sans); line-height:1.7;
+    background-image:linear-gradient(rgba(0,0,0,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.035) 1px,transparent 1px);
+    background-size:44px 44px;
+  }
+  a { color:#050505; }
+
+  .nav {
+    position:sticky; top:0; z-index:50; background:#ffffff;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 44px; border-bottom:1px solid #050505;
+  }
+  .brand { display:flex; align-items:center; gap:12px; color:#050505; text-decoration:none; }
+  .brand img { width:32px; height:32px; display:block; flex-shrink:0; }
+  .brand span { font-family:var(--mono); font-size:15px; font-weight:700; letter-spacing:.14em; }
+  .nav .back { font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:#555; text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px; }
+  .nav .back:hover { border-bottom-color:#111; }
+
+  .wrap { max-width:760px; margin:0 auto; padding:64px 44px 44px; }
+  .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.4em; color:#888; margin-bottom:18px; }
+  h1 { font-family:var(--serif); font-style:italic; font-weight:600; font-size:56px; line-height:1.05; letter-spacing:-.01em; margin-bottom:18px; }
+  .meta { font-family:var(--mono); font-size:12px; color:#888; letter-spacing:.02em; margin-bottom:14px; }
+  .lede { font-size:18px; color:#333; margin-bottom:40px; }
+
+  section { border-top:1px solid #e5e5e5; padding:30px 0; }
+  section h2 { font-family:var(--mono); font-size:13px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:#050505; margin-bottom:14px; }
+  section p { font-size:16px; color:#333; margin-bottom:12px; }
+  section p:last-child { margin-bottom:0; }
+  section strong { color:#050505; }
+  ul { list-style:none; margin:6px 0 0; }
+  ul li { font-size:16px; color:#333; padding-left:22px; position:relative; margin-bottom:10px; }
+  ul li::before { content:"—"; position:absolute; left:0; color:#888; }
+  a.inline { border-bottom:1px solid #bbb; text-decoration:none; }
+  a.inline:hover { border-bottom-color:#050505; }
+
+  .footer {
+    display:flex; align-items:center; justify-content:center; gap:20px;
+    padding:24px 44px; border-top:1px solid #050505;
+    font-family:var(--mono); font-size:11px; color:#888; letter-spacing:.04em;
+  }
+  .footer a { color:#888; text-decoration:none; border-bottom:1px solid transparent; padding-bottom:1px; }
+  .footer a:hover { color:#050505; border-bottom-color:#050505; }
+
+  @media (max-width:820px) {
+    html { scroll-padding-top:64px; }
+    .nav { padding:14px 20px; }
+    .wrap { padding:44px 20px 36px; }
+    h1 { font-size:38px; }
+    .footer { flex-direction:column; gap:10px; padding:22px 20px; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="/" class="brand">
+    <img src="/assets/karl-stewardship-mark.svg" alt="KARL Stewardship">
+    <span>KARL&nbsp;STEWARDSHIP</span>
+  </a>
+  <a href="/" class="back">← BACK TO SITE</a>
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">PRIVACY POLICY</div>
+  <h1>Your data is yours.</h1>
+  <div class="meta">Version 0.1 (draft) · Last updated July 18, 2026</div>
+  <p class="lede">KARL is built for union members, not employers. This page explains, in plain language,
+    what KARL keeps, what it never does, and the control you have over your own information.</p>
+
+  <section>
+    <h2>Who runs KARL</h2>
+    <p>Your union operates KARL for its members. <strong>KARL Stewardship</strong> maintains the software
+      and serves it to your union. Each union runs its own isolated instance — your data is never mixed
+      with another union's, and no other union can see it.</p>
+  </section>
+
+  <section>
+    <h2>No account, no name</h2>
+    <p>Opening KARL from a QR code or link your union gives you creates an <strong>anonymous session</strong>.
+      No sign-up, no name, no email, no password. KARL does not ask for, and does not store, your identity.</p>
+  </section>
+
+  <section>
+    <h2>Never shared with your employer</h2>
+    <p>KARL works for your union, full stop. Your questions and your usage are <strong>never shared with
+      management</strong>. KARL has no employer dashboards, no productivity scoring, and no surveillance or
+      anti-organizing features — by design and by policy.</p>
+  </section>
+
+  <section>
+    <h2>What KARL keeps</h2>
+    <p>By default, KARL keeps only <strong>anonymized</strong> operational information needed to keep the
+      service working and to fix problems. Your conversations with KARL are <strong>not stored by default</strong>.</p>
+    <p>If your union chooses to enable additional, optional analytics to improve the experience, that data is
+      anonymized — and you can turn it off for yourself at any time.</p>
+  </section>
+
+  <section>
+    <h2>Your choices and rights</h2>
+    <ul>
+      <li>Change what KARL keeps, or turn optional tracking off entirely, in <strong>Settings</strong>.</li>
+      <li>Delete your data at any time — the option lives in your member Settings.</li>
+      <li>Ask a question without your identity being attached to it.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Retention and security</h2>
+    <p>Conversations are not retained by default. Limited technical and session information is kept only as
+      long as needed to run the service securely, then purged on a regular schedule.</p>
+    <p>Your data lives in your union's isolated store, protected by row-level access controls so that only
+      you and your union's authorized administrators can reach it.</p>
+  </section>
+
+  <section>
+    <h2>Changes to this policy</h2>
+    <p>We will update this page as KARL evolves. The version and date at the top always reflect the current
+      policy. For the underlying governance and technical detail, see the project's
+      <a class="inline" href="https://github.com/tgraves719/Knowledge-Assistant-Rights-Labor" target="_blank" rel="noopener">open-source repository</a>.</p>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p>Questions about privacy? Email
+      <a class="inline" href="mailto:karlstewardship@gmail.com">karlstewardship@gmail.com</a>.
+      Members: your steward is always your first resource for anything about your rights at work.</p>
+  </section>
+</div>
+
+<div class="footer">
+  <span>© 2026 KARL STEWARDSHIP</span>
+  <a href="/">Home</a>
+</div>
+
+</body>
+</html>
