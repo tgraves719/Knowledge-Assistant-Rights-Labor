@@ -1216,3 +1216,40 @@ def test_structured_article_expansion_window_includes_a_deep_hit(tmp_path):
         # excerpt to ~900 chars from the front, so a hit buried mid-window
         # would be truncated away again.
         assert "CLASSIFICATION 10" in context_text[:200]
+
+
+def test_article_group_rerank_never_deposes_the_best_individual_chunk():
+    """The group score rewards breadth (sum of top-3 sims + 0.35/section), so
+    an article with three mediocre hits could bury the outright best match —
+    live, Section 121 'Discharge for Just Cause' lost to three Article 27
+    seniority chunks. The single best chunk must stay first: it drives the
+    context expansion and leads the synthesis prompt."""
+    from backend.platform.retrieval import RetrievedChunk
+
+    def _chunk(index, article, section, similarity, text):
+        return RetrievedChunk(
+            chunk_id=f"c{index}",
+            document_id="doc-1",
+            chunk_index=index,
+            content=text,
+            similarity=similarity,
+            metadata={
+                "structure_mode": "legal_structured",
+                "article_num": article,
+                "section_num": section,
+                "article_title": f"Article {article}",
+                "section_title": text[:40],
+            },
+        )
+
+    best = _chunk(0, "43", "121", 0.65, "Discharge for Just Cause. No employee shall be discharged except for just cause.")
+    crowd = [
+        _chunk(1, "27", "66", 0.59, "Termination of Seniority."),
+        _chunk(2, "27", "73", 0.59, "Demotion for Just Cause."),
+        _chunk(3, "27", "68", 0.54, "Definition of Full-Time Employee."),
+    ]
+    reranked = api._rerank_platform_structured_articles(
+        "Can I be fired without a reason?", [best, *crowd], limit=3
+    )
+    assert reranked[0] is best
+    assert len(reranked) == 3

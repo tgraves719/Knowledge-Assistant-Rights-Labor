@@ -1477,7 +1477,22 @@ def _rerank_platform_structured_articles(query: str, retrieved_chunks: list, *, 
     reranked: list = []
     for _, _, items in ranked_groups:
         reranked.extend(items)
-    return reranked[: max(1, int(limit))]
+    reranked = reranked[: max(1, int(limit))]
+    # The group score rewards breadth: an article with three mediocre hits
+    # (sum of top-3 similarities + 0.35 per section) outscores an article
+    # whose ONE chunk is the outright best match. Measured live: "Can I be
+    # fired without a reason?" ranked Section 121 "Discharge for Just Cause"
+    # first on similarity (0.653), then this reranker buried it under three
+    # Article 27 seniority chunks and the answer hedged from the wrong
+    # clause. Grouping decides the supporting context; it must never depose
+    # the single best chunk, which drives the expansion and leads the prompt.
+    best = max(retrieved_chunks, key=lambda row: float(getattr(row, "similarity", 0.0)))
+    if best in reranked:
+        reranked.remove(best)
+    else:
+        reranked = reranked[: max(0, int(limit) - 1)]
+    reranked.insert(0, best)
+    return reranked
 
 
 def _build_platform_query_prompt(request: "QueryRequest", chunks: list[dict], conversation_context: str = "") -> str:
