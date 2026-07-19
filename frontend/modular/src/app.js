@@ -2205,10 +2205,13 @@ const EMBED_THEME_OVERRIDES = (() => {
             if (!selectionKind || !selectionKey) return false;
 
             if (selectionKind === 'article') {
-                const match = selectionKey.match(/^article:(\d+)$/i);
-                const articleNum = match ? toPositiveIntOrNull(match[1]) : null;
-                if (articleNum === null) return false;
-                return loadArticle(articleNum, { openPdf: false });
+                const match = selectionKey.match(/^article:(.+)$/i);
+                const rawKey = match ? match[1] : null;
+                const articleNum = toPositiveIntOrNull(rawKey);
+                if (articleNum !== null) return loadArticle(articleNum, { openPdf: false });
+                // Tenant outlines carry string article ids ("appendix-a").
+                if (rawKey && isTenantRoute()) return loadArticle(rawKey, { openPdf: false });
+                return false;
             }
             return loadContractBrowseItem(selectionKind, selectionKey, { openPdf: false });
         }
@@ -3313,6 +3316,22 @@ const EMBED_THEME_OVERRIDES = (() => {
         }
 
         async function openContractPdfFromContractTab() {
+            // Tenant routes: getActiveContractId() is the 'tenant-upload'
+            // placeholder, which the legacy pack endpoints 404 on — this is
+            // why flipping to "Original PDF" rendered nothing. The real
+            // browsable contract and its source PDF live in the member
+            // outline, so make sure it is loaded and go straight to the
+            // tenant PDF path.
+            if (isTenantRoute()) {
+                await ensureManifestLoaded();
+                if (!safeText(tenantContractOutline?.source_pdf_url)) return false;
+                const articleKey = currentArticleNum ?? (getSortedArticleNumbers()[0] ?? null);
+                if (articleKey !== null) {
+                    currentArticleNum = articleKey;
+                    setActiveArticleInToc(articleKey);
+                }
+                return openContractInPdf(articleKey, null, null, {});
+            }
             const contractId = getActiveContractId();
             if (!contractId) return false;
             if (!activeContractHistory || activeContract?.contract_id !== (activeContractHistory?.contract_id || null)) {
