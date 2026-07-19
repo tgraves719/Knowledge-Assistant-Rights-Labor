@@ -237,6 +237,108 @@ def _detect_page_for_offset(pages: list[dict], offset: int) -> int | None:
     return None
 
 
+CONTRACT_PACK_SCHEMA_MARKERS = ("sections", "contract_id")
+
+
+def _looks_like_contract_pack(payload: dict) -> bool:
+    """True for a materialized effective-contract export.
+
+    These carry the article/section hierarchy the contract explorer needs.
+    Text extraction cannot recover it: the flat markdown export of the same
+    contract has zero ARTICLE headings, only 160 "Section N." lines, so
+    everything below Article level was being lost on the way into a tenant
+    workspace.
+    """
+    if not isinstance(payload, dict):
+        return False
+    if not all(marker in payload for marker in CONTRACT_PACK_SCHEMA_MARKERS):
+        return False
+    sections = payload.get("sections")
+    if not isinstance(sections, list) or not sections:
+        return False
+    first = sections[0]
+    return isinstance(first, dict) and ("content_markdown" in first or "raw_chunk" in first)
+
+
+def analyze_contract_pack(payload: dict, *, filename: str) -> DocumentStructureAnalysis:
+    """Build structure directly from a contract pack instead of regex-parsing text."""
+    raw_sections = payload.get("sections") or []
+    article_titles: dict[str, str] = {}
+    sections: list[StructuredSection] = []
+
+    for raw in raw_sections:
+        if not isinstance(raw, dict):
+            continue
+        content = _normalize_phrase(str(raw.get("content_markdown") or raw.get("raw_chunk") or ""))
+        if not content:
+            continue
+        article_num = str(raw.get("article_num") or "").strip() or None
+        article_title = _normalize_phrase(str(raw.get("article_title") or "")) or None
+        section_num = str(raw.get("section_num") or "").strip() or None
+        # The pack has no separate section title; the first sentence of the
+        # body is what reads as one in a table of contents.
+        section_title = _first_sentence(content, fallback_limit=90) or None
+        if article_num and article_title:
+            article_titles.setdefault(article_num, article_title)
+
+        provenance = raw.get("provenance") or {}
+        page_start = None
+        if isinstance(provenance, dict):
+            for key in ("page", "page_start", "pdf_page"):
+                value = provenance.get(key)
+                if isinstance(value, int) and value > 0:
+                    page_start = value
+                    break
+
+        aliases = [
+            alias
+            for alias in [
+                article_title,
+                section_title,
+                f"article {article_num}" if article_num else None,
+                f"section {section_num}" if section_num else None,
+                str(raw.get("citation") or "").strip() or None,
+            ]
+            if alias
+        ]
+        sections.append(
+            StructuredSection(
+                article_num=article_num,
+                article_title=article_title,
+                section_num=section_num,
+                section_title=section_title,
+                text=content,
+                page_start=page_start,
+                page_end=page_start,
+                summary=_first_sentence(content) or None,
+                topic_tags=_infer_topics(article_title or "", section_title or "", content[:2500]),
+                cross_references=_extract_cross_references(content, article_num=article_num),
+                search_aliases=list(dict.fromkeys(_normalize_phrase(a) for a in aliases if _normalize_phrase(a))),
+            )
+        )
+
+    if not sections:
+        return DocumentStructureAnalysis(
+            document_type="legal_contract",
+            document_type_confidence=0.6,
+            structure_mode="generic",
+            extraction_status="generic_fallback",
+            topic_hints=_infer_topics(filename),
+        )
+
+    return DocumentStructureAnalysis(
+        document_type="legal_contract",
+        document_type_confidence=0.99,
+        structure_mode="legal_structured",
+        extraction_status="contract_pack_ready",
+        article_titles=article_titles,
+        total_articles=len(article_titles),
+        total_sections=len(sections),
+        topic_hints=_infer_topics(filename, " ".join(article_titles.values())[:4000]),
+        sections=sections,
+    )
+
+
 def analyze_parsed_document(
     parsed: ParsedDocument,
     *,

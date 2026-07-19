@@ -15,7 +15,12 @@ from backend.platform.embeddings import build_text_embedder
 from backend.platform.guardrails import GuardrailService
 from backend.platform.ingestion import IngestionService
 from backend.platform.local_auth import LocalAuthService
-from backend.platform.parsing import LiteParseDocumentParser, ParserRegistry, PlainTextDocumentParser
+from backend.platform.parsing import (
+    ContractPackDocumentParser,
+    LiteParseDocumentParser,
+    ParserRegistry,
+    PlainTextDocumentParser,
+)
 from backend.platform.quotas import QuotaService
 from backend.platform.retrieval import TenantRetrievalService
 from backend.platform.session_auth import SessionAuthService
@@ -149,6 +154,9 @@ class ServiceContainer:
         parser_backend = self.settings.document_parser_backend
         parser_candidates = []
         if parser_backend in {"auto", "plain_text", "text"}:
+            # Ahead of plain text: a contract pack must keep its article
+            # hierarchy rather than be flattened into prose.
+            parser_candidates.append(ContractPackDocumentParser())
             parser_candidates.append(PlainTextDocumentParser())
         if parser_backend in {"auto", "liteparse"}:
             parser_candidates.append(LiteParseDocumentParser(self.settings.liteparse_executable))

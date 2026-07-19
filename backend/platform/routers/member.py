@@ -8,7 +8,7 @@ from sqlalchemy import select
 from backend.platform.auth import AuthContext
 from backend.platform.db import apply_request_context, apply_service_bootstrap_context
 from backend.platform.deps import get_auth_context, get_container, get_db
-from backend.platform.models import AuditEvent, ChunkEmbedding, Document, Role, UnionMembership
+from backend.platform.models import AuditEvent, ChunkEmbedding, Document, DocumentStatus, Role, UnionMembership
 from backend.platform.routers.admin import _purge_user_records
 
 
@@ -91,6 +91,167 @@ def get_member_document_content(
         filename=document.title,
         headers={"Content-Disposition": f'inline; filename="{document.title}"'},
     )
+
+
+@router.get("/contracts/{contract_id}/outline")
+def get_member_contract_outline(
+    contract_id: str,
+    request: Request,
+    access_token: str | None = Query(default=None),
+):
+    """Article/section table of contents for the contract explorer.
+
+    Built from indexed chunk metadata rather than the on-disk contract packs,
+    so a tenant workspace can browse its own uploaded contract. Sections are
+    grouped under their article and ordered by chunk position, which is the
+    order the contract reads in.
+    """
+    db, auth = _resolve_member_document_auth(request, access_token=access_token)
+    union_id = auth.union_id
+    if not union_id and not auth.is_super_admin:
+        raise HTTPException(status_code=403, detail="No union scope for this session.")
+
+    document_stmt = select(Document).where(
+        Document.status == DocumentStatus.ACTIVE,
+        Document.contract_id == contract_id,
+    )
+    if not auth.is_super_admin:
+        document_stmt = document_stmt.where(Document.union_id == union_id)
+    documents = db.scalars(document_stmt).all()
+    documents = [
+        document
+        for document in documents
+        if bool((document.metadata_json or {}).get("ready_for_query"))
+        and bool((document.metadata_json or {}).get("member_visible", True))
+    ]
+    if not documents:
+        raise HTTPException(status_code=404, detail="No readable documents for this contract.")
+
+    document_ids = [document.id for document in documents]
+    rows = db.scalars(
+        select(ChunkEmbedding)
+        .where(ChunkEmbedding.document_id.in_(document_ids))
+        .order_by(ChunkEmbedding.chunk_index.asc())
+    ).all()
+
+    articles: dict[str, dict] = {}
+    seen_sections: set[tuple[str, str]] = set()
+    for row in rows:
+        metadata = dict(row.metadata_json or {})
+        article_num = str(metadata.get("article_num") or "").strip()
+        section_num = str(metadata.get("section_num") or "").strip()
+        if not article_num:
+            continue
+        article = articles.setdefault(
+            article_num,
+            {
+                "article_num": article_num,
+                "article_title": str(metadata.get("article_title") or "").strip() or f"Article {article_num}",
+                "sections": [],
+            },
+        )
+        if not section_num or (article_num, section_num) in seen_sections:
+            continue
+        seen_sections.add((article_num, section_num))
+        article["sections"].append(
+            {
+                "section_num": section_num,
+                "section_label": str(metadata.get("section_label") or metadata.get("section_title") or "").strip(),
+                "anchor_id": str(metadata.get("anchor_id") or "").strip() or None,
+                "page": metadata.get("source_page"),
+                "document_id": row.document_id,
+            }
+        )
+
+    def _sort_key(value: str) -> tuple:
+        try:
+            return (0, int(value), "")
+        except (TypeError, ValueError):
+            return (1, 0, str(value))
+
+    outline = sorted(articles.values(), key=lambda item: _sort_key(item["article_num"]))
+    for article in outline:
+        article["sections"].sort(key=lambda item: _sort_key(item["section_num"]))
+
+    primary = documents[0]
+    return {
+        "contract_id": contract_id,
+        "document_id": primary.id,
+        "document_title": primary.title,
+        "has_source_pdf": bool(primary.source_pdf_key),
+        "source_pdf_url": f"/api/member/documents/{primary.id}/source-pdf" if primary.source_pdf_key else None,
+        "total_articles": len(outline),
+        "total_sections": len(seen_sections),
+        "articles": outline,
+    }
+
+
+@router.get("/contracts/{contract_id}/section")
+def get_member_contract_section(
+    contract_id: str,
+    request: Request,
+    article_num: str | None = Query(default=None),
+    section_num: str | None = Query(default=None),
+    anchor_id: str | None = Query(default=None),
+    access_token: str | None = Query(default=None),
+):
+    """Full text of one article or section, for the explorer's reading pane."""
+    db, auth = _resolve_member_document_auth(request, access_token=access_token)
+    union_id = auth.union_id
+    if not union_id and not auth.is_super_admin:
+        raise HTTPException(status_code=403, detail="No union scope for this session.")
+
+    document_stmt = select(Document).where(
+        Document.status == DocumentStatus.ACTIVE,
+        Document.contract_id == contract_id,
+    )
+    if not auth.is_super_admin:
+        document_stmt = document_stmt.where(Document.union_id == union_id)
+    documents = [
+        document
+        for document in db.scalars(document_stmt).all()
+        if bool((document.metadata_json or {}).get("ready_for_query"))
+        and bool((document.metadata_json or {}).get("member_visible", True))
+    ]
+    if not documents:
+        raise HTTPException(status_code=404, detail="No readable documents for this contract.")
+
+    rows = db.scalars(
+        select(ChunkEmbedding)
+        .where(ChunkEmbedding.document_id.in_([document.id for document in documents]))
+        .order_by(ChunkEmbedding.chunk_index.asc())
+    ).all()
+
+    matches = []
+    for row in rows:
+        metadata = dict(row.metadata_json or {})
+        if anchor_id:
+            if str(metadata.get("anchor_id") or "").strip() != anchor_id:
+                continue
+        else:
+            if article_num and str(metadata.get("article_num") or "").strip() != str(article_num).strip():
+                continue
+            if section_num and str(metadata.get("section_num") or "").strip() != str(section_num).strip():
+                continue
+        matches.append((row, metadata))
+
+    if not matches:
+        raise HTTPException(status_code=404, detail="No matching contract section was found.")
+
+    first_metadata = matches[0][1]
+    pages = sorted({m.get("source_page") for _, m in matches if isinstance(m.get("source_page"), int)})
+    return {
+        "contract_id": contract_id,
+        "article_num": str(first_metadata.get("article_num") or "").strip() or None,
+        "article_title": str(first_metadata.get("article_title") or "").strip() or None,
+        "section_num": str(first_metadata.get("section_num") or "").strip() or None,
+        "section_label": str(first_metadata.get("section_label") or "").strip() or None,
+        "anchor_id": str(first_metadata.get("anchor_id") or "").strip() or None,
+        "page": pages[0] if pages else None,
+        "pages": pages,
+        "document_id": matches[0][0].document_id,
+        "content": "\n\n".join(str(row.chunk_text or "").strip() for row, _ in matches if row.chunk_text),
+    }
 
 
 @router.get("/documents/{document_id}/source-pdf")

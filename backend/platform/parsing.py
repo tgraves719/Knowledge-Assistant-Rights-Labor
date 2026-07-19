@@ -166,6 +166,84 @@ class PlainTextDocumentParser:
         return payload.decode("utf-8", errors="ignore")
 
 
+class ContractPackDocumentParser:
+    """Parses a materialized effective-contract JSON export.
+
+    Registered ahead of the plain-text parser so a contract pack keeps its
+    article/section hierarchy instead of being flattened into prose. The
+    document text is the concatenated section bodies, so retrieval, safety
+    scanning and quality checks all behave exactly as they do for markdown.
+    """
+
+    name = "contract_pack"
+
+    def can_parse(self, *, content_type: str | None, filename: str | None) -> bool:
+        normalized_type = str(content_type or "").strip().lower()
+        normalized_name = str(filename or "").strip().lower()
+        return normalized_type in {"application/json", "text/json"} or normalized_name.endswith(".json")
+
+    def parse_bytes(
+        self,
+        payload: bytes,
+        *,
+        content_type: str | None,
+        filename: str | None,
+    ) -> ParsedDocument:
+        import json
+
+        from backend.platform.document_structure import _looks_like_contract_pack
+
+        raw = payload.decode("utf-8", errors="ignore")
+        try:
+            document = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ParserUnavailableError(f"Contract pack JSON could not be parsed: {exc}") from exc
+
+        if not _looks_like_contract_pack(document):
+            raise ParserUnavailableError(
+                "JSON upload is not a contract pack export (expected contract_id and sections[])."
+            )
+
+        blocks: list[ParsedBlock] = []
+        parts: list[str] = []
+        for section in document.get("sections") or []:
+            if not isinstance(section, dict):
+                continue
+            body = str(section.get("content_markdown") or section.get("raw_chunk") or "").strip()
+            if not body:
+                continue
+            parts.append(body)
+            blocks.append(ParsedBlock(text=body, kind="text"))
+
+        text = "\n\n".join(parts)
+        return ParsedDocument(
+            parser_name=self.name,
+            content_type="application/json",
+            text=text,
+            pages=[ParsedPage(page_number=1, text=text, blocks=blocks)],
+            metadata={
+                "filename": filename or None,
+                "contract_pack": document,
+                "contract_id": str(document.get("contract_id") or "").strip() or None,
+                "effective_version_id": str(document.get("effective_version_id") or "").strip() or None,
+            },
+        )
+
+
+    def parse_file(
+        self,
+        file_path: Path,
+        *,
+        content_type: str | None,
+        filename: str | None,
+    ) -> ParsedDocument:
+        return self.parse_bytes(
+            file_path.read_bytes(),
+            content_type=content_type,
+            filename=filename,
+        )
+
+
 class LiteParseDocumentParser:
     """CLI-backed adapter boundary for LiteParse."""
 

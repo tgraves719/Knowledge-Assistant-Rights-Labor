@@ -1,3 +1,4 @@
+import pytest
 import base64
 from pathlib import Path
 
@@ -667,3 +668,74 @@ def test_reingestion_preserves_standing_safety_approval(tmp_path):
         assert document.metadata_json.get("safety_review_status") == "resolved"
         assert document.metadata_json.get("member_visible") is True
         assert document.metadata_json.get("safety_override", {}).get("previous_sensitive_data_risk") is True
+
+
+def test_contract_pack_upload_preserves_article_hierarchy():
+    """A contract pack keeps its articles; flat markdown cannot.
+
+    The materializer's markdown export of the same contract has zero ARTICLE
+    heading lines -- only "Section N." -- so text extraction recovered 2
+    garbled articles out of cross-reference prose and the contract explorer
+    had no tree to render. Ingesting the structured export instead keeps all
+    58 articles with their real titles.
+    """
+    import json
+
+    from backend.platform.document_structure import analyze_contract_pack, _looks_like_contract_pack
+    from backend.platform.parsing import ContractPackDocumentParser
+
+    pack = {
+        "contract_id": "local7_test_2022",
+        "effective_version_id": "effective_test",
+        "sections": [
+            {
+                "anchor_id": "a1_s1",
+                "article_num": "1",
+                "article_title": "RECOGNITION AND EXCLUSIONS",
+                "section_num": "1",
+                "content_markdown": "The Employer recognizes the Union as sole bargaining agent.",
+                "provenance": {"page": 3},
+            },
+            {
+                "anchor_id": "a20_s121",
+                "article_num": "20",
+                "article_title": "DISCHARGE",
+                "section_num": "121",
+                "content_markdown": "Discharge for Just Cause. No employee shall be discharged except for just cause.",
+                "provenance": {"page": 20},
+            },
+        ],
+    }
+    payload = json.dumps(pack).encode("utf-8")
+
+    parser = ContractPackDocumentParser()
+    assert parser.can_parse(content_type="application/json", filename="contract.json")
+
+    parsed = parser.parse_bytes(payload, content_type="application/json", filename="contract.json")
+    assert _looks_like_contract_pack(parsed.metadata["contract_pack"])
+    # Body text still flows into retrieval/safety/quality exactly as prose does.
+    assert "just cause" in parsed.text.lower()
+
+    structure = analyze_contract_pack(parsed.metadata["contract_pack"], filename="contract.json")
+    assert structure.structure_mode == "legal_structured"
+    assert structure.total_articles == 2
+    assert structure.article_titles["20"] == "DISCHARGE"
+
+    discharge = next(s for s in structure.sections if s.section_num == "121")
+    assert discharge.article_num == "20"
+    assert discharge.section_title == "Discharge for Just Cause."
+    # Printed page carried through for citations and the PDF pane.
+    assert discharge.page_start == 20
+
+
+def test_contract_pack_parser_rejects_unrelated_json():
+    """Arbitrary JSON must not be mistaken for a contract pack."""
+    import json
+
+    from backend.platform.parsing import ContractPackDocumentParser, ParserUnavailableError
+
+    payload = json.dumps({"hello": "world", "items": [1, 2, 3]}).encode("utf-8")
+    with pytest.raises(ParserUnavailableError):
+        ContractPackDocumentParser().parse_bytes(
+            payload, content_type="application/json", filename="notes.json"
+        )

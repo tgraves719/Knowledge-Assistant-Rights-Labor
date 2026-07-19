@@ -10,7 +10,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from backend.platform.auth import AuthContext
-from backend.platform.document_structure import analyze_parsed_document
+from backend.platform.document_structure import (
+    _looks_like_contract_pack,
+    analyze_contract_pack,
+    analyze_parsed_document,
+)
 from backend.platform.models import Document, DocumentStatus, IngestionJob, IngestionJobStatus, Notification, NotificationStatus, Union
 from backend.platform.parsing import LiteParseDocumentParser, ParsedDocument, ParserRegistry
 
@@ -186,11 +190,17 @@ class IngestionService:
             f"{document.id}/parse/{job.id}.json",
             parsed.to_dict(),
         ).key
-        structure = analyze_parsed_document(
-            parsed,
-            filename=document.title,
-            content_type=document.content_type,
-        )
+        # A contract pack carries its own article/section hierarchy; use it
+        # rather than re-deriving structure from flattened prose.
+        pack_payload = (parsed.metadata or {}).get("contract_pack")
+        if _looks_like_contract_pack(pack_payload):
+            structure = analyze_contract_pack(pack_payload, filename=document.title)
+        else:
+            structure = analyze_parsed_document(
+                parsed,
+                filename=document.title,
+                content_type=document.content_type,
+            )
         quality = self._assess_parse_quality(document=document, parsed=parsed, ocr_enabled=bool((job.metadata_json or {}).get("ocr_enabled")))
         safety = self.guardrails.assess_document_safety(parsed.text) if self.guardrails is not None else None
         auto_retry_job = None
