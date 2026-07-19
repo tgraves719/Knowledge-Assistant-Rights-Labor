@@ -6,7 +6,12 @@ from backend.platform.db import Base
 from backend.platform.embeddings import DeterministicTextEmbedder
 from backend.platform.models import ChunkEmbedding, Document, DocumentStatus, Union
 from backend.platform.retrieval import TenantRetrievalService
-from backend.platform.text_normalization import extract_provenance, provenance_metadata
+from backend.platform.text_normalization import (
+    extract_provenance,
+    parse_source_reference,
+    provenance_metadata,
+    summarize_section_label,
+)
 
 
 PROV_LINE = (
@@ -226,3 +231,48 @@ def test_oversize_structured_sections_are_split_and_share_the_anchor():
             c.metadata_json.get("section_parts_total") == len(chunks) for c in chunks
         )
         assert all("PROV(" not in c.chunk_text for c in chunks)
+
+
+def test_parse_source_reference_extracts_pdf_and_printed_page():
+    name, page = parse_source_reference("base:SW+Pueblo+Clerks+2022.2025.pdf#p11")
+
+    # '+' is the materializer's space encoding, not a literal character.
+    assert name == "SW Pueblo Clerks 2022.2025.pdf"
+    # The printed page is what a member can look up in the physical book.
+    assert page == 11
+
+
+def test_parse_source_reference_tolerates_doc_id_suffix_and_junk():
+    assert parse_source_reference("base:x.pdf#p3@albertsons_moa_2025")[1] == 3
+    assert parse_source_reference("") == (None, None)
+    assert parse_source_reference("no-page-here.pdf")[1] is None
+
+
+def test_summarize_section_label_shortens_body_text_used_as_a_title():
+    body = (
+        "Step 2. In an instance where an employee feels he has not been paid in "
+        "accordance with the wage progression scales set forth herein, such employee "
+        "shall have an obligation to bring this to the attention of the Store Manager."
+    )
+
+    label = summarize_section_label(body)
+
+    assert len(label) <= 81
+    assert label.endswith("…")
+    # Cuts on a boundary, not mid-word.
+    assert not label.rstrip("…").endswith(" ")
+    assert body.startswith(label.rstrip("…")[:20])
+
+
+def test_summarize_section_label_leaves_real_titles_untouched():
+    assert summarize_section_label("Premium Pay for Holiday Work.") == "Premium Pay for Holiday Work."
+    assert summarize_section_label("") == ""
+
+
+def test_provenance_metadata_surfaces_source_page_for_citations():
+    _, provenance = extract_provenance(f"{PROV_LINE}\n\nSome clause.")
+
+    metadata = provenance_metadata(provenance)
+
+    assert metadata["source_page"] == 11
+    assert metadata["source_pdf_name"] == "SW Pueblo Clerks 2022.2025.pdf"

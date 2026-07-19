@@ -1300,8 +1300,17 @@ def _platform_query_chunks_to_response_chunks(retrieved_chunks: list) -> list[di
         article_num = str(metadata.get("article_num") or "").strip()
         article_title = str(metadata.get("article_title") or "").strip()
         section_num = str(metadata.get("section_num") or "").strip()
-        section_title = str(metadata.get("section_title") or "").strip()
+        # section_title holds the whole section body (hundreds of chars), which
+        # is unreadable as a citation label. section_label is the short form
+        # written at ingest; fall back to the raw value for chunks indexed
+        # before that existed.
+        section_title = str(metadata.get("section_label") or metadata.get("section_title") or "").strip()
         chunk_ordinal = int(item.chunk_index) + 1
+        # Prefer the printed contract's page over any parser-assigned one: it
+        # is what a member can actually look up in the physical book.
+        source_page = metadata.get("source_page")
+        if isinstance(source_page, int) and source_page > 0:
+            page_number = source_page
         structured_label_parts = []
         if article_num:
             if article_title:
@@ -2032,6 +2041,9 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
                 "article_num": (chunk.get("metadata") or {}).get("article_num"),
                 "section_num": (chunk.get("metadata") or {}).get("section_num"),
                 "section_title": (chunk.get("metadata") or {}).get("section_title"),
+                # Short, human-readable label. section_title holds the whole
+                # section body, which renders as an unreadable wall of text.
+                "section_label": (chunk.get("metadata") or {}).get("section_label"),
                 "doc_type": "upload",
                 "source_type": "upload",
                 "document_id": chunk.get("document_id"),
@@ -2061,7 +2073,22 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
                     else None
                 ),
                 "chunk_index": chunk.get("chunk_index"),
-                "page_number": (chunk.get("metadata") or {}).get("page_number") or (chunk.get("metadata") or {}).get("page_start"),
+                # The printed contract's page, parsed from provenance, wins:
+                # it is the page a member can look up in the physical book.
+                "page_number": (
+                    (chunk.get("metadata") or {}).get("source_page")
+                    or (chunk.get("metadata") or {}).get("page_number")
+                    or (chunk.get("metadata") or {}).get("page_start")
+                ),
+                "source_page": (chunk.get("metadata") or {}).get("source_page"),
+                "source_pdf_name": (chunk.get("metadata") or {}).get("source_pdf_name"),
+                "document_source_pdf_url": (
+                    f"/api/member/documents/{chunk.get('document_id')}/source-pdf"
+                    + (f"?access_token={local_view_token}" if local_view_token else "")
+                    if chunk.get("document_id")
+                    and getattr(documents_by_id.get(chunk.get("document_id")), "source_pdf_key", None)
+                    else None
+                ),
                 "page_start": (chunk.get("metadata") or {}).get("page_start"),
                 "page_end": (chunk.get("metadata") or {}).get("page_end"),
                 "summary": (chunk.get("metadata") or {}).get("summary"),

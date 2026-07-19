@@ -213,6 +213,10 @@ class Document(Base):
     # that ask for no particular contract.
     contract_id: Mapped[str | None] = mapped_column(String(255), index=True)
     storage_key: Mapped[str] = mapped_column(String(500), nullable=False)
+    # Optional companion PDF: the original printed contract this document's
+    # text was extracted from. Stored, never parsed, so citations can open the
+    # real page a member can check against the book in the break room.
+    source_pdf_key: Mapped[str | None] = mapped_column(String(500))
     content_type: Mapped[str] = mapped_column(String(120), nullable=False)
     bytes_size: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     status: Mapped[DocumentStatus] = mapped_column(

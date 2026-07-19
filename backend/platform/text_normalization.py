@@ -85,6 +85,56 @@ def extract_provenance(text: str) -> tuple[str, dict]:
     return cleaned.strip(), provenance
 
 
+_SOURCE_PAGE_PATTERN = re.compile(r"#p(?P<page>\d+)")
+_SOURCE_FILE_PATTERN = re.compile(r"^(?:[a-z_]+:)?(?P<name>[^#@]+)")
+
+
+def parse_source_reference(source: str) -> tuple[str | None, int | None]:
+    """Split a provenance source token into (pdf filename, page number).
+
+    Tokens look like ``base:SW+Pueblo+Clerks+2022.2025.pdf#p11`` — a source
+    type, the originating PDF, and the page the passage came from. That page
+    is the real one from the printed contract, which is what a member needs
+    to check the language for themselves.
+    """
+    token = str(source or "").strip()
+    if not token:
+        return None, None
+    page_match = _SOURCE_PAGE_PATTERN.search(token)
+    page = int(page_match.group("page")) if page_match else None
+    file_match = _SOURCE_FILE_PATTERN.match(token)
+    name = file_match.group("name").strip() if file_match else None
+    if name:
+        # The materializer URL-encodes spaces as '+' when building the token.
+        name = name.replace("+", " ").strip() or None
+    return name, page
+
+
+def summarize_section_label(section_title: str, *, max_length: int = 80) -> str:
+    """Condense a section 'title' that is really a body paragraph.
+
+    Structure extraction stores whole section bodies in section_title (492
+    chars on average, up to 973 in the Pueblo books). Rendered as a citation
+    label that produced an unreadable wall of grey text, so display gets a
+    short label while the full text stays in metadata for lexical scoring.
+    """
+    text = " ".join(str(section_title or "").split())
+    if not text:
+        return ""
+    if len(text) <= max_length:
+        return text
+    # Prefer a sentence boundary, then a word boundary, before hard cutting.
+    window = text[: max_length + 1]
+    for boundary in (". ", "; "):
+        cut = window.rfind(boundary)
+        if cut >= 30:
+            return window[:cut].rstrip(" .;") + "…"
+    cut = window.rfind(" ")
+    if cut >= 30:
+        return window[:cut].rstrip(" ,;:") + "…"
+    return text[:max_length].rstrip() + "…"
+
+
 def provenance_metadata(provenance: dict) -> dict:
     """Map parsed provenance onto the chunk metadata keys we keep."""
     if not provenance:
@@ -97,4 +147,11 @@ def provenance_metadata(provenance: dict) -> dict:
     sources = provenance.get("sources") or []
     if sources:
         metadata["provenance_sources"] = list(sources)
+        # Surface the originating PDF and page so citations can point at the
+        # printed contract instead of a meaningless "page 1".
+        source_file, source_page = parse_source_reference(sources[0])
+        if source_file:
+            metadata["source_pdf_name"] = source_file
+        if source_page:
+            metadata["source_page"] = source_page
     return metadata

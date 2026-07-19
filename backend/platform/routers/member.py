@@ -93,6 +93,41 @@ def get_member_document_content(
     )
 
 
+@router.get("/documents/{document_id}/source-pdf")
+def get_member_document_source_pdf(
+    document_id: str,
+    request: Request,
+    access_token: str | None = Query(default=None),
+):
+    """Serve the printed contract PDF behind a document's citations.
+
+    Same tenant scoping and member-safety checks as the extracted content --
+    the PDF is the same material, so it must not become a way around them.
+    """
+    db, auth = _resolve_member_document_auth(request, access_token=access_token)
+    document = db.get(Document, document_id)
+    if document is None:
+        raise HTTPException(status_code=404, detail="Document not found.")
+    if not auth.is_super_admin and auth.union_id != document.union_id:
+        raise HTTPException(status_code=403, detail="Union scope mismatch.")
+    _require_member_safe_document(request, document, allow_redacted_selection=False)
+
+    if not document.source_pdf_key:
+        raise HTTPException(status_code=404, detail="No source PDF is attached to this document.")
+
+    path = get_container(request).storage.open(document.source_pdf_key)
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="Stored source PDF was not found.")
+
+    filename = str(document.source_pdf_key).rsplit("/", 1)[-1] or "contract.pdf"
+    return FileResponse(
+        path,
+        media_type="application/pdf",
+        filename=filename,
+        headers={"Content-Disposition": f'inline; filename="{filename}"'},
+    )
+
+
 @router.get("/documents/{document_id}/selection")
 def get_member_document_selection(
     document_id: str,

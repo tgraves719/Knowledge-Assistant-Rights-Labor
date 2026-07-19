@@ -5153,6 +5153,22 @@ const EMBED_THEME_OVERRIDES = (() => {
             return bits.join(' • ');
         }
 
+        function buildUploadedSourceLabel(source, idx) {
+            const docTitle = safeText(source?.document_title).replace(/\.(md|markdown|txt)$/i, '');
+            const articleNum = safeText(source?.article_num);
+            const sectionNum = safeText(source?.section_num);
+            // section_label is the short form written at ingest; section_title is
+            // the full body and must never be used as a label.
+            const sectionLabel = safeText(source?.section_label);
+            const parts = [];
+            if (articleNum) parts.push(`Article ${articleNum}`);
+            if (sectionNum) parts.push(`Section ${sectionNum}`);
+            const locator = parts.join(' · ');
+            const head = [docTitle, locator].filter(Boolean).join(' — ');
+            if (sectionLabel) return head ? `${head}: ${sectionLabel}` : sectionLabel;
+            return head || safeText(source?.document_title) || `Source ${idx + 1}`;
+        }
+
         function buildUploadedSourceEvidenceHtml(sources) {
             const uploadedSources = Array.isArray(sources)
                 ? sources.filter((source) => isUploadedSourceRecord(source))
@@ -5170,10 +5186,18 @@ const EMBED_THEME_OVERRIDES = (() => {
                     <div class="mt-3 space-y-3">
                         ${uploadedSources.map((source, idx) => {
                             const sourceRegistryKey = registerCitationSourceRecord(source);
-                            const label = safeText(source?.citation) || safeText(source?.document_title) || `Source ${idx + 1}`;
+                            // Build the label from structured fields rather than the
+                            // server citation string: that string embeds section_title,
+                            // which holds the whole section body and rendered as an
+                            // unreadable wall of grey text.
+                            const label = buildUploadedSourceLabel(source, idx);
                             const subtitle = resolveUploadedSourcePageLabel(source);
                             const excerpt = safeText(source?.excerpt) || 'No preview excerpt available for this source yet.';
-                            const buttonLabel = subtitle ? `Open In Document (${subtitle})` : 'Open In Document';
+                            const pdfUrl = safeText(source?.document_source_pdf_url);
+                            const pdfPage = Number.isFinite(Number(source?.source_page)) ? Number(source.source_page) : null;
+                            const buttonLabel = pdfUrl
+                                ? (pdfPage ? `Open PDF · Page ${pdfPage}` : 'Open PDF')
+                                : 'Open In Document';
                             return `
                                 <div class="rounded-xl border border-slate-200 bg-white px-3 py-3 shadow-sm">
                                     <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -5183,8 +5207,10 @@ const EMBED_THEME_OVERRIDES = (() => {
                                         </div>
                                         <button
                                             type="button"
-                                            class="inline-flex items-center justify-center rounded-lg bg-ufcw-blue px-3 py-2 text-xs font-medium text-white hover:bg-ufcw-blue-mid transition-colors"
-                                            onclick="openUploadedSourceViewer(this, '${escapeJsSingleQuoted(sourceRegistryKey)}')"
+                                            class="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg bg-ufcw-blue px-3 py-2 text-xs font-medium text-white hover:bg-ufcw-blue-mid transition-colors"
+                                            onclick="${pdfUrl
+                                                ? `openContractPdfAtPage('${escapeJsSingleQuoted(pdfUrl)}', ${pdfPage ?? 'null'})`
+                                                : `openUploadedSourceViewer(this, '${escapeJsSingleQuoted(sourceRegistryKey)}')`}"
                                         >
                                             ${escapeHtml(buttonLabel)}
                                         </button>
@@ -5360,6 +5386,14 @@ const EMBED_THEME_OVERRIDES = (() => {
             viewer.classList.add('hidden');
             delete viewer.dataset.objectUrl;
             delete viewer.dataset.sourceRegistryKey;
+        }
+
+        function openContractPdfAtPage(pdfUrl, pageNumber = null) {
+            // #page= is the standard PDF viewer fragment, honoured by Chrome,
+            // Firefox and Safari, so the member lands on the exact page the
+            // citation refers to rather than page one of a 200-page book.
+            const url = pageNumber ? `${pdfUrl}${pdfUrl.includes('#') ? '' : `#page=${pageNumber}`}` : pdfUrl;
+            window.open(url, '_blank', 'noopener');
         }
 
         function openUploadedSourceInNewTab(objectUrl, pageNumber = null) {
@@ -5914,6 +5948,7 @@ Object.assign(window, {
     handleCitationClick,
     openUploadedSourceViewer,
     openUploadedSourceInNewTab,
+    openContractPdfAtPage,
     selectMonth,
 });
 

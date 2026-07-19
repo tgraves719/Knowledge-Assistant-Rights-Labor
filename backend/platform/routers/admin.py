@@ -1974,6 +1974,59 @@ def get_document_review_detail(
     }
 
 
+@router.post("/unions/{union_id}/documents/{document_id}/source-pdf")
+async def attach_document_source_pdf(
+    union_id: str,
+    document_id: str,
+    request: Request,
+    file: UploadFile,
+    _auth=Depends(require_roles(Role.UNION_ADMIN.value, Role.SUPER_ADMIN.value)),
+):
+    """Attach the printed contract PDF that a document's text came from.
+
+    Stored only -- deliberately not parsed or ingested. The extracted markdown
+    remains the retrieval source; this is purely so citations can open the page
+    a member can check against the physical book.
+    """
+    db = get_db(request)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database is not configured.")
+    auth = get_auth_context(request)
+    if not auth.is_super_admin and auth.union_id != union_id:
+        raise HTTPException(status_code=403, detail="Union scope mismatch.")
+    union = db.get(Union, union_id)
+    if union is None:
+        raise HTTPException(status_code=404, detail="Union not found.")
+    document = db.get(Document, document_id)
+    if document is None or document.union_id != union_id:
+        raise HTTPException(status_code=404, detail="Document not found.")
+
+    payload = await file.read()
+    if not payload:
+        raise HTTPException(status_code=400, detail="Uploaded source PDF is empty.")
+    if not payload.startswith(b"%PDF-"):
+        raise HTTPException(status_code=400, detail="Source file must be a PDF.")
+
+    container = get_container(request)
+    filename = (file.filename or "contract.pdf").strip() or "contract.pdf"
+    stored = container.storage.save_bytes(union.slug, f"source-pdf-{document_id}-{filename}", payload)
+    document.source_pdf_key = stored.key
+    db.add(
+        AuditEvent(
+            union_id=union_id,
+            actor_user_id=auth.user_id,
+            event_type="document_source_pdf_attached",
+            event_payload={"document_id": document_id, "filename": filename, "bytes_size": stored.bytes_size},
+        )
+    )
+    db.commit()
+    return {
+        "document_id": document_id,
+        "source_pdf_key": stored.key,
+        "bytes_size": stored.bytes_size,
+    }
+
+
 @router.post("/unions/{union_id}/documents/{document_id}/safety-review")
 def apply_document_safety_review(
     union_id: str,

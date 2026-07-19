@@ -11,7 +11,11 @@ from sqlalchemy.orm import Session
 
 from backend.platform.embeddings import DeterministicTextEmbedder, TextEmbedder
 from backend.platform.models import ChunkEmbedding, Document, DocumentStatus
-from backend.platform.text_normalization import extract_provenance, provenance_metadata
+from backend.platform.text_normalization import (
+    extract_provenance,
+    provenance_metadata,
+    summarize_section_label,
+)
 
 
 @dataclass
@@ -239,6 +243,12 @@ class TenantRetrievalService:
                     **provenance_metadata(provenance),
                     "structure_mode": "legal_structured",
                 }
+                # Structure extraction puts whole section bodies in
+                # section_title. Keep the full text for lexical scoring, but
+                # give the UI something short enough to read as a label.
+                section_label = summarize_section_label(section_metadata.get("section_title") or "")
+                if section_label:
+                    section_metadata["section_label"] = section_label
                 # A "section" here can be a 50KB slab (the source books have
                 # sections that big). One embedding cannot represent that much
                 # text, and retrieval then cannot discriminate within it —
