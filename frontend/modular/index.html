@@ -1597,7 +1597,11 @@
                         <p id="header-subtitle" class="text-ufcw-gold-light text-[10px] md:text-xs">Union Document Assistant</p>
                     </div>
                 </div>
-                <div id="status" class="flex items-center gap-1.5 md:gap-2 bg-black/20 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full">
+                <!-- Diagnostic connection pill. Hidden for members: it reported plumbing state
+                     ("Connecting...", section counts) that means nothing to someone asking about
+                     their contract, and its amber dot read as a warning. Shown only when
+                     Developer Mode is on (see updateDeveloperModeUI). -->
+                <div id="status" class="hidden items-center gap-1.5 md:gap-2 bg-black/20 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full">
                     <span class="w-2 h-2 rounded-full bg-ufcw-gold pulse-dot"></span>
                     <span class="text-[10px] md:text-xs text-ufcw-gold-light">Connecting...</span>
                 </div>
@@ -2016,32 +2020,8 @@
 
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="font-medium text-slate-700">Answer Tone</p>
-                                    <p class="text-xs text-slate-500">Guide how KARL sounds when the answer is not deterministic</p>
-                                </div>
-                                <select id="pref-response-tone" onchange="savePreference('responseTone', this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm">
-                                    <option value="calm" selected>Calm</option>
-                                    <option value="direct">Direct</option>
-                                    <option value="solidarity">Solidarity</option>
-                                </select>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="font-medium text-slate-700">Answer Detail</p>
-                                    <p class="text-xs text-slate-500">Tune how concise or detailed non-deterministic answers should be</p>
-                                </div>
-                                <select id="pref-response-verbosity" onchange="savePreference('responseVerbosity', this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm">
-                                    <option value="balanced" selected>Balanced</option>
-                                    <option value="concise">Concise</option>
-                                    <option value="detailed">Detailed</option>
-                                </select>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <div>
                                     <p class="font-medium text-slate-700">Developer Mode</p>
-                                    <p class="text-xs text-slate-500">Show diagnostic section counts in header</p>
+                                    <p class="text-xs text-slate-500">Show the connection status pill and diagnostic section counts in the header</p>
                                 </div>
                                 <button id="developer-mode-toggle" onclick="toggleDeveloperMode()" class="relative w-12 h-7 rounded-full bg-slate-200 transition-colors">
                                     <span id="developer-mode-dot" class="absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-transform"></span>
@@ -2076,7 +2056,7 @@
                     </section>
 
                     <section class="bg-white rounded-xl border border-slate-200 p-5">
-                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">KARL</h3>
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">About KARL</h3>
                         <div class="flex items-start justify-between gap-4">
                             <div>
                                 <p class="font-medium text-slate-700">Version</p>
@@ -2084,7 +2064,7 @@
                                 <p class="text-xs text-slate-500 mt-1">Read KARL’s update log, governance documents, deployment policy, and release materials in a clean markdown viewer.</p>
                             </div>
                             <button onclick="openKarlTab()" class="shrink-0 inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 transition-colors">
-                                Open KARL
+                                Open
                             </button>
                         </div>
                     </section>

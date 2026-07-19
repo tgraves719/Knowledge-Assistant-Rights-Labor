@@ -4669,8 +4669,9 @@ const EMBED_THEME_OVERRIDES = (() => {
             // Sync preferences
             document.getElementById('pref-text-size').value = preferences.textSize || 'medium';
             document.getElementById('pref-citation-style').value = preferences.citationStyle || 'popover';
-            document.getElementById('pref-response-tone').value = getPreferredResponseTone();
-            document.getElementById('pref-response-verbosity').value = getPreferredResponseVerbosity();
+            // Answer Tone / Answer Detail controls were removed from Settings.
+            // The preference values still exist and still feed the prompt --
+            // they just fall back to their defaults instead of being surfaced.
             updateKarlVersionUI();
             updateDeveloperModeUI(isDeveloperModeEnabled());
             syncRoleClarificationPanels();
@@ -4719,6 +4720,13 @@ const EMBED_THEME_OVERRIDES = (() => {
         function updateDeveloperModeUI(isEnabled) {
             const toggle = document.getElementById('developer-mode-toggle');
             const dot = document.getElementById('developer-mode-dot');
+            // The header connection pill is diagnostics, not member-facing
+            // information, so it only appears in developer mode.
+            const statusPill = document.getElementById('status');
+            if (statusPill) {
+                statusPill.classList.toggle('hidden', !isEnabled);
+                statusPill.classList.toggle('flex', isEnabled);
+            }
             const pdfHeaderCopy = document.getElementById('contract-pdf-header-copy');
             const textHeaderCopy = document.getElementById('contract-text-header-copy');
             const historyBanner = document.getElementById('contract-history-banner');
