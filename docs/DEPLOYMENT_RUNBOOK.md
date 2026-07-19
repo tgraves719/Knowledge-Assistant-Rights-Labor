@@ -295,7 +295,11 @@ karlstewardship.com, www.karlstewardship.com {
         # itself; without ">" every response carries two copies, and a
         # duplicated X-Frame-Options can be treated as invalid.
         >X-Content-Type-Options "nosniff"
-        >X-Frame-Options "DENY"
+        # SAMEORIGIN, not DENY: the app legitimately frames its own content
+        # (the in-card contract-PDF viewer, the /embed member frame). DENY
+        # blocks even same-origin iframes and broke the PDF viewer with
+        # net::ERR_BLOCKED_BY_RESPONSE while every request returned 200.
+        >X-Frame-Options "SAMEORIGIN"
         >Referrer-Policy "strict-origin-when-cross-origin"
     }
 }
