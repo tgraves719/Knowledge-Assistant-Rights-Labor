@@ -5327,7 +5327,7 @@ const EMBED_THEME_OVERRIDES = (() => {
                                 onclick="this.closest('.uploaded-source-viewer').classList.add('hidden')">Close</button>
                         </div>
                     </div>
-                    <iframe src="${escapeHtml(framedPdf)}" title="Contract PDF" class="h-[560px] w-full rounded-b-2xl border-0 bg-white"></iframe>
+                    <iframe src="${escapeHtml(framedPdf)}" title="Contract PDF" class="w-full rounded-b-2xl border-0 bg-white" style="height: min(70vh, 640px);"></iframe>
                 `;
                 return;
             }
