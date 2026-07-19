@@ -46,9 +46,17 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     restart: unless-stopped
+    # --forwarded-allow-ips='*' is required, not optional: Caddy proxies from
+    # the Docker bridge (172.18.0.1), not 127.0.0.1, so uvicorn's default trust
+    # list ignores X-Forwarded-Proto and every request looks like plain HTTP.
+    # That breaks generated URLs (the app tells browsers to call an http:// API
+    # from an https:// page, which they block) and silently drops the Secure
+    # flag from session cookies. Trusting all proxy IPs is safe here because
+    # the port binds to loopback and Caddy is the only client that can reach it.
     command: >
       sh -lc "alembic upgrade head &&
-      python -m uvicorn backend.api:app --host 0.0.0.0 --port 8000"
+      python -m uvicorn backend.api:app --host 0.0.0.0 --port 8000
+      --proxy-headers --forwarded-allow-ips='*'"
     environment:
       <<: *karl-env
       # Connection budget is PER PROCESS and the managed plan caps total
