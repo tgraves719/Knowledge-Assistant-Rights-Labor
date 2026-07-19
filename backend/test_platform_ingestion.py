@@ -924,6 +924,101 @@ def test_contract_pack_without_wage_rows_keeps_table_snapshots():
     assert any("$22.51" in s.text for s in structure.sections)
 
 
+def test_contract_pack_ingest_indexes_current_wage_rates_end_to_end(tmp_path):
+    """Upload → parse → structure → chunks, for a pack with wage rows.
+
+    The retrievable index must carry the amended (current) rate with the
+    appendix's own article identity and the row-level printed page — this is
+    what the member outline, citations and the PDF pane all read."""
+    import json
+
+    from backend.platform.document_structure import APPENDIX_A_ARTICLE_NUM
+    from backend.platform.parsing import ContractPackDocumentParser
+
+    settings = _settings(tmp_path)
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+        future=True,
+    )
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+    Base.metadata.create_all(engine)
+
+    storage = LocalDiskStorage(settings.local_storage_root)
+    retrieval = TenantRetrievalService()
+    ingestion = IngestionService(
+        storage=storage,
+        retrieval=retrieval,
+        parsers=ParserRegistry([ContractPackDocumentParser(), PlainTextDocumentParser()]),
+        inline_parse_max_bytes=settings.inline_parse_max_bytes,
+    )
+
+    pack = {
+        "contract_id": "local7_test_2022",
+        "effective_version_id": "effective_test",
+        "sections": [
+            {
+                "anchor_id": "a8_s17",
+                "article_num": "8",
+                "article_title": "RATES OF PAY",
+                "section_num": "17",
+                "content_markdown": "Section 17. The minimum wages shall be as set forth in Appendix A.",
+                "provenance": [{"pdf": "Book.pdf", "pdf_page": 8, "source_type": "base"}],
+            },
+        ],
+        "tables": {
+            "appendix_a_wage_rows": {
+                "table_id": "appendix_a_wage_rows",
+                "columns": [],
+                "rows": [
+                    _wage_row("all_purpose_clerk", "ALL PURPOSE CLERK", "Start", 0, "2024-01-21", 17.00),
+                    _wage_row("all_purpose_clerk", "ALL PURPOSE CLERK", "Start", 0, "2025-07-05", 17.25, amended=True),
+                ],
+            }
+        },
+    }
+    payload = json.dumps(pack).encode("utf-8")
+
+    with SessionLocal() as db:
+        union = Union(slug="local-1", name="Local 1", union_local_id="local-1")
+        user = User(email="admin@example.com", full_name="Admin")
+        db.add_all([union, user])
+        db.flush()
+        db.add(UnionMembership(union_id=union.id, user_id=user.id, role=Role.UNION_ADMIN))
+        db.commit()
+
+        stored = storage.save_bytes(union.slug, "contract.json", payload)
+        result = ingestion.register_upload(
+            db,
+            union=union,
+            uploaded_by_user_id=user.id,
+            filename="contract.json",
+            content_type="application/json",
+            payload=payload,
+            storage_key=stored.key,
+        )
+        db.commit()
+
+        # JSON is not inline-ingestable; drive the deferred job like the worker does.
+        ingestion.process_job(db, union=union, job=result.ingestion_job)
+        db.commit()
+
+        document = db.get(Document, result.document.id)
+        assert document.status == DocumentStatus.ACTIVE
+        chunks = db.query(ChunkEmbedding).filter(ChunkEmbedding.document_id == document.id).all()
+        wage_chunks = [c for c in chunks if (c.metadata_json or {}).get("article_num") == APPENDIX_A_ARTICLE_NUM]
+        assert wage_chunks, "wage rows must land in the retrievable index"
+        apc = next(c for c in wage_chunks if (c.metadata_json or {}).get("section_num") == "all_purpose_clerk")
+        # The current (amended) rate is what the member must retrieve.
+        assert "$17.25" in apc.chunk_text
+        assert "current rates, as amended" in apc.chunk_text
+        # Citations and the PDF pane read source_page.
+        assert apc.metadata_json.get("source_page") == 62
+        # The outline groups on these; both articles must be present.
+        assert any((c.metadata_json or {}).get("article_num") == "8" for c in chunks)
+
+
 def test_contract_pack_parser_rejects_unrelated_json():
     """Arbitrary JSON must not be mistaken for a contract pack."""
     import json

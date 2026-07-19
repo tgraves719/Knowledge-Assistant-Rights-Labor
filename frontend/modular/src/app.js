@@ -3041,9 +3041,11 @@ const EMBED_THEME_OVERRIDES = (() => {
         }
 
         function setActiveArticleInToc(normalizedArticleNum) {
+            // Tenant outlines can carry non-numeric article ids ("appendix-a").
             const articleNum = toPositiveIntOrNull(normalizedArticleNum);
-            if (articleNum === null) return;
-            setActiveTocSelection('article', `article:${articleNum}`);
+            const key = articleNum !== null ? String(articleNum) : safeText(normalizedArticleNum);
+            if (!key) return;
+            setActiveTocSelection('article', `article:${key}`);
         }
 
         async function getFirstSectionLocator(articleNum) {
@@ -3078,6 +3080,14 @@ const EMBED_THEME_OVERRIDES = (() => {
         }
 
         async function openArticleInPdf(articleNum, options = {}) {
+            if (isTenantRoute()) {
+                // No legacy section locator on tenant routes; the tenant branch
+                // of openContractInPdf resolves the page from the outline.
+                return openContractInPdf(articleNum, null, null, {
+                    ...options,
+                    requestToken: nextPdfNavToken(),
+                });
+            }
             const normalizedArticleNum = toPositiveIntOrNull(articleNum);
             if (normalizedArticleNum === null) return false;
             const { preferSection = true } = options;
@@ -3122,6 +3132,39 @@ const EMBED_THEME_OVERRIDES = (() => {
                 ? Number(options.requestToken)
                 : nextPdfNavToken();
             const sourceContext = _resolveSourceContextForPdfNavigation(options);
+            // Tenant deployments have no on-disk packs behind /api/pdf-location
+            // — the printed book is the attached source PDF served by the
+            // member API, and the outline carries each section's printed page.
+            if (isTenantRoute()) {
+                const outline = tenantContractOutline;
+                const pdfUrl = safeText(outline?.source_pdf_url);
+                if (!pdfUrl) {
+                    _clearPdfNavigationContext();
+                    return false;
+                }
+                const articleKey = safeText(articleNum) || null;
+                const article = (outline?.articles || []).find(
+                    (item) => String(item.article_num) === articleKey
+                );
+                let page = sourceContext.sourcePage && sourceContext.sourcePage > 0
+                    ? sourceContext.sourcePage
+                    : null;
+                if (page === null && article) {
+                    const sections = article.sections || [];
+                    const target = safeText(sectionNum)
+                        ? sections.find((entry) => String(entry.section_num) === String(sectionNum))
+                        : null;
+                    const pick = (target && Number(target.page) > 0)
+                        ? target
+                        : sections.find((entry) => Number(entry.page) > 0);
+                    page = pick && Number(pick.page) > 0 ? Number(pick.page) : null;
+                }
+                const label = article?.article_title
+                    ? `${article.article_title}${page ? ` · Page ${page}` : ''}`
+                    : `Contract PDF${page ? ` · Page ${page}` : ''}`;
+                _showContractPdfOverlay(new URL(pdfUrl, API_BASE).toString(), page, label, { requestToken });
+                return true;
+            }
             if (!contractId || (normalizedArticleNum === null && !tableId && !(browseKind && browseKey))) {
                 _clearPdfNavigationContext();
                 return false;
@@ -3394,7 +3437,8 @@ const EMBED_THEME_OVERRIDES = (() => {
                     label: outline.document_title || 'Contract',
                     items: (outline.articles || []).map((article) => ({
                         kind: 'article',
-                        key: String(article.article_num),
+                        // Prefixed to match what setActiveArticleInToc highlights.
+                        key: `article:${article.article_num}`,
                         title: article.article_title,
                         article_num: article.article_num,
                     })),
@@ -3417,18 +3461,28 @@ const EMBED_THEME_OVERRIDES = (() => {
                         const key = safeText(item?.key) || '';
                         const title = String(item?.title || '').split('\n')[0].trim();
                         const articleNum = toPositiveIntOrNull(item?.article_num);
+                        // Tenant outlines carry non-numeric article ids
+                        // ("appendix-a"); route them through loadArticle, not
+                        // the legacy on-disk browse endpoint.
+                        const stringArticleKey = kind === 'article' && articleNum === null && isTenantRoute()
+                            ? safeText(item?.article_num)
+                            : '';
                         let prefix = kind === 'article' && articleNum !== null
                             ? `${articleNum}.`
                             : (safeText(item?.label) || kind.toUpperCase());
-                        if (kind === 'appendix') {
+                        if (kind === 'appendix' || stringArticleKey.toLowerCase().startsWith('appendix')) {
                             prefix = 'Appx';
+                        } else if (stringArticleKey) {
+                            prefix = '§';
                         }
                         const titleText = title || safeText(item?.label) || key;
                         const safeKind = escapeJsSingleQuoted(kind);
                         const safeKey = escapeJsSingleQuoted(key);
                         const clickHandler = kind === 'article' && articleNum !== null
                             ? `loadArticle(${articleNum})`
-                            : `loadContractBrowseItem('${safeKind}', '${safeKey}')`;
+                            : stringArticleKey
+                                ? `loadArticle('${escapeJsSingleQuoted(stringArticleKey)}')`
+                                : `loadContractBrowseItem('${safeKind}', '${safeKey}')`;
                         return `
                             <li>
                                 <button
@@ -3633,7 +3687,12 @@ const EMBED_THEME_OVERRIDES = (() => {
         }
 
         async function loadArticleTextForCurrentMode(articleNum) {
-            const normalizedArticleNum = toPositiveIntOrNull(articleNum);
+            // Tenant outlines can carry non-numeric article ids ("appendix-a");
+            // the legacy pack endpoints only ever take numbers.
+            const numericArticleNum = toPositiveIntOrNull(articleNum);
+            const normalizedArticleNum = numericArticleNum !== null
+                ? numericArticleNum
+                : (isTenantRoute() ? (safeText(articleNum) || null) : null);
             const contractId = isTenantRoute() ? getBrowseContractId() : getActiveContractId();
             if (!contractId || normalizedArticleNum === null) return false;
             if (isTenantRoute()) {
@@ -3672,8 +3731,11 @@ const EMBED_THEME_OVERRIDES = (() => {
 
         async function loadArticle(articleNum, options = {}) {
             const { openPdf = isOriginalPdfViewMode() } = options;
-            const contractId = getActiveContractId();
-            const normalizedArticleNum = toPositiveIntOrNull(articleNum);
+            const contractId = isTenantRoute() ? getBrowseContractId() : getActiveContractId();
+            const numericArticleNum = toPositiveIntOrNull(articleNum);
+            const normalizedArticleNum = numericArticleNum !== null
+                ? numericArticleNum
+                : (isTenantRoute() ? (safeText(articleNum) || null) : null);
             if (!contractId || normalizedArticleNum === null) return false;
             currentArticleNum = normalizedArticleNum;
             setActiveArticleInToc(normalizedArticleNum);
@@ -3999,17 +4061,30 @@ const EMBED_THEME_OVERRIDES = (() => {
                 return id;
             };
 
+            // Non-numeric ids come from tenant outlines ("appendix-a", whose
+            // sections are wage classifications, not numbered sections).
+            const numericArticle = toPositiveIntOrNull(data.article_num);
+            const articleEyebrow = numericArticle !== null
+                ? `Article ${numericArticle}`
+                : String(data.article_num || '').replace(/-/g, ' ').toUpperCase();
+            const sectionHeading = (section) => {
+                const numericSection = toPositiveIntOrNull(section.section_num);
+                if (numericSection !== null) {
+                    return `Section ${section.section_num}${section.subsection ? ` (${section.subsection})` : ''}`;
+                }
+                return String(section.section_title || section.section_num || '');
+            };
             const articleHTML = `
                 <article class="max-w-none">
                     <header class="mb-6 pb-4 border-b border-slate-200">
-                        <p class="text-ufcw-blue font-semibold text-sm uppercase tracking-wider">Article ${data.article_num}</p>
+                        <p class="text-ufcw-blue font-semibold text-sm uppercase tracking-wider">${escapeHtml(articleEyebrow)}</p>
                         <h1 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">${escapeHtml(data.article_title)}</h1>
                     </header>
 
                     ${data.sections.map(section => `
                         <section id="${getSectionId(section)}" class="mb-6 pb-6 border-b border-slate-100 last:border-0 scroll-mt-4">
                             <h2 class="text-base font-semibold text-slate-800 mb-2">
-                                Section ${section.section_num}${section.subsection ? ` (${section.subsection})` : ''}
+                                ${escapeHtml(sectionHeading(section))}
                             </h2>
                             ${section.summary ? `<p class="text-xs text-slate-500 italic mb-3">${escapeHtml(section.summary)}</p>` : ''}
                             <div class="${textClass} text-slate-700 leading-relaxed whitespace-pre-wrap">${renderMarkdown(section.content)}</div>
@@ -4401,6 +4476,44 @@ const EMBED_THEME_OVERRIDES = (() => {
                     summaryEl.innerHTML = renderInlineMarkdown(
                         rowIndex !== null ? `Table ${tableId}, Row ${rowIndex + 1}` : `Table ${tableId}`
                     );
+                    loadingEl.classList.add('hidden');
+                    textEl.classList.remove('hidden');
+                    return;
+                }
+
+                // Tenant workspaces have no on-disk contract packs behind
+                // /api/section//api/article — the member browse API serves the
+                // same text from the indexed chunks, so read it from there.
+                if (isTenantRoute()) {
+                    const browseContractId = getBrowseContractId();
+                    if (!browseContractId || toPositiveIntOrNull(articleNum) === null) {
+                        textEl.innerHTML = renderPopoverMarkdown('Content not found.');
+                        summaryEl.textContent = '';
+                    } else {
+                        const tenantParams = new URLSearchParams({ article_num: String(articleNum) });
+                        if (sectionNum) tenantParams.set('section_num', String(sectionNum));
+                        const tenantRes = await fetchWithAuth(
+                            `${API_BASE}/api/member/contracts/${encodeURIComponent(browseContractId)}/section?${tenantParams}`
+                        );
+                        if (tenantRes.ok) {
+                            const payload = await tenantRes.json();
+                            if (payload.article_title) subtitleEl.textContent = payload.article_title;
+                            const content = String(payload.content || '');
+                            const preview = content.substring(0, 700);
+                            textEl.innerHTML = renderPopoverMarkdown(
+                                (preview + (content.length > 700 ? '...' : '')) || 'Content not found.'
+                            );
+                            const bits = [];
+                            if (payload.section_label) bits.push(payload.section_label);
+                            if (payload.page) bits.push(`Printed page ${payload.page}`);
+                            if (bits.length) summaryEl.innerHTML = renderInlineMarkdown(bits.join(' · '));
+                        } else {
+                            textEl.innerHTML = renderPopoverMarkdown(
+                                'This citation was not found in this contract.'
+                            );
+                            summaryEl.textContent = '';
+                        }
+                    }
                     loadingEl.classList.add('hidden');
                     textEl.classList.remove('hidden');
                     return;
