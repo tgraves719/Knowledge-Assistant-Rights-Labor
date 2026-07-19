@@ -540,3 +540,36 @@ def test_ingestion_service_skips_ocr_retry_for_unparseable_pdf(tmp_path):
         assert ingestion_job.metadata_json["ocr_status"] == "not_recommended"
         assert ingestion_job.metadata_json["recommended_action"] == "manual_review_unparseable"
         assert len(jobs) == 1
+
+
+def test_structure_extraction_keeps_body_text_on_heading_lines():
+    """A section whose whole body sits on its heading line must survive.
+
+    The materializer emits sections as single lines ("Section 121. Discharge
+    for Just Cause. No employee shall be discharged..."). The old extractor
+    swallowed the entire line into section_title and never emitted the text as
+    content, silently deleting 22% of the clerks book from the index --
+    including the just-cause clause, the strongest protection a member has.
+    """
+    from backend.platform.document_structure import analyze_parsed_document
+    from backend.platform.parsing import PlainTextDocumentParser
+
+    text = (
+        "ARTICLE 20 DISCHARGE\n"
+        "Section 121. Discharge for Just Cause. No employee shall be discharged "
+        "except for just cause.\n"
+        "Section 122. Notice. The Employer shall provide written notice.\n"
+    )
+    parsed = PlainTextDocumentParser().parse_bytes(
+        text.encode("utf-8"), content_type="text/markdown", filename="contract.md"
+    )
+    st = analyze_parsed_document(parsed, filename="contract.md", content_type="text/markdown")
+
+    joined = " ".join(s.text for s in st.sections)
+    assert "No employee shall be discharged except for just cause." in joined
+    assert "The Employer shall provide written notice." in joined
+
+    s121 = next(s for s in st.sections if s.section_num == "121")
+    # Title is the first sentence, not the whole body.
+    assert s121.section_title == "Discharge for Just Cause."
+    assert "just cause" in s121.text.lower()

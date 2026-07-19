@@ -170,30 +170,48 @@ def _classify_document(*, title: str, content_type: str, text: str) -> tuple[str
     return "unknown", 0.42, "generic"
 
 
-def _extract_article_heading(line: str) -> tuple[str, str | None] | None:
+def _split_heading_remainder(remainder: str) -> tuple[str | None, str]:
+    """Split a heading line's remainder into (short title, body text).
+
+    In this corpus a "Section N." line usually carries the ENTIRE section body
+    on the same line ("Section 121. Discharge for Just Cause. No employee
+    shall be discharged..."). The old regexes swallowed all of it into the
+    title and never returned it as content, so any section whose whole body
+    sat on its heading line was silently deleted from the index -- measured at
+    22% of the clerks book, including the just-cause clause. The title is the
+    first sentence; everything on the line, title included, stays body text.
+    """
+    text = _normalize_phrase(remainder)
+    if not text:
+        return None, ""
+    title = _first_sentence(text, fallback_limit=90) or None
+    return title, text
+
+
+def _extract_article_heading(line: str) -> tuple[str, str | None, str] | None:
     match = re.match(
-        r"^(?:#+\s*)?article\s+([0-9]+[a-z]?)\s*(?:[:\-.]\s*|\s+)?([a-z0-9][a-z0-9 ,&()/\-'.\"]+)?$",
+        r"^(?:#+\s*)?article\s+([0-9]+[a-z]?)\s*[:\-.]?\s*(.*)$",
         str(line or "").strip(),
         re.IGNORECASE,
     )
     if not match:
         return None
     article_num = match.group(1).strip()
-    article_title = _normalize_phrase(match.group(2) or "") or None
-    return article_num, article_title
+    title, body = _split_heading_remainder(match.group(2) or "")
+    return article_num, title, body
 
 
-def _extract_section_heading(line: str) -> tuple[str, str | None] | None:
+def _extract_section_heading(line: str) -> tuple[str, str | None, str] | None:
     match = re.match(
-        r"^(?:#+\s*)?(?:section|sec\.?)\s+([0-9]+(?:\.[0-9a-z]+)?)\s*(?:[:\-.]\s*|\s+)?([a-z0-9][a-z0-9 ,&()/\-'.\"]+)?$",
+        r"^(?:#+\s*)?(?:section|sec\.?)\s+([0-9]+(?:\.[0-9a-z]+)?)\s*[:\-.]?\s*(.*)$",
         str(line or "").strip(),
         re.IGNORECASE,
     )
     if not match:
         return None
     section_num = match.group(1).strip()
-    section_title = _normalize_phrase(match.group(2) or "") or None
-    return section_num, section_title
+    title, body = _split_heading_remainder(match.group(2) or "")
+    return section_num, title, body
 
 
 def _detect_page_for_offset(pages: list[dict], offset: int) -> int | None:
@@ -299,13 +317,19 @@ def analyze_parsed_document(
         section_hit = _extract_section_heading(line)
         if article_hit:
             flush_section(current_offset)
-            current_article_num, current_article_title = article_hit
+            current_article_num, current_article_title, heading_body = article_hit
             article_titles[current_article_num] = current_article_title or f"Article {current_article_num}"
             current_section_num = None
             current_section_title = None
+            if heading_body:
+                # The heading line often carries the whole section body;
+                # dropping it deleted real contract language.
+                current_buffer.append(heading_body)
         elif section_hit:
             flush_section(current_offset)
-            current_section_num, current_section_title = section_hit
+            current_section_num, current_section_title, heading_body = section_hit
+            if heading_body:
+                current_buffer.append(heading_body)
         elif line:
             current_buffer.append(line)
         current_offset += len(line) + 1

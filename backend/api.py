@@ -1499,8 +1499,17 @@ def _build_platform_query_prompt(request: "QueryRequest", chunks: list[dict], co
         "If the user asks what a term means, explain how the term is used or described in these documents.\n"
         "If the current question is a follow-up, use the recent conversation context to resolve pronouns and omitted subject references.\n"
         "Do not just paste excerpts unless the user explicitly asks for a quote.\n"
-        "You may mention source labels inline where helpful, but do not append a final 'Sources:' section because the UI renders evidence separately.\n"
-        "If the excerpts do not answer the question, say so plainly and do not guess.\n\n"
+        "You may mention source labels inline where helpful, but do not append a final 'Sources:' section because the UI renders evidence separately.\n\n"
+        "BEFORE ANSWERING, decide whether the excerpts actually address the question asked.\n"
+        "Retrieval returns the closest text it has, so the excerpts may be union-document text "
+        "that is merely adjacent to the topic without answering it. Members read anything you "
+        "present as authoritative contract guidance, so presenting an unrelated clause as the "
+        "answer is worse than admitting the documents are silent.\n"
+        "If the excerpts do not address the question, reply with exactly this pattern: start with "
+        "'The documents I can search do not appear to cover this.' You may then add one sentence "
+        "noting the closest related topic the excerpts do cover, clearly labelled as related "
+        "rather than an answer, and suggest the member ask their steward.\n"
+        "Never bridge the gap by reinterpreting the question into one the excerpts can answer.\n\n"
         f"{style_block}"
         f"{conversation_block}"
         f"Question: {request.question}\n\n"
@@ -1616,6 +1625,15 @@ def _strip_platform_source_footer(answer: str) -> str:
 
 
 def _verify_platform_query_response(answer: str, chunks: list[dict]) -> tuple[bool, float]:
+    """Derive the confidence shown to members from the retrieval signal.
+
+    This used to return a hardcoded 0.72 for any answer longer than 24
+    characters -- a fabricated number displayed as if measured, on contract
+    advice. Now it reflects the top retrieval similarity (post ranking fix,
+    essentially cosine similarity of the best supporting chunk), damped when
+    the model itself reports the documents do not cover the question. Still a
+    heuristic, but one that moves with the evidence instead of pretending.
+    """
     if not chunks:
         return True, 0.35
     normalized_answer = str(answer or "").strip()
@@ -1623,7 +1641,17 @@ def _verify_platform_query_response(answer: str, chunks: list[dict]) -> tuple[bo
         return False, 0.3
     if len(normalized_answer) < 24:
         return False, 0.4
-    return True, 0.72
+
+    top_similarity = 0.0
+    for chunk in chunks[:3]:
+        try:
+            top_similarity = max(top_similarity, float(chunk.get("similarity") or 0.0))
+        except (TypeError, ValueError):
+            continue
+    confidence = max(0.2, min(0.9, round(top_similarity, 2)))
+    if normalized_answer.lower().startswith("the documents i can search do not appear to cover"):
+        confidence = min(confidence, 0.3)
+    return True, confidence
 
 
 def _build_platform_query_answer(chunks: list[dict]) -> str:
