@@ -1116,3 +1116,32 @@ def test_platform_query_path_refuses_prompt_exfiltration(tmp_path, monkeypatch):
     finally:
         api.app.state.platform = prior_platform
         api.retriever = prior_retriever
+
+
+def test_phrase_alias_bonus_separates_sibling_wage_sections():
+    """Wage-ladder chunks are near-identical in embedding space and the capped
+    per-term bonus can't lift HEAD CLERK over HEAD BAKER for "how much does a
+    head clerk make". A verbatim multi-word alias is a different kind of
+    signal: it only matches the chunks carrying that exact alias, so it gets
+    a small bonus outside the cap."""
+    from backend.platform.retrieval import TenantRetrievalService
+
+    query = "how much does a head clerk make per hour"
+    head_clerk = {
+        "search_aliases": ["head clerk", "head clerk pay", "wage rates", "appendix a"],
+        "section_label": "HEAD CLERK wage rates",
+    }
+    head_baker = {
+        "search_aliases": ["head baker", "head baker pay", "wage rates", "appendix a"],
+        "section_label": "HEAD BAKER wage rates",
+    }
+    assert TenantRetrievalService._phrase_alias_bonus(query, head_clerk) == pytest.approx(0.08)
+    assert TenantRetrievalService._phrase_alias_bonus(query, head_baker) == 0.0
+
+    # Multiple exact hits stay capped.
+    stacked = {"search_aliases": ["head clerk", "head clerk make"], "section_label": None}
+    assert TenantRetrievalService._phrase_alias_bonus(query, stacked) == pytest.approx(0.1)
+
+    # Single words never qualify, however common.
+    single = {"search_aliases": ["clerk", "hour"], "section_label": "clerk"}
+    assert TenantRetrievalService._phrase_alias_bonus(query, single) == 0.0

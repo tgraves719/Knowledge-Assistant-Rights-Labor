@@ -188,6 +188,31 @@ class TenantRetrievalService:
         return bonus
 
     @staticmethod
+    def _phrase_alias_bonus(query_lower: str, metadata: dict) -> float:
+        """Exact multi-word alias hit in the query, scored outside the cap.
+
+        Sibling sections can be near-identical in embedding space — every
+        Appendix A wage ladder reads "X hourly wage rates effective ..." — so
+        the capped bag-of-words tiebreaker cannot lift "HEAD CLERK" over
+        "HEAD BAKER" for "how much does a head clerk make". A verbatim
+        multi-word phrase ("head clerk", "section 121") only ever matches the
+        chunks that carry that exact alias, so unlike the per-term bonuses it
+        cannot reorder unrelated content; it stays small and capped anyway.
+        """
+        bonus = 0.0
+        seen: set[str] = set()
+        for alias in [*(metadata.get("search_aliases") or []), metadata.get("section_label")]:
+            phrase = str(alias or "").strip().lower()
+            if len(phrase) < 6 or " " not in phrase or phrase in seen:
+                continue
+            seen.add(phrase)
+            if phrase in query_lower:
+                bonus += 0.08
+                if bonus >= 0.1:
+                    return 0.1
+        return bonus
+
+    @staticmethod
     def _structured_lexical_text(chunk_text: str, metadata: dict) -> str:
         alias_values = metadata.get("search_aliases") or []
         topic_values = metadata.get("topic_tags") or []
@@ -361,6 +386,7 @@ class TenantRetrievalService:
         candidate_limit = 800 if search_terms else 300
         rows = db.scalars(base_stmt.limit(candidate_limit)).all()
 
+        query_lower = str(query or "").lower()
         query_embedding = self.embedder.embed(query)
         scored: list[RetrievedChunk] = []
         for row in rows:
@@ -394,13 +420,15 @@ class TenantRetrievalService:
             # stay uncapped because they exist to bury a chunk, not nudge it.
             if lexical_bonus > 0:
                 lexical_bonus = min(lexical_bonus, 0.05)
+            # Exact-phrase alias hits sit outside the cap; see the helper.
+            phrase_bonus = self._phrase_alias_bonus(query_lower, metadata) if lexical_bonus > -0.1 else 0.0
             scored.append(
                 RetrievedChunk(
                     chunk_id=row.id,
                     document_id=row.document_id,
                     chunk_index=row.chunk_index,
                     content=row.chunk_text,
-                    similarity=float(similarity + lexical_bonus),
+                    similarity=float(similarity + lexical_bonus + phrase_bonus),
                     metadata=metadata,
                 )
             )
