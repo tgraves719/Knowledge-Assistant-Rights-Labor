@@ -249,6 +249,13 @@ class TenantRetrievalService:
                 section_label = summarize_section_label(section_metadata.get("section_title") or "")
                 if section_label:
                     section_metadata["section_label"] = section_label
+                # Contract packs carry the printed page on the section itself
+                # rather than in an inline PROV marker. Citations and the PDF
+                # pane read source_page, so normalize onto that key.
+                if not section_metadata.get("source_page"):
+                    page_start = section_metadata.get("page_start")
+                    if isinstance(page_start, int) and page_start > 0:
+                        section_metadata["source_page"] = page_start
                 # A "section" here can be a 50KB slab (the source books have
                 # sections that big). One embedding cannot represent that much
                 # text, and retrieval then cannot discriminate within it —
