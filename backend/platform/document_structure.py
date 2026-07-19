@@ -260,17 +260,153 @@ def _looks_like_contract_pack(payload: dict) -> bool:
     return isinstance(first, dict) and ("content_markdown" in first or "raw_chunk" in first)
 
 
+APPENDIX_A_ARTICLE_NUM = "appendix-a"
+APPENDIX_A_ARTICLE_TITLE = "APPENDIX A — WAGE RATES"
+
+# Pack sections with doc_type "appendix" are the materializer's markdown
+# snapshots of the wage tables, and the same tables appear AGAIN as plain
+# "cba" sections sharing the appendix sections' anchor_ids. Both copies are
+# mis-anchored (they inherit the LAST article's number, e.g. "Article 58,
+# Section 175" — the Act-of-God clause) and only show the base-book rate
+# columns; amendments land in tables.appendix_a_wage_rows, not in this
+# markdown. When the structured rows exist they are the authoritative source
+# and every snapshot copy must be skipped, or retrieval can cite superseded
+# rates as current.
+
+
+def _appendix_snapshot_anchors(raw_sections: list) -> set[str]:
+    anchors: set[str] = set()
+    for raw in raw_sections:
+        if not isinstance(raw, dict):
+            continue
+        doc_type = str(raw.get("doc_type") or "").strip().lower()
+        citation = _normalize_phrase(str(raw.get("citation") or "")).lower()
+        if doc_type == "appendix" or citation.startswith("appendix a wage table"):
+            anchor = str(raw.get("anchor_id") or "").strip()
+            if anchor:
+                anchors.add(anchor)
+    return anchors
+
+
+def _format_effective_date(value: str) -> str:
+    match = re.match(r"^(\d{4})-(\d{2})-(\d{2})$", str(value or "").strip())
+    if not match:
+        return str(value or "").strip()
+    year, month, day = match.groups()
+    return f"{int(month)}/{int(day)}/{year}"
+
+
+def _appendix_wage_sections(payload: dict) -> list[StructuredSection]:
+    """One section per classification, built from the pack's structured wage rows.
+
+    The rows are the only place amended (current) rates exist — the markdown
+    wage tables in sections[] still show the base-book columns. Each effective
+    date is rendered as its own self-contained paragraph (classification name
+    included) so the chunker never has to slice a table: a paragraph survives
+    splitting whole, and every chunk a member retrieves names the
+    classification, the date, and whether the schedule is current.
+    """
+    tables = payload.get("tables")
+    table = tables.get("appendix_a_wage_rows") if isinstance(tables, dict) else None
+    rows = table.get("rows") if isinstance(table, dict) else None
+    if not isinstance(rows, list):
+        return []
+
+    groups: dict[str, dict] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        cols = row.get("columns")
+        if not isinstance(cols, dict):
+            continue
+        rate = cols.get("rate")
+        if not isinstance(rate, (int, float)) or isinstance(rate, bool):
+            continue
+        key = str(cols.get("classification_key") or "").strip()
+        name = _normalize_phrase(str(cols.get("classification_name") or ""))
+        effective = str(cols.get("effective_date") or "").strip()
+        if not key or not name or not effective:
+            continue
+        group = groups.setdefault(key, {"name": name, "dates": {}, "pages": [], "amended_dates": set()})
+        step = _normalize_phrase(str(cols.get("step_name") or "")) or "Rate"
+        threshold = cols.get("threshold_value")
+        threshold = float(threshold) if isinstance(threshold, (int, float)) and not isinstance(threshold, bool) else None
+        group["dates"].setdefault(effective, []).append((threshold, step, float(rate)))
+        if row.get("amendments"):
+            group["amended_dates"].add(effective)
+        for entry in row.get("provenance") or []:
+            if isinstance(entry, dict) and isinstance(entry.get("pdf_page"), int) and entry["pdf_page"] > 0:
+                group["pages"].append(entry["pdf_page"])
+                break
+
+    sections: list[StructuredSection] = []
+    for key in sorted(groups, key=lambda item: groups[item]["name"]):
+        group = groups[key]
+        name = group["name"]
+        dates = sorted(group["dates"], reverse=True)
+        if not dates:
+            continue
+        current_date = dates[0]
+        paragraphs = []
+        for effective in dates:
+            # Progression steps in ladder order (Start, then ascending hour/
+            # month thresholds); the pack's row order interleaves them.
+            ordered = sorted(
+                group["dates"][effective],
+                key=lambda item: (item[0] is None, item[0] if item[0] is not None else 0.0),
+            )
+            steps = "; ".join(f"{step} ${rate:,.2f} per hour" for _, step, rate in ordered)
+            if effective == current_date:
+                qualifier = " (current rates"
+                qualifier += ", as amended)" if effective in group["amended_dates"] else ")"
+            else:
+                qualifier = " (superseded by a later schedule)"
+            paragraphs.append(
+                f"{APPENDIX_A_ARTICLE_TITLE}. {name} hourly wage rates effective "
+                f"{_format_effective_date(effective)}{qualifier}: {steps}."
+            )
+        page_start = None
+        if group["pages"]:
+            counts: dict[int, int] = {}
+            for page in group["pages"]:
+                counts[page] = counts.get(page, 0) + 1
+            page_start = max(counts, key=lambda page: (counts[page], -page))
+        sections.append(
+            StructuredSection(
+                article_num=APPENDIX_A_ARTICLE_NUM,
+                article_title=APPENDIX_A_ARTICLE_TITLE,
+                section_num=key,
+                section_title=f"{name} wage rates",
+                text="\n\n".join(paragraphs),
+                page_start=page_start,
+                page_end=page_start,
+                summary=_first_sentence(paragraphs[0]) or None,
+                topic_tags=["wages"],
+                search_aliases=list(dict.fromkeys(
+                    _normalize_phrase(alias).lower()
+                    for alias in (name, f"{name} pay", "appendix a", "wage rates", "pay rate", "hourly rate")
+                    if _normalize_phrase(alias)
+                )),
+            )
+        )
+    return sections
+
+
 def analyze_contract_pack(payload: dict, *, filename: str) -> DocumentStructureAnalysis:
     """Build structure directly from a contract pack instead of regex-parsing text."""
     raw_sections = payload.get("sections") or []
     article_titles: dict[str, str] = {}
     sections: list[StructuredSection] = []
+    wage_sections = _appendix_wage_sections(payload)
+    snapshot_anchors = _appendix_snapshot_anchors(raw_sections) if wage_sections else set()
 
     for raw in raw_sections:
         if not isinstance(raw, dict):
             continue
         content = _normalize_phrase(str(raw.get("content_markdown") or raw.get("raw_chunk") or ""))
         if not content:
+            continue
+        if snapshot_anchors and str(raw.get("anchor_id") or "").strip() in snapshot_anchors:
             continue
         article_num = str(raw.get("article_num") or "").strip() or None
         article_title = _normalize_phrase(str(raw.get("article_title") or "")) or None
@@ -331,6 +467,10 @@ def analyze_contract_pack(payload: dict, *, filename: str) -> DocumentStructureA
                 search_aliases=list(dict.fromkeys(_normalize_phrase(a) for a in aliases if _normalize_phrase(a))),
             )
         )
+
+    if wage_sections:
+        article_titles.setdefault(APPENDIX_A_ARTICLE_NUM, APPENDIX_A_ARTICLE_TITLE)
+        sections.extend(wage_sections)
 
     if not sections:
         return DocumentStructureAnalysis(

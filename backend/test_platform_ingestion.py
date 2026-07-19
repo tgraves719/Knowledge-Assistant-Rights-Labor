@@ -758,6 +758,172 @@ def test_contract_pack_labels_strip_the_leading_section_marker():
     assert section.page_start == 4
 
 
+def _wage_row(classification_key, classification_name, step_name, threshold, effective_date, rate, *, amended=False, page=62):
+    return {
+        "columns": {
+            "classification_key": classification_key,
+            "classification_name": classification_name,
+            "step_name": step_name,
+            "step_type": "hours" if threshold is not None else "fixed",
+            "threshold_value": threshold,
+            "effective_date": effective_date,
+            "rate": rate,
+            "row_type": "step_row" if threshold is not None else "rate_row",
+        },
+        "amendments": ["moa_2025"] if amended else [],
+        "provenance": [{"pdf": "Book.pdf", "pdf_page": page, "source_type": "base"}],
+    }
+
+
+def test_contract_pack_wage_rows_become_current_rate_sections():
+    """Amended pay rates live ONLY in tables.appendix_a_wage_rows.
+
+    The markdown wage tables in sections[] still show the base-book columns
+    (2022-2024), so indexing only section text meant KARL could never cite a
+    current rate. The structured rows must be rendered into their own
+    Appendix A sections, current schedule first and labelled as current.
+    """
+    from backend.platform.document_structure import (
+        APPENDIX_A_ARTICLE_NUM,
+        analyze_contract_pack,
+    )
+
+    pack = {
+        "contract_id": "local7_test_2022",
+        "sections": [
+            {
+                "anchor_id": "a1_s1",
+                "article_num": "1",
+                "article_title": "RECOGNITION",
+                "section_num": "1",
+                "content_markdown": "The Employer recognizes the Union.",
+                "provenance": [{"pdf": "Book.pdf", "pdf_page": 3, "source_type": "base"}],
+            },
+        ],
+        "tables": {
+            "appendix_a_wage_rows": {
+                "table_id": "appendix_a_wage_rows",
+                "columns": [],
+                "rows": [
+                    # Deliberately out of ladder order: the pack interleaves steps.
+                    _wage_row("all_purpose_clerk", "ALL PURPOSE CLERK", "After 1560 hours", 1560, "2024-01-21", 18.00),
+                    _wage_row("all_purpose_clerk", "ALL PURPOSE CLERK", "Start", 0, "2024-01-21", 17.00),
+                    _wage_row("all_purpose_clerk", "ALL PURPOSE CLERK", "After 520 hours", 520, "2024-01-21", 17.50),
+                    _wage_row("all_purpose_clerk", "ALL PURPOSE CLERK", "Start", 0, "2025-07-05", 17.25, amended=True),
+                    _wage_row("head_clerk", "HEAD CLERK", "Rate", None, "2025-07-05", 24.11, amended=True, page=63),
+                ],
+            }
+        },
+    }
+
+    structure = analyze_contract_pack(pack, filename="contract.json")
+    wage_sections = [s for s in structure.sections if s.article_num == APPENDIX_A_ARTICLE_NUM]
+    assert len(wage_sections) == 2
+    assert APPENDIX_A_ARTICLE_NUM in structure.article_titles
+
+    apc = next(s for s in wage_sections if s.section_num == "all_purpose_clerk")
+    paragraphs = apc.text.split("\n\n")
+    # Current (amended) schedule leads and says so; superseded ones say so too.
+    assert "effective 7/5/2025 (current rates, as amended)" in paragraphs[0]
+    assert "$17.25" in paragraphs[0]
+    assert "superseded" in paragraphs[1]
+    # Ladder order restored regardless of pack row order.
+    start = paragraphs[1].index("Start")
+    after_520 = paragraphs[1].index("After 520 hours")
+    after_1560 = paragraphs[1].index("After 1560 hours")
+    assert start < after_520 < after_1560
+    # Row-level provenance carries the real printed page.
+    assert apc.page_start == 62
+    assert next(s for s in wage_sections if s.section_num == "head_clerk").page_start == 63
+    # Regular sections are untouched.
+    assert any(s.section_num == "1" and s.article_num == "1" for s in structure.sections)
+
+
+def test_contract_pack_wage_table_snapshots_are_skipped_when_rows_exist():
+    """The pack carries the wage tables THREE ways: structured rows, markdown
+    snapshots with doc_type "appendix", and duplicate "cba" sections sharing
+    the appendix anchors. The snapshots are mis-anchored to the last article
+    and show only base-book rates, so when the rows exist neither copy may be
+    indexed — a member asking about pay must never retrieve a superseded rate
+    presented as current."""
+    from backend.platform.document_structure import APPENDIX_A_ARTICLE_NUM, analyze_contract_pack
+
+    stale_table = "| CLASSIFICATION | 1/23/2022 |\n| --- | --- |\n| HEAD CLERK | $22.51 |"
+    pack = {
+        "contract_id": "local7_test_2022",
+        "sections": [
+            {
+                "anchor_id": "a58_s175",
+                "article_num": "58",
+                "article_title": "TERM OF AGREEMENT",
+                "section_num": "175",
+                "content_markdown": "Section 175. In the event of an Act of God the parties shall meet.",
+                "provenance": [{"pdf": "Book.pdf", "pdf_page": 58, "source_type": "base"}],
+            },
+            {
+                "anchor_id": "a58_s175_p10",
+                "article_num": "58",
+                "article_title": "TERM OF AGREEMENT",
+                "section_num": "175",
+                "citation": "Article 58, Section 175, Part 10",
+                "doc_type": "cba",
+                "content_markdown": stale_table,
+                "provenance": [{"pdf": "Book.pdf", "pdf_page": 59, "source_type": "base"}],
+            },
+            {
+                "anchor_id": "a58_s175_p10",
+                "article_num": "58",
+                "article_title": "TERM OF AGREEMENT",
+                "section_num": "175",
+                "citation": "Appendix A Wage Table - Article 58, Section 175, Part 10",
+                "doc_type": "appendix",
+                "content_markdown": stale_table,
+                "provenance": [{"pdf": "Book.pdf", "pdf_page": 59, "source_type": "base"}],
+            },
+        ],
+        "tables": {
+            "appendix_a_wage_rows": {
+                "table_id": "appendix_a_wage_rows",
+                "columns": [],
+                "rows": [_wage_row("head_clerk", "HEAD CLERK", "Rate", None, "2025-07-05", 24.11, amended=True)],
+            }
+        },
+    }
+
+    structure = analyze_contract_pack(pack, filename="contract.json")
+    # The real Section 175 survives; both snapshot copies are gone.
+    survivors = [s for s in structure.sections if s.article_num == "58"]
+    assert len(survivors) == 1
+    assert "Act of God" in survivors[0].text
+    assert not any("$22.51" in s.text for s in structure.sections)
+    assert any(s.article_num == APPENDIX_A_ARTICLE_NUM and "$24.11" in s.text for s in structure.sections)
+
+
+def test_contract_pack_without_wage_rows_keeps_table_snapshots():
+    """With no structured rows, the markdown snapshot is the only wage data
+    the pack has — it must keep flowing into the index."""
+    from backend.platform.document_structure import analyze_contract_pack
+
+    pack = {
+        "contract_id": "local7_test_2022",
+        "sections": [
+            {
+                "anchor_id": "a58_s175_p10",
+                "article_num": "58",
+                "article_title": "TERM OF AGREEMENT",
+                "section_num": "175",
+                "citation": "Appendix A Wage Table - Article 58, Section 175, Part 10",
+                "doc_type": "appendix",
+                "content_markdown": "| CLASSIFICATION | 1/23/2022 |\n| --- | --- |\n| HEAD CLERK | $22.51 |",
+                "provenance": [{"pdf": "Book.pdf", "pdf_page": 59, "source_type": "base"}],
+            },
+        ],
+    }
+
+    structure = analyze_contract_pack(pack, filename="contract.json")
+    assert any("$22.51" in s.text for s in structure.sections)
+
+
 def test_contract_pack_parser_rejects_unrelated_json():
     """Arbitrary JSON must not be mistaken for a contract pack."""
     import json
