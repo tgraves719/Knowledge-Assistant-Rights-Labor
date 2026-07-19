@@ -1145,3 +1145,71 @@ def test_phrase_alias_bonus_separates_sibling_wage_sections():
     # Single words never qualify, however common.
     single = {"search_aliases": ["clerk", "hour"], "section_label": "clerk"}
     assert TenantRetrievalService._phrase_alias_bonus(query, single) == 0.0
+
+
+def test_structured_article_expansion_window_includes_a_deep_hit(tmp_path):
+    """Expansion used to take the first 8 chunks of the article, silently
+    REPLACING the retrieved chunk whenever the article was large — Appendix A
+    holds ~30 classifications, so a HEAD CLERK hit was swapped for the
+    alphabetically first ladders and the model said the rate wasn't listed.
+    The window must centre on the hit."""
+    from backend.platform.models import ChunkEmbedding
+    from backend.platform.retrieval import RetrievedChunk
+
+    platform = _build_platform(tmp_path)
+    with platform.session_factory() as db:
+        union = Union(slug="local-1", name="Local 1", union_local_id="local-1")
+        user = User(email="admin@example.com", full_name="Admin")
+        db.add_all([union, user])
+        db.flush()
+        db.add(UnionMembership(union_id=union.id, user_id=user.id, role=Role.UNION_ADMIN))
+        document = Document(
+            union_id=union.id,
+            uploaded_by_user_id=user.id,
+            title="contract.json",
+            storage_key="local-1/contract.json",
+            content_type="application/json",
+            bytes_size=100,
+            status=DocumentStatus.ACTIVE,
+            metadata_json={"ready_for_query": True, "structure_mode": "legal_structured"},
+        )
+        db.add(document)
+        db.flush()
+        platform.retrieval.ingest_document(
+            db,
+            union_id=union.id,
+            document_id=document.id,
+            text="unused",
+            metadata={"document_title": document.title, "structure_mode": "legal_structured"},
+            structured_sections=[
+                {
+                    "article_num": "appendix-a",
+                    "article_title": "APPENDIX A",
+                    "section_num": f"classification_{index:02d}",
+                    "section_title": f"CLASSIFICATION {index:02d} wage rates",
+                    "text": f"CLASSIFICATION {index:02d} rate is ${index}.00 per hour.",
+                }
+                for index in range(12)
+            ],
+        )
+        db.commit()
+
+        rows = (
+            db.query(ChunkEmbedding)
+            .filter(ChunkEmbedding.document_id == document.id)
+            .order_by(ChunkEmbedding.chunk_index.asc())
+            .all()
+        )
+        hit_row = rows[10]
+        top = RetrievedChunk(
+            chunk_id=hit_row.id,
+            document_id=hit_row.document_id,
+            chunk_index=hit_row.chunk_index,
+            content=hit_row.chunk_text,
+            similarity=0.9,
+            metadata=dict(hit_row.metadata_json or {}),
+        )
+        expanded, strategy = api._expand_platform_structured_context(db, [top])
+        assert strategy == "platform_tenant_documents_structured_article"
+        context_text = expanded[0].metadata["expanded_context_text"]
+        assert "CLASSIFICATION 10" in context_text

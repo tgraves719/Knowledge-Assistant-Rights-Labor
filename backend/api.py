@@ -1365,17 +1365,28 @@ def _expand_platform_structured_context(db, retrieved_chunks: list) -> tuple[lis
 
     from backend.platform.models import ChunkEmbedding
 
-    sibling_rows = db.scalars(
+    all_rows = db.scalars(
         select(ChunkEmbedding)
         .where(
             ChunkEmbedding.document_id == document_id,
             ChunkEmbedding.metadata_json["article_num"].as_string() == article_num,
         )
         .order_by(ChunkEmbedding.chunk_index.asc())
-        .limit(8)
     ).all()
-    if not sibling_rows:
+    if not all_rows:
         return retrieved_chunks, None
+    # Window the expansion AROUND the retrieved chunk, not the article head.
+    # Taking the first 8 rows silently replaced the hit with unrelated
+    # opening sections whenever the article was large — Appendix A holds ~30
+    # classifications, so a HEAD CLERK hit was swapped for the alphabetically
+    # first wage ladders and the model answered that the rate wasn't listed.
+    anchor_index = int(getattr(top, "chunk_index", 0) or 0)
+    anchor_pos = next(
+        (pos for pos, row in enumerate(all_rows) if int(row.chunk_index) == anchor_index),
+        0,
+    )
+    window_start = max(0, min(anchor_pos - 2, len(all_rows) - 8))
+    sibling_rows = all_rows[window_start : window_start + 8]
 
     expanded_parts: list[str] = []
     for row in sibling_rows:
