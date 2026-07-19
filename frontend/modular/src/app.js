@@ -4727,6 +4727,13 @@ const EMBED_THEME_OVERRIDES = (() => {
                 statusPill.classList.toggle('hidden', !isEnabled);
                 statusPill.classList.toggle('flex', isEnabled);
             }
+            // Settings already has a bottom-nav tab and a welcome tile; this
+            // third shortcut is developer-only.
+            const profileEditBtn = document.getElementById('chat-profile-edit-btn');
+            if (profileEditBtn) {
+                profileEditBtn.classList.toggle('hidden', !isEnabled);
+                profileEditBtn.classList.toggle('flex', isEnabled);
+            }
             const pdfHeaderCopy = document.getElementById('contract-pdf-header-copy');
             const textHeaderCopy = document.getElementById('contract-text-header-copy');
             const historyBanner = document.getElementById('contract-history-banner');

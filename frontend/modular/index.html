@@ -276,6 +276,7 @@
         /* Dark mode - Citation badges (yellow) */
         .dark .citation-badge { background-color: rgba(212, 160, 41, 0.2) !important; color: #E8B84A !important; }
         .dark .citation-badge:hover { background-color: rgba(212, 160, 41, 0.35) !important; }
+        .dark #chat-new-conversation-btn,
         .dark #chat-profile-edit-btn {
             color: #E8B84A !important;
             background-color: rgba(212, 160, 41, 0.15);
@@ -283,6 +284,7 @@
             border-radius: 8px;
             padding: 4px 10px;
         }
+        .dark #chat-new-conversation-btn:hover,
         .dark #chat-profile-edit-btn:hover {
             color: #f6d577 !important;
             background-color: rgba(212, 160, 41, 0.24);
@@ -1814,12 +1816,29 @@
                                 <p id="display-contract" class="text-xs md:text-sm font-semibold text-slate-800 truncate w-full pr-1">Not set</p>
                             </div>
                         </div>
-                        <button id="chat-profile-edit-btn" onclick="setActiveTab('settings')" class="text-xs md:text-sm text-ufcw-blue hover:text-blue-700 dark:text-ufcw-gold-light dark:hover:text-ufcw-gold font-medium flex items-center gap-1 transition-colors shrink-0">
-                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                            Edit
-                        </button>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <!-- New Conversation lives here, where the eye already is when
+                                 checking which workspace/role an answer came from. Its old
+                                 home was a chat action bar that also carried a "Continue This
+                                 Conversation" button -- redundant, since typing continues the
+                                 conversation. -->
+                            <button id="chat-new-conversation-btn" type="button" onclick="startNewConversation()" class="text-xs md:text-sm text-ufcw-blue hover:text-blue-700 dark:text-ufcw-gold-light dark:hover:text-ufcw-gold font-medium flex items-center gap-1 transition-colors">
+                                <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                <span class="hidden sm:inline">New Conversation</span>
+                                <span class="sm:hidden">New</span>
+                            </button>
+                            <!-- Settings is reachable from the bottom nav and the welcome
+                                 tiles; this third shortcut read as an unexplained icon, so it
+                                 is developer-only now. -->
+                            <button id="chat-profile-edit-btn" onclick="setActiveTab('settings')" class="hidden text-xs md:text-sm text-ufcw-blue hover:text-blue-700 dark:text-ufcw-gold-light dark:hover:text-ufcw-gold font-medium items-center gap-1 transition-colors">
+                                <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                Edit
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -1854,14 +1873,6 @@
 
                 <!-- Input Area - Fixed above bottom nav on mobile -->
                 <div id="chat-input-area" class="md:relative fixed left-0 right-0 bottom-[60px] md:bottom-auto z-20 border-t border-slate-200 bg-white p-3 md:p-4 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-                    <div id="chat-action-bar" class="max-w-4xl mx-auto mb-3 flex flex-wrap items-center gap-2">
-                        <button type="button" onclick="focusQuestionInput('', { followUp: true })" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
-                            Continue This Conversation
-                        </button>
-                        <button type="button" onclick="startNewConversation()" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
-                            Start New Conversation
-                        </button>
-                    </div>
                     <form id="chat-form" class="flex gap-2 md:gap-3 max-w-4xl mx-auto">
                         <input
                             type="text"
