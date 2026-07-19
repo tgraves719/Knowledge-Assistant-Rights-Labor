@@ -275,20 +275,35 @@ def analyze_contract_pack(payload: dict, *, filename: str) -> DocumentStructureA
         article_num = str(raw.get("article_num") or "").strip() or None
         article_title = _normalize_phrase(str(raw.get("article_title") or "")) or None
         section_num = str(raw.get("section_num") or "").strip() or None
-        # The pack has no separate section title; the first sentence of the
-        # body is what reads as one in a table of contents.
-        section_title = _first_sentence(content, fallback_limit=90) or None
+        # The pack has no separate section title. Bodies open with their own
+        # "Section N." marker, so taking the first sentence verbatim yields
+        # the useless label "Section 4." -- strip that prefix first so the
+        # table of contents reads "Work Jurisdiction." instead.
+        label_source = re.sub(r"^\s*Section\s+[0-9]+(?:\.[0-9a-z]+)?\s*[.:-]?\s*", "", content, flags=re.IGNORECASE)
+        section_title = _first_sentence(label_source or content, fallback_limit=90) or None
         if article_num and article_title:
             article_titles.setdefault(article_num, article_title)
 
-        provenance = raw.get("provenance") or {}
+        # Provenance is a list of source references, each naming the PDF and
+        # the printed page the passage came from.
+        provenance = raw.get("provenance")
+        entries = provenance if isinstance(provenance, list) else [provenance]
         page_start = None
-        if isinstance(provenance, dict):
-            for key in ("page", "page_start", "pdf_page"):
-                value = provenance.get(key)
+        source_pdf = None
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            for key in ("pdf_page", "page", "page_start"):
+                value = entry.get(key)
                 if isinstance(value, int) and value > 0:
                     page_start = value
                     break
+            if source_pdf is None:
+                candidate = str(entry.get("pdf") or "").strip()
+                if candidate:
+                    source_pdf = candidate.replace("+", " ")
+            if page_start is not None:
+                break
 
         aliases = [
             alias

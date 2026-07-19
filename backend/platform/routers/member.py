@@ -8,7 +8,16 @@ from sqlalchemy import select
 from backend.platform.auth import AuthContext
 from backend.platform.db import apply_request_context, apply_service_bootstrap_context
 from backend.platform.deps import get_auth_context, get_container, get_db
-from backend.platform.models import AuditEvent, ChunkEmbedding, Document, DocumentStatus, Role, UnionMembership
+from backend.platform.models import (
+    AuditEvent,
+    AuthSession,
+    ChunkEmbedding,
+    Document,
+    DocumentStatus,
+    InviteCode,
+    Role,
+    UnionMembership,
+)
 from backend.platform.routers.admin import _purge_user_records
 
 
@@ -91,6 +100,63 @@ def get_member_document_content(
         filename=document.title,
         headers={"Content-Disposition": f'inline; filename="{document.title}"'},
     )
+
+
+@router.get("/contracts")
+def list_member_contracts(
+    request: Request,
+    access_token: str | None = Query(default=None),
+):
+    """Contracts this member may browse.
+
+    Honors the invite pin: a QR posted on the meat department board scopes
+    its scanners to the meat agreement, so the explorer must not offer them
+    the clerks book either.
+    """
+    db, auth = _resolve_member_document_auth(request, access_token=access_token)
+    union_id = auth.union_id
+    if not union_id and not auth.is_super_admin:
+        raise HTTPException(status_code=403, detail="No union scope for this session.")
+
+    stmt = select(Document).where(Document.status == DocumentStatus.ACTIVE)
+    if not auth.is_super_admin:
+        stmt = stmt.where(Document.union_id == union_id)
+    documents = [
+        document
+        for document in db.scalars(stmt).all()
+        if document.contract_id
+        and bool((document.metadata_json or {}).get("ready_for_query"))
+        and bool((document.metadata_json or {}).get("member_visible", True))
+    ]
+
+    pinned = None
+    session_id = getattr(auth, "session_id", None)
+    if session_id:
+        session = db.get(AuthSession, session_id)
+        invite_id = getattr(session, "invite_code_id", None) if session is not None else None
+        if invite_id:
+            invite = db.get(InviteCode, invite_id)
+            pinned = (getattr(invite, "contract_id", None) or "").strip() or None
+
+    seen: dict[str, dict] = {}
+    for document in documents:
+        if pinned and document.contract_id != pinned:
+            continue
+        entry = seen.setdefault(
+            document.contract_id,
+            {
+                "contract_id": document.contract_id,
+                "document_id": document.id,
+                "title": document.title,
+                "has_source_pdf": bool(document.source_pdf_key),
+                "total_articles": (document.metadata_json or {}).get("total_articles") or 0,
+                "total_sections": (document.metadata_json or {}).get("total_sections") or 0,
+            },
+        )
+        if document.source_pdf_key:
+            entry["has_source_pdf"] = True
+
+    return {"pinned_contract_id": pinned, "contracts": sorted(seen.values(), key=lambda item: item["contract_id"])}
 
 
 @router.get("/contracts/{contract_id}/outline")

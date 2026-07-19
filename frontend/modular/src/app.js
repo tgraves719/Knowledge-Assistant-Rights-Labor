@@ -1089,8 +1089,12 @@ const EMBED_THEME_OVERRIDES = (() => {
             document.querySelectorAll('[data-requires-profile="true"]').forEach(btn => {
                 btn.disabled = locked;
             });
+            // The contract explorer works on tenant routes now that uploaded
+            // contracts keep their article hierarchy and there are member
+            // browse endpoints. It stays hidden only when the workspace has
+            // no browsable contract (see refreshTenantContractLibrary).
             const contractTab = document.getElementById('tab-contract');
-            if (contractTab && isTenantRoute()) {
+            if (contractTab && isTenantRoute() && !tenantContractLibrary.length) {
                 contractTab.classList.add('hidden');
             }
         }
@@ -1107,6 +1111,34 @@ const EMBED_THEME_OVERRIDES = (() => {
                 return getTenantUploadContract();
             }
             return activeContract;
+        }
+
+        let tenantContractLibrary = [];
+        let tenantBrowseContractId = null;
+
+        async function refreshTenantContractLibrary() {
+            if (!isTenantRoute()) return;
+            try {
+                const res = await fetchWithAuth(`${API_BASE}/api/member/contracts`);
+                if (!res.ok) throw new Error(`contracts ${res.status}`);
+                const payload = await res.json();
+                tenantContractLibrary = Array.isArray(payload?.contracts) ? payload.contracts : [];
+                // An invite pinned to one agreement must not offer the other.
+                tenantBrowseContractId = safeText(payload?.pinned_contract_id)
+                    || (tenantContractLibrary[0]?.contract_id ?? null);
+            } catch (_) {
+                tenantContractLibrary = [];
+                tenantBrowseContractId = null;
+            }
+            const contractTab = document.getElementById('tab-contract');
+            if (contractTab) {
+                contractTab.classList.toggle('hidden', !tenantContractLibrary.length);
+            }
+        }
+
+        function getBrowseContractId() {
+            if (isTenantRoute()) return tenantBrowseContractId;
+            return getActiveContractId();
         }
 
         function getActiveContractId() {
@@ -3292,6 +3324,16 @@ const EMBED_THEME_OVERRIDES = (() => {
                     return;
                 }
                 await loadContractHistory(contractId);
+                if (isTenantRoute()) {
+                    // Tenant workspaces browse their own uploaded contract via
+                    // the member API; /api/manifest reads on-disk packs that a
+                    // tenant deployment does not have.
+                    const outline = await loadTenantContractOutline();
+                    renderTOC();
+                    initTOCState();
+                    renderContractHistoryPanel();
+                    return outline;
+                }
                 const res = await fetch(`${API_BASE}/api/manifest${getContractQueryString()}`);
                 if (!res.ok) {
                     throw new Error(`Manifest load failed (${res.status})`);
@@ -3324,6 +3366,41 @@ const EMBED_THEME_OVERRIDES = (() => {
                 _clearContractTextContext();
                 renderContractHistoryPanel();
             }
+        }
+
+        let tenantContractOutline = null;
+
+        async function loadTenantContractOutline() {
+            const contractId = getBrowseContractId();
+            if (!contractId) {
+                articleTitles = {};
+                contractBrowseGroups = [];
+                return null;
+            }
+            const res = await fetchWithAuth(
+                `${API_BASE}/api/member/contracts/${encodeURIComponent(contractId)}/outline`
+            );
+            if (!res.ok) throw new Error(`Outline load failed (${res.status})`);
+            const outline = await res.json();
+            tenantContractOutline = outline;
+
+            articleTitles = {};
+            (outline.articles || []).forEach((article) => {
+                articleTitles[String(article.article_num)] = article.article_title;
+            });
+            // Map onto the group/item shape the existing TOC renderer expects.
+            contractBrowseGroups = [
+                {
+                    label: outline.document_title || 'Contract',
+                    items: (outline.articles || []).map((article) => ({
+                        kind: 'article',
+                        key: String(article.article_num),
+                        title: article.article_title,
+                        article_num: article.article_num,
+                    })),
+                },
+            ];
+            return outline;
         }
 
         function renderTOC() {
@@ -3522,10 +3599,60 @@ const EMBED_THEME_OVERRIDES = (() => {
             );
         }
 
+        async function loadTenantArticle(articleNum) {
+            const contractId = getBrowseContractId();
+            if (!contractId) return null;
+            const outline = tenantContractOutline;
+            const article = (outline?.articles || []).find(
+                (item) => String(item.article_num) === String(articleNum)
+            );
+            const sections = [];
+            // Fetch each section's text so the reading pane shows the article
+            // the way the contract reads, not one merged block.
+            for (const entry of article?.sections || []) {
+                const params = new URLSearchParams({ article_num: String(articleNum), section_num: String(entry.section_num) });
+                const res = await fetchWithAuth(
+                    `${API_BASE}/api/member/contracts/${encodeURIComponent(contractId)}/section?${params}`
+                );
+                if (!res.ok) continue;
+                const payload = await res.json();
+                sections.push({
+                    section_num: entry.section_num,
+                    section_title: payload.section_label || entry.section_label || '',
+                    content: payload.content || '',
+                    page_start: payload.page ?? entry.page ?? null,
+                    anchor_id: payload.anchor_id || entry.anchor_id || null,
+                });
+            }
+            return {
+                article_num: articleNum,
+                article_title: article?.article_title || `Article ${articleNum}`,
+                sections,
+                source_pdf_url: outline?.source_pdf_url || null,
+            };
+        }
+
         async function loadArticleTextForCurrentMode(articleNum) {
             const normalizedArticleNum = toPositiveIntOrNull(articleNum);
-            const contractId = getActiveContractId();
+            const contractId = isTenantRoute() ? getBrowseContractId() : getActiveContractId();
             if (!contractId || normalizedArticleNum === null) return false;
+            if (isTenantRoute()) {
+                try {
+                    const data = await loadTenantArticle(normalizedArticleNum);
+                    if (!data) return null;
+                    renderArticleContent(data);
+                    _rememberContractTextPayload(
+                        { kind: 'article', key: `article:${normalizedArticleNum}`, articleNum: normalizedArticleNum },
+                        data,
+                        'effective',
+                    );
+                    return data;
+                } catch (err) {
+                    console.error('Failed to load tenant article text:', err);
+                    renderNonArticleContent(null, { error: 'Failed to load article text.' });
+                    return null;
+                }
+            }
             try {
                 const textMode = normalizeContractTextSourceMode(contractTextSourceMode);
                 const data = await fetchArticleForTextSource(normalizedArticleNum, textMode);
@@ -5861,6 +5988,8 @@ const EMBED_THEME_OVERRIDES = (() => {
             }
             initDarkMode();  // Apply dark mode if saved
             updateDeveloperModeUI(isDeveloperModeEnabled());
+            // Decides whether the Contract tab is offered at all.
+            refreshTenantContractLibrary().catch(() => {});
             saveContractTextSourceMode(contractTextSourceMode);
             initHeaderInteractivity();  // Header gradient baseline (no pointer interaction)
             scheduleShellLayoutMetricsSync();

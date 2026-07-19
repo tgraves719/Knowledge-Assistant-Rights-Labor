@@ -728,6 +728,36 @@ def test_contract_pack_upload_preserves_article_hierarchy():
     assert discharge.page_start == 20
 
 
+def test_contract_pack_labels_strip_the_leading_section_marker():
+    """Section bodies open with their own "Section N." marker.
+
+    Taking the first sentence verbatim produced table-of-contents entries
+    reading "Section 4." for every row, which is no help to a member
+    scanning for the clause they need.
+    """
+    from backend.platform.document_structure import analyze_contract_pack
+
+    pack = {
+        "contract_id": "local7_test_2022",
+        "sections": [
+            {
+                "article_num": "2",
+                "article_title": "JURISDICTION",
+                "section_num": "4",
+                "content_markdown": "Section 4. Work Jurisdiction. The Employer agrees not to subcontract.",
+                "provenance": [{"pdf": "SW+Pueblo+Clerks+2022.2025.pdf", "pdf_page": 4, "source_type": "base"}],
+            }
+        ],
+    }
+
+    structure = analyze_contract_pack(pack, filename="contract.json")
+    section = structure.sections[0]
+
+    assert section.section_title == "Work Jurisdiction."
+    # provenance is a LIST of source refs, not a dict.
+    assert section.page_start == 4
+
+
 def test_contract_pack_parser_rejects_unrelated_json():
     """Arbitrary JSON must not be mistaken for a contract pack."""
     import json
