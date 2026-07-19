@@ -1212,4 +1212,7 @@ def test_structured_article_expansion_window_includes_a_deep_hit(tmp_path):
         expanded, strategy = api._expand_platform_structured_context(db, [top])
         assert strategy == "platform_tenant_documents_structured_article"
         context_text = expanded[0].metadata["expanded_context_text"]
-        assert "CLASSIFICATION 10" in context_text
+        # The hit must LEAD the expansion: the prompt builder trims each
+        # excerpt to ~900 chars from the front, so a hit buried mid-window
+        # would be truncated away again.
+        assert "CLASSIFICATION 10" in context_text[:200]

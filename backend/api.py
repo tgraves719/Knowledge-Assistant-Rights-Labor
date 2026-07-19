@@ -1387,6 +1387,10 @@ def _expand_platform_structured_context(db, retrieved_chunks: list) -> tuple[lis
     )
     window_start = max(0, min(anchor_pos - 2, len(all_rows) - 8))
     sibling_rows = all_rows[window_start : window_start + 8]
+    # The prompt builder trims each excerpt to ~900 chars from the front, so
+    # the hit must LEAD the expansion or a long window truncates it away —
+    # neighbours are supporting context, the hit is the answer.
+    sibling_rows.sort(key=lambda row: int(row.chunk_index) != anchor_index)
 
     expanded_parts: list[str] = []
     for row in sibling_rows:
