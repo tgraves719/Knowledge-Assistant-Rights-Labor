@@ -1721,10 +1721,20 @@ def _tenant_upload_is_harmful_query(question: str) -> bool:
 
 
 def _tenant_upload_definition_target(question: str) -> Optional[str]:
-    match = re.search(r"\b(?:what is|what does|define|definition of)\s+([a-z0-9 _-]{3,40})\b", str(question or "").lower())
+    # Only explicit definition phrasing. "what is" used to be a trigger, which
+    # hijacked ordinary questions: "What is the company's policy on remote
+    # work?" extracted the target "the company" (the charset stops at the
+    # apostrophe), matched any sentence containing "the" and "company", and
+    # pasted the longest one as the answer -- bypassing synthesis and its
+    # relevance judgement entirely. Ordinary "what is" questions are exactly
+    # what synthesis is for.
+    match = re.search(
+        r"\b(?:what does\s+([a-z0-9 _-]{3,40})\s+mean\b|define\s+([a-z0-9 _-]{3,40})\b|definition of\s+([a-z0-9 _-]{3,40})\b)",
+        str(question or "").lower(),
+    )
     if not match:
         return None
-    target = _normalize_text_token_space(match.group(1))
+    target = _normalize_text_token_space(match.group(1) or match.group(2) or match.group(3) or "")
     return target or None
 
 
