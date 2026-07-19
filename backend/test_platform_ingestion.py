@@ -924,6 +924,83 @@ def test_contract_pack_without_wage_rows_keeps_table_snapshots():
     assert any("$22.51" in s.text for s in structure.sections)
 
 
+def test_contract_pack_sections_inherit_the_previous_page_when_provenance_is_null():
+    """~50 sections per book ship pdf_page null in the pack itself (Sunday
+    Premium, Travel Pay, Discharge...). Sections run in reading order, so the
+    previous section's page is at worst one off — and a citation that opens
+    the PDF a page early beats one with no page button at all."""
+    from backend.platform.document_structure import analyze_contract_pack
+
+    pack = {
+        "contract_id": "local7_test_2022",
+        "sections": [
+            {
+                "article_num": "13",
+                "article_title": "SIXTH DAY",
+                "section_num": "28",
+                "content_markdown": "Section 28. Sixth day premium applies.",
+                "provenance": [{"pdf": "Book.pdf", "pdf_page": 11, "source_type": "base"}],
+            },
+            {
+                "article_num": "13",
+                "article_title": "SUNDAY PREMIUM",
+                "section_num": "29",
+                "content_markdown": "Section 29. Sunday work is paid at premium rates.",
+                "provenance": [{"pdf": "Book.pdf", "pdf_page": None, "source_type": "base"}],
+            },
+        ],
+    }
+
+    structure = analyze_contract_pack(pack, filename="contract.json")
+    sunday = next(s for s in structure.sections if s.section_num == "29")
+    assert sunday.page_start == 11
+    # A sourced page must never be overwritten by an inherited one.
+    assert next(s for s in structure.sections if s.section_num == "28").page_start == 11
+
+
+def test_contract_pack_letters_of_understanding_get_their_own_outline_group():
+    """LOU sections have no article/section numbers, so the outline (which
+    groups on article_num) never showed them even though their text was
+    indexed. They now group under one heading, one entry per letter."""
+    from backend.platform.document_structure import (
+        LOU_ARTICLE_NUM,
+        LOU_ARTICLE_TITLE,
+        analyze_contract_pack,
+    )
+
+    pack = {
+        "contract_id": "local7_test_2022",
+        "sections": [
+            {
+                "anchor_id": "lou_15_p1",
+                "article_num": None,
+                "section_num": None,
+                "citation": "Letter of Understanding 15: Beverage Stewards, Part 1",
+                "doc_type": "lou",
+                "content_markdown": "## 15. Beverage Stewards. A Beverage Steward shall be defined as an associate.",
+                "provenance": [{"pdf": "Book.pdf", "pdf_page": None, "source_type": "base"}],
+            },
+            {
+                "anchor_id": "lou_15_p2",
+                "article_num": None,
+                "section_num": None,
+                "citation": "Letter of Understanding 15: Beverage Stewards, Part 2",
+                "doc_type": "lou",
+                "content_markdown": "The Employer retains the right to add the position to stores.",
+                "provenance": [{"pdf": "Book.pdf", "pdf_page": None, "source_type": "base"}],
+            },
+        ],
+    }
+
+    structure = analyze_contract_pack(pack, filename="contract.json")
+    lou_sections = [s for s in structure.sections if s.article_num == LOU_ARTICLE_NUM]
+    assert len(lou_sections) == 2
+    assert structure.article_titles[LOU_ARTICLE_NUM] == LOU_ARTICLE_TITLE
+    # Parts share the letter's number so the outline shows one entry per letter.
+    assert {s.section_num for s in lou_sections} == {"15"}
+    assert lou_sections[0].section_title == "Beverage Stewards"
+
+
 def test_contract_pack_ingest_indexes_current_wage_rates_end_to_end(tmp_path):
     """Upload → parse → structure → chunks, for a pack with wage rows.
 

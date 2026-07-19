@@ -263,6 +263,14 @@ def _looks_like_contract_pack(payload: dict) -> bool:
 APPENDIX_A_ARTICLE_NUM = "appendix-a"
 APPENDIX_A_ARTICLE_TITLE = "APPENDIX A — WAGE RATES"
 
+LOU_ARTICLE_NUM = "letters-of-understanding"
+LOU_ARTICLE_TITLE = "LETTERS OF UNDERSTANDING"
+
+_LOU_CITATION_RE = re.compile(
+    r"^letter of understanding\s+(\d+)\s*:\s*(.*?)(?:,\s*part\s+\d+)?$",
+    re.IGNORECASE,
+)
+
 # Pack sections with doc_type "appendix" are the materializer's markdown
 # snapshots of the wage tables, and the same tables appear AGAIN as plain
 # "cba" sections sharing the appendix sections' anchor_ids. Both copies are
@@ -399,6 +407,7 @@ def analyze_contract_pack(payload: dict, *, filename: str) -> DocumentStructureA
     sections: list[StructuredSection] = []
     wage_sections = _appendix_wage_sections(payload)
     snapshot_anchors = _appendix_snapshot_anchors(raw_sections) if wage_sections else set()
+    last_seen_page: int | None = None
 
     for raw in raw_sections:
         if not isinstance(raw, dict):
@@ -417,6 +426,21 @@ def analyze_contract_pack(payload: dict, *, filename: str) -> DocumentStructureA
         # table of contents reads "Work Jurisdiction." instead.
         label_source = re.sub(r"^\s*Section\s+[0-9]+(?:\.[0-9a-z]+)?\s*[.:-]?\s*", "", content, flags=re.IGNORECASE)
         section_title = _first_sentence(label_source or content, fallback_limit=90) or None
+
+        # Letters of Understanding carry no article/section numbers, which
+        # made them invisible in the outline (it groups on article_num) even
+        # though their text was indexed. Group them under their own heading,
+        # one entry per letter (parts share the letter's number).
+        citation = _normalize_phrase(str(raw.get("citation") or ""))
+        if not article_num:
+            lou_match = _LOU_CITATION_RE.match(citation)
+            if lou_match or str(raw.get("doc_type") or "").strip().lower() == "lou":
+                article_num = LOU_ARTICLE_NUM
+                article_title = LOU_ARTICLE_TITLE
+                if lou_match:
+                    section_num = lou_match.group(1)
+                    section_title = _normalize_phrase(lou_match.group(2)) or section_title
+
         if article_num and article_title:
             article_titles.setdefault(article_num, article_title)
 
@@ -440,6 +464,16 @@ def analyze_contract_pack(payload: dict, *, filename: str) -> DocumentStructureA
                     source_pdf = candidate.replace("+", " ")
             if page_start is not None:
                 break
+
+        # ~50 sections per book have pdf_page null in the pack itself
+        # (Sunday Premium, Travel Pay, Discharge, the LOUs). Sections run in
+        # reading order, so the previous section's page is at worst one page
+        # off — a citation that opens the PDF a page early beats one with no
+        # page button at all. Sourced pages always win over inherited ones.
+        if page_start is None:
+            page_start = last_seen_page
+        else:
+            last_seen_page = page_start
 
         aliases = [
             alias

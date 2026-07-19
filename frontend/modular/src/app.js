@@ -3472,6 +3472,8 @@ const EMBED_THEME_OVERRIDES = (() => {
                             : (safeText(item?.label) || kind.toUpperCase());
                         if (kind === 'appendix' || stringArticleKey.toLowerCase().startsWith('appendix')) {
                             prefix = 'Appx';
+                        } else if (stringArticleKey.toLowerCase().startsWith('letter')) {
+                            prefix = 'LOU';
                         } else if (stringArticleKey) {
                             prefix = '§';
                         }
