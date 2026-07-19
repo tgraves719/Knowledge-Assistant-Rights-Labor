@@ -302,6 +302,35 @@ class IngestionService:
                     "recommended_action": safety.recommended_action,
                 }
             )
+
+        # A standing human approval survives re-ingestion. Without this, every
+        # retry re-ran the scanner and silently re-locked documents an admin
+        # had already reviewed -- in the pilot, members lost access to their
+        # own contract PDFs after each re-index. The override is honored only
+        # while the fresh scan finds nothing beyond what the reviewer saw:
+        # a newly detected prompt-injection risk, or a sensitive-data risk
+        # that was not previously approved, voids it and requires re-review.
+        prior_override = (document.metadata_json or {}).get("safety_override")
+        if isinstance(prior_override, dict) and safety is not None:
+            new_injection = bool(safety.prompt_injection_risk)
+            new_sensitive = bool(safety.sensitive_data_risk)
+            approved_injection = bool(prior_override.get("previous_prompt_injection_risk"))
+            approved_sensitive = bool(prior_override.get("previous_sensitive_data_risk"))
+            if (not new_injection or approved_injection) and (not new_sensitive or approved_sensitive):
+                document_metadata.update(
+                    {
+                        "member_visible": True,
+                        "ready_for_query": True,
+                        "review_status": "resolved",
+                        "safety_status": "reviewed_safe",
+                        "safety_review_status": "resolved",
+                        "safety_reasons": [],
+                        "prompt_injection_risk": False,
+                        "sensitive_data_risk": False,
+                        "recommended_action": "Approved for full member access after manual safety review.",
+                        "safety_override": prior_override,
+                    }
+                )
         if auto_retry_job is not None:
             document.status = DocumentStatus.PROCESSING
             document_metadata.update(

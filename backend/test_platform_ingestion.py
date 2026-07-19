@@ -573,3 +573,97 @@ def test_structure_extraction_keeps_body_text_on_heading_lines():
     # Title is the first sentence, not the whole body.
     assert s121.section_title == "Discharge for Just Cause."
     assert "just cause" in s121.text.lower()
+
+
+def test_reingestion_preserves_standing_safety_approval(tmp_path):
+    """A human safety approval must survive re-ingestion of unchanged risks.
+
+    Every retry re-runs the safety scanner. Before this fix that overwrote the
+    admin's approve_member_access decision and silently re-locked the document
+    -- in the pilot, members lost access to their contract PDFs after each
+    re-index because the contract prints the Plan Administrator's phone
+    number, which re-trips the sensitive-data pattern every time.
+    """
+    settings = _settings(tmp_path)
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+        future=True,
+    )
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+    Base.metadata.create_all(engine)
+
+    storage = LocalDiskStorage(settings.local_storage_root)
+    from backend.platform.guardrails import GuardrailService
+
+    ingestion = IngestionService(
+        storage=storage,
+        retrieval=TenantRetrievalService(),
+        parsers=ParserRegistry([PlainTextDocumentParser()]),
+        guardrails=GuardrailService(),
+        inline_parse_max_bytes=settings.inline_parse_max_bytes,
+    )
+
+    # Trips the sensitive-phone pattern the same way the real contracts do.
+    contract_text = (
+        "ARTICLE 1 BENEFITS\n"
+        "Section 1. Contact the Plan Administrator at 303-430-9334 with any "
+        "questions about the health plan described in this Agreement.\n"
+    ).encode("utf-8")
+
+    with SessionLocal() as db:
+        union = Union(slug="local-1", name="Local 1", union_local_id="local-1")
+        user = User(email="admin@example.com", full_name="Admin")
+        db.add_all([union, user])
+        db.flush()
+        db.add(UnionMembership(union_id=union.id, user_id=user.id, role=Role.UNION_ADMIN))
+        db.commit()
+
+        stored = storage.save_bytes(union.slug, "contract.txt", contract_text)
+        result = ingestion.register_upload(
+            db,
+            union=union,
+            uploaded_by_user_id=user.id,
+            filename="contract.txt",
+            content_type="text/plain",
+            payload=contract_text,
+            storage_key=stored.key,
+        )
+        db.commit()
+
+        document = db.get(Document, result.document.id)
+        assert document.metadata_json.get("sensitive_data_risk") is True
+
+        # Admin approves, recording what risks were reviewed.
+        metadata = dict(document.metadata_json)
+        metadata.update(
+            {
+                "member_visible": True,
+                "ready_for_query": True,
+                "sensitive_data_risk": False,
+                "safety_review_status": "resolved",
+                "safety_status": "reviewed_safe",
+                "safety_override": {
+                    "approved_by_user_id": user.id,
+                    "previous_prompt_injection_risk": False,
+                    "previous_sensitive_data_risk": True,
+                },
+            }
+        )
+        document.metadata_json = metadata
+        db.commit()
+
+        # Re-ingest: same content, scanner re-flags the same phone number.
+        retry = ingestion.enqueue_retry(
+            db, union=union, document=document, source_job=result.ingestion_job, requested_by_user_id=user.id, ocr_enabled=False
+        )
+        db.commit()
+        ingestion.process_job(db, union=union, job=retry)
+        db.commit()
+
+        document = db.get(Document, document.id)
+        assert document.metadata_json.get("sensitive_data_risk") is False
+        assert document.metadata_json.get("safety_review_status") == "resolved"
+        assert document.metadata_json.get("member_visible") is True
+        assert document.metadata_json.get("safety_override", {}).get("previous_sensitive_data_risk") is True

@@ -5077,6 +5077,14 @@ const EMBED_THEME_OVERRIDES = (() => {
             processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-900 dark:text-slate-100">$1</strong>');
             processed = processed.replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-xs">$1</code>');
 
+            // Citation links: "(Source: file.md, Section N, page P)" opens the
+            // matching entry in the Supporting Sources panel below the answer.
+            processed = processed.replace(/\(Source:\s*([^)]+?)\)/gi, (match, inner) => {
+                const pageMatch = /page\s+(\d+)/i.exec(inner);
+                const page = pageMatch ? Number(pageMatch[1]) : null;
+                return `<button type="button" class="citation-link inline text-left align-baseline text-xs font-medium text-ufcw-blue hover:underline" data-cite-page="${page ?? ''}" onclick="openAnswerCitation(this, ${page ?? 'null'})">(Source: ${inner})</button>`;
+            });
+
             // Lists and quotes
             processed = processed.replace(/^\s*[-*\u2022]\s+(.+)$/gm, '<div class="ml-4 mb-1">&bull; $1</div>');
             processed = processed.replace(/^\s*(\d+)\.\s+(.+)$/gm, '<div class="ml-4 mb-1"><span class="font-medium">$1.</span> $2</div>');
@@ -5196,7 +5204,7 @@ const EMBED_THEME_OVERRIDES = (() => {
                             const pdfUrl = safeText(source?.document_source_pdf_url);
                             const pdfPage = Number.isFinite(Number(source?.source_page)) ? Number(source.source_page) : null;
                             const buttonLabel = pdfUrl
-                                ? (pdfPage ? `Open PDF · Page ${pdfPage}` : 'Open PDF')
+                                ? (pdfPage ? `View PDF · Page ${pdfPage}` : 'View PDF')
                                 : 'Open In Document';
                             return `
                                 <div class="rounded-xl border border-slate-200 bg-white px-3 py-3 shadow-sm">
@@ -5208,9 +5216,8 @@ const EMBED_THEME_OVERRIDES = (() => {
                                         <button
                                             type="button"
                                             class="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg bg-ufcw-blue px-3 py-2 text-xs font-medium text-white hover:bg-ufcw-blue-mid transition-colors"
-                                            onclick="${pdfUrl
-                                                ? `openContractPdfAtPage('${escapeJsSingleQuoted(pdfUrl)}', ${pdfPage ?? 'null'})`
-                                                : `openUploadedSourceViewer(this, '${escapeJsSingleQuoted(sourceRegistryKey)}')`}"
+                                            data-source-registry-key="${escapeHtml(sourceRegistryKey)}"
+                                            onclick="openUploadedSourceViewer(this, '${escapeJsSingleQuoted(sourceRegistryKey)}')"
                                         >
                                             ${escapeHtml(buttonLabel)}
                                         </button>
@@ -5299,6 +5306,32 @@ const EMBED_THEME_OVERRIDES = (() => {
             }
             delete viewer.dataset.sourceRegistryKey;
 
+            const sourcePdfUrl = safeText(source?.document_source_pdf_url);
+            if (sourcePdfUrl) {
+                // The printed contract is the best evidence there is: render it
+                // in the in-card panel, opened to the cited page, rather than
+                // bouncing the member to a bare browser tab.
+                const pdfPage = Number.isFinite(Number(source?.source_page)) ? Number(source.source_page) : null;
+                const resolvedPdf = new URL(sourcePdfUrl, API_BASE).toString();
+                const framedPdf = pdfPage ? `${resolvedPdf}#page=${pdfPage}` : resolvedPdf;
+                const headerLabel = buildUploadedSourceLabel(source, 0);
+                viewer.innerHTML = `
+                    <div class="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-2">
+                        <p class="min-w-0 truncate text-xs font-medium text-slate-700">
+                            ${escapeHtml(headerLabel)}${pdfPage ? ` · Page ${pdfPage}` : ''}
+                        </p>
+                        <div class="flex shrink-0 items-center gap-2">
+                            <button type="button" class="text-xs font-medium text-ufcw-blue hover:underline"
+                                onclick="openContractPdfAtPage('${escapeJsSingleQuoted(resolvedPdf)}', ${pdfPage ?? 'null'})">Open in new tab</button>
+                            <button type="button" class="text-xs text-slate-500 hover:text-slate-700"
+                                onclick="this.closest('.uploaded-source-viewer').classList.add('hidden')">Close</button>
+                        </div>
+                    </div>
+                    <iframe src="${escapeHtml(framedPdf)}" title="Contract PDF" class="h-[560px] w-full rounded-b-2xl border-0 bg-white"></iframe>
+                `;
+                return;
+            }
+
             const documentContentUrl = safeText(source?.document_content_url);
             const documentUrl = safeText(source?.document_access_url || documentContentUrl);
             if (!documentUrl) {
@@ -5386,6 +5419,27 @@ const EMBED_THEME_OVERRIDES = (() => {
             viewer.classList.add('hidden');
             delete viewer.dataset.objectUrl;
             delete viewer.dataset.sourceRegistryKey;
+        }
+
+        function openAnswerCitation(trigger, pageNumber = null) {
+            const card = trigger?.closest('.assistant-message-card');
+            if (!card) return;
+            const details = card.querySelector('details');
+            if (details) details.open = true;
+            const buttons = [...card.querySelectorAll('[data-source-registry-key]')];
+            let target = null;
+            if (pageNumber) {
+                target = buttons.find((btn) => {
+                    const record = getCitationSourceRecord(btn.dataset.sourceRegistryKey);
+                    return record && Number(record.source_page) === Number(pageNumber);
+                }) || null;
+            }
+            target = target || buttons[0] || null;
+            if (target) {
+                openUploadedSourceViewer(target, target.dataset.sourceRegistryKey);
+            } else if (details) {
+                details.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
 
         function openContractPdfAtPage(pdfUrl, pageNumber = null) {
@@ -5949,6 +6003,7 @@ Object.assign(window, {
     openUploadedSourceViewer,
     openUploadedSourceInNewTab,
     openContractPdfAtPage,
+    openAnswerCitation,
     selectMonth,
 });
 
