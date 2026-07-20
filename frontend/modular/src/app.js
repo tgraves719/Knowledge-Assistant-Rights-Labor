@@ -3716,6 +3716,8 @@ const EMBED_THEME_OVERRIDES = (() => {
             );
         }
 
+        const tenantArticleCache = {};
+
         async function loadTenantArticle(articleNum) {
             const contractId = getBrowseContractId();
             if (!contractId) return null;
@@ -3726,42 +3728,60 @@ const EMBED_THEME_OVERRIDES = (() => {
             if (!tenantContractOutline) {
                 await loadTenantContractOutline();
             }
+            // Contract text is static for the session; serve a repeat visit
+            // (e.g. clicking several citations into the same article) from
+            // cache so it renders instantly and refetches nothing.
+            const cacheKey = `${contractId}::${articleNum}`;
+            if (tenantArticleCache[cacheKey]) return tenantArticleCache[cacheKey];
             const outline = tenantContractOutline;
             const article = (outline?.articles || []).find(
                 (item) => String(item.article_num) === String(articleNum)
             );
-            // Fetch each section's text in PARALLEL. Sequentially this was one
-            // round trip per section — fine for a 3-section article, but
-            // Appendix A has 17 classifications, so a citation jump there took
-            // 15-20s (and the scroll ran so late it looked broken). Parallel is
-            // effectively one round trip; order is preserved via Promise.all.
+            // Fetch section text with BOUNDED concurrency. Sequentially this
+            // was one round trip per section — Appendix A's 17 classifications
+            // made a citation jump take 15-20s. Firing all 17 at once tripped
+            // connection/rate limits and requests came back ERR_ABORTED, so
+            // the article rendered empty. A small pool is fast and safe.
             const entries = article?.sections || [];
-            const fetched = await Promise.all(entries.map(async (entry) => {
-                const params = new URLSearchParams({ article_num: String(articleNum), section_num: String(entry.section_num) });
-                try {
-                    const res = await fetchWithAuth(
-                        `${API_BASE}/api/member/contracts/${encodeURIComponent(contractId)}/section?${params}`
-                    );
-                    if (!res.ok) return null;
-                    const payload = await res.json();
-                    return {
-                        section_num: entry.section_num,
-                        section_title: payload.section_label || entry.section_label || '',
-                        content: payload.content || '',
-                        page_start: payload.page ?? entry.page ?? null,
-                        anchor_id: payload.anchor_id || entry.anchor_id || null,
-                    };
-                } catch (_) {
-                    return null;
+            const results = new Array(entries.length);
+            let cursor = 0;
+            const worker = async () => {
+                while (cursor < entries.length) {
+                    const idx = cursor++;
+                    const entry = entries[idx];
+                    const params = new URLSearchParams({ article_num: String(articleNum), section_num: String(entry.section_num) });
+                    try {
+                        const res = await fetchWithAuth(
+                            `${API_BASE}/api/member/contracts/${encodeURIComponent(contractId)}/section?${params}`
+                        );
+                        if (!res.ok) continue;
+                        const payload = await res.json();
+                        results[idx] = {
+                            section_num: entry.section_num,
+                            section_title: payload.section_label || entry.section_label || '',
+                            content: payload.content || '',
+                            page_start: payload.page ?? entry.page ?? null,
+                            anchor_id: payload.anchor_id || entry.anchor_id || null,
+                        };
+                    } catch (_) {
+                        // Leave the slot empty; filtered out below.
+                    }
                 }
-            }));
-            const sections = fetched.filter(Boolean);
-            return {
+            };
+            const poolSize = Math.min(4, entries.length || 1);
+            await Promise.all(Array.from({ length: poolSize }, worker));
+            const sections = results.filter(Boolean);
+            const data = {
                 article_num: articleNum,
                 article_title: article?.article_title || `Article ${articleNum}`,
                 sections,
                 source_pdf_url: outline?.source_pdf_url || null,
             };
+            // Only cache a fully-loaded article so a partial failure can retry.
+            if (sections.length === entries.length && entries.length > 0) {
+                tenantArticleCache[cacheKey] = data;
+            }
+            return data;
         }
 
         async function loadArticleTextForCurrentMode(articleNum) {
