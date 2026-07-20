@@ -109,7 +109,13 @@ const EMBED_THEME_OVERRIDES = (() => {
         let currentKarlDocId = null;
         let contractHistoryById = {};
         let activeContractHistory = null;
-        let contractViewerMode = String(localStorage.getItem(CONTRACT_VIEW_MODE_STORAGE_KEY) || 'effective_text').trim().toLowerCase() || 'effective_text';
+        // Tenant members get the printed book loaded in the pane the moment
+        // they open the Contract tab; the Effective text view is one dropdown
+        // switch away and an explicit choice is remembered.
+        let contractViewerMode = String(
+            localStorage.getItem(CONTRACT_VIEW_MODE_STORAGE_KEY)
+            || (isTenantRoute() ? 'original_pdf' : 'effective_text')
+        ).trim().toLowerCase() || 'effective_text';
         let contractPdfSourceMode = String(localStorage.getItem(CONTRACT_PDF_SOURCE_MODE_STORAGE_KEY) || 'effective').trim().toLowerCase() || 'effective';
         let contractPdfSourcePdf = null;
         let contractTextSourceMode = String(localStorage.getItem(CONTRACT_TEXT_SOURCE_MODE_STORAGE_KEY) || 'effective').trim().toLowerCase() || 'effective';
@@ -2718,6 +2724,15 @@ const EMBED_THEME_OVERRIDES = (() => {
             return ua.includes('Edg/');
         }
 
+        function _shouldUseEdgePdfFallback() {
+            // The new-tab fallback exists because Edge mishandled article-level
+            // navigation against the legacy multi-source PDF endpoint. The
+            // tenant path serves one static same-origin PDF with a #page=
+            // fragment, which Chromium-based Edge embeds fine — members should
+            // get the viewer in the pane, not a button.
+            return _isEdgeBrowser() && isOriginalPdfViewMode() && !isTenantRoute();
+        }
+
         function _replaceContractPdfFrame(nextSrc, options = {}) {
             const currentFrame = document.getElementById('contract-pdf-frame');
             if (!currentFrame) return null;
@@ -2944,7 +2959,7 @@ const EMBED_THEME_OVERRIDES = (() => {
                 rememberPinnedPdfLocation(baseUrl, currentPdfPage, locationLabel);
             }
 
-            if (_isEdgeBrowser() && isOriginalPdfViewMode()) {
+            if (_shouldUseEdgePdfFallback()) {
                 _openEdgePdfFallback(currentPdfBaseUrl, currentPdfPage, locationLabel);
                 return;
             }
@@ -3253,7 +3268,7 @@ const EMBED_THEME_OVERRIDES = (() => {
                             : (browseKind && browseKey)
                                 ? `${browseKind.toUpperCase()} ${browseKey} -> Contract PDF`
                                 : `Article ${normalizedArticleNum} -> Contract PDF`;
-                        if (_isEdgeBrowser() && isOriginalPdfViewMode()) {
+                        if (_shouldUseEdgePdfFallback()) {
                             _openEdgePdfFallback(baseUrl, null, fallbackLabel);
                             return true;
                         }
@@ -3302,7 +3317,7 @@ const EMBED_THEME_OVERRIDES = (() => {
                 const resolvedPdfUrl = /^https?:\/\//i.test(rawPdfUrl)
                     ? rawPdfUrl
                     : `${API_BASE}${rawPdfUrl.startsWith('/') ? '' : '/'}${rawPdfUrl}`;
-                if (_isEdgeBrowser() && isOriginalPdfViewMode()) {
+                if (_shouldUseEdgePdfFallback()) {
                     _openEdgePdfFallback(resolvedPdfUrl, pageNumber, label);
                     return true;
                 }
@@ -4638,7 +4653,7 @@ const EMBED_THEME_OVERRIDES = (() => {
                 : null;
             if (articleNum === null && !tableId) return;
             const shouldOpenPdf = isOriginalPdfViewMode() || articleNum === null || !!tableId;
-            const stayInCurrentTab = _isEdgeBrowser() && isOriginalPdfViewMode() && shouldOpenPdf;
+            const stayInCurrentTab = _shouldUseEdgePdfFallback() && shouldOpenPdf;
 
             if (!stayInCurrentTab) {
                 setActiveTab('contract');
