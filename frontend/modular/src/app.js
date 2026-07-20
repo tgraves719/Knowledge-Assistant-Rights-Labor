@@ -4232,24 +4232,26 @@ const EMBED_THEME_OVERRIDES = (() => {
             const raw = safeText(sectionNum);
             if (!raw) return;
             const targetId = `section-${raw}`;
-            // Desktop and mobile reading panes render the same ids; act on the
-            // visible one. Use an instant jump (a smooth scroll across a long
-            // article — e.g. Appendix A's 17 wage tables — often doesn't finish
-            // as the tables reflow), then re-jump once after layout settles so
-            // the landing sticks. Flash the brand highlight so the eye lands.
-            const jump = () => {
+            // Instant jump (a smooth scroll across a long article — Appendix A's
+            // 17 wage tables — often doesn't finish as the tables reflow). The
+            // single-shot jump right after load sometimes runs a frame too
+            // early to take effect, so retry until the section actually lands
+            // near the top, then stop. Nothing resets the scroll once it lands.
+            let attempts = 0;
+            const tryScroll = () => {
+                attempts += 1;
                 const candidates = [...document.querySelectorAll('[id]')].filter((el) => el.id === targetId);
                 const el = candidates.find((node) => node.offsetParent !== null) || candidates[0];
-                if (!el) return;
-                el.scrollIntoView({ behavior: 'auto', block: 'start' });
-                el.classList.add('section-highlight');
-                clearTimeout(el._karlHighlightTimer);
-                el._karlHighlightTimer = setTimeout(() => el.classList.remove('section-highlight'), 2400);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'auto', block: 'start' });
+                    el.classList.add('section-highlight');
+                    clearTimeout(el._karlHighlightTimer);
+                    el._karlHighlightTimer = setTimeout(() => el.classList.remove('section-highlight'), 2400);
+                    if (Math.abs(el.getBoundingClientRect().top) < 140) return;
+                }
+                if (attempts < 15) setTimeout(tryScroll, 200);
             };
-            requestAnimationFrame(() => {
-                jump();
-                setTimeout(jump, 350);
-            });
+            requestAnimationFrame(tryScroll);
         }
 
         // Citations jump INTO the contract explorer at the cited section
