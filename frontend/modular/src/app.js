@@ -4151,7 +4151,17 @@ const EMBED_THEME_OVERRIDES = (() => {
         // into a steps × effective-dates markdown table (current column
         // first); renderMarkdown turns pipe tables into styled HTML already.
         function formatWageSectionAsTable(content) {
-            const paragraphs = String(content || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+            // A classification with many schedules (post-MOA there are up to
+            // six effective dates) can exceed the retrieval chunk size and get
+            // split — sometimes mid-word — across chunks that the section
+            // endpoint rejoins with blank lines. Reassemble: drop the blank
+            // lines, then re-split before each "APPENDIX A … effective" marker
+            // so every schedule paragraph is whole again.
+            const flat = String(content || '').split(/\n\s*\n/).map((s) => s.trim()).join('');
+            const paragraphs = flat
+                .split(/(?=APPENDIX A[^.]*\.\s*[^.]+?hourly wage rates effective)/i)
+                .map((p) => p.trim())
+                .filter(Boolean);
             if (!paragraphs.length) return null;
             const schedules = [];
             for (const paragraph of paragraphs) {
