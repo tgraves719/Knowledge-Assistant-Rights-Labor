@@ -4265,28 +4265,38 @@ const EMBED_THEME_OVERRIDES = (() => {
             // single-shot jump right after load sometimes runs a frame too
             // early to take effect, so retry until the section actually lands
             // near the top, then stop. Nothing resets the scroll once it lands.
-            // Keep re-asserting across the whole window rather than stopping on
-            // the first apparent success: a long article (Appendix A) reflows
-            // as its wage tables lay out, and a scroll that lands the section
-            // momentarily can be pushed back down a frame later. Re-scroll only
-            // when it has drifted, so once it's stably at the top these are
-            // no-ops and don't fight the reader.
-            let attempts = 0;
-            const tryScroll = () => {
-                attempts += 1;
+            // Robust to competing/late renders: the reading pane can be
+            // (re)rendered a beat after the citation load resolves, so the
+            // section may not exist yet when we first try, then appears later.
+            // Scroll whenever it is present and has drifted from the top —
+            // driven by a MutationObserver (catches the render) plus a short
+            // interval (catches reflow settling) — for a bounded window. Once
+            // it's stably at the top these are no-ops and don't fight scroll.
+            const doScroll = () => {
                 const candidates = [...document.querySelectorAll('[id]')].filter((el) => el.id === targetId);
                 const el = candidates.find((node) => node.offsetParent !== null) || candidates[0];
-                if (el) {
-                    if (Math.abs(el.getBoundingClientRect().top) >= 140) {
-                        el.scrollIntoView({ behavior: 'auto', block: 'start' });
-                    }
-                    el.classList.add('section-highlight');
-                    clearTimeout(el._karlHighlightTimer);
-                    el._karlHighlightTimer = setTimeout(() => el.classList.remove('section-highlight'), 2400);
+                if (!el) return;
+                if (Math.abs(el.getBoundingClientRect().top) >= 140) {
+                    el.scrollIntoView({ behavior: 'auto', block: 'start' });
                 }
-                if (attempts < 18) setTimeout(tryScroll, 200);
+                el.classList.add('section-highlight');
+                clearTimeout(el._karlHighlightTimer);
+                el._karlHighlightTimer = setTimeout(() => el.classList.remove('section-highlight'), 2400);
             };
-            requestAnimationFrame(tryScroll);
+            const panes = ['article-detail', 'article-detail-mobile']
+                .map((id) => document.getElementById(id))
+                .filter(Boolean);
+            const observer = new MutationObserver(() => doScroll());
+            (panes.length ? panes : [document.body]).forEach((node) =>
+                observer.observe(node, { childList: true, subtree: true })
+            );
+            let ticks = 0;
+            const interval = setInterval(() => {
+                doScroll();
+                if (++ticks >= 20) clearInterval(interval);
+            }, 250);
+            requestAnimationFrame(doScroll);
+            setTimeout(() => { observer.disconnect(); clearInterval(interval); }, 5200);
         }
 
         // Citations jump INTO the contract explorer at the cited section
