@@ -4232,15 +4232,23 @@ const EMBED_THEME_OVERRIDES = (() => {
             const raw = safeText(sectionNum);
             if (!raw) return;
             const targetId = `section-${raw}`;
-            // Desktop and mobile reading panes render the same ids; scroll the
-            // visible one and flash the brand highlight so the eye lands.
-            requestAnimationFrame(() => {
+            // Desktop and mobile reading panes render the same ids; act on the
+            // visible one. Use an instant jump (a smooth scroll across a long
+            // article — e.g. Appendix A's 17 wage tables — often doesn't finish
+            // as the tables reflow), then re-jump once after layout settles so
+            // the landing sticks. Flash the brand highlight so the eye lands.
+            const jump = () => {
                 const candidates = [...document.querySelectorAll('[id]')].filter((el) => el.id === targetId);
                 const el = candidates.find((node) => node.offsetParent !== null) || candidates[0];
                 if (!el) return;
-                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                el.scrollIntoView({ behavior: 'auto', block: 'start' });
                 el.classList.add('section-highlight');
-                setTimeout(() => el.classList.remove('section-highlight'), 2200);
+                clearTimeout(el._karlHighlightTimer);
+                el._karlHighlightTimer = setTimeout(() => el.classList.remove('section-highlight'), 2400);
+            };
+            requestAnimationFrame(() => {
+                jump();
+                setTimeout(jump, 350);
             });
         }
 
