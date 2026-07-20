@@ -2609,7 +2609,10 @@ const EMBED_THEME_OVERRIDES = (() => {
                         renderContractHistoryPanel();
                     }
                 }
-                if (hasCompleteProfileContext()) {
+                // When a citation is driving the navigation it loads and
+                // scrolls to the exact section itself; the tab's own default
+                // selection would race that load and reset the scroll.
+                if (hasCompleteProfileContext() && !contractNavInProgress) {
                     if (isOriginalPdfViewMode()) {
                         if (!isContractPdfOverlayOpen()) {
                             openContractPdfFromContractTab().catch((err) => {
@@ -3467,6 +3470,9 @@ const EMBED_THEME_OVERRIDES = (() => {
         }
 
         let tenantContractOutline = null;
+        // True while a citation is driving contract navigation, so the tab
+        // switch skips its own default article load (which would reset scroll).
+        let contractNavInProgress = false;
 
         async function loadTenantContractOutline() {
             const contractId = getBrowseContractId();
@@ -4250,16 +4256,19 @@ const EMBED_THEME_OVERRIDES = (() => {
                 contractViewerMode = 'effective_text';
                 updateContractViewerModeUI();
             }
-            // Pin the selection before switching tabs so the tab's own viewer
-            // init and this explicit load converge on the cited article rather
-            // than racing (it would otherwise default to the first article).
+            // Pin the selection and suppress the tab's own default load so it
+            // doesn't race this one and reset the scroll.
             setActiveArticleInToc(article);
-            setActiveTab('contract');
-            // On a first visit the contract outline hasn't loaded yet; without
-            // it loadArticle renders an empty article (header only). Wait for
-            // the outline/TOC before loading the cited article.
-            await ensureManifestLoaded();
-            await loadArticle(article, { openPdf: false });
+            contractNavInProgress = true;
+            try {
+                setActiveTab('contract');
+                // On a first visit the outline/TOC hasn't loaded yet; without
+                // it loadArticle renders an empty article (header only).
+                await ensureManifestLoaded();
+                await loadArticle(article, { openPdf: false });
+            } finally {
+                contractNavInProgress = false;
+            }
             if (section) scrollToExplorerSection(section);
             return true;
         }
