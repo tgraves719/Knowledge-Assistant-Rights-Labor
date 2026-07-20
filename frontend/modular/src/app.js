@@ -4248,6 +4248,10 @@ const EMBED_THEME_OVERRIDES = (() => {
             // than racing (it would otherwise default to the first article).
             setActiveArticleInToc(article);
             setActiveTab('contract');
+            // On a first visit the contract outline hasn't loaded yet; without
+            // it loadArticle renders an empty article (header only). Wait for
+            // the outline/TOC before loading the cited article.
+            await ensureManifestLoaded();
             await loadArticle(article, { openPdf: false });
             if (section) scrollToExplorerSection(section);
             return true;
