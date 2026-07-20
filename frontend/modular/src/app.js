@@ -4265,19 +4265,26 @@ const EMBED_THEME_OVERRIDES = (() => {
             // single-shot jump right after load sometimes runs a frame too
             // early to take effect, so retry until the section actually lands
             // near the top, then stop. Nothing resets the scroll once it lands.
+            // Keep re-asserting across the whole window rather than stopping on
+            // the first apparent success: a long article (Appendix A) reflows
+            // as its wage tables lay out, and a scroll that lands the section
+            // momentarily can be pushed back down a frame later. Re-scroll only
+            // when it has drifted, so once it's stably at the top these are
+            // no-ops and don't fight the reader.
             let attempts = 0;
             const tryScroll = () => {
                 attempts += 1;
                 const candidates = [...document.querySelectorAll('[id]')].filter((el) => el.id === targetId);
                 const el = candidates.find((node) => node.offsetParent !== null) || candidates[0];
                 if (el) {
-                    el.scrollIntoView({ behavior: 'auto', block: 'start' });
+                    if (Math.abs(el.getBoundingClientRect().top) >= 140) {
+                        el.scrollIntoView({ behavior: 'auto', block: 'start' });
+                    }
                     el.classList.add('section-highlight');
                     clearTimeout(el._karlHighlightTimer);
                     el._karlHighlightTimer = setTimeout(() => el.classList.remove('section-highlight'), 2400);
-                    if (Math.abs(el.getBoundingClientRect().top) < 140) return;
                 }
-                if (attempts < 15) setTimeout(tryScroll, 200);
+                if (attempts < 18) setTimeout(tryScroll, 200);
             };
             requestAnimationFrame(tryScroll);
         }
