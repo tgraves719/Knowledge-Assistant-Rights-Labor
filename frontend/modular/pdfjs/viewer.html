@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contract PDF</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #1f2937; }
+  #pages { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 8px 0; }
+  .page-slot { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  .page-slot canvas { display: block; width: 100%; height: 100%; }
+  #status { color: #cbd5e1; font: 13px system-ui, sans-serif; text-align: center; padding: 24px 16px; }
+</style>
+</head>
+<body>
+<div id="status">Loading contract PDF&hellip;</div>
+<div id="pages"></div>
+<script src="/static/modular/pdfjs/pdf.min.js"></script>
+<script>
+// Minimal same-origin PDF viewer for browsers without a native inline
+// renderer (Android Chrome, iOS Safari in iframes). Renders each page to a
+// canvas lazily and honours #page=N for citation jumps.
+(async () => {
+  const status = document.getElementById('status');
+  const container = document.getElementById('pages');
+  try {
+    const params = new URLSearchParams(location.search);
+    const fileParam = params.get('file') || '';
+    // Same-origin only: this page must never become a proxy for arbitrary URLs.
+    const fileUrl = new URL(fileParam, location.origin);
+    if (fileUrl.origin !== location.origin) throw new Error('Only same-origin documents can be shown here.');
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/static/modular/pdfjs/pdf.worker.min.js';
+    const pdf = await pdfjsLib.getDocument({ url: fileUrl.toString() }).promise;
+    status.remove();
+
+    const targetPage = (() => {
+      const match = /page=(\d+)/.exec(location.hash);
+      const page = match ? Number(match[1]) : 1;
+      return Math.min(Math.max(1, page), pdf.numPages);
+    })();
+
+    // Fixed slots keep scroll geometry stable so jumping to a page works
+    // before every earlier page has rendered.
+    const firstPage = await pdf.getPage(1);
+    const baseViewport = firstPage.getViewport({ scale: 1 });
+    const cssWidth = Math.min(document.documentElement.clientWidth - 8, 1000);
+    const scale = cssWidth / baseViewport.width;
+    const slots = [];
+    for (let n = 1; n <= pdf.numPages; n++) {
+      const slot = document.createElement('div');
+      slot.className = 'page-slot';
+      slot.dataset.page = String(n);
+      slot.style.width = `${Math.round(cssWidth)}px`;
+      slot.style.height = `${Math.round(baseViewport.height * scale)}px`;
+      container.appendChild(slot);
+      slots.push(slot);
+    }
+
+    const rendered = new Set();
+    async function renderSlot(slot) {
+      const n = Number(slot.dataset.page);
+      if (rendered.has(n)) return;
+      rendered.add(n);
+      const page = await pdf.getPage(n);
+      const ratio = window.devicePixelRatio || 1;
+      const viewport = page.getViewport({ scale: scale * ratio });
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(viewport.width);
+      canvas.height = Math.round(viewport.height);
+      slot.replaceChildren(canvas);
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) renderSlot(entry.target);
+      }
+    }, { rootMargin: '150% 0px' });
+    slots.forEach((slot) => observer.observe(slot));
+
+    if (targetPage > 1) {
+      slots[targetPage - 1].scrollIntoView();
+      renderSlot(slots[targetPage - 1]);
+    }
+
+    window.addEventListener('hashchange', () => {
+      const match = /page=(\d+)/.exec(location.hash);
+      if (!match) return;
+      const page = Math.min(Math.max(1, Number(match[1])), pdf.numPages);
+      slots[page - 1].scrollIntoView();
+      renderSlot(slots[page - 1]);
+    });
+  } catch (error) {
+    status.textContent = `Unable to display the PDF here. ${error && error.message ? error.message : ''}`;
+  }
+})();
+</script>
+</body>
+</html>

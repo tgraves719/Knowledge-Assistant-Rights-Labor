@@ -1291,6 +1291,34 @@ def _query_union_lookup_key(request: "QueryRequest") -> Optional[str]:
     return request.union_local_id
 
 
+def _structured_citation_parts(
+    article_num: str,
+    article_title: str,
+    section_num: str,
+    section_label: str,
+) -> list[str]:
+    """Human-readable locator parts for a chunk's citation label.
+
+    Synthetic article ids ("appendix-a", "letters-of-understanding") and
+    classification section ids ("courtesy_clerk") are machine keys; rendering
+    them as "Article appendix-a, Section courtesy_clerk" leaks them into the
+    synthesis prompt and the member's Supporting Sources panel. Non-numeric
+    ids fall back to their human titles instead.
+    """
+    parts: list[str] = []
+    if article_num:
+        if article_num.isdigit():
+            parts.append(f"Article {article_num} {article_title}".strip())
+        elif article_title:
+            parts.append(article_title)
+    if section_num:
+        if section_num.isdigit() or re.fullmatch(r"\d+(\.\d+[a-z]?)?", section_num):
+            parts.append(f"Section {section_num} {section_label}".strip())
+        elif section_label:
+            parts.append(section_label)
+    return parts
+
+
 def _platform_query_chunks_to_response_chunks(retrieved_chunks: list) -> list[dict]:
     chunks: list[dict] = []
     for item in retrieved_chunks:
@@ -1311,17 +1339,9 @@ def _platform_query_chunks_to_response_chunks(retrieved_chunks: list) -> list[di
         source_page = metadata.get("source_page")
         if isinstance(source_page, int) and source_page > 0:
             page_number = source_page
-        structured_label_parts = []
-        if article_num:
-            if article_title:
-                structured_label_parts.append(f"Article {article_num} {article_title}")
-            else:
-                structured_label_parts.append(f"Article {article_num}")
-        if section_num:
-            if section_title:
-                structured_label_parts.append(f"Section {section_num} {section_title}")
-            else:
-                structured_label_parts.append(f"Section {section_num}")
+        structured_label_parts = _structured_citation_parts(
+            article_num, article_title, section_num, section_title
+        )
         if isinstance(page_number, int) and page_number > 0 and structured_label_parts:
             citation = f"{title}, {', '.join(structured_label_parts)}, page {page_number}"
         elif isinstance(page_number, int) and page_number > 0:
@@ -2106,6 +2126,9 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
             {
                 "citation": str(chunk.get("citation") or "").strip(),
                 "article_title": chunk.get("article_title") or "",
+                # The real article heading ("APPENDIX A — WAGE RATES");
+                # article_title above is historically the document title.
+                "article_heading": (chunk.get("metadata") or {}).get("article_title"),
                 "article_num": (chunk.get("metadata") or {}).get("article_num"),
                 "section_num": (chunk.get("metadata") or {}).get("section_num"),
                 "section_title": (chunk.get("metadata") or {}).get("section_title"),
@@ -2166,6 +2189,22 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
             }
             for chunk in chunks
         ]
+        # A long section splits into several chunks that share the same
+        # article/section identity; showing each part as its own Supporting
+        # Source reads as duplicate entries. Keep the first (highest-ranked)
+        # per section; unstructured chunks keep per-chunk identity.
+        seen_source_keys: set = set()
+        deduped_sources = []
+        for source in sources:
+            if source.get("article_num") or source.get("section_num"):
+                key = (source.get("document_id"), source.get("article_num"), source.get("section_num"))
+            else:
+                key = (source.get("document_id"), "chunk", source.get("chunk_index"))
+            if key in seen_source_keys:
+                continue
+            seen_source_keys.add(key)
+            deduped_sources.append(source)
+        sources = deduped_sources
         if container.guardrails is not None:
             sources, source_redacted = _sanitize_member_sources(container.guardrails, sources)
             if source_redacted:

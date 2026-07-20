@@ -1253,3 +1253,18 @@ def test_article_group_rerank_never_deposes_the_best_individual_chunk():
     )
     assert reranked[0] is best
     assert len(reranked) == 3
+
+
+def test_structured_citation_parts_humanize_synthetic_ids():
+    """Machine keys ('appendix-a', 'courtesy_clerk') must not leak into
+    citation labels — they reached both the synthesis prompt and the member's
+    Supporting Sources panel as 'Article appendix-a, Section courtesy_clerk'."""
+    assert api._structured_citation_parts("8", "RATES OF PAY", "17", "Minimum wages.") == [
+        "Article 8 RATES OF PAY",
+        "Section 17 Minimum wages.",
+    ]
+    assert api._structured_citation_parts(
+        "appendix-a", "APPENDIX A — WAGE RATES", "courtesy_clerk", "COURTESY CLERK wage rates"
+    ) == ["APPENDIX A — WAGE RATES", "COURTESY CLERK wage rates"]
+    # Synthetic ids with no human title contribute nothing rather than junk.
+    assert api._structured_citation_parts("appendix-a", "", "courtesy_clerk", "") == []

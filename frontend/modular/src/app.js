@@ -2711,12 +2711,33 @@ const EMBED_THEME_OVERRIDES = (() => {
             return `${cleanBaseUrl}#${params.join('&')}`;
         }
 
+        function _canRenderPdfInline() {
+            // navigator.pdfViewerEnabled is the standard signal; Android
+            // Chrome and iOS report false (no inline viewer — members got an
+            // "Open" button instead of the book). Fall back to UA sniffing
+            // where the property does not exist.
+            if (typeof navigator.pdfViewerEnabled === 'boolean') return navigator.pdfViewerEnabled;
+            return !/Android|iPhone|iPad|iPod/i.test(String(navigator.userAgent || ''));
+        }
+
+        // Browsers without a native inline PDF renderer get the vendored
+        // same-origin PDF.js page instead of a bare iframe.
+        function _buildPdfFrameUrl(baseUrl, pageNumber = null) {
+            if (_canRenderPdfInline()) return _buildContractPdfUrl(baseUrl, pageNumber);
+            const cleanBaseUrl = String(baseUrl || '').split('#')[0].trim();
+            if (!cleanBaseUrl) return '';
+            const page = Number.isFinite(Number(pageNumber)) && Number(pageNumber) > 0
+                ? `#page=${Number(pageNumber)}`
+                : '';
+            return `/static/modular/pdfjs/viewer.html?file=${encodeURIComponent(cleanBaseUrl)}${page}`;
+        }
+
         function _buildEmbeddedPdfNavigationUrl(baseUrl, pageNumber = null) {
             const cleanBaseUrl = String(baseUrl || '').split('#')[0].trim();
             if (!cleanBaseUrl) return '';
             const navUrl = new URL(cleanBaseUrl, window.location.origin);
             navUrl.searchParams.set('_viewer_nav', String(Date.now()));
-            return _buildContractPdfUrl(navUrl.toString(), pageNumber);
+            return _buildPdfFrameUrl(navUrl.toString(), pageNumber);
         }
 
         function _isEdgeBrowser() {
@@ -4082,6 +4103,53 @@ const EMBED_THEME_OVERRIDES = (() => {
             if (detailMobile) detailMobile.innerHTML = articleHTML;
         }
 
+        // Wage sections are ingested as one self-contained sentence per
+        // effective date so retrieval chunks stay headered — readable to the
+        // model, but a member scanning for their step deserves the table the
+        // printed book has. Display-only transform: parse the sentences back
+        // into a steps × effective-dates markdown table (current column
+        // first); renderMarkdown turns pipe tables into styled HTML already.
+        function formatWageSectionAsTable(content) {
+            const paragraphs = String(content || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+            if (!paragraphs.length) return null;
+            const schedules = [];
+            for (const paragraph of paragraphs) {
+                const head = /^APPENDIX A[^.]*\.\s*(.+?)\s+hourly wage rates effective\s+([\d/]+)\s*\(([^)]*)\):\s*(.+?)\.?$/i.exec(paragraph);
+                if (!head) return null;
+                const steps = [];
+                for (const part of head[4].split(/;\s*/)) {
+                    const step = /^(.+?)\s+\$([\d,]+\.\d{2})\s+per hour$/i.exec(part.trim());
+                    if (!step) return null;
+                    steps.push({label: step[1].trim(), rate: `$${step[2]}`});
+                }
+                if (!steps.length) return null;
+                schedules.push({
+                    date: head[2],
+                    qualifier: /current/i.test(head[3]) ? 'current' : 'superseded',
+                    steps,
+                });
+            }
+            const stepLabels = [];
+            for (const schedule of schedules) {
+                for (const step of schedule.steps) {
+                    if (!stepLabels.includes(step.label)) stepLabels.push(step.label);
+                }
+            }
+            const header = ['Step', ...schedules.map(s => `Effective ${s.date}${s.qualifier === 'current' ? ' (current)' : ''}`)];
+            const lines = [
+                `| ${header.join(' | ')} |`,
+                `| ${header.map(() => '---').join(' | ')} |`,
+            ];
+            for (const label of stepLabels) {
+                const cells = schedules.map(s => s.steps.find(step => step.label === label)?.rate || '');
+                lines.push(`| ${label} | ${cells.join(' | ')} |`);
+            }
+            const supersededNote = schedules.some(s => s.qualifier === 'superseded')
+                ? '\nEarlier columns show superseded schedules kept for reference.'
+                : '';
+            return `${lines.join('\n')}${supersededNote}`;
+        }
+
         function renderArticleContent(data) {
             const detail = document.getElementById('article-detail');
             const detailMobile = document.getElementById('article-detail-mobile');
@@ -4117,15 +4185,20 @@ const EMBED_THEME_OVERRIDES = (() => {
                         <h1 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">${escapeHtml(data.article_title)}</h1>
                     </header>
 
-                    ${data.sections.map(section => `
+                    ${data.sections.map(section => {
+                        const isWageSection = toPositiveIntOrNull(data.article_num) === null
+                            && /appendix/i.test(String(data.article_num || ''));
+                        const wageTable = isWageSection ? formatWageSectionAsTable(section.content) : null;
+                        return `
                         <section id="${getSectionId(section)}" class="mb-6 pb-6 border-b border-slate-100 last:border-0 scroll-mt-4">
                             <h2 class="text-base font-semibold text-slate-800 mb-2">
                                 ${escapeHtml(sectionHeading(section))}
                             </h2>
-                            ${section.summary ? `<p class="text-xs text-slate-500 italic mb-3">${escapeHtml(section.summary)}</p>` : ''}
-                            <div class="${textClass} text-slate-700 leading-relaxed whitespace-pre-wrap">${renderMarkdown(section.content)}</div>
+                            ${section.summary && !wageTable ? `<p class="text-xs text-slate-500 italic mb-3">${escapeHtml(section.summary)}</p>` : ''}
+                            <div class="${textClass} text-slate-700 leading-relaxed whitespace-pre-wrap">${renderMarkdown(wageTable || section.content)}</div>
                         </section>
-                    `).join('')}
+                    `;
+                    }).join('')}
                 </article>
             `;
 
@@ -5371,7 +5444,8 @@ const EMBED_THEME_OVERRIDES = (() => {
             // Citation links: "(Source: file.md, Section N, page P)" opens the
             // matching entry in the Supporting Sources panel below the answer.
             processed = processed.replace(/\(Source:\s*([^)]+?)\)/gi, (match, inner) => {
-                const pageMatch = /page\s+(\d+)/i.exec(inner);
+                // The model abbreviates freely: "page 22", "p. 22", "pg 22".
+                const pageMatch = /\b(?:page|pg|p)\.?\s*(\d+)/i.exec(inner);
                 const page = pageMatch ? Number(pageMatch[1]) : null;
                 return `<button type="button" class="citation-link inline text-left align-baseline text-xs font-medium text-ufcw-blue hover:underline" data-cite-page="${page ?? ''}" onclick="openAnswerCitation(this, ${page ?? 'null'})">(Source: ${inner})</button>`;
             });
@@ -5435,16 +5509,33 @@ const EMBED_THEME_OVERRIDES = (() => {
             return safeText(source?.source_type).toLowerCase() === 'upload' && !!safeText(source?.document_id);
         }
 
+        // Synthetic ids ("appendix-a", "courtesy_clerk") are machine keys, not
+        // labels. Numeric ids keep the classic "Article N"/"Section N" form;
+        // everything else reads as its human title or is dropped in favour of
+        // the section label.
+        function humanizeArticleRef(articleNum, articleTitle = '') {
+            const raw = safeText(articleNum);
+            if (!raw) return '';
+            if (toPositiveIntOrNull(raw) !== null) return `Article ${raw}`;
+            return safeText(articleTitle) || raw.replace(/-/g, ' ').replace(/\b\w/g, (ch) => ch.toUpperCase());
+        }
+
+        function humanizeSectionRef(sectionNum) {
+            const raw = safeText(sectionNum);
+            if (!raw) return '';
+            return /^\d+(\.\d+[a-z]?)?$/.test(raw) ? `Section ${raw}` : '';
+        }
+
         function resolveUploadedSourcePageLabel(source) {
             const page = Number.isFinite(Number(source?.page_number)) ? Number(source.page_number) : null;
             const pageStart = Number.isFinite(Number(source?.page_start)) ? Number(source.page_start) : null;
             const pageEnd = Number.isFinite(Number(source?.page_end)) ? Number(source.page_end) : null;
             const chunkIndex = Number.isFinite(Number(source?.chunk_index)) ? Number(source.chunk_index) + 1 : null;
-            const articleNum = safeText(source?.article_num);
-            const sectionNum = safeText(source?.section_num);
+            const articleRef = humanizeArticleRef(source?.article_num, source?.article_heading);
+            const sectionRef = humanizeSectionRef(source?.section_num);
             const bits = [];
-            if (articleNum) bits.push(`Article ${articleNum}`);
-            if (sectionNum) bits.push(`Section ${sectionNum}`);
+            if (articleRef) bits.push(articleRef);
+            if (sectionRef) bits.push(sectionRef);
             if (page && page > 0) bits.push(`Page ${page}`);
             else if (pageStart && pageEnd && pageStart > 0 && pageEnd >= pageStart) bits.push(pageStart === pageEnd ? `Page ${pageStart}` : `Pages ${pageStart}-${pageEnd}`);
             else if (pageStart && pageStart > 0) bits.push(`Page ${pageStart}`);
@@ -5453,15 +5544,15 @@ const EMBED_THEME_OVERRIDES = (() => {
         }
 
         function buildUploadedSourceLabel(source, idx) {
-            const docTitle = safeText(source?.document_title).replace(/\.(md|markdown|txt)$/i, '');
-            const articleNum = safeText(source?.article_num);
-            const sectionNum = safeText(source?.section_num);
+            const docTitle = safeText(source?.document_title).replace(/\.(md|markdown|txt|json)$/i, '');
             // section_label is the short form written at ingest; section_title is
             // the full body and must never be used as a label.
             const sectionLabel = safeText(source?.section_label);
             const parts = [];
-            if (articleNum) parts.push(`Article ${articleNum}`);
-            if (sectionNum) parts.push(`Section ${sectionNum}`);
+            const articleRef = humanizeArticleRef(source?.article_num, source?.article_heading);
+            const sectionRef = humanizeSectionRef(source?.section_num);
+            if (articleRef) parts.push(articleRef);
+            if (sectionRef) parts.push(sectionRef);
             const locator = parts.join(' · ');
             const head = [docTitle, locator].filter(Boolean).join(' — ');
             if (sectionLabel) return head ? `${head}: ${sectionLabel}` : sectionLabel;
@@ -5604,7 +5695,11 @@ const EMBED_THEME_OVERRIDES = (() => {
                 // bouncing the member to a bare browser tab.
                 const pdfPage = Number.isFinite(Number(source?.source_page)) ? Number(source.source_page) : null;
                 const resolvedPdf = new URL(sourcePdfUrl, API_BASE).toString();
-                const framedPdf = pdfPage ? `${resolvedPdf}#page=${pdfPage}` : resolvedPdf;
+                // Same PDF.js fallback as the contract pane: Android/iOS have
+                // no native inline PDF renderer for iframes.
+                const framedPdf = _canRenderPdfInline()
+                    ? (pdfPage ? `${resolvedPdf}#page=${pdfPage}` : resolvedPdf)
+                    : _buildPdfFrameUrl(resolvedPdf, pdfPage);
                 const headerLabel = buildUploadedSourceLabel(source, 0);
                 viewer.innerHTML = `
                     <div class="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-2">
