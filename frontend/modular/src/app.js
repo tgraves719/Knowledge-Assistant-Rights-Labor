@@ -3713,6 +3713,13 @@ const EMBED_THEME_OVERRIDES = (() => {
         async function loadTenantArticle(articleNum) {
             const contractId = getBrowseContractId();
             if (!contractId) return null;
+            // The outline drives which sections to fetch. If it hasn't loaded
+            // yet (e.g. a citation jump on first visit, or a load that races
+            // the tab's own viewer init), fetch it here so we never render an
+            // empty article that then overwrites a good one.
+            if (!tenantContractOutline) {
+                await loadTenantContractOutline();
+            }
             const outline = tenantContractOutline;
             const article = (outline?.articles || []).find(
                 (item) => String(item.article_num) === String(articleNum)
