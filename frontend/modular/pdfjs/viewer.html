@@ -69,7 +69,10 @@
       canvas.width = Math.round(viewport.width);
       canvas.height = Math.round(viewport.height);
       slot.replaceChildren(canvas);
-      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      // 'print' intent renders identically for a static book but is driven by
+      // timeouts instead of requestAnimationFrame, so pages still paint when
+      // the tab is backgrounded or embedded in a throttled webview.
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport, intent: 'print' }).promise;
     }
 
     const observer = new IntersectionObserver((entries) => {
