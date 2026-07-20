@@ -3730,24 +3730,32 @@ const EMBED_THEME_OVERRIDES = (() => {
             const article = (outline?.articles || []).find(
                 (item) => String(item.article_num) === String(articleNum)
             );
-            const sections = [];
-            // Fetch each section's text so the reading pane shows the article
-            // the way the contract reads, not one merged block.
-            for (const entry of article?.sections || []) {
+            // Fetch each section's text in PARALLEL. Sequentially this was one
+            // round trip per section — fine for a 3-section article, but
+            // Appendix A has 17 classifications, so a citation jump there took
+            // 15-20s (and the scroll ran so late it looked broken). Parallel is
+            // effectively one round trip; order is preserved via Promise.all.
+            const entries = article?.sections || [];
+            const fetched = await Promise.all(entries.map(async (entry) => {
                 const params = new URLSearchParams({ article_num: String(articleNum), section_num: String(entry.section_num) });
-                const res = await fetchWithAuth(
-                    `${API_BASE}/api/member/contracts/${encodeURIComponent(contractId)}/section?${params}`
-                );
-                if (!res.ok) continue;
-                const payload = await res.json();
-                sections.push({
-                    section_num: entry.section_num,
-                    section_title: payload.section_label || entry.section_label || '',
-                    content: payload.content || '',
-                    page_start: payload.page ?? entry.page ?? null,
-                    anchor_id: payload.anchor_id || entry.anchor_id || null,
-                });
-            }
+                try {
+                    const res = await fetchWithAuth(
+                        `${API_BASE}/api/member/contracts/${encodeURIComponent(contractId)}/section?${params}`
+                    );
+                    if (!res.ok) return null;
+                    const payload = await res.json();
+                    return {
+                        section_num: entry.section_num,
+                        section_title: payload.section_label || entry.section_label || '',
+                        content: payload.content || '',
+                        page_start: payload.page ?? entry.page ?? null,
+                        anchor_id: payload.anchor_id || entry.anchor_id || null,
+                    };
+                } catch (_) {
+                    return null;
+                }
+            }));
+            const sections = fetched.filter(Boolean);
             return {
                 article_num: articleNum,
                 article_title: article?.article_title || `Article ${articleNum}`,
