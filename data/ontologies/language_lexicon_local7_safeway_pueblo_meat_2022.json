@@ -1,6 +1,6 @@
 {
   "schema_version": "language_lexicon_v1",
-  "generated_at_utc": "2026-07-17T19:47:05.630946+00:00",
+  "generated_at_utc": "2026-07-20T05:25:24.204918+00:00",
   "contract_id": "local7_safeway_pueblo_meat_2022",
   "region_id": "region-pueblo",
   "union_local_id": "UFCW Local 7",
@@ -122,15 +122,6 @@
         "pension delinquencies",
         "welfare pension",
         "welfare pension delinquencies"
-      ]
-    },
-    {
-      "canonical": "health benefits",
-      "aliases": [
-        "health and welfare",
-        "health benefits",
-        "insurance",
-        "medical"
       ]
     },
     {
@@ -288,16 +279,6 @@
       ]
     },
     {
-      "canonical": "personal holiday",
-      "aliases": [
-        "float day",
-        "float days",
-        "floater",
-        "personal holiday",
-        "personal holidays"
-      ]
-    },
-    {
       "canonical": "personal_holiday",
       "aliases": [
         "float day",
@@ -427,10 +408,7 @@
     {
       "canonical": "sick leave",
       "aliases": [
-        "call in sick",
-        "sick day",
-        "sick leave",
-        "sick pay"
+        "sick leave"
       ]
     },
     {
@@ -748,9 +726,9 @@
     "service in meat delicatessen departments plants": "service in meat delicatessen departments plants",
     "service meat": "service in meat delicatessen departments plants",
     "service meat delicatessen": "service in meat delicatessen departments plants",
+    "sick leave": "sick leave",
     "call in sick": "sick leave",
     "sick day": "sick leave",
-    "sick leave": "sick leave",
     "sick pay": "sick leave",
     "split shifts": "split shifts",
     "store meetings": "store meetings",
@@ -899,10 +877,8 @@
       "dispute",
       "grievance",
       "hourly rate",
-      "hours",
       "pay",
       "pay rate",
-      "posting",
       "rate of pay",
       "rates pay",
       "schedule",

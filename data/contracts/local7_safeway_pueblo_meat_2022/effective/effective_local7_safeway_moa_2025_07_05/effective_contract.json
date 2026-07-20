@@ -4,7 +4,7 @@
   ],
   "base_version_id": "base_snapshot_v0_9_0",
   "contract_id": "local7_safeway_pueblo_meat_2022",
-  "effective_content_hash": "5c6267cc592ae9c54561bc41b098190439d0ce02597de7a647463fcaaa3bc1bd",
+  "effective_content_hash": "7527fced1ac3e55efb219453379d1875508e753d16e8daafc4a0349ca3dc3ba3",
   "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
   "parent_effective_version_id": "base_snapshot_v0_9_0",
   "schema_version": "effective_contract_v0_9_0",
@@ -16822,6 +16822,100 @@
           "row_key": "assistant_deli_manager|fixed:na|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "assistant_deli_manager",
+            "classification_name": "ASSISTANT DELI MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 26.11,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 25.11,
+              "OE+104": 27.11,
+              "OE+52": 26.11
+            },
+            "source_reference": {
+              "row_index": 5,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 5,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "assistant_deli_manager|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "assistant_deli_manager",
+            "classification_name": "ASSISTANT DELI MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 27.11,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 25.11,
+              "OE+104": 27.11,
+              "OE+52": 26.11
+            },
+            "source_reference": {
+              "row_index": 5,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 5,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "assistant_deli_manager|fixed:na|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "deli_clerks",
@@ -16954,6 +17048,100 @@
             }
           ],
           "row_key": "deli_clerks|hours:0|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 17.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 9,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 9,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:0|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 17.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 9,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 9,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:0|2027-07-03"
         },
         {
           "amendments": [],
@@ -17090,6 +17278,100 @@
           "row_key": "deli_clerks|hours:1560|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 11,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 11,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:1560|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 11,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 11,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:1560|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "deli_clerks",
@@ -17222,6 +17504,100 @@
             }
           ],
           "row_key": "deli_clerks|hours:2600|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 12,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 12,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:2600|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 12,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 12,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:2600|2027-07-03"
         },
         {
           "amendments": [],
@@ -17358,6 +17734,100 @@
           "row_key": "deli_clerks|hours:3640|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 13,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 13,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:3640|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 13,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 13,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:3640|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "deli_clerks",
@@ -17490,6 +17960,100 @@
             }
           ],
           "row_key": "deli_clerks|hours:4680|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 14,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 14,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:4680|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 14,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 14,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:4680|2027-07-03"
         },
         {
           "amendments": [],
@@ -17626,6 +18190,100 @@
           "row_key": "deli_clerks|hours:520|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 10,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 10,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:520|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 10,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 10,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:520|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "deli_clerks",
@@ -17758,6 +18416,100 @@
             }
           ],
           "row_key": "deli_clerks|hours:5720|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 15,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 15,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:5720|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 15,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 15,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:5720|2027-07-03"
         },
         {
           "amendments": [],
@@ -17894,6 +18646,100 @@
           "row_key": "deli_clerks|hours:6760|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 21.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 16,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 16,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:6760|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 21.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 16,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 16,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:6760|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "deli_clerks",
@@ -18026,6 +18872,100 @@
             }
           ],
           "row_key": "deli_clerks|hours:7800|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 25.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 17,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 17,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:7800|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_clerks",
+            "classification_name": "DELI CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 26.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 17,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 17,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_clerks|hours:7800|2027-07-03"
         },
         {
           "amendments": [],
@@ -18162,6 +19102,100 @@
           "row_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees|fixed:na|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
+            "classification_name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 26.75,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.25,
+              "FSAR": 25.75,
+              "OE+104": 27.75,
+              "OE+52": 26.75
+            },
+            "source_reference": {
+              "row_index": 4,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 4,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees",
+            "classification_name": "DELI MANAGER AFTER 5/20/77 & DIRECTING 5 OR LESS DELI EMPLOYEES",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 27.75,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.25,
+              "FSAR": 25.75,
+              "OE+104": 27.75,
+              "OE+52": 26.75
+            },
+            "source_reference": {
+              "row_index": 4,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 4,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees|fixed:na|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "deli_manager",
@@ -18294,6 +19328,100 @@
             }
           ],
           "row_key": "deli_manager|fixed:na|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_manager",
+            "classification_name": "DELI MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 28.34,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 24.84,
+              "FSAR": 27.34,
+              "OE+104": 29.34,
+              "OE+52": 28.34
+            },
+            "source_reference": {
+              "row_index": 3,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 3,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_manager|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "deli_manager",
+            "classification_name": "DELI MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 29.34,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 24.84,
+              "FSAR": 27.34,
+              "OE+104": 29.34,
+              "OE+52": 28.34
+            },
+            "source_reference": {
+              "row_index": 3,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 3,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "deli_manager|fixed:na|2027-07-03"
         },
         {
           "amendments": [],
@@ -18430,6 +19558,100 @@
           "row_key": "first_cutter|fixed:na|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "first_cutter",
+            "classification_name": "FIRST CUTTER",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 27.93,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 25.43,
+              "FSAR": 26.93,
+              "OE+104": 28.93,
+              "OE+52": 27.93
+            },
+            "source_reference": {
+              "row_index": 1,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 1,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "first_cutter|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "first_cutter",
+            "classification_name": "FIRST CUTTER",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 28.93,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 25.43,
+              "FSAR": 26.93,
+              "OE+104": 28.93,
+              "OE+52": 27.93
+            },
+            "source_reference": {
+              "row_index": 1,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 1,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "first_cutter|fixed:na|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "head_meat_cutter",
@@ -18562,6 +19784,100 @@
             }
           ],
           "row_key": "head_meat_cutter|fixed:na|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "head_meat_cutter",
+            "classification_name": "HEAD MEAT CUTTER",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 29.88,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 26.88,
+              "FSAR": 28.88,
+              "OE+104": 30.88,
+              "OE+52": 29.88
+            },
+            "source_reference": {
+              "row_index": 0,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 0,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "head_meat_cutter|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "head_meat_cutter",
+            "classification_name": "HEAD MEAT CUTTER",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 30.88,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 26.88,
+              "FSAR": 28.88,
+              "OE+104": 30.88,
+              "OE+52": 29.88
+            },
+            "source_reference": {
+              "row_index": 0,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 0,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "head_meat_cutter|fixed:na|2027-07-03"
         },
         {
           "amendments": [],
@@ -18698,6 +20014,100 @@
           "row_key": "meat_cutters|hours:0|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 17.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 8,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 8,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:0|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 17.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 8,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 8,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:0|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "meat_cutters",
@@ -18830,6 +20240,100 @@
             }
           ],
           "row_key": "meat_cutters|hours:1560|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 10,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 10,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:1560|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 10,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 10,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:1560|2027-07-03"
         },
         {
           "amendments": [],
@@ -18966,6 +20470,100 @@
           "row_key": "meat_cutters|hours:2600|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 11,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 11,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:2600|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 11,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 11,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:2600|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "meat_cutters",
@@ -19098,6 +20696,100 @@
             }
           ],
           "row_key": "meat_cutters|hours:3640|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 12,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 12,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:3640|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 12,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 12,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:3640|2027-07-03"
         },
         {
           "amendments": [],
@@ -19234,6 +20926,100 @@
           "row_key": "meat_cutters|hours:4680|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 13,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 13,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:4680|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 13,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 13,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:4680|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "meat_cutters",
@@ -19366,6 +21152,100 @@
             }
           ],
           "row_key": "meat_cutters|hours:520|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 9,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 9,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:520|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 9,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 9,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:520|2027-07-03"
         },
         {
           "amendments": [],
@@ -19502,6 +21382,100 @@
           "row_key": "meat_cutters|hours:5720|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 14,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 14,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:5720|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 14,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 14,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:5720|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "meat_cutters",
@@ -19634,6 +21608,100 @@
             }
           ],
           "row_key": "meat_cutters|hours:6760|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 21.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 15,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 15,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:6760|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 21.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 15,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 15,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:6760|2027-07-03"
         },
         {
           "amendments": [],
@@ -19770,6 +21838,100 @@
           "row_key": "meat_cutters|hours:7800|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 27.6,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 25.1,
+              "FSAR": 26.6,
+              "OE+104": 28.6,
+              "OE+52": 27.6
+            },
+            "source_reference": {
+              "row_index": 16,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 16,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:7800|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_cutters",
+            "classification_name": "MEAT CUTTERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 28.6,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 25.1,
+              "FSAR": 26.6,
+              "OE+104": 28.6,
+              "OE+52": 27.6
+            },
+            "source_reference": {
+              "row_index": 16,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 16,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_cutters|hours:7800|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "meat_wrappers",
@@ -19902,6 +22064,100 @@
             }
           ],
           "row_key": "meat_wrappers|hours:1560|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 1,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 1,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:1560|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 1,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 1,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:1560|2027-07-03"
         },
         {
           "amendments": [],
@@ -20038,6 +22294,100 @@
           "row_key": "meat_wrappers|hours:2600|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 2,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 2,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:2600|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 2,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 2,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:2600|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "meat_wrappers",
@@ -20170,6 +22520,100 @@
             }
           ],
           "row_key": "meat_wrappers|hours:3640|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 3,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 3,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:3640|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 3,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 3,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:3640|2027-07-03"
         },
         {
           "amendments": [],
@@ -20306,6 +22750,100 @@
           "row_key": "meat_wrappers|hours:4680|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 4,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 4,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:4680|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 4,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 4,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:4680|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "meat_wrappers",
@@ -20438,6 +22976,100 @@
             }
           ],
           "row_key": "meat_wrappers|hours:520|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 0,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 0,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:520|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 0,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 0,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:520|2027-07-03"
         },
         {
           "amendments": [],
@@ -20574,6 +23206,100 @@
           "row_key": "meat_wrappers|hours:5720|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 5,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 5,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:5720|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 5,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 5,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:5720|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "meat_wrappers",
@@ -20706,6 +23432,100 @@
             }
           ],
           "row_key": "meat_wrappers|hours:6760|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 21.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 6,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 6,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:6760|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 21.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 6,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 6,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:6760|2027-07-03"
         },
         {
           "amendments": [],
@@ -20842,6 +23662,100 @@
           "row_key": "meat_wrappers|hours:7800|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 25.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 7,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 7,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:7800|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "meat_wrappers",
+            "classification_name": "MEAT WRAPPERS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 26.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 7,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 7,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "meat_wrappers|hours:7800|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "seafood_clerks",
@@ -20974,6 +23888,100 @@
             }
           ],
           "row_key": "seafood_clerks|hours:0|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 17.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 18,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 18,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:0|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 17.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 18,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 18,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:0|2027-07-03"
         },
         {
           "amendments": [],
@@ -21110,6 +24118,100 @@
           "row_key": "seafood_clerks|hours:1560|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 20,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 20,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:1560|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 20,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 20,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:1560|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "seafood_clerks",
@@ -21242,6 +24344,100 @@
             }
           ],
           "row_key": "seafood_clerks|hours:2600|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 21,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 21,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:2600|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 21,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 21,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:2600|2027-07-03"
         },
         {
           "amendments": [],
@@ -21378,6 +24574,100 @@
           "row_key": "seafood_clerks|hours:3640|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 22,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 22,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:3640|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 22,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 22,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:3640|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "seafood_clerks",
@@ -21510,6 +24800,100 @@
             }
           ],
           "row_key": "seafood_clerks|hours:4680|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 23,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 23,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:4680|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 23,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 23,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:4680|2027-07-03"
         },
         {
           "amendments": [],
@@ -21646,6 +25030,100 @@
           "row_key": "seafood_clerks|hours:520|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 19,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 19,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:520|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 19,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 19,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:520|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "seafood_clerks",
@@ -21778,6 +25256,100 @@
             }
           ],
           "row_key": "seafood_clerks|hours:5720|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 24,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 24,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:5720|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 24,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 24,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:5720|2027-07-03"
         },
         {
           "amendments": [],
@@ -21914,6 +25486,100 @@
           "row_key": "seafood_clerks|hours:6760|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 21.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 25,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 25,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:6760|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 21.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 25,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 25,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:6760|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "seafood_clerks",
@@ -22046,6 +25712,100 @@
             }
           ],
           "row_key": "seafood_clerks|hours:7800|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 25.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 26,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 26,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:7800|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_clerks",
+            "classification_name": "SEAFOOD CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 26.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 26,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 26,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_clerks|hours:7800|2027-07-03"
         },
         {
           "amendments": [],
@@ -22182,6 +25942,100 @@
           "row_key": "seafood_manager|fixed:na|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_manager",
+            "classification_name": "SEAFOOD MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 26.3,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.3,
+              "FSAR": 25.3,
+              "OE+104": 27.3,
+              "OE+52": 26.3
+            },
+            "source_reference": {
+              "row_index": 2,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 2,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_manager|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "seafood_manager",
+            "classification_name": "SEAFOOD MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 27.3,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.3,
+              "FSAR": 25.3,
+              "OE+104": 27.3,
+              "OE+52": 26.3
+            },
+            "source_reference": {
+              "row_index": 2,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 2,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "seafood_manager|fixed:na|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "starbucks_clerks",
@@ -22314,6 +26168,100 @@
             }
           ],
           "row_key": "starbucks_clerks|hours:0|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 17.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 19,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 19,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:0|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 17.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 19,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 19,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:0|2027-07-03"
         },
         {
           "amendments": [],
@@ -22450,6 +26398,100 @@
           "row_key": "starbucks_clerks|hours:1560|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 21,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 21,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:1560|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 21,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 21,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:1560|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "starbucks_clerks",
@@ -22582,6 +26624,100 @@
             }
           ],
           "row_key": "starbucks_clerks|hours:2600|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 22,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 22,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:2600|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 22,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 22,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:2600|2027-07-03"
         },
         {
           "amendments": [],
@@ -22718,6 +26854,100 @@
           "row_key": "starbucks_clerks|hours:3640|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 23,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 23,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:3640|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 23,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 23,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:3640|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "starbucks_clerks",
@@ -22850,6 +27080,100 @@
             }
           ],
           "row_key": "starbucks_clerks|hours:4680|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 24,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 24,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:4680|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 24,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 24,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:4680|2027-07-03"
         },
         {
           "amendments": [],
@@ -22986,6 +27310,100 @@
           "row_key": "starbucks_clerks|hours:520|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 20,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 20,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:520|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 20,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 20,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:520|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "starbucks_clerks",
@@ -23118,6 +27536,100 @@
             }
           ],
           "row_key": "starbucks_clerks|hours:5720|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 25,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 25,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:5720|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 25,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 25,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:5720|2027-07-03"
         },
         {
           "amendments": [],
@@ -23254,6 +27766,100 @@
           "row_key": "starbucks_clerks|hours:6760|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 21.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 26,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 26,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:6760|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 21.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 26,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 26,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:6760|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "starbucks_clerks",
@@ -23388,6 +27994,100 @@
           "row_key": "starbucks_clerks|hours:7800|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 25.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 27,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 27,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:7800|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_clerks",
+            "classification_name": "STARBUCKS CLERKS",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 26.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 27,
+              "table_id": "tbl_art57_3"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 61,
+              "row_index": 27,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 40,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_clerks|hours:7800|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "starbucks_lead",
@@ -23520,6 +28220,100 @@
             }
           ],
           "row_key": "starbucks_lead|fixed:na|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_lead",
+            "classification_name": "STARBUCKS LEAD",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 26.11,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 25.11,
+              "OE+104": 27.11,
+              "OE+52": 26.11
+            },
+            "source_reference": {
+              "row_index": 6,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 6,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_lead|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "starbucks_lead",
+            "classification_name": "STARBUCKS LEAD",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 27.11,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 25.11,
+              "OE+104": 27.11,
+              "OE+52": 26.11
+            },
+            "source_reference": {
+              "row_index": 6,
+              "table_id": "tbl_art57_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Meat+2022.2025.pdf",
+              "pdf_page": 60,
+              "row_index": 6,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art57_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 39,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "starbucks_lead|fixed:na|2027-07-03"
         }
       ],
       "table_id": "appendix_a_wage_rows"

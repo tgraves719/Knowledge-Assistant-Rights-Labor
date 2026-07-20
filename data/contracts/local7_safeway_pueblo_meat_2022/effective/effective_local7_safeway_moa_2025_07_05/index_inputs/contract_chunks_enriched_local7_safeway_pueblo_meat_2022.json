@@ -1939,12 +1939,7 @@
       "pay",
       "pay rate",
       "hourly rate",
-      "rate of pay",
-      "schedule",
-      "scheduling",
-      "shift",
-      "hours",
-      "posting"
+      "rate of pay"
     ],
     "amendments_applied": [
       "local7_safeway_moa_2025_07_05"
@@ -1999,8 +1994,7 @@
       "wages"
     ],
     "worker_questions": [
-      "how much should i be making per hour",
-      "can they change my schedule like this"
+      "how much should i be making per hour"
     ]
   },
   {

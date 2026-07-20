@@ -13,8 +13,12 @@
       "config_id": "local7_safeway_pueblo_meat_2025_07_05",
       "source_doc_id": "albertsons_safeway_moa_2025_07_05",
       "source": "output.json Safeway Denver Metro Meat pages 39-40 wage schedule (store list includes Pueblo)",
-      "selected_schedule_label": "FSAR",
-      "row_ops_generated": 51
+      "schedule_effective_dates": {
+        "FSAR": "2025-07-05",
+        "OE+52": "2026-07-04",
+        "OE+104": "2027-07-03"
+      },
+      "row_ops_generated": 153
     }
   },
   "operations": [
@@ -153,7 +157,66 @@
       "expected_prev_hash": "36475cbc99d2d6891f79d8bedd8a1a64b6d28a28ff158b4ddcf4d35cc1e519b6",
       "new_row": {
         "rate": 25.11,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 23.11,
+          "FSAR": 25.11,
+          "OE+52": 26.11,
+          "OE+104": 27.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "assistant_deli_manager|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "36475cbc99d2d6891f79d8bedd8a1a64b6d28a28ff158b4ddcf4d35cc1e519b6",
+      "new_row": {
+        "rate": 26.11,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 23.11,
+          "FSAR": 25.11,
+          "OE+52": 26.11,
+          "OE+104": 27.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "assistant_deli_manager|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "36475cbc99d2d6891f79d8bedd8a1a64b6d28a28ff158b4ddcf4d35cc1e519b6",
+      "new_row": {
+        "rate": 27.11,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 23.11,
           "FSAR": 25.11,
@@ -181,7 +244,66 @@
       "expected_prev_hash": "0c80cdf41b9c8480ce2ba69eaf29151eb845e2ecddbac1a25b3f27965225829c",
       "new_row": {
         "rate": 17.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 17.0,
+          "FSAR": 17.25,
+          "OE+52": 17.5,
+          "OE+104": 17.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:0|2024-02-25"
+      },
+      "expected_prev_hash": "0c80cdf41b9c8480ce2ba69eaf29151eb845e2ecddbac1a25b3f27965225829c",
+      "new_row": {
+        "rate": 17.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 17.0,
+          "FSAR": 17.25,
+          "OE+52": 17.5,
+          "OE+104": 17.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:0|2024-02-25"
+      },
+      "expected_prev_hash": "0c80cdf41b9c8480ce2ba69eaf29151eb845e2ecddbac1a25b3f27965225829c",
+      "new_row": {
+        "rate": 17.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 17.0,
           "FSAR": 17.25,
@@ -209,7 +331,66 @@
       "expected_prev_hash": "d92776829835f12b5c6e227d1b5a945adfffc738e9cfb0699675c590815b0c50",
       "new_row": {
         "rate": 17.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 17.5,
+          "FSAR": 17.75,
+          "OE+52": 18.0,
+          "OE+104": 18.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:520|2024-02-25"
+      },
+      "expected_prev_hash": "d92776829835f12b5c6e227d1b5a945adfffc738e9cfb0699675c590815b0c50",
+      "new_row": {
+        "rate": 18.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 17.5,
+          "FSAR": 17.75,
+          "OE+52": 18.0,
+          "OE+104": 18.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:520|2024-02-25"
+      },
+      "expected_prev_hash": "d92776829835f12b5c6e227d1b5a945adfffc738e9cfb0699675c590815b0c50",
+      "new_row": {
+        "rate": 18.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 17.5,
           "FSAR": 17.75,
@@ -237,7 +418,66 @@
       "expected_prev_hash": "8084e27be5d3c1f6ab79bf67e4ac5fb6e30b5c163f8d965f8828726d21e8f15b",
       "new_row": {
         "rate": 18.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 18.0,
+          "FSAR": 18.25,
+          "OE+52": 18.5,
+          "OE+104": 18.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:1560|2024-02-25"
+      },
+      "expected_prev_hash": "8084e27be5d3c1f6ab79bf67e4ac5fb6e30b5c163f8d965f8828726d21e8f15b",
+      "new_row": {
+        "rate": 18.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 18.0,
+          "FSAR": 18.25,
+          "OE+52": 18.5,
+          "OE+104": 18.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:1560|2024-02-25"
+      },
+      "expected_prev_hash": "8084e27be5d3c1f6ab79bf67e4ac5fb6e30b5c163f8d965f8828726d21e8f15b",
+      "new_row": {
+        "rate": 18.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 18.0,
           "FSAR": 18.25,
@@ -265,7 +505,66 @@
       "expected_prev_hash": "6493260adf1d360021e5353d09c5e7d8fe7656217b564efa1f7900c5fb371c81",
       "new_row": {
         "rate": 18.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 18.5,
+          "FSAR": 18.75,
+          "OE+52": 19.0,
+          "OE+104": 19.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:2600|2024-02-25"
+      },
+      "expected_prev_hash": "6493260adf1d360021e5353d09c5e7d8fe7656217b564efa1f7900c5fb371c81",
+      "new_row": {
+        "rate": 19.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 18.5,
+          "FSAR": 18.75,
+          "OE+52": 19.0,
+          "OE+104": 19.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:2600|2024-02-25"
+      },
+      "expected_prev_hash": "6493260adf1d360021e5353d09c5e7d8fe7656217b564efa1f7900c5fb371c81",
+      "new_row": {
+        "rate": 19.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 18.5,
           "FSAR": 18.75,
@@ -293,7 +592,66 @@
       "expected_prev_hash": "e92a71a77d5f4c206e1c8aac2d3a413ec8722a5fe9345db8d0b29d57ebfea359",
       "new_row": {
         "rate": 19.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 19.0,
+          "FSAR": 19.25,
+          "OE+52": 19.5,
+          "OE+104": 19.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:3640|2024-02-25"
+      },
+      "expected_prev_hash": "e92a71a77d5f4c206e1c8aac2d3a413ec8722a5fe9345db8d0b29d57ebfea359",
+      "new_row": {
+        "rate": 19.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 19.0,
+          "FSAR": 19.25,
+          "OE+52": 19.5,
+          "OE+104": 19.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:3640|2024-02-25"
+      },
+      "expected_prev_hash": "e92a71a77d5f4c206e1c8aac2d3a413ec8722a5fe9345db8d0b29d57ebfea359",
+      "new_row": {
+        "rate": 19.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 19.0,
           "FSAR": 19.25,
@@ -321,7 +679,66 @@
       "expected_prev_hash": "6b424ed9dce55c06016b69f10cad20b64437d09835821397f032c79e938bfa4e",
       "new_row": {
         "rate": 19.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 19.5,
+          "FSAR": 19.75,
+          "OE+52": 20.0,
+          "OE+104": 20.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:4680|2024-02-25"
+      },
+      "expected_prev_hash": "6b424ed9dce55c06016b69f10cad20b64437d09835821397f032c79e938bfa4e",
+      "new_row": {
+        "rate": 20.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 19.5,
+          "FSAR": 19.75,
+          "OE+52": 20.0,
+          "OE+104": 20.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:4680|2024-02-25"
+      },
+      "expected_prev_hash": "6b424ed9dce55c06016b69f10cad20b64437d09835821397f032c79e938bfa4e",
+      "new_row": {
+        "rate": 20.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 19.5,
           "FSAR": 19.75,
@@ -349,7 +766,66 @@
       "expected_prev_hash": "988fb2388fadd7985539a2aa22a16557e788d84e083a28fbde82d9c3f1d9468f",
       "new_row": {
         "rate": 20.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 20.0,
+          "FSAR": 20.25,
+          "OE+52": 20.5,
+          "OE+104": 20.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:5720|2024-02-25"
+      },
+      "expected_prev_hash": "988fb2388fadd7985539a2aa22a16557e788d84e083a28fbde82d9c3f1d9468f",
+      "new_row": {
+        "rate": 20.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 20.0,
+          "FSAR": 20.25,
+          "OE+52": 20.5,
+          "OE+104": 20.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:5720|2024-02-25"
+      },
+      "expected_prev_hash": "988fb2388fadd7985539a2aa22a16557e788d84e083a28fbde82d9c3f1d9468f",
+      "new_row": {
+        "rate": 20.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 20.0,
           "FSAR": 20.25,
@@ -377,7 +853,66 @@
       "expected_prev_hash": "4274f9c8d094e520749736bfaf23dc71d067f4717addbd16298c7ff20edaafb1",
       "new_row": {
         "rate": 20.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 20.5,
+          "FSAR": 20.75,
+          "OE+52": 21.0,
+          "OE+104": 21.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:6760|2024-02-25"
+      },
+      "expected_prev_hash": "4274f9c8d094e520749736bfaf23dc71d067f4717addbd16298c7ff20edaafb1",
+      "new_row": {
+        "rate": 21.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 20.5,
+          "FSAR": 20.75,
+          "OE+52": 21.0,
+          "OE+104": 21.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:6760|2024-02-25"
+      },
+      "expected_prev_hash": "4274f9c8d094e520749736bfaf23dc71d067f4717addbd16298c7ff20edaafb1",
+      "new_row": {
+        "rate": 21.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 20.5,
           "FSAR": 20.75,
@@ -405,7 +940,66 @@
       "expected_prev_hash": "35607df61d5b99d23c629663b475d0548b631d4bb4dc8af621d6773c0286c17b",
       "new_row": {
         "rate": 24.11,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 22.61,
+          "FSAR": 24.11,
+          "OE+52": 25.11,
+          "OE+104": 26.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:7800|2024-02-25"
+      },
+      "expected_prev_hash": "35607df61d5b99d23c629663b475d0548b631d4bb4dc8af621d6773c0286c17b",
+      "new_row": {
+        "rate": 25.11,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 22.61,
+          "FSAR": 24.11,
+          "OE+52": 25.11,
+          "OE+104": 26.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_clerks|hours:7800|2024-02-25"
+      },
+      "expected_prev_hash": "35607df61d5b99d23c629663b475d0548b631d4bb4dc8af621d6773c0286c17b",
+      "new_row": {
+        "rate": 26.11,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 22.61,
           "FSAR": 24.11,
@@ -433,7 +1027,66 @@
       "expected_prev_hash": "c914e2b80a9bf9bd0d89e49e57ce926d480c80784557842c846fe15a8a2dbefe",
       "new_row": {
         "rate": 27.34,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 24.84,
+          "FSAR": 27.34,
+          "OE+52": 28.34,
+          "OE+104": 29.34
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_manager|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "c914e2b80a9bf9bd0d89e49e57ce926d480c80784557842c846fe15a8a2dbefe",
+      "new_row": {
+        "rate": 28.34,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 24.84,
+          "FSAR": 27.34,
+          "OE+52": 28.34,
+          "OE+104": 29.34
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_manager|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "c914e2b80a9bf9bd0d89e49e57ce926d480c80784557842c846fe15a8a2dbefe",
+      "new_row": {
+        "rate": 29.34,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 24.84,
           "FSAR": 27.34,
@@ -461,7 +1114,66 @@
       "expected_prev_hash": "a44dc1c5afe495fce5ee677caa2e7d793cac007b06470ddae6721d9e00431e40",
       "new_row": {
         "rate": 25.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 23.25,
+          "FSAR": 25.75,
+          "OE+52": 26.75,
+          "OE+104": 27.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "a44dc1c5afe495fce5ee677caa2e7d793cac007b06470ddae6721d9e00431e40",
+      "new_row": {
+        "rate": 26.75,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 23.25,
+          "FSAR": 25.75,
+          "OE+52": 26.75,
+          "OE+104": 27.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "deli_manager_after_5_20_77_directing_5_or_less_deli_employees|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "a44dc1c5afe495fce5ee677caa2e7d793cac007b06470ddae6721d9e00431e40",
+      "new_row": {
+        "rate": 27.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 23.25,
           "FSAR": 25.75,
@@ -489,7 +1201,66 @@
       "expected_prev_hash": "621a99f610398bc56affbdaec412d89c2104f407e9018654fb2a31ae825d5db5",
       "new_row": {
         "rate": 26.93,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 25.43,
+          "FSAR": 26.93,
+          "OE+52": 27.93,
+          "OE+104": 28.93
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "first_cutter|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "621a99f610398bc56affbdaec412d89c2104f407e9018654fb2a31ae825d5db5",
+      "new_row": {
+        "rate": 27.93,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 25.43,
+          "FSAR": 26.93,
+          "OE+52": 27.93,
+          "OE+104": 28.93
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "first_cutter|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "621a99f610398bc56affbdaec412d89c2104f407e9018654fb2a31ae825d5db5",
+      "new_row": {
+        "rate": 28.93,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 25.43,
           "FSAR": 26.93,
@@ -517,7 +1288,66 @@
       "expected_prev_hash": "9ed753c8b0028d1f9a2e9496387b4a86d48744f27b44e763d80ed025354f9f25",
       "new_row": {
         "rate": 28.88,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 26.88,
+          "FSAR": 28.88,
+          "OE+52": 29.88,
+          "OE+104": 30.88
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "head_meat_cutter|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "9ed753c8b0028d1f9a2e9496387b4a86d48744f27b44e763d80ed025354f9f25",
+      "new_row": {
+        "rate": 29.88,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 26.88,
+          "FSAR": 28.88,
+          "OE+52": 29.88,
+          "OE+104": 30.88
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "head_meat_cutter|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "9ed753c8b0028d1f9a2e9496387b4a86d48744f27b44e763d80ed025354f9f25",
+      "new_row": {
+        "rate": 30.88,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 26.88,
           "FSAR": 28.88,
@@ -545,7 +1375,66 @@
       "expected_prev_hash": "2b78462b49b77c390c41d056d7ac4c81942bb8e3a4690f9aac2d27430b4e6246",
       "new_row": {
         "rate": 17.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 17.0,
+          "FSAR": 17.25,
+          "OE+52": 17.5,
+          "OE+104": 17.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:0|2024-02-25"
+      },
+      "expected_prev_hash": "2b78462b49b77c390c41d056d7ac4c81942bb8e3a4690f9aac2d27430b4e6246",
+      "new_row": {
+        "rate": 17.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 17.0,
+          "FSAR": 17.25,
+          "OE+52": 17.5,
+          "OE+104": 17.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:0|2024-02-25"
+      },
+      "expected_prev_hash": "2b78462b49b77c390c41d056d7ac4c81942bb8e3a4690f9aac2d27430b4e6246",
+      "new_row": {
+        "rate": 17.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 17.0,
           "FSAR": 17.25,
@@ -573,7 +1462,66 @@
       "expected_prev_hash": "1527e2101d37f420069930cbef2c3d6d7b1387640c20b4f9ceed11c4dbaaf97c",
       "new_row": {
         "rate": 17.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 17.5,
+          "FSAR": 17.75,
+          "OE+52": 18.0,
+          "OE+104": 18.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:520|2024-02-25"
+      },
+      "expected_prev_hash": "1527e2101d37f420069930cbef2c3d6d7b1387640c20b4f9ceed11c4dbaaf97c",
+      "new_row": {
+        "rate": 18.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 17.5,
+          "FSAR": 17.75,
+          "OE+52": 18.0,
+          "OE+104": 18.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:520|2024-02-25"
+      },
+      "expected_prev_hash": "1527e2101d37f420069930cbef2c3d6d7b1387640c20b4f9ceed11c4dbaaf97c",
+      "new_row": {
+        "rate": 18.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 17.5,
           "FSAR": 17.75,
@@ -601,7 +1549,66 @@
       "expected_prev_hash": "30dc28eafde3746c66d1da5c444adab1f385e1272c414999f23c1f89ee1e1338",
       "new_row": {
         "rate": 18.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 18.0,
+          "FSAR": 18.25,
+          "OE+52": 18.5,
+          "OE+104": 18.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:1560|2024-02-25"
+      },
+      "expected_prev_hash": "30dc28eafde3746c66d1da5c444adab1f385e1272c414999f23c1f89ee1e1338",
+      "new_row": {
+        "rate": 18.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 18.0,
+          "FSAR": 18.25,
+          "OE+52": 18.5,
+          "OE+104": 18.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:1560|2024-02-25"
+      },
+      "expected_prev_hash": "30dc28eafde3746c66d1da5c444adab1f385e1272c414999f23c1f89ee1e1338",
+      "new_row": {
+        "rate": 18.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 18.0,
           "FSAR": 18.25,
@@ -629,7 +1636,66 @@
       "expected_prev_hash": "ce6d439825e9a8b172a615a3f1c0855fdfd15f1ba44d49133961de1c1d88ed67",
       "new_row": {
         "rate": 18.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 18.5,
+          "FSAR": 18.75,
+          "OE+52": 19.0,
+          "OE+104": 19.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:2600|2024-02-25"
+      },
+      "expected_prev_hash": "ce6d439825e9a8b172a615a3f1c0855fdfd15f1ba44d49133961de1c1d88ed67",
+      "new_row": {
+        "rate": 19.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 18.5,
+          "FSAR": 18.75,
+          "OE+52": 19.0,
+          "OE+104": 19.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:2600|2024-02-25"
+      },
+      "expected_prev_hash": "ce6d439825e9a8b172a615a3f1c0855fdfd15f1ba44d49133961de1c1d88ed67",
+      "new_row": {
+        "rate": 19.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 18.5,
           "FSAR": 18.75,
@@ -657,7 +1723,66 @@
       "expected_prev_hash": "c124d550fa0e5bafef6a5969f11dfc047d8fd01694b56cd86fcbae05eeb2fce8",
       "new_row": {
         "rate": 19.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 19.0,
+          "FSAR": 19.25,
+          "OE+52": 19.5,
+          "OE+104": 19.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:3640|2024-02-25"
+      },
+      "expected_prev_hash": "c124d550fa0e5bafef6a5969f11dfc047d8fd01694b56cd86fcbae05eeb2fce8",
+      "new_row": {
+        "rate": 19.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 19.0,
+          "FSAR": 19.25,
+          "OE+52": 19.5,
+          "OE+104": 19.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:3640|2024-02-25"
+      },
+      "expected_prev_hash": "c124d550fa0e5bafef6a5969f11dfc047d8fd01694b56cd86fcbae05eeb2fce8",
+      "new_row": {
+        "rate": 19.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 19.0,
           "FSAR": 19.25,
@@ -685,7 +1810,66 @@
       "expected_prev_hash": "546b73e6bd2a6d5f66e0f27a4a0b31f8c22298592fb4fd89e81c5db1560b52aa",
       "new_row": {
         "rate": 19.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 19.5,
+          "FSAR": 19.75,
+          "OE+52": 20.0,
+          "OE+104": 20.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:4680|2024-02-25"
+      },
+      "expected_prev_hash": "546b73e6bd2a6d5f66e0f27a4a0b31f8c22298592fb4fd89e81c5db1560b52aa",
+      "new_row": {
+        "rate": 20.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 19.5,
+          "FSAR": 19.75,
+          "OE+52": 20.0,
+          "OE+104": 20.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:4680|2024-02-25"
+      },
+      "expected_prev_hash": "546b73e6bd2a6d5f66e0f27a4a0b31f8c22298592fb4fd89e81c5db1560b52aa",
+      "new_row": {
+        "rate": 20.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 19.5,
           "FSAR": 19.75,
@@ -713,7 +1897,66 @@
       "expected_prev_hash": "a73739d03790216b0cddba0b22e18a397a880f2d650cd13703aa69ef683e8108",
       "new_row": {
         "rate": 20.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 20.0,
+          "FSAR": 20.25,
+          "OE+52": 20.5,
+          "OE+104": 20.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:5720|2024-02-25"
+      },
+      "expected_prev_hash": "a73739d03790216b0cddba0b22e18a397a880f2d650cd13703aa69ef683e8108",
+      "new_row": {
+        "rate": 20.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 20.0,
+          "FSAR": 20.25,
+          "OE+52": 20.5,
+          "OE+104": 20.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:5720|2024-02-25"
+      },
+      "expected_prev_hash": "a73739d03790216b0cddba0b22e18a397a880f2d650cd13703aa69ef683e8108",
+      "new_row": {
+        "rate": 20.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 20.0,
           "FSAR": 20.25,
@@ -741,7 +1984,66 @@
       "expected_prev_hash": "63e83e39e48afd9454c19f815bb86f875ec0164a2cfb0ada73489baa3eb1d8c2",
       "new_row": {
         "rate": 20.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 20.5,
+          "FSAR": 20.75,
+          "OE+52": 21.0,
+          "OE+104": 21.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:6760|2024-02-25"
+      },
+      "expected_prev_hash": "63e83e39e48afd9454c19f815bb86f875ec0164a2cfb0ada73489baa3eb1d8c2",
+      "new_row": {
+        "rate": 21.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 20.5,
+          "FSAR": 20.75,
+          "OE+52": 21.0,
+          "OE+104": 21.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:6760|2024-02-25"
+      },
+      "expected_prev_hash": "63e83e39e48afd9454c19f815bb86f875ec0164a2cfb0ada73489baa3eb1d8c2",
+      "new_row": {
+        "rate": 21.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 20.5,
           "FSAR": 20.75,
@@ -769,7 +2071,66 @@
       "expected_prev_hash": "df1fb9fd1c174526752a24bd482e6b3cc1f1c58cbfb085420e7646638584b125",
       "new_row": {
         "rate": 26.6,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 25.1,
+          "FSAR": 26.6,
+          "OE+52": 27.6,
+          "OE+104": 28.6
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:7800|2024-02-25"
+      },
+      "expected_prev_hash": "df1fb9fd1c174526752a24bd482e6b3cc1f1c58cbfb085420e7646638584b125",
+      "new_row": {
+        "rate": 27.6,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 25.1,
+          "FSAR": 26.6,
+          "OE+52": 27.6,
+          "OE+104": 28.6
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_cutters|hours:7800|2024-02-25"
+      },
+      "expected_prev_hash": "df1fb9fd1c174526752a24bd482e6b3cc1f1c58cbfb085420e7646638584b125",
+      "new_row": {
+        "rate": 28.6,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 25.1,
           "FSAR": 26.6,
@@ -797,7 +2158,66 @@
       "expected_prev_hash": "e3fc02d1d1a50ebd04bceed09cbbaf464be61d09f967b540e00b92f8c4dca3c3",
       "new_row": {
         "rate": 17.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 17.5,
+          "FSAR": 17.75,
+          "OE+52": 18.0,
+          "OE+104": 18.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:520|2024-02-25"
+      },
+      "expected_prev_hash": "e3fc02d1d1a50ebd04bceed09cbbaf464be61d09f967b540e00b92f8c4dca3c3",
+      "new_row": {
+        "rate": 18.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 17.5,
+          "FSAR": 17.75,
+          "OE+52": 18.0,
+          "OE+104": 18.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:520|2024-02-25"
+      },
+      "expected_prev_hash": "e3fc02d1d1a50ebd04bceed09cbbaf464be61d09f967b540e00b92f8c4dca3c3",
+      "new_row": {
+        "rate": 18.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 17.5,
           "FSAR": 17.75,
@@ -825,7 +2245,66 @@
       "expected_prev_hash": "320f3979ee020a4117eb7aab24683a4f05789faa8900c10593d586bbed4031f8",
       "new_row": {
         "rate": 18.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 18.0,
+          "FSAR": 18.25,
+          "OE+52": 18.5,
+          "OE+104": 18.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:1560|2024-02-25"
+      },
+      "expected_prev_hash": "320f3979ee020a4117eb7aab24683a4f05789faa8900c10593d586bbed4031f8",
+      "new_row": {
+        "rate": 18.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 18.0,
+          "FSAR": 18.25,
+          "OE+52": 18.5,
+          "OE+104": 18.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:1560|2024-02-25"
+      },
+      "expected_prev_hash": "320f3979ee020a4117eb7aab24683a4f05789faa8900c10593d586bbed4031f8",
+      "new_row": {
+        "rate": 18.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 18.0,
           "FSAR": 18.25,
@@ -853,7 +2332,66 @@
       "expected_prev_hash": "d3c269af3fbe461d33efdcaee7b831125aed1a6c48200f5f46bfb5f7b816b5ea",
       "new_row": {
         "rate": 18.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 18.5,
+          "FSAR": 18.75,
+          "OE+52": 19.0,
+          "OE+104": 19.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:2600|2024-02-25"
+      },
+      "expected_prev_hash": "d3c269af3fbe461d33efdcaee7b831125aed1a6c48200f5f46bfb5f7b816b5ea",
+      "new_row": {
+        "rate": 19.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 18.5,
+          "FSAR": 18.75,
+          "OE+52": 19.0,
+          "OE+104": 19.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:2600|2024-02-25"
+      },
+      "expected_prev_hash": "d3c269af3fbe461d33efdcaee7b831125aed1a6c48200f5f46bfb5f7b816b5ea",
+      "new_row": {
+        "rate": 19.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 18.5,
           "FSAR": 18.75,
@@ -881,7 +2419,66 @@
       "expected_prev_hash": "39317bb7ef88ce7d5042b5f6b837ad433acf1113d7e0cabb0955fbdb3089f6b4",
       "new_row": {
         "rate": 19.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 19.0,
+          "FSAR": 19.25,
+          "OE+52": 19.5,
+          "OE+104": 19.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:3640|2024-02-25"
+      },
+      "expected_prev_hash": "39317bb7ef88ce7d5042b5f6b837ad433acf1113d7e0cabb0955fbdb3089f6b4",
+      "new_row": {
+        "rate": 19.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 19.0,
+          "FSAR": 19.25,
+          "OE+52": 19.5,
+          "OE+104": 19.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:3640|2024-02-25"
+      },
+      "expected_prev_hash": "39317bb7ef88ce7d5042b5f6b837ad433acf1113d7e0cabb0955fbdb3089f6b4",
+      "new_row": {
+        "rate": 19.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 19.0,
           "FSAR": 19.25,
@@ -909,7 +2506,66 @@
       "expected_prev_hash": "b39c2cd2ab5cb0c6859daa85f0ba615f8370df8d550225d962655dee31f2bc50",
       "new_row": {
         "rate": 19.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 19.5,
+          "FSAR": 19.75,
+          "OE+52": 20.0,
+          "OE+104": 20.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:4680|2024-02-25"
+      },
+      "expected_prev_hash": "b39c2cd2ab5cb0c6859daa85f0ba615f8370df8d550225d962655dee31f2bc50",
+      "new_row": {
+        "rate": 20.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 19.5,
+          "FSAR": 19.75,
+          "OE+52": 20.0,
+          "OE+104": 20.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:4680|2024-02-25"
+      },
+      "expected_prev_hash": "b39c2cd2ab5cb0c6859daa85f0ba615f8370df8d550225d962655dee31f2bc50",
+      "new_row": {
+        "rate": 20.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 19.5,
           "FSAR": 19.75,
@@ -937,7 +2593,66 @@
       "expected_prev_hash": "2ae59d7a19f3a4754795b74c8ebb25524de5cb659787b51c63de2f8702cdbd1b",
       "new_row": {
         "rate": 20.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 20.0,
+          "FSAR": 20.25,
+          "OE+52": 20.5,
+          "OE+104": 20.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:5720|2024-02-25"
+      },
+      "expected_prev_hash": "2ae59d7a19f3a4754795b74c8ebb25524de5cb659787b51c63de2f8702cdbd1b",
+      "new_row": {
+        "rate": 20.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 20.0,
+          "FSAR": 20.25,
+          "OE+52": 20.5,
+          "OE+104": 20.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:5720|2024-02-25"
+      },
+      "expected_prev_hash": "2ae59d7a19f3a4754795b74c8ebb25524de5cb659787b51c63de2f8702cdbd1b",
+      "new_row": {
+        "rate": 20.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 20.0,
           "FSAR": 20.25,
@@ -965,7 +2680,66 @@
       "expected_prev_hash": "d541234dafd6a64d2bf3088d42affc89771e30326600b72a1b6970b473fc2391",
       "new_row": {
         "rate": 20.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 20.5,
+          "FSAR": 20.75,
+          "OE+52": 21.0,
+          "OE+104": 21.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:6760|2024-02-25"
+      },
+      "expected_prev_hash": "d541234dafd6a64d2bf3088d42affc89771e30326600b72a1b6970b473fc2391",
+      "new_row": {
+        "rate": 21.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 20.5,
+          "FSAR": 20.75,
+          "OE+52": 21.0,
+          "OE+104": 21.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:6760|2024-02-25"
+      },
+      "expected_prev_hash": "d541234dafd6a64d2bf3088d42affc89771e30326600b72a1b6970b473fc2391",
+      "new_row": {
+        "rate": 21.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 20.5,
           "FSAR": 20.75,
@@ -993,7 +2767,66 @@
       "expected_prev_hash": "e9b89bda18688c09c5ea60c91435c68522d5104422552c885bac0f82242b6fe0",
       "new_row": {
         "rate": 24.11,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 22.61,
+          "FSAR": 24.11,
+          "OE+52": 25.11,
+          "OE+104": 26.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:7800|2024-02-25"
+      },
+      "expected_prev_hash": "e9b89bda18688c09c5ea60c91435c68522d5104422552c885bac0f82242b6fe0",
+      "new_row": {
+        "rate": 25.11,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 22.61,
+          "FSAR": 24.11,
+          "OE+52": 25.11,
+          "OE+104": 26.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "meat_wrappers|hours:7800|2024-02-25"
+      },
+      "expected_prev_hash": "e9b89bda18688c09c5ea60c91435c68522d5104422552c885bac0f82242b6fe0",
+      "new_row": {
+        "rate": 26.11,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 22.61,
           "FSAR": 24.11,
@@ -1021,7 +2854,66 @@
       "expected_prev_hash": "d2e4cdfb2111a6348c6e62f7177a562f1250e505d323880d5fb5a0a1286962a6",
       "new_row": {
         "rate": 17.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 17.0,
+          "FSAR": 17.25,
+          "OE+52": 17.5,
+          "OE+104": 17.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:0|2024-02-25"
+      },
+      "expected_prev_hash": "d2e4cdfb2111a6348c6e62f7177a562f1250e505d323880d5fb5a0a1286962a6",
+      "new_row": {
+        "rate": 17.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 17.0,
+          "FSAR": 17.25,
+          "OE+52": 17.5,
+          "OE+104": 17.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:0|2024-02-25"
+      },
+      "expected_prev_hash": "d2e4cdfb2111a6348c6e62f7177a562f1250e505d323880d5fb5a0a1286962a6",
+      "new_row": {
+        "rate": 17.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 17.0,
           "FSAR": 17.25,
@@ -1049,7 +2941,66 @@
       "expected_prev_hash": "9921ba3b2b1f104ccc6b5c638f1c7d1c8bb0f90c63bff63767542001425773df",
       "new_row": {
         "rate": 17.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 17.5,
+          "FSAR": 17.75,
+          "OE+52": 18.0,
+          "OE+104": 18.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:520|2024-02-25"
+      },
+      "expected_prev_hash": "9921ba3b2b1f104ccc6b5c638f1c7d1c8bb0f90c63bff63767542001425773df",
+      "new_row": {
+        "rate": 18.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 17.5,
+          "FSAR": 17.75,
+          "OE+52": 18.0,
+          "OE+104": 18.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:520|2024-02-25"
+      },
+      "expected_prev_hash": "9921ba3b2b1f104ccc6b5c638f1c7d1c8bb0f90c63bff63767542001425773df",
+      "new_row": {
+        "rate": 18.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 17.5,
           "FSAR": 17.75,
@@ -1077,7 +3028,66 @@
       "expected_prev_hash": "ac3e2574cb490bbcf8f01055d0303d8ed3e0e859e9c09ed3ffae20e18a7bcce9",
       "new_row": {
         "rate": 18.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 18.0,
+          "FSAR": 18.25,
+          "OE+52": 18.5,
+          "OE+104": 18.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:1560|2024-02-25"
+      },
+      "expected_prev_hash": "ac3e2574cb490bbcf8f01055d0303d8ed3e0e859e9c09ed3ffae20e18a7bcce9",
+      "new_row": {
+        "rate": 18.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 18.0,
+          "FSAR": 18.25,
+          "OE+52": 18.5,
+          "OE+104": 18.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:1560|2024-02-25"
+      },
+      "expected_prev_hash": "ac3e2574cb490bbcf8f01055d0303d8ed3e0e859e9c09ed3ffae20e18a7bcce9",
+      "new_row": {
+        "rate": 18.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 18.0,
           "FSAR": 18.25,
@@ -1105,7 +3115,66 @@
       "expected_prev_hash": "79f4737b65d2c58b7cb1e676b3b6f0866eef970e4d5f445dffae694fccc98360",
       "new_row": {
         "rate": 18.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 18.5,
+          "FSAR": 18.75,
+          "OE+52": 19.0,
+          "OE+104": 19.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:2600|2024-02-25"
+      },
+      "expected_prev_hash": "79f4737b65d2c58b7cb1e676b3b6f0866eef970e4d5f445dffae694fccc98360",
+      "new_row": {
+        "rate": 19.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 18.5,
+          "FSAR": 18.75,
+          "OE+52": 19.0,
+          "OE+104": 19.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:2600|2024-02-25"
+      },
+      "expected_prev_hash": "79f4737b65d2c58b7cb1e676b3b6f0866eef970e4d5f445dffae694fccc98360",
+      "new_row": {
+        "rate": 19.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 18.5,
           "FSAR": 18.75,
@@ -1133,7 +3202,66 @@
       "expected_prev_hash": "d2f75abe7641eebae56c588603fec74c1a85f6c40acc4e79df6b7f8a9bbf6894",
       "new_row": {
         "rate": 19.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 19.0,
+          "FSAR": 19.25,
+          "OE+52": 19.5,
+          "OE+104": 19.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:3640|2024-02-25"
+      },
+      "expected_prev_hash": "d2f75abe7641eebae56c588603fec74c1a85f6c40acc4e79df6b7f8a9bbf6894",
+      "new_row": {
+        "rate": 19.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 19.0,
+          "FSAR": 19.25,
+          "OE+52": 19.5,
+          "OE+104": 19.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:3640|2024-02-25"
+      },
+      "expected_prev_hash": "d2f75abe7641eebae56c588603fec74c1a85f6c40acc4e79df6b7f8a9bbf6894",
+      "new_row": {
+        "rate": 19.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 19.0,
           "FSAR": 19.25,
@@ -1161,7 +3289,66 @@
       "expected_prev_hash": "1b66bd8a568b06499f275070ee84ea3bf6561a4b22a5e21bfc947924fd47ac3d",
       "new_row": {
         "rate": 19.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 19.5,
+          "FSAR": 19.75,
+          "OE+52": 20.0,
+          "OE+104": 20.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:4680|2024-02-25"
+      },
+      "expected_prev_hash": "1b66bd8a568b06499f275070ee84ea3bf6561a4b22a5e21bfc947924fd47ac3d",
+      "new_row": {
+        "rate": 20.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 19.5,
+          "FSAR": 19.75,
+          "OE+52": 20.0,
+          "OE+104": 20.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:4680|2024-02-25"
+      },
+      "expected_prev_hash": "1b66bd8a568b06499f275070ee84ea3bf6561a4b22a5e21bfc947924fd47ac3d",
+      "new_row": {
+        "rate": 20.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 19.5,
           "FSAR": 19.75,
@@ -1189,7 +3376,66 @@
       "expected_prev_hash": "b9f015c893a146c64152a61c0e919fd35081b3f4108054351bef1b26c7cde029",
       "new_row": {
         "rate": 20.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 20.0,
+          "FSAR": 20.25,
+          "OE+52": 20.5,
+          "OE+104": 20.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:5720|2024-02-25"
+      },
+      "expected_prev_hash": "b9f015c893a146c64152a61c0e919fd35081b3f4108054351bef1b26c7cde029",
+      "new_row": {
+        "rate": 20.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 20.0,
+          "FSAR": 20.25,
+          "OE+52": 20.5,
+          "OE+104": 20.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:5720|2024-02-25"
+      },
+      "expected_prev_hash": "b9f015c893a146c64152a61c0e919fd35081b3f4108054351bef1b26c7cde029",
+      "new_row": {
+        "rate": 20.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 20.0,
           "FSAR": 20.25,
@@ -1217,7 +3463,66 @@
       "expected_prev_hash": "3960cc18b94f01a363a344e663541565ce587ee45dbd6197210c227f9fc8a9fd",
       "new_row": {
         "rate": 20.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 20.5,
+          "FSAR": 20.75,
+          "OE+52": 21.0,
+          "OE+104": 21.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:6760|2024-02-25"
+      },
+      "expected_prev_hash": "3960cc18b94f01a363a344e663541565ce587ee45dbd6197210c227f9fc8a9fd",
+      "new_row": {
+        "rate": 21.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 20.5,
+          "FSAR": 20.75,
+          "OE+52": 21.0,
+          "OE+104": 21.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:6760|2024-02-25"
+      },
+      "expected_prev_hash": "3960cc18b94f01a363a344e663541565ce587ee45dbd6197210c227f9fc8a9fd",
+      "new_row": {
+        "rate": 21.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 20.5,
           "FSAR": 20.75,
@@ -1245,7 +3550,66 @@
       "expected_prev_hash": "fb2056a44d65e4be6f7f4298b00a9262466aec127b0a9404b81ee42e87c6ba4b",
       "new_row": {
         "rate": 24.11,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 22.61,
+          "FSAR": 24.11,
+          "OE+52": 25.11,
+          "OE+104": 26.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:7800|2024-02-25"
+      },
+      "expected_prev_hash": "fb2056a44d65e4be6f7f4298b00a9262466aec127b0a9404b81ee42e87c6ba4b",
+      "new_row": {
+        "rate": 25.11,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 22.61,
+          "FSAR": 24.11,
+          "OE+52": 25.11,
+          "OE+104": 26.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_clerks|hours:7800|2024-02-25"
+      },
+      "expected_prev_hash": "fb2056a44d65e4be6f7f4298b00a9262466aec127b0a9404b81ee42e87c6ba4b",
+      "new_row": {
+        "rate": 26.11,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 22.61,
           "FSAR": 24.11,
@@ -1273,7 +3637,66 @@
       "expected_prev_hash": "a28334ca3714c3708e91c3d09eb39dc8c7699d64939308581d4c326d837c935b",
       "new_row": {
         "rate": 25.3,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 23.3,
+          "FSAR": 25.3,
+          "OE+52": 26.3,
+          "OE+104": 27.3
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_manager|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "a28334ca3714c3708e91c3d09eb39dc8c7699d64939308581d4c326d837c935b",
+      "new_row": {
+        "rate": 26.3,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 23.3,
+          "FSAR": 25.3,
+          "OE+52": 26.3,
+          "OE+104": 27.3
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "seafood_manager|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "a28334ca3714c3708e91c3d09eb39dc8c7699d64939308581d4c326d837c935b",
+      "new_row": {
+        "rate": 27.3,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 23.3,
           "FSAR": 25.3,
@@ -1301,7 +3724,66 @@
       "expected_prev_hash": "a3584851e1e85accbe5aab2b11ff47620c6cae561a1c3f5dd6cfb0ca564edfa8",
       "new_row": {
         "rate": 17.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 17.0,
+          "FSAR": 17.25,
+          "OE+52": 17.5,
+          "OE+104": 17.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:0|2024-02-25"
+      },
+      "expected_prev_hash": "a3584851e1e85accbe5aab2b11ff47620c6cae561a1c3f5dd6cfb0ca564edfa8",
+      "new_row": {
+        "rate": 17.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 17.0,
+          "FSAR": 17.25,
+          "OE+52": 17.5,
+          "OE+104": 17.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:0|2024-02-25"
+      },
+      "expected_prev_hash": "a3584851e1e85accbe5aab2b11ff47620c6cae561a1c3f5dd6cfb0ca564edfa8",
+      "new_row": {
+        "rate": 17.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 17.0,
           "FSAR": 17.25,
@@ -1329,7 +3811,66 @@
       "expected_prev_hash": "f0156cdeb3a3ded06c98b6698af144ba04b1749fae2466798cf39a5ab6fd7a7b",
       "new_row": {
         "rate": 17.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 17.5,
+          "FSAR": 17.75,
+          "OE+52": 18.0,
+          "OE+104": 18.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:520|2024-02-25"
+      },
+      "expected_prev_hash": "f0156cdeb3a3ded06c98b6698af144ba04b1749fae2466798cf39a5ab6fd7a7b",
+      "new_row": {
+        "rate": 18.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 17.5,
+          "FSAR": 17.75,
+          "OE+52": 18.0,
+          "OE+104": 18.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:520|2024-02-25"
+      },
+      "expected_prev_hash": "f0156cdeb3a3ded06c98b6698af144ba04b1749fae2466798cf39a5ab6fd7a7b",
+      "new_row": {
+        "rate": 18.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 17.5,
           "FSAR": 17.75,
@@ -1357,7 +3898,66 @@
       "expected_prev_hash": "2a4dcb77352f58d874325cb28ebe8a7d328d769fb7e29eaf6a643ae74f192420",
       "new_row": {
         "rate": 18.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 18.0,
+          "FSAR": 18.25,
+          "OE+52": 18.5,
+          "OE+104": 18.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:1560|2024-02-25"
+      },
+      "expected_prev_hash": "2a4dcb77352f58d874325cb28ebe8a7d328d769fb7e29eaf6a643ae74f192420",
+      "new_row": {
+        "rate": 18.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 18.0,
+          "FSAR": 18.25,
+          "OE+52": 18.5,
+          "OE+104": 18.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:1560|2024-02-25"
+      },
+      "expected_prev_hash": "2a4dcb77352f58d874325cb28ebe8a7d328d769fb7e29eaf6a643ae74f192420",
+      "new_row": {
+        "rate": 18.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 18.0,
           "FSAR": 18.25,
@@ -1385,7 +3985,66 @@
       "expected_prev_hash": "c9ff80d21aca415c7c651a3ca4c2058226f1f4162ab19ff05da7787a4e241c4d",
       "new_row": {
         "rate": 18.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 18.5,
+          "FSAR": 18.75,
+          "OE+52": 19.0,
+          "OE+104": 19.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:2600|2024-02-25"
+      },
+      "expected_prev_hash": "c9ff80d21aca415c7c651a3ca4c2058226f1f4162ab19ff05da7787a4e241c4d",
+      "new_row": {
+        "rate": 19.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 18.5,
+          "FSAR": 18.75,
+          "OE+52": 19.0,
+          "OE+104": 19.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:2600|2024-02-25"
+      },
+      "expected_prev_hash": "c9ff80d21aca415c7c651a3ca4c2058226f1f4162ab19ff05da7787a4e241c4d",
+      "new_row": {
+        "rate": 19.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 18.5,
           "FSAR": 18.75,
@@ -1413,7 +4072,66 @@
       "expected_prev_hash": "265c2cb98b9f93d0225550cef9b9b53c2bc2981dae476270a534a9ec45754643",
       "new_row": {
         "rate": 19.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 19.0,
+          "FSAR": 19.25,
+          "OE+52": 19.5,
+          "OE+104": 19.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:3640|2024-02-25"
+      },
+      "expected_prev_hash": "265c2cb98b9f93d0225550cef9b9b53c2bc2981dae476270a534a9ec45754643",
+      "new_row": {
+        "rate": 19.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 19.0,
+          "FSAR": 19.25,
+          "OE+52": 19.5,
+          "OE+104": 19.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:3640|2024-02-25"
+      },
+      "expected_prev_hash": "265c2cb98b9f93d0225550cef9b9b53c2bc2981dae476270a534a9ec45754643",
+      "new_row": {
+        "rate": 19.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 19.0,
           "FSAR": 19.25,
@@ -1441,7 +4159,66 @@
       "expected_prev_hash": "19b136e5c4666dcf69421565c635d04314954f5a49a83f6921d5f10067c93926",
       "new_row": {
         "rate": 19.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 19.5,
+          "FSAR": 19.75,
+          "OE+52": 20.0,
+          "OE+104": 20.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:4680|2024-02-25"
+      },
+      "expected_prev_hash": "19b136e5c4666dcf69421565c635d04314954f5a49a83f6921d5f10067c93926",
+      "new_row": {
+        "rate": 20.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 19.5,
+          "FSAR": 19.75,
+          "OE+52": 20.0,
+          "OE+104": 20.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:4680|2024-02-25"
+      },
+      "expected_prev_hash": "19b136e5c4666dcf69421565c635d04314954f5a49a83f6921d5f10067c93926",
+      "new_row": {
+        "rate": 20.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 19.5,
           "FSAR": 19.75,
@@ -1469,7 +4246,66 @@
       "expected_prev_hash": "85bca8addacdfb107b882e2870b46f207c4716e7402814910f1c40fb6ca0751a",
       "new_row": {
         "rate": 20.25,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 20.0,
+          "FSAR": 20.25,
+          "OE+52": 20.5,
+          "OE+104": 20.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:5720|2024-02-25"
+      },
+      "expected_prev_hash": "85bca8addacdfb107b882e2870b46f207c4716e7402814910f1c40fb6ca0751a",
+      "new_row": {
+        "rate": 20.5,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 20.0,
+          "FSAR": 20.25,
+          "OE+52": 20.5,
+          "OE+104": 20.75
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:5720|2024-02-25"
+      },
+      "expected_prev_hash": "85bca8addacdfb107b882e2870b46f207c4716e7402814910f1c40fb6ca0751a",
+      "new_row": {
+        "rate": 20.75,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 20.0,
           "FSAR": 20.25,
@@ -1497,7 +4333,66 @@
       "expected_prev_hash": "8ca6de2601df68da1e2eb7e870b2bae1c8c96c62c8abf7349cd9d25c6cd48b31",
       "new_row": {
         "rate": 20.75,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 20.5,
+          "FSAR": 20.75,
+          "OE+52": 21.0,
+          "OE+104": 21.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:6760|2024-02-25"
+      },
+      "expected_prev_hash": "8ca6de2601df68da1e2eb7e870b2bae1c8c96c62c8abf7349cd9d25c6cd48b31",
+      "new_row": {
+        "rate": 21.0,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 20.5,
+          "FSAR": 20.75,
+          "OE+52": 21.0,
+          "OE+104": 21.25
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:6760|2024-02-25"
+      },
+      "expected_prev_hash": "8ca6de2601df68da1e2eb7e870b2bae1c8c96c62c8abf7349cd9d25c6cd48b31",
+      "new_row": {
+        "rate": 21.25,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 20.5,
           "FSAR": 20.75,
@@ -1525,7 +4420,66 @@
       "expected_prev_hash": "073c56155a06f52833893e2711ab8419d4811a14af8b1b6738afc7a9a95856d6",
       "new_row": {
         "rate": 24.11,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 22.61,
+          "FSAR": 24.11,
+          "OE+52": 25.11,
+          "OE+104": 26.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:7800|2024-02-25"
+      },
+      "expected_prev_hash": "073c56155a06f52833893e2711ab8419d4811a14af8b1b6738afc7a9a95856d6",
+      "new_row": {
+        "rate": 25.11,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 22.61,
+          "FSAR": 24.11,
+          "OE+52": 25.11,
+          "OE+104": 26.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 40
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_clerks|hours:7800|2024-02-25"
+      },
+      "expected_prev_hash": "073c56155a06f52833893e2711ab8419d4811a14af8b1b6738afc7a9a95856d6",
+      "new_row": {
+        "rate": 26.11,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 22.61,
           "FSAR": 24.11,
@@ -1553,7 +4507,66 @@
       "expected_prev_hash": "2b0cd0732b8764cc9e5ba1a28e1fca291134dcccf6a399560ed42d64e4a81219",
       "new_row": {
         "rate": 25.11,
+        "effective_date": "2025-07-05",
         "selected_schedule_label": "FSAR",
+        "source_rate_schedule": {
+          "Current": 23.11,
+          "FSAR": 25.11,
+          "OE+52": 26.11,
+          "OE+104": 27.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_lead|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "2b0cd0732b8764cc9e5ba1a28e1fca291134dcccf6a399560ed42d64e4a81219",
+      "new_row": {
+        "rate": 26.11,
+        "effective_date": "2026-07-04",
+        "selected_schedule_label": "OE+52",
+        "source_rate_schedule": {
+          "Current": 23.11,
+          "FSAR": 25.11,
+          "OE+52": 26.11,
+          "OE+104": 27.11
+        }
+      },
+      "source_refs": [
+        {
+          "source_type": "moa",
+          "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+          "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+          "pdf_page": 39
+        }
+      ],
+      "confidence": 0.95,
+      "review_status": "approved"
+    },
+    {
+      "op": "replace_table_row",
+      "target": {
+        "table_id": "appendix_a_wage_rows",
+        "row_key": "starbucks_lead|fixed:na|2024-02-25"
+      },
+      "expected_prev_hash": "2b0cd0732b8764cc9e5ba1a28e1fca291134dcccf6a399560ed42d64e4a81219",
+      "new_row": {
+        "rate": 27.11,
+        "effective_date": "2027-07-03",
+        "selected_schedule_label": "OE+104",
         "source_rate_schedule": {
           "Current": 23.11,
           "FSAR": 25.11,

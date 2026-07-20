@@ -12,6 +12,19 @@ from backend.ingest.materializer import ContractMaterializer
 
 DEFAULT_SCHEDULE_LABELS = ("Current", "FSAR", "OE+52", "OE+104")
 
+# The 2025 MOA raises the same wage row three times: at ratification (FSAR,
+# "First Sunday After Ratification") and on the 52- and 104-week marks. Every
+# non-"Current" schedule must materialize as its own dated superseding row —
+# selecting just the schedule that was active at materialization time made
+# every "current rate" answer silently stale when OE+52 arrived a year later.
+# Dates follow the pack's established FSAR anchor (2025-07-05) plus 364/728
+# days; confirm exact Sundays with the steward if payroll disputes arise.
+DEFAULT_SCHEDULE_EFFECTIVE_DATES = {
+    "FSAR": "2025-07-05",
+    "OE+52": "2026-07-04",
+    "OE+104": "2027-07-03",
+}
+
 
 def normalize_label(value: str) -> str:
     text = (value or "").strip().lower()
@@ -77,6 +90,53 @@ def selected_schedule_rate(schedule_rates: dict[str, float], preferred_labels: t
                 return label, rate
     first_label = next(iter(schedule_rates))
     return first_label, schedule_rates[first_label]
+
+
+def schedule_ops_for_row(
+    *,
+    table_id: str,
+    row_key: str,
+    expected_prev_hash: str,
+    schedule_rates: dict[str, float],
+    source_refs: list[dict[str, Any]],
+    schedule_effective_dates: dict[str, str] | None = None,
+    confidence: float = 0.95,
+) -> list[dict[str, Any]]:
+    """One replace_table_row op per dated MOA schedule for a single base row.
+
+    Each op carries an explicit new_row.effective_date, which the
+    materializer treats as a dated supersession — the base row stays for
+    history and every schedule becomes its own row, so "current rate" stays
+    correct as each raise takes effect. All ops share the base row's prev
+    hash because supersession never mutates the base row.
+    """
+    effective_dates = schedule_effective_dates or DEFAULT_SCHEDULE_EFFECTIVE_DATES
+    ops: list[dict[str, Any]] = []
+    for label, effective_date in effective_dates.items():
+        label_norm = _normalized_schedule_label(label)
+        rate = next(
+            (value for cand, value in schedule_rates.items() if _normalized_schedule_label(cand) == label_norm),
+            None,
+        )
+        if rate is None:
+            continue
+        ops.append(
+            {
+                "op": "replace_table_row",
+                "target": {"table_id": table_id, "row_key": row_key},
+                "expected_prev_hash": expected_prev_hash,
+                "new_row": {
+                    "rate": float(rate),
+                    "effective_date": str(effective_date),
+                    "selected_schedule_label": str(label),
+                    "source_rate_schedule": dict(schedule_rates),
+                },
+                "source_refs": [dict(ref) for ref in source_refs],
+                "confidence": confidence,
+                "review_status": "approved",
+            }
+        )
+    return ops
 
 
 def extract_step_and_schedule_from_row(
@@ -326,27 +386,22 @@ def build_row_ops(config: MoaWageScheduleSyncConfig) -> list[dict[str, Any]]:
     ):
         cols = row.get("columns") or {}
         page_num = int(rate_map[key]["page_number"])
-        op = {
-            "op": "replace_table_row",
-            "target": {"table_id": config.wage_table_id, "row_key": row.get("row_key")},
-            "expected_prev_hash": materializer.hash_row(cols),
-            "new_row": {
-                "rate": float(rate_map[key]["rate"]),
-                "selected_schedule_label": str(rate_map[key]["selected_schedule_label"]),
-                "source_rate_schedule": dict(rate_map[key]["source_rate_schedule"]),
-            },
-            "source_refs": [
-                {
-                    "source_type": "moa",
-                    "pdf": config.source_pdf,
-                    "source_doc_id": config.source_doc_id,
-                    "pdf_page": page_num - config.pdf_page_offset,
-                }
-            ],
-            "confidence": 0.95,
-            "review_status": "approved",
-        }
-        ops.append(op)
+        ops.extend(
+            schedule_ops_for_row(
+                table_id=config.wage_table_id,
+                row_key=str(row.get("row_key")),
+                expected_prev_hash=materializer.hash_row(cols),
+                schedule_rates=dict(rate_map[key]["source_rate_schedule"]),
+                source_refs=[
+                    {
+                        "source_type": "moa",
+                        "pdf": config.source_pdf,
+                        "source_doc_id": config.source_doc_id,
+                        "pdf_page": page_num - config.pdf_page_offset,
+                    }
+                ],
+            )
+        )
     return ops
 
 
@@ -374,7 +429,7 @@ def update_patch_file(config: MoaWageScheduleSyncConfig, dry_run: bool = False) 
         "config_id": config.config_id,
         "source_doc_id": config.source_doc_id,
         "source": config.metadata_source,
-        "selected_schedule_label": config.preferred_active_schedule_labels[0],
+        "schedule_effective_dates": dict(DEFAULT_SCHEDULE_EFFECTIVE_DATES),
         "row_ops_generated": len(new_wage_ops),
     }
 

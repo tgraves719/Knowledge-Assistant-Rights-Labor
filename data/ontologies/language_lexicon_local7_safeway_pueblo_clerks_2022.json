@@ -1,6 +1,6 @@
 {
   "schema_version": "language_lexicon_v1",
-  "generated_at_utc": "2026-07-17T19:47:04.024203+00:00",
+  "generated_at_utc": "2026-07-20T05:25:22.072493+00:00",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "region_id": "region-pueblo",
   "union_local_id": "UFCW Local 7",
@@ -120,15 +120,6 @@
         "health welfare",
         "health welfare coverage",
         "welfare coverage"
-      ]
-    },
-    {
-      "canonical": "health benefits",
-      "aliases": [
-        "health and welfare",
-        "health benefits",
-        "insurance",
-        "medical"
       ]
     },
     {
@@ -289,16 +280,6 @@
       ]
     },
     {
-      "canonical": "personal holiday",
-      "aliases": [
-        "float day",
-        "float days",
-        "floater",
-        "personal holiday",
-        "personal holidays"
-      ]
-    },
-    {
       "canonical": "personal_holiday",
       "aliases": [
         "float day",
@@ -417,10 +398,7 @@
     {
       "canonical": "sick leave",
       "aliases": [
-        "call in sick",
-        "sick day",
-        "sick leave",
-        "sick pay"
+        "sick leave"
       ]
     },
     {
@@ -717,9 +695,9 @@
     "seniority": "seniority",
     "service time": "seniority",
     "years of service": "seniority",
+    "sick leave": "sick leave",
     "call in sick": "sick leave",
     "sick day": "sick leave",
-    "sick leave": "sick leave",
     "sick pay": "sick leave",
     "split shifts": "split shifts",
     "severance": "store closing",

@@ -207,10 +207,8 @@
         "dispute",
         "grievance",
         "hourly rate",
-        "hours",
         "pay",
         "pay rate",
-        "posting",
         "rate of pay",
         "rates pay",
         "schedule",
@@ -977,12 +975,12 @@
         "art32_sec92",
         "art32_sec93",
         "art32_sec94",
-        "art32_sec94_seg_001_001",
         "art32_sec94_seg_001_002",
-        "art32_sec94_seg_002_002",
         "art32_sec94_seg_003_003",
-        "art32_sec94_seg_003_003__dup1",
         "art32_sec94_seg_004_000",
+        "art32_sec94_seg_001_001",
+        "art32_sec94_seg_002_002",
+        "art32_sec94_seg_003_003__dup1",
         "art32_sec94_seg_004_004",
         "art32_sec94_seg_005_plus"
       ]
@@ -1319,20 +1317,20 @@
         "art42_sec125",
         "art42_sec126",
         "art42_sec126_seg_001_000",
-        "art42_sec126_seg_001_001",
-        "art42_sec126_seg_001_002",
         "art42_sec126_seg_001_003",
-        "art42_sec126_seg_001_004",
-        "art42_sec126_seg_002_003",
-        "art42_sec126_seg_003_004",
         "art42_sec126_seg_004_004",
-        "art42_sec126_seg_004_005",
         "art42_sec126_seg_005_000",
+        "art42_sec126_seg_001_004",
         "art42_sec126_seg_005_000__dup1",
+        "art42_sec126_seg_001_002",
+        "art42_sec126_seg_003_004",
         "art42_sec126_seg_005_005",
-        "art42_sec126_seg_006",
         "art42_sec126_seg_006_006",
-        "art42_sec126_seg_007_000"
+        "art42_sec126_seg_007_000",
+        "art42_sec126_seg_001_001",
+        "art42_sec126_seg_002_003",
+        "art42_sec126_seg_004_005",
+        "art42_sec126_seg_006"
       ]
     },
     "44": {
@@ -1725,18 +1723,7 @@
         "art57_sec167",
         "art57_sec168",
         "art57_sec169_seg_001",
-        "art57_sec169_seg_010",
-        "art57_sec169_seg_011",
-        "tbl_art57_1_chunk",
-        "tbl_art57_3_chunk",
-        "tbl_art57_4_chunk",
-        "tbl_art57_5_chunk",
-        "tbl_art57_6_chunk",
-        "tbl_art57_7_chunk",
-        "tbl_art57_8_chunk",
         "art57_sec169_seg_002",
-        "tbl_art57_9_chunk",
-        "tbl_fallback_art57_fef10c83_chunk",
         "art57_sec169_seg_003",
         "art57_sec169_seg_004",
         "art57_sec169_seg_005",
@@ -1744,8 +1731,19 @@
         "art57_sec169_seg_007",
         "art57_sec169_seg_008",
         "art57_sec169_seg_009",
-        "tbl_fallback_art57_7d2ba970_chunk",
-        "tbl_art57_2_chunk"
+        "art57_sec169_seg_010",
+        "art57_sec169_seg_011",
+        "tbl_art57_1_chunk",
+        "tbl_art57_2_chunk",
+        "tbl_art57_3_chunk",
+        "tbl_art57_4_chunk",
+        "tbl_art57_5_chunk",
+        "tbl_art57_6_chunk",
+        "tbl_art57_7_chunk",
+        "tbl_art57_8_chunk",
+        "tbl_art57_9_chunk",
+        "tbl_fallback_art57_fef10c83_chunk",
+        "tbl_fallback_art57_7d2ba970_chunk"
       ]
     }
   },
@@ -2283,7 +2281,6 @@
     ],
     "hours": [
       7,
-      8,
       10,
       12,
       13,
@@ -2315,7 +2312,6 @@
     ],
     "posting": [
       7,
-      8,
       10,
       12,
       13,
@@ -2852,10 +2848,10 @@
     "saving clause": [
       56
     ],
-    "deli clerk": [
+    "cake decorator": [
       57
     ],
-    "cake decorator": [
+    "deli clerk": [
       57
     ],
     "pharmacy technician": [
@@ -3123,25 +3119,25 @@
     "what does article 42 section 126 say about 401k plan": [
       42
     ],
-    "what does article 42 section 126 part 1 1 say about 401k plan": [
-      42
-    ],
     "what does article 42 section 126 part 1 3 say about 401k plan": [
       42
     ],
-    "what does article 42 section 126 part 1 4 say about 401k plan": [
-      42
-    ],
-    "what does article 42 section 126 part 2 3 say about 401k plan": [
-      42
-    ],
     "what does article 42 section 126 part 4 4 say about 401k plan": [
+      42
+    ],
+    "what does article 42 section 126 part 1 4 say about 401k plan": [
       42
     ],
     "what does article 42 section 126 part 6 6 say about 401k plan": [
       42
     ],
     "what does article 42 section 126 part 7 0 say about 401k plan": [
+      42
+    ],
+    "what does article 42 section 126 part 1 1 say about 401k plan": [
+      42
+    ],
+    "what does article 42 section 126 part 2 3 say about 401k plan": [
       42
     ],
     "what does article 49 section 144 say about this section": [

@@ -4125,7 +4125,9 @@ const EMBED_THEME_OVERRIDES = (() => {
                 if (!steps.length) return null;
                 schedules.push({
                     date: head[2],
-                    qualifier: /current/i.test(head[3]) ? 'current' : 'superseded',
+                    qualifier: /current/i.test(head[3])
+                        ? 'current'
+                        : (/not yet in effect|scheduled/i.test(head[3]) ? 'upcoming' : 'superseded'),
                     steps,
                 });
             }
@@ -4135,7 +4137,10 @@ const EMBED_THEME_OVERRIDES = (() => {
                     if (!stepLabels.includes(step.label)) stepLabels.push(step.label);
                 }
             }
-            const header = ['Step', ...schedules.map(s => `Effective ${s.date}${s.qualifier === 'current' ? ' (current)' : ''}`)];
+            const header = ['Step', ...schedules.map(s => {
+                const tag = s.qualifier === 'current' ? ' (current)' : s.qualifier === 'upcoming' ? ' (upcoming)' : '';
+                return `Effective ${s.date}${tag}`;
+            })];
             const lines = [
                 `| ${header.join(' | ')} |`,
                 `| ${header.map(() => '---').join(' | ')} |`,
@@ -4144,10 +4149,14 @@ const EMBED_THEME_OVERRIDES = (() => {
                 const cells = schedules.map(s => s.steps.find(step => step.label === label)?.rate || '');
                 lines.push(`| ${label} | ${cells.join(' | ')} |`);
             }
-            const supersededNote = schedules.some(s => s.qualifier === 'superseded')
-                ? '\nEarlier columns show superseded schedules kept for reference.'
-                : '';
-            return `${lines.join('\n')}${supersededNote}`;
+            const notes = [];
+            if (schedules.some(s => s.qualifier === 'upcoming')) {
+                notes.push('Columns marked upcoming are negotiated increases that take effect on the date shown.');
+            }
+            if (schedules.some(s => s.qualifier === 'superseded')) {
+                notes.push('Superseded columns are kept for reference.');
+            }
+            return `${lines.join('\n')}${notes.length ? '\n' + notes.join(' ') : ''}`;
         }
 
         function renderArticleContent(data) {

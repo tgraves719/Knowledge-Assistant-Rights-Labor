@@ -4,7 +4,7 @@
   ],
   "base_version_id": "base_snapshot_v0_9_0",
   "contract_id": "local7_safeway_pueblo_clerks_2022",
-  "effective_content_hash": "58b6b95230bf76a9245666aa1b0389e9958109afdf8a5b626e4530bbe82e2606",
+  "effective_content_hash": "596c9c6f67d85fcdbd2d4efd97b88c6a795be4d13c615dc9c0fd20c9c5626630",
   "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
   "parent_effective_version_id": "base_snapshot_v0_9_0",
   "schema_version": "effective_contract_v0_9_0",
@@ -20291,6 +20291,100 @@
           "row_key": "5star_cake_decorator|fixed:na|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "5star_cake_decorator",
+            "classification_name": "5-STAR CAKE DECORATOR",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 25.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 24.61,
+              "OE+104": 26.61,
+              "OE+52": 25.61
+            },
+            "source_reference": {
+              "row_index": 11,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 11,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "5star_cake_decorator|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "5star_cake_decorator",
+            "classification_name": "5-STAR CAKE DECORATOR",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 26.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 24.61,
+              "OE+104": 26.61,
+              "OE+52": 25.61
+            },
+            "source_reference": {
+              "row_index": 11,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 11,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "5star_cake_decorator|fixed:na|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "all_purpose_clerk",
@@ -20423,6 +20517,100 @@
             }
           ],
           "row_key": "all_purpose_clerk|hours:0|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 17.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 12,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 12,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:0|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 17.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 12,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 12,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:0|2027-07-03"
         },
         {
           "amendments": [],
@@ -20559,6 +20747,100 @@
           "row_key": "all_purpose_clerk|hours:1560|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 14,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 14,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:1560|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 14,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 14,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:1560|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "all_purpose_clerk",
@@ -20691,6 +20973,100 @@
             }
           ],
           "row_key": "all_purpose_clerk|hours:2600|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 15,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 15,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:2600|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 15,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 15,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:2600|2027-07-03"
         },
         {
           "amendments": [],
@@ -20827,6 +21203,100 @@
           "row_key": "all_purpose_clerk|hours:3640|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 16,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 16,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:3640|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 16,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 16,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:3640|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "all_purpose_clerk",
@@ -20959,6 +21429,100 @@
             }
           ],
           "row_key": "all_purpose_clerk|hours:4680|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 17,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 17,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:4680|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 17,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 17,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:4680|2027-07-03"
         },
         {
           "amendments": [],
@@ -21095,6 +21659,100 @@
           "row_key": "all_purpose_clerk|hours:520|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 13,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 13,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:520|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 13,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 13,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:520|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "all_purpose_clerk",
@@ -21227,6 +21885,100 @@
             }
           ],
           "row_key": "all_purpose_clerk|hours:5720|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 18,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 18,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:5720|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 18,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 18,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:5720|2027-07-03"
         },
         {
           "amendments": [],
@@ -21363,6 +22115,100 @@
           "row_key": "all_purpose_clerk|hours:6760|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 21.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 19,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 19,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:6760|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 21.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 19,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 19,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:6760|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "all_purpose_clerk",
@@ -21495,6 +22341,100 @@
             }
           ],
           "row_key": "all_purpose_clerk|hours:7800|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 25.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 20,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 20,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:7800|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "all_purpose_clerk",
+            "classification_name": "ALL PURPOSE CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 26.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 20,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 20,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "all_purpose_clerk|hours:7800|2027-07-03"
         },
         {
           "amendments": [],
@@ -21631,6 +22571,100 @@
           "row_key": "bakery_fresh_cut_liquor_clerk|hours:0|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 17.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 23,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 23,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:0|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 17.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 23,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 23,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:0|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "bakery_fresh_cut_liquor_clerk",
@@ -21763,6 +22797,100 @@
             }
           ],
           "row_key": "bakery_fresh_cut_liquor_clerk|hours:1560|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 25,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 25,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:1560|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 25,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 25,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:1560|2027-07-03"
         },
         {
           "amendments": [],
@@ -21899,6 +23027,100 @@
           "row_key": "bakery_fresh_cut_liquor_clerk|hours:2600|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 26,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 26,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:2600|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 26,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 26,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:2600|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "bakery_fresh_cut_liquor_clerk",
@@ -22031,6 +23253,100 @@
             }
           ],
           "row_key": "bakery_fresh_cut_liquor_clerk|hours:3640|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 27,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 27,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:3640|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 27,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 27,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:3640|2027-07-03"
         },
         {
           "amendments": [],
@@ -22167,6 +23483,100 @@
           "row_key": "bakery_fresh_cut_liquor_clerk|hours:4680|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 28,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 28,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:4680|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 28,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 28,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:4680|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "bakery_fresh_cut_liquor_clerk",
@@ -22299,6 +23709,100 @@
             }
           ],
           "row_key": "bakery_fresh_cut_liquor_clerk|hours:520|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 24,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 24,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:520|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 24,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 24,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:520|2027-07-03"
         },
         {
           "amendments": [],
@@ -22435,6 +23939,100 @@
           "row_key": "bakery_fresh_cut_liquor_clerk|hours:5720|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 29,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 29,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:5720|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 29,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 29,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:5720|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "bakery_fresh_cut_liquor_clerk",
@@ -22567,6 +24165,100 @@
             }
           ],
           "row_key": "bakery_fresh_cut_liquor_clerk|hours:6760|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 21.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 30,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 30,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:6760|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 21.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 30,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 30,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:6760|2027-07-03"
         },
         {
           "amendments": [],
@@ -22703,6 +24395,100 @@
           "row_key": "bakery_fresh_cut_liquor_clerk|hours:7800|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 25.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 31,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 31,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:7800|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_fresh_cut_liquor_clerk",
+            "classification_name": "BAKERY/FRESH CUT/LIQUOR CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 26.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 31,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 31,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_fresh_cut_liquor_clerk|hours:7800|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "bakery_manager",
@@ -22835,6 +24621,100 @@
             }
           ],
           "row_key": "bakery_manager|fixed:na|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_manager",
+            "classification_name": "BAKERY MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 28.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 26.11,
+              "FSAR": 27.61,
+              "OE+104": 29.61,
+              "OE+52": 28.61
+            },
+            "source_reference": {
+              "row_index": 6,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 6,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_manager|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "bakery_manager",
+            "classification_name": "BAKERY MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 29.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 26.11,
+              "FSAR": 27.61,
+              "OE+104": 29.61,
+              "OE+52": 28.61
+            },
+            "source_reference": {
+              "row_index": 6,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 6,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "bakery_manager|fixed:na|2027-07-03"
         },
         {
           "amendments": [],
@@ -22971,6 +24851,100 @@
           "row_key": "cake_decorator|hours:0|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 17.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 2,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 2,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:0|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 17.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 2,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 2,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:0|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "cake_decorator",
@@ -23103,6 +25077,100 @@
             }
           ],
           "row_key": "cake_decorator|hours:1560|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 4,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 4,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:1560|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 4,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 4,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:1560|2027-07-03"
         },
         {
           "amendments": [],
@@ -23239,6 +25307,100 @@
           "row_key": "cake_decorator|hours:2600|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 5,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 5,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:2600|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 5,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 5,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:2600|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "cake_decorator",
@@ -23371,6 +25533,100 @@
             }
           ],
           "row_key": "cake_decorator|hours:3640|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 6,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 6,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:3640|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 6,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 6,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:3640|2027-07-03"
         },
         {
           "amendments": [],
@@ -23507,6 +25763,100 @@
           "row_key": "cake_decorator|hours:4680|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 7,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 7,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:4680|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 7,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 7,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:4680|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "cake_decorator",
@@ -23639,6 +25989,100 @@
             }
           ],
           "row_key": "cake_decorator|hours:520|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 3,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 3,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:520|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 3,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 3,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:520|2027-07-03"
         },
         {
           "amendments": [],
@@ -23775,6 +26219,100 @@
           "row_key": "cake_decorator|hours:5720|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 8,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 8,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:5720|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 8,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 8,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:5720|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "cake_decorator",
@@ -23907,6 +26445,100 @@
             }
           ],
           "row_key": "cake_decorator|hours:6760|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 21.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 9,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 9,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:6760|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 21.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 9,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 9,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:6760|2027-07-03"
         },
         {
           "amendments": [],
@@ -24043,6 +26675,100 @@
           "row_key": "cake_decorator|hours:7800|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 25.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 10,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 10,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:7800|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "cake_decorator",
+            "classification_name": "CAKE DECORATOR",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 26.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 10,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 10,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "cake_decorator|hours:7800|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "courtesy_clerk",
@@ -24175,6 +26901,100 @@
             }
           ],
           "row_key": "courtesy_clerk|hours:0|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "courtesy_clerk",
+            "classification_name": "COURTESY CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 17.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 23,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 23,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 12,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "courtesy_clerk|hours:0|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "courtesy_clerk",
+            "classification_name": "COURTESY CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 17.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 23,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 23,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 12,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "courtesy_clerk|hours:0|2027-07-03"
         },
         {
           "amendments": [],
@@ -24311,6 +27131,100 @@
           "row_key": "courtesy_clerk|months:108|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "courtesy_clerk",
+            "classification_name": "COURTESY CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.65,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 26,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 108 months",
+            "step_type": "months",
+            "threshold_value": 108
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 26,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 12,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "courtesy_clerk|months:108|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "courtesy_clerk",
+            "classification_name": "COURTESY CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.65,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 26,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 108 months",
+            "step_type": "months",
+            "threshold_value": 108
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 26,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 12,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "courtesy_clerk|months:108|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "courtesy_clerk",
@@ -24443,6 +27357,100 @@
             }
           ],
           "row_key": "courtesy_clerk|months:36|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "courtesy_clerk",
+            "classification_name": "COURTESY CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.55,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 24,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 36 months",
+            "step_type": "months",
+            "threshold_value": 36
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 24,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 12,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "courtesy_clerk|months:36|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "courtesy_clerk",
+            "classification_name": "COURTESY CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.55,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 24,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 36 months",
+            "step_type": "months",
+            "threshold_value": 36
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 24,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 12,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "courtesy_clerk|months:36|2027-07-03"
         },
         {
           "amendments": [],
@@ -24579,6 +27587,100 @@
           "row_key": "courtesy_clerk|months:72|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "courtesy_clerk",
+            "classification_name": "COURTESY CLERK",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.1,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 25,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 72 months",
+            "step_type": "months",
+            "threshold_value": 72
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 25,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 12,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "courtesy_clerk|months:72|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "courtesy_clerk",
+            "classification_name": "COURTESY CLERK",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.1,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 25,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 72 months",
+            "step_type": "months",
+            "threshold_value": 72
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 25,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 12,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "courtesy_clerk|months:72|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "floral_manager",
@@ -24711,6 +27813,100 @@
             }
           ],
           "row_key": "floral_manager|fixed:na|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "floral_manager",
+            "classification_name": "FLORAL MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 25.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 24.61,
+              "OE+104": 26.61,
+              "OE+52": 25.61
+            },
+            "source_reference": {
+              "row_index": 4,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 4,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "floral_manager|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "floral_manager",
+            "classification_name": "FLORAL MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 26.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 24.61,
+              "OE+104": 26.61,
+              "OE+52": 25.61
+            },
+            "source_reference": {
+              "row_index": 4,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 4,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "floral_manager|fixed:na|2027-07-03"
         },
         {
           "amendments": [],
@@ -24847,6 +28043,100 @@
           "row_key": "fresh_cut_supervisor|fixed:na|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "fresh_cut_supervisor",
+            "classification_name": "FRESH CUT SUPERVISOR",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 25.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 24.61,
+              "OE+104": 26.61,
+              "OE+52": 25.61
+            },
+            "source_reference": {
+              "row_index": 10,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 10,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "fresh_cut_supervisor|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "fresh_cut_supervisor",
+            "classification_name": "FRESH CUT SUPERVISOR",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 26.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 24.61,
+              "OE+104": 26.61,
+              "OE+52": 25.61
+            },
+            "source_reference": {
+              "row_index": 10,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 10,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "fresh_cut_supervisor|fixed:na|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "fuel_lead",
@@ -24979,6 +28269,100 @@
             }
           ],
           "row_key": "fuel_lead|fixed:na|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "fuel_lead",
+            "classification_name": "FUEL LEAD",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 26.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 24.11,
+              "FSAR": 25.61,
+              "OE+104": 27.61,
+              "OE+52": 26.61
+            },
+            "source_reference": {
+              "row_index": 9,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 9,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "fuel_lead|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "fuel_lead",
+            "classification_name": "FUEL LEAD",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 27.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 24.11,
+              "FSAR": 25.61,
+              "OE+104": 27.61,
+              "OE+52": 26.61
+            },
+            "source_reference": {
+              "row_index": 9,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 9,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "fuel_lead|fixed:na|2027-07-03"
         },
         {
           "amendments": [],
@@ -25115,6 +28499,100 @@
           "row_key": "grandfathered|fixed:na|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "grandfathered",
+            "classification_name": "Grandfathered",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 25.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 24.61,
+              "OE+104": 26.61,
+              "OE+52": 25.61
+            },
+            "source_reference": {
+              "row_index": 21,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 21,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "grandfathered|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "grandfathered",
+            "classification_name": "Grandfathered",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 26.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 24.61,
+              "OE+104": 26.61,
+              "OE+52": 25.61
+            },
+            "source_reference": {
+              "row_index": 21,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 21,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "grandfathered|fixed:na|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "head_baker",
@@ -25247,6 +28725,100 @@
             }
           ],
           "row_key": "head_baker|fixed:na|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "head_baker",
+            "classification_name": "HEAD BAKER",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 26.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 24.11,
+              "FSAR": 25.61,
+              "OE+104": 27.61,
+              "OE+52": 26.61
+            },
+            "source_reference": {
+              "row_index": 5,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 5,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "head_baker|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "head_baker",
+            "classification_name": "HEAD BAKER",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 27.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 24.11,
+              "FSAR": 25.61,
+              "OE+104": 27.61,
+              "OE+52": 26.61
+            },
+            "source_reference": {
+              "row_index": 5,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 5,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "head_baker|fixed:na|2027-07-03"
         },
         {
           "amendments": [],
@@ -25383,6 +28955,100 @@
           "row_key": "head_clerk|fixed:na|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "head_clerk",
+            "classification_name": "HEAD CLERK",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 26.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 24.11,
+              "FSAR": 25.61,
+              "OE+104": 27.61,
+              "OE+52": 26.61
+            },
+            "source_reference": {
+              "row_index": 2,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 2,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "head_clerk|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "head_clerk",
+            "classification_name": "HEAD CLERK",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 27.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 24.11,
+              "FSAR": 25.61,
+              "OE+104": 27.61,
+              "OE+52": 26.61
+            },
+            "source_reference": {
+              "row_index": 2,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 2,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "head_clerk|fixed:na|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "manager_trainee",
@@ -25515,6 +29181,100 @@
             }
           ],
           "row_key": "manager_trainee|fixed:na|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "manager_trainee",
+            "classification_name": "MANAGER TRAINEE",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 25.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 24.61,
+              "OE+104": 26.61,
+              "OE+52": 25.61
+            },
+            "source_reference": {
+              "row_index": 8,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 8,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "manager_trainee|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "manager_trainee",
+            "classification_name": "MANAGER TRAINEE",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 26.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 23.11,
+              "FSAR": 24.61,
+              "OE+104": 26.61,
+              "OE+52": 25.61
+            },
+            "source_reference": {
+              "row_index": 8,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 8,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "manager_trainee|fixed:na|2027-07-03"
         },
         {
           "amendments": [],
@@ -25651,6 +29411,100 @@
           "row_key": "nonfood_gm_floral|hours:0|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 17.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 13,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 13,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:0|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 17.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.0,
+              "FSAR": 17.25,
+              "OE+104": 17.75,
+              "OE+52": 17.5
+            },
+            "source_reference": {
+              "row_index": 13,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "Start",
+            "step_type": "hours",
+            "threshold_value": 0
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 13,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:0|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "nonfood_gm_floral",
@@ -25783,6 +29637,100 @@
             }
           ],
           "row_key": "nonfood_gm_floral|hours:1560|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 15,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 15,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:1560|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.0,
+              "FSAR": 18.25,
+              "OE+104": 18.75,
+              "OE+52": 18.5
+            },
+            "source_reference": {
+              "row_index": 15,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 1560 hours",
+            "step_type": "hours",
+            "threshold_value": 1560
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 15,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:1560|2027-07-03"
         },
         {
           "amendments": [],
@@ -25919,6 +29867,100 @@
           "row_key": "nonfood_gm_floral|hours:2600|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 16,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 16,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:2600|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 18.5,
+              "FSAR": 18.75,
+              "OE+104": 19.25,
+              "OE+52": 19.0
+            },
+            "source_reference": {
+              "row_index": 16,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 2600 hours",
+            "step_type": "hours",
+            "threshold_value": 2600
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 16,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:2600|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "nonfood_gm_floral",
@@ -26051,6 +30093,100 @@
             }
           ],
           "row_key": "nonfood_gm_floral|hours:3640|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 19.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 17,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 17,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:3640|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 19.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.0,
+              "FSAR": 19.25,
+              "OE+104": 19.75,
+              "OE+52": 19.5
+            },
+            "source_reference": {
+              "row_index": 17,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 3640 hours",
+            "step_type": "hours",
+            "threshold_value": 3640
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 17,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:3640|2027-07-03"
         },
         {
           "amendments": [],
@@ -26187,6 +30323,100 @@
           "row_key": "nonfood_gm_floral|hours:4680|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 18,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 18,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:4680|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 19.5,
+              "FSAR": 19.75,
+              "OE+104": 20.25,
+              "OE+52": 20.0
+            },
+            "source_reference": {
+              "row_index": 18,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 4680 hours",
+            "step_type": "hours",
+            "threshold_value": 4680
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 18,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:4680|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "nonfood_gm_floral",
@@ -26319,6 +30549,100 @@
             }
           ],
           "row_key": "nonfood_gm_floral|hours:520|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 18.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 14,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 14,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:520|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 18.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 17.5,
+              "FSAR": 17.75,
+              "OE+104": 18.25,
+              "OE+52": 18.0
+            },
+            "source_reference": {
+              "row_index": 14,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 520 hours",
+            "step_type": "hours",
+            "threshold_value": 520
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 14,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:520|2027-07-03"
         },
         {
           "amendments": [],
@@ -26455,6 +30779,100 @@
           "row_key": "nonfood_gm_floral|hours:5720|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 20.5,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 19,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 19,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:5720|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 20.75,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.0,
+              "FSAR": 20.25,
+              "OE+104": 20.75,
+              "OE+52": 20.5
+            },
+            "source_reference": {
+              "row_index": 19,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 5720 hours",
+            "step_type": "hours",
+            "threshold_value": 5720
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 19,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:5720|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "nonfood_gm_floral",
@@ -26587,6 +31005,100 @@
             }
           ],
           "row_key": "nonfood_gm_floral|hours:6760|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 21.0,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 20,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 20,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:6760|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 21.25,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 20.5,
+              "FSAR": 20.75,
+              "OE+104": 21.25,
+              "OE+52": 21.0
+            },
+            "source_reference": {
+              "row_index": 20,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 6760 hours",
+            "step_type": "hours",
+            "threshold_value": 6760
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 20,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:6760|2027-07-03"
         },
         {
           "amendments": [],
@@ -26723,6 +31235,100 @@
           "row_key": "nonfood_gm_floral|hours:7800|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2026-07-04",
+            "rate": 25.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 21,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 21,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:7800|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "nonfood_gm_floral",
+            "classification_name": "NON-FOOD/GM/FLORAL",
+            "confidence": 0.95,
+            "effective_date": "2027-07-03",
+            "rate": 26.11,
+            "row_type": "step_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 22.61,
+              "FSAR": 24.11,
+              "OE+104": 26.11,
+              "OE+52": 25.11
+            },
+            "source_reference": {
+              "row_index": 21,
+              "table_id": "tbl_art58_3"
+            },
+            "step_name": "After 7800 hours",
+            "step_type": "hours",
+            "threshold_value": 7800
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 63,
+              "row_index": 21,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_3"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 11,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "nonfood_gm_floral|hours:7800|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "other_assistant_managers",
@@ -26855,6 +31461,100 @@
             }
           ],
           "row_key": "other_assistant_managers|fixed:na|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "other_assistant_managers",
+            "classification_name": "OTHER ASSISTANT MANAGERS",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 29.11,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 26.11,
+              "FSAR": 27.86,
+              "OE+104": 30.36,
+              "OE+52": 29.11
+            },
+            "source_reference": {
+              "row_index": 1,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 1,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "other_assistant_managers|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "other_assistant_managers",
+            "classification_name": "OTHER ASSISTANT MANAGERS",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 30.36,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 26.11,
+              "FSAR": 27.86,
+              "OE+104": 30.36,
+              "OE+52": 29.11
+            },
+            "source_reference": {
+              "row_index": 1,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 1,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "other_assistant_managers|fixed:na|2027-07-03"
         },
         {
           "amendments": [],
@@ -26991,6 +31691,100 @@
           "row_key": "produce_department_manager|fixed:na|2025-07-05"
         },
         {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "produce_department_manager",
+            "classification_name": "PRODUCE DEPARTMENT MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 28.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 26.07,
+              "FSAR": 27.61,
+              "OE+104": 29.61,
+              "OE+52": 28.61
+            },
+            "source_reference": {
+              "row_index": 3,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 3,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "produce_department_manager|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "produce_department_manager",
+            "classification_name": "PRODUCE DEPARTMENT MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 29.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 26.07,
+              "FSAR": 27.61,
+              "OE+104": 29.61,
+              "OE+52": 28.61
+            },
+            "source_reference": {
+              "row_index": 3,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 3,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "produce_department_manager|fixed:na|2027-07-03"
+        },
+        {
           "amendments": [],
           "columns": {
             "classification_key": "variety_manager",
@@ -27123,6 +31917,100 @@
             }
           ],
           "row_key": "variety_manager|fixed:na|2025-07-05"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "variety_manager",
+            "classification_name": "VARIETY MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2026-07-04",
+            "rate": 26.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+52",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 24.07,
+              "FSAR": 25.61,
+              "OE+104": 27.61,
+              "OE+52": 26.61
+            },
+            "source_reference": {
+              "row_index": 7,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 7,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "variety_manager|fixed:na|2026-07-04"
+        },
+        {
+          "amendments": [
+            "local7_safeway_moa_2025_07_05"
+          ],
+          "columns": {
+            "classification_key": "variety_manager",
+            "classification_name": "VARIETY MANAGER",
+            "confidence": 0.9,
+            "effective_date": "2027-07-03",
+            "rate": 27.61,
+            "row_type": "rate_row",
+            "selected_schedule_label": "OE+104",
+            "source_method": "table_registry",
+            "source_rate_schedule": {
+              "Current": 24.07,
+              "FSAR": 25.61,
+              "OE+104": 27.61,
+              "OE+52": 26.61
+            },
+            "source_reference": {
+              "row_index": 7,
+              "table_id": "tbl_art58_2"
+            },
+            "step_name": "Rate",
+            "step_type": "fixed",
+            "threshold_value": null
+          },
+          "provenance": [
+            {
+              "pdf": "SW+Pueblo+Clerks+2022.2025.pdf",
+              "pdf_page": 62,
+              "row_index": 7,
+              "source_doc_id": null,
+              "source_type": "base",
+              "table_id": "tbl_art58_2"
+            },
+            {
+              "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+              "pdf_page": 10,
+              "row_index": null,
+              "source_doc_id": "albertsons_safeway_moa_2025_07_05",
+              "source_type": "moa",
+              "table_id": null
+            }
+          ],
+          "row_key": "variety_manager|fixed:na|2027-07-03"
         }
       ],
       "table_id": "appendix_a_wage_rows"

@@ -25,10 +25,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from backend.ingest.materializer import ContractMaterializer
 from backend.ingest.moa_wage_schedule_sync import (
+    DEFAULT_SCHEDULE_EFFECTIVE_DATES,
     DEFAULT_SCHEDULE_LABELS,
     extract_step_and_schedule_from_row,
     normalize_label,
     parse_step,
+    schedule_ops_for_row,
     schedule_rates_from_cells,
     selected_schedule_rate,
 )
@@ -160,17 +162,16 @@ def main() -> int:
         row = latest_rows[key]
         cols = row.get("columns") or {}
         info = rate_map[key]
-        ops.append(
-            {
-                "op": "replace_table_row",
-                "target": {"table_id": WAGE_TABLE_ID, "row_key": row.get("row_key")},
-                "expected_prev_hash": materializer.hash_row(cols),
-                "new_row": {
-                    "rate": float(info["rate"]),
-                    "selected_schedule_label": str(info["selected_schedule_label"]),
-                    "source_rate_schedule": dict(info["source_rate_schedule"]),
-                },
-                "source_refs": [
+        # One op per dated schedule (FSAR / OE+52 / OE+104): the MOA raises
+        # this row three times, and each raise must be its own dated row or
+        # "current rate" goes stale when the next one takes effect.
+        ops.extend(
+            schedule_ops_for_row(
+                table_id=WAGE_TABLE_ID,
+                row_key=str(row.get("row_key")),
+                expected_prev_hash=materializer.hash_row(cols),
+                schedule_rates=dict(info["source_rate_schedule"]),
+                source_refs=[
                     {
                         "source_type": "moa",
                         "pdf": SOURCE_PDF,
@@ -178,9 +179,7 @@ def main() -> int:
                         "pdf_page": int(info["page_number"]),
                     }
                 ],
-                "confidence": 0.95,
-                "review_status": "approved",
-            }
+            )
         )
 
     patch = json.loads(PATCH_PATH.read_text(encoding="utf-8"))
@@ -195,7 +194,7 @@ def main() -> int:
         "config_id": "local7_safeway_pueblo_meat_2025_07_05",
         "source_doc_id": SOURCE_DOC_ID,
         "source": "output.json Safeway Denver Metro Meat pages 39-40 wage schedule (store list includes Pueblo)",
-        "selected_schedule_label": PREFERRED_SCHEDULE_LABELS[0],
+        "schedule_effective_dates": dict(DEFAULT_SCHEDULE_EFFECTIVE_DATES),
         "row_ops_generated": len(ops),
     }
     print(f"wage ops generated: {len(ops)} (existing non-wage ops kept: {len(kept)})")

@@ -304,7 +304,7 @@ def _format_effective_date(value: str) -> str:
     return f"{int(month)}/{int(day)}/{year}"
 
 
-def _appendix_wage_sections(payload: dict) -> list[StructuredSection]:
+def _appendix_wage_sections(payload: dict, *, today: "date | None" = None) -> list[StructuredSection]:
     """One section per classification, built from the pack's structured wage rows.
 
     The rows are the only place amended (current) rates exist — the markdown
@@ -313,7 +313,16 @@ def _appendix_wage_sections(payload: dict) -> list[StructuredSection]:
     included) so the chunker never has to slice a table: a paragraph survives
     splitting whole, and every chunk a member retrieves names the
     classification, the date, and whether the schedule is current.
+
+    "Current" is the latest schedule whose date has ARRIVED — the 2025 MOA
+    carries future-dated raises (+52/+104 weeks), and labelling the maximum
+    date current would present next year's rates as today's. Future schedules
+    are labelled as scheduled increases; the answer a member needs most is
+    what they earn now, so the current paragraph leads.
     """
+    from datetime import date as _date
+
+    effective_today = (today or _date.today()).isoformat()
     tables = payload.get("tables")
     table = tables.get("appendix_a_wage_rows") if isinstance(tables, dict) else None
     rows = table.get("rows") if isinstance(table, dict) else None
@@ -351,12 +360,17 @@ def _appendix_wage_sections(payload: dict) -> list[StructuredSection]:
     for key in sorted(groups, key=lambda item: groups[item]["name"]):
         group = groups[key]
         name = group["name"]
-        dates = sorted(group["dates"], reverse=True)
-        if not dates:
+        all_dates = sorted(group["dates"])
+        if not all_dates:
             continue
-        current_date = dates[0]
+        arrived = [d for d in all_dates if d <= effective_today]
+        upcoming = [d for d in all_dates if d > effective_today]
+        current_date = arrived[-1] if arrived else None
+        # Current first (the question members actually ask), then scheduled
+        # increases soonest-first, then history newest-first.
+        ordered_dates = ([current_date] if current_date else []) + upcoming + list(reversed(arrived[:-1]))
         paragraphs = []
-        for effective in dates:
+        for effective in ordered_dates:
             # Progression steps in ladder order (Start, then ascending hour/
             # month thresholds); the pack's row order interleaves them.
             ordered = sorted(
@@ -367,6 +381,8 @@ def _appendix_wage_sections(payload: dict) -> list[StructuredSection]:
             if effective == current_date:
                 qualifier = " (current rates"
                 qualifier += ", as amended)" if effective in group["amended_dates"] else ")"
+            elif effective > effective_today:
+                qualifier = " (scheduled increase, not yet in effect)"
             else:
                 qualifier = " (superseded by a later schedule)"
             paragraphs.append(

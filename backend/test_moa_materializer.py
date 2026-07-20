@@ -240,6 +240,69 @@ def _test_replace_table_row_correctness() -> None:
     ), "Superseded wage row provenance must include MOA source ref"
 
 
+def _test_replace_table_row_explicit_future_dates_emit_schedule_ladder() -> None:
+    """One MOA can raise the same row several times (FSAR, +52wk, +104wk).
+
+    Ops with explicit future effective_dates must EACH clone a superseding
+    dated row off the same base row (sharing the base row's prev hash),
+    instead of merging in place. Materializing only the ratification
+    schedule made every "current rate" silently stale a year later.
+    """
+    base = _base_contract_fixture()
+    materializer = ContractMaterializer()
+    row = base["tables"][materializer_module.WAGE_TABLE_ID]["rows"][0]
+    row_hash = materializer.hash_row(row["columns"])
+
+    def _op(rate: float, effective_date: str | None, label: str) -> dict:
+        new_row: dict = {"rate": rate, "selected_schedule_label": label}
+        if effective_date:
+            new_row["effective_date"] = effective_date
+        return {
+            "op": "replace_table_row",
+            "target": {
+                "table_id": materializer_module.WAGE_TABLE_ID,
+                "row_key": "courtesy_clerk|hours:0|2024-01-21",
+            },
+            "expected_prev_hash": row_hash,
+            "new_row": new_row,
+            "source_refs": [
+                {"source_type": "moa", "pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf", "pdf_page": 39}
+            ],
+            "confidence": 0.95,
+            "review_status": "approved",
+        }
+
+    patch = PatchArtifact.model_validate(
+        {
+            "schema_version": "moa_patch_v0_9_0",
+            "patch_id": "patch_2025_07_05",
+            "contract_id": "unit_test_contract",
+            "source_pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf",
+            "effective_date": "2025-07-05",
+            "ratified_date": "2025-07-05",
+            "parent_effective_version_id": "base_2024_01_01",
+            "operations": [
+                _op(17.25, None, "FSAR"),  # patch-date supersession, as before
+                _op(17.50, "2026-07-04", "OE+52"),
+                _op(17.75, "2027-07-03", "OE+104"),
+            ],
+        }
+    )
+
+    effective, log = materializer.apply_patch_list(base, [patch])
+    assert not (log.get("errors") or []), f"ops failed: {log.get('errors')}"
+
+    rows = effective["tables"][materializer_module.WAGE_TABLE_ID]["rows"]
+    by_key = {str(r.get("row_key")): r for r in rows}
+    assert len(rows) == 4, f"expected base + 3 dated schedules, got {sorted(by_key)}"
+    assert float(by_key["courtesy_clerk|hours:0|2024-01-21"]["columns"]["rate"]) == 17.0
+    assert float(by_key["courtesy_clerk|hours:0|2025-07-05"]["columns"]["rate"]) == 17.25
+    assert float(by_key["courtesy_clerk|hours:0|2026-07-04"]["columns"]["rate"]) == 17.50
+    assert float(by_key["courtesy_clerk|hours:0|2027-07-03"]["columns"]["rate"]) == 17.75
+    for key in ("courtesy_clerk|hours:0|2026-07-04", "courtesy_clerk|hours:0|2027-07-03"):
+        assert "patch_2025_07_05" in (by_key[key].get("amendments") or [])
+
+
 def _test_collision_detection_expected_hash_mismatch() -> None:
     base = _base_contract_fixture()
     patches = _patch_list_for_base(base)
@@ -1287,6 +1350,7 @@ def _test_effective_materialization_writes_entitlement_index_input() -> None:
 def main() -> None:
     _test_replace_section_correctness()
     _test_replace_table_row_correctness()
+    _test_replace_table_row_explicit_future_dates_emit_schedule_ladder()
     _test_collision_detection_expected_hash_mismatch()
     _test_collision_diagnostics_include_last_touch()
     _test_source_doc_id_resolution_and_tracking()

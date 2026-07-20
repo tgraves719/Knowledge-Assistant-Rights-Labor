@@ -1,6 +1,6 @@
 {
   "scorecard_version": "contract_pack_scorecard_v3",
-  "generated_at_utc": "2026-07-17T19:46:47.021506+00:00",
+  "generated_at_utc": "2026-07-20T05:25:23.719204+00:00",
   "strict_mode": true,
   "contract_id": "local7_safeway_pueblo_clerks_2022",
   "package_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022",
@@ -36,15 +36,15 @@
     "tables": "f7f51a73c460e0186bb0c1bfa0e334516f001010f89ff76658152c147ff54c89",
     "wages": "5f05fefc220c23159d06214c1b96efb7fce81c81590c1d4881452855ef08d1ad",
     "entitlements": "2ce47aca5e8417a80d55da410c7c4839f2e695cccaf51c91b23f8528088520e5",
-    "classification_ontology": "6c765bffd09be4151eb5cfc15c52ac36893f4dbb8dfe609a0b26ebbd00ae4ddc",
-    "language_lexicon": "ff1a63aab61d7368cebc65c851ebe4130a662a9716dd00118cbf5d1a80512b68",
-    "pdf_nav_index": "1d6ef5ee0d672af5d33f0449120d739d34f31b2e13c178c96fb7949c4546d7b2",
-    "contract_outline": "76600050d3fe713add67d1e370f40264aeb82ab11c6f918dae5f0c59aa44c4f9",
-    "role_catalog": "6056432fe9de49b5bc4737f9fefd2e7a921d529e73be904c52eefb5012fe4f1d",
-    "ingestion_review_queue": "3ede8dc3abd8974be4a2b117a391afc52df853f19f0310639a0c8b3f72c1e033",
+    "classification_ontology": "6e9cc31017f959ff01aadbfc26d9fea01125e9ea787709eb1abcc3f394116c69",
+    "language_lexicon": "3cb598eb8fcc9c5c5f5081f3bb69d68d3ea2a1b3c89e4a82a0cbfb4c80848119",
+    "pdf_nav_index": "a76acc63cf84674e29779988cd9135fe751ae6f849bedef093dce4655e9fd82d",
+    "contract_outline": "87e4cd1f49b03e66806596839619be7c4deeab6c5520a008dfa31bab3d79f3eb",
+    "role_catalog": "a5e5dbb5344568c67c2002ee5a37a2b733d6729fb9e34d9a9f5fab418f0a75fb",
+    "ingestion_review_queue": "895817ecb5cbb690b6a471052a441b2b068bfa9f7bff719f530463b7c1ec505e",
     "manual_classification_overrides": "6310559593a118399258d1f8137af93d5352934bcc121fdd5d567822114b8085"
   },
-  "pack_hash": "cea8607c48198718e86fe70714635a1012477b1138e626ffd24cbd03ebdc154e",
+  "pack_hash": "07055ba89526daae887a87f71818e021c4c75daea3520f72dca4915311970af3",
   "checks": [
     {
       "id": "manifest_exists",
@@ -526,7 +526,7 @@
       "message": "Effective wage index input is non-empty.",
       "metrics": {
         "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\wage_tables_local7_safeway_pueblo_clerks_2022.json",
-        "canonical_wage_row_count": 208
+        "canonical_wage_row_count": 312
       }
     },
     {
@@ -710,9 +710,9 @@
       "metrics": {
         "required": true,
         "moa_wage_patch_count": 1,
-        "moa_wage_op_count": 52,
-        "ops_with_selected_schedule_label": 52,
-        "ops_with_source_rate_schedule": 52,
+        "moa_wage_op_count": 156,
+        "ops_with_selected_schedule_label": 156,
+        "ops_with_source_rate_schedule": 156,
         "patches_missing_sync_metadata": [],
         "source_doc_ids": [
           "albertsons_safeway_moa_2025_07_05"
@@ -741,7 +741,7 @@
       "metrics": {
         "required": true,
         "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
-        "moa_ref_count": 55,
+        "moa_ref_count": 159,
         "missing_page_ref_count": 0,
         "sections_missing_page": [],
         "tables_missing_page": [],

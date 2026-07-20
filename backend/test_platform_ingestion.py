@@ -839,6 +839,49 @@ def test_contract_pack_wage_rows_become_current_rate_sections():
     assert any(s.section_num == "1" and s.article_num == "1" for s in structure.sections)
 
 
+def test_wage_sections_mark_current_by_arrival_not_maximum_date():
+    """The 2025 MOA raises the same row at ratification and at +52/+104
+    weeks, so the pack legitimately carries FUTURE effective dates. Current
+    must be the latest date that has ARRIVED — labelling the maximum date
+    current would present next year's negotiated rates as today's pay."""
+    from datetime import date
+
+    from backend.platform.document_structure import _appendix_wage_sections
+
+    payload = {
+        "tables": {
+            "appendix_a_wage_rows": {
+                "table_id": "appendix_a_wage_rows",
+                "columns": [],
+                "rows": [
+                    _wage_row("head_clerk", "HEAD CLERK", "Rate", None, "2024-01-21", 24.11),
+                    _wage_row("head_clerk", "HEAD CLERK", "Rate", None, "2025-07-05", 25.61, amended=True),
+                    _wage_row("head_clerk", "HEAD CLERK", "Rate", None, "2026-07-04", 26.61, amended=True),
+                    _wage_row("head_clerk", "HEAD CLERK", "Rate", None, "2027-07-03", 27.61, amended=True),
+                ],
+            }
+        }
+    }
+
+    sections = _appendix_wage_sections(payload, today=date(2026, 7, 19))
+    paragraphs = sections[0].text.split("\n\n")
+    # Current = 2026-07-04 (arrived), NOT the 2027 maximum.
+    assert "effective 7/4/2026 (current rates, as amended)" in paragraphs[0]
+    assert "$26.61" in paragraphs[0]
+    # The 2027 raise is disclosed as scheduled, never as current.
+    assert "effective 7/3/2027 (scheduled increase, not yet in effect)" in paragraphs[1]
+    # Older schedules read as superseded.
+    assert any("7/5/2025 (superseded" in p for p in paragraphs)
+    assert any("1/21/2024 (superseded" in p for p in paragraphs)
+
+    # Before the OE+52 date arrives, FSAR is current and both later raises
+    # are scheduled.
+    earlier = _appendix_wage_sections(payload, today=date(2025, 8, 1))
+    early_paragraphs = earlier[0].text.split("\n\n")
+    assert "effective 7/5/2025 (current rates, as amended)" in early_paragraphs[0]
+    assert "effective 7/4/2026 (scheduled increase, not yet in effect)" in early_paragraphs[1]
+
+
 def test_contract_pack_wage_table_snapshots_are_skipped_when_rows_exist():
     """The pack carries the wage tables THREE ways: structured rows, markdown
     snapshots with doc_type "appendix", and duplicate "cba" sections sharing

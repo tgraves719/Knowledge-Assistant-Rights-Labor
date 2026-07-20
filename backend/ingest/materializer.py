@@ -356,26 +356,32 @@ class ContractMaterializer:
 
         # Wage rows often need MOA-effective supersession (new effective date) rather than
         # overwriting the historical row in-place. Preserve chronology by cloning when the
-        # patch date is newer than the target row date and no explicit historical backfill date
-        # was provided in the patch payload.
-        supersede_mode = False
+        # NEW date is newer than the target row's: either the patch date (no explicit date
+        # in the payload) or an explicit new_row.effective_date. The explicit form lets one
+        # MOA emit several future-dated schedules against the same base row — the 2025 MOA
+        # raises rates at ratification AND at +52/+104 weeks, and materializing only the
+        # ratification schedule made every "current rate" silently stale a year later.
+        # An explicit date that is NOT newer stays an in-place historical backfill.
         patch_effective_date = str(patch.effective_date or "").strip()
         current_effective_date = str(columns.get("effective_date") or "").strip()
         explicit_new_effective_date = str((operation.new_row or {}).get("effective_date") or "").strip()
-        if (
-            table_id == WAGE_TABLE_ID
-            and _is_iso_date(patch_effective_date)
-            and _is_iso_date(current_effective_date)
-            and patch_effective_date > current_effective_date
-            and not explicit_new_effective_date
-        ):
-            supersede_mode = True
+        supersede_effective_date = None
+        if table_id == WAGE_TABLE_ID and _is_iso_date(current_effective_date):
+            if _is_iso_date(explicit_new_effective_date) and explicit_new_effective_date > current_effective_date:
+                supersede_effective_date = explicit_new_effective_date
+            elif (
+                not explicit_new_effective_date
+                and _is_iso_date(patch_effective_date)
+                and patch_effective_date > current_effective_date
+            ):
+                supersede_effective_date = patch_effective_date
+        supersede_mode = supersede_effective_date is not None
 
         merged_columns = dict(columns)
         for k, v in (operation.new_row or {}).items():
             merged_columns[str(k)] = v
         if supersede_mode:
-            merged_columns["effective_date"] = patch_effective_date
+            merged_columns["effective_date"] = supersede_effective_date
             new_row_key = _wage_row_key(merged_columns)
             if any(
                 idx != row_idx and str(existing.get("row_key") or "") == new_row_key
@@ -409,6 +415,7 @@ class ContractMaterializer:
                 "historical_row_key": row_key,
                 "new_row_key": new_row_key,
                 "patch_effective_date": patch_effective_date,
+                "supersede_effective_date": supersede_effective_date,
             }
             entry["after_hash"] = self.hash_row(merged_columns)
             entry["applied"] = True

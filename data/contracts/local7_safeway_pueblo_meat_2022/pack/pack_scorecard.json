@@ -1,6 +1,6 @@
 {
   "scorecard_version": "contract_pack_scorecard_v3",
-  "generated_at_utc": "2026-07-17T19:46:49.395893+00:00",
+  "generated_at_utc": "2026-07-20T05:25:25.738392+00:00",
   "strict_mode": true,
   "contract_id": "local7_safeway_pueblo_meat_2022",
   "package_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022",
@@ -36,15 +36,15 @@
     "tables": "20225dec9a7a4070b81507df792b94e56ea577e95f48a45ec5a826c88a407fd1",
     "wages": "1ab83c66fd699f1634914bbe3aa7f646b97f3b14e0d88fb32d29d0e64fd6b084",
     "entitlements": "317a0d5999b0921ffcb77d9118a47682a50e7ba9e3d26d380b3ef864f29e0b38",
-    "classification_ontology": "cce9657cffbbda4810b2c63204b46defcec512ff0cf4db407d090ad850883a35",
-    "language_lexicon": "f1e810df13efb336f1b196e49f87fb03a9d3d25834f634d1dcbdcd0b588238b1",
-    "pdf_nav_index": "1a1d3cb35c44f83819d083ca466eb18af2ddad28f98315db8e050158153a5ff2",
-    "contract_outline": "3914ccdf78c9301d49e7f0c9560ac4a3f84c955457f7f1d6bf46e59cdf619e0d",
-    "role_catalog": "ca006161ad76be4c94a9c9b2c111e73dbdedea084b3835fa5b00657f410e779d",
-    "ingestion_review_queue": "ddbe23cf5410319ea135cc6506c32552dc852ea147b032cff77d88c8b0f64e1e",
+    "classification_ontology": "be3bf0060646a90d90cda761d9cf37bf88db70c85a250322fc0d897bcf197990",
+    "language_lexicon": "510c7c81a0b25054ca783fffc336795dcfe04f78cac14a78795494015bc09d41",
+    "pdf_nav_index": "87301df8942bced8a2d636cb270870d0c2ca59e841cfc4dda833d59d965b895d",
+    "contract_outline": "872e1350e50919c33353a14533b0d939390df7bf2800c681e9d251ec09d3c50f",
+    "role_catalog": "980219104a15b171d057d02f883bf1e3cb7e1e322fd1678d39915e8ef9ddd82a",
+    "ingestion_review_queue": "dd6adef1e784a18f0451821a1227893ef3b7f94c84d42a1bc1c23df3213e33ae",
     "manual_classification_overrides": "9163d4c72a4fc30de6c438d58f49ca1d36e61c9342263975385b08e141459f1f"
   },
-  "pack_hash": "c72808ece29755d49625ca98822f878c4b16417c39cd1ee25b3302507601bdea",
+  "pack_hash": "c1682b3d23d44307977050950f6f6df3641f76151ae202c9b37f6b7f817ffb51",
   "checks": [
     {
       "id": "manifest_exists",
@@ -528,7 +528,7 @@
       "message": "Effective wage index input is non-empty.",
       "metrics": {
         "path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\effective\\effective_local7_safeway_moa_2025_07_05\\index_inputs\\wage_tables_local7_safeway_pueblo_meat_2022.json",
-        "canonical_wage_row_count": 204
+        "canonical_wage_row_count": 306
       }
     },
     {
@@ -710,9 +710,9 @@
       "metrics": {
         "required": true,
         "moa_wage_patch_count": 1,
-        "moa_wage_op_count": 51,
-        "ops_with_selected_schedule_label": 51,
-        "ops_with_source_rate_schedule": 51,
+        "moa_wage_op_count": 153,
+        "ops_with_selected_schedule_label": 153,
+        "ops_with_source_rate_schedule": 153,
         "patches_missing_sync_metadata": [],
         "source_doc_ids": [
           "albertsons_safeway_moa_2025_07_05"
@@ -741,7 +741,7 @@
       "metrics": {
         "required": true,
         "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
-        "moa_ref_count": 57,
+        "moa_ref_count": 159,
         "missing_page_ref_count": 0,
         "sections_missing_page": [],
         "tables_missing_page": [],

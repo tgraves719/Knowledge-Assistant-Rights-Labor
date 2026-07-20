@@ -8,19 +8,19 @@
     "base_wages_sha256": "1ab83c66fd699f1634914bbe3aa7f646b97f3b14e0d88fb32d29d0e64fd6b084"
   },
   "contract_id": "local7_safeway_pueblo_meat_2022",
-  "effective_content_hash": "5c6267cc592ae9c54561bc41b098190439d0ce02597de7a647463fcaaa3bc1bd",
+  "effective_content_hash": "7527fced1ac3e55efb219453379d1875508e753d16e8daafc4a0349ca3dc3ba3",
   "effective_version_id": "effective_local7_safeway_moa_2025_07_05",
   "patch_count": 1,
   "patches": [
     {
-      "approved_operation_count": 57,
+      "approved_operation_count": 159,
       "effective_date": "2025-07-05",
-      "operation_count": 57,
+      "operation_count": 159,
       "parent_effective_version_id": "base_snapshot_v0_9_0",
       "patch_file_name": "local7_safeway_moa_2025_07_05.json",
-      "patch_file_sha256": "05004a5970bbc7eb9947d42b7a408369290e862d596c6b14fcfca024eaa0c888",
+      "patch_file_sha256": "5fa3fe9e58ec36961cb246a429cd0cce12f74c5e0c1a4e8b8ce5cc8e981450a4",
       "patch_id": "local7_safeway_moa_2025_07_05",
-      "patch_payload_sha256": "81fac0aed73ab3cbc9251b670c6d445de9397f8249989deedc29583420a87fd6",
+      "patch_payload_sha256": "4e1f69d6d3ad00639b1252f677a469df071933533c40c2df0082575bccb1a641",
       "ratified_date": "2025-07-05",
       "source_doc_id": "albertsons_safeway_moa_2025_07_05",
       "source_pdf": "Signed+MOA+-+July+5,+2025+(Safeway).pdf"

@@ -3,19 +3,19 @@
   "accepted_packs": {
     "local7_safeway_pueblo_clerks_2022": {
       "contract_id": "local7_safeway_pueblo_clerks_2022",
-      "pack_hash": "cea8607c48198718e86fe70714635a1012477b1138e626ffd24cbd03ebdc154e",
+      "pack_hash": "07055ba89526daae887a87f71818e021c4c75daea3520f72dca4915311970af3",
       "scorecard_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_clerks_2022\\pack\\pack_scorecard.json",
       "strict_mode": true,
-      "accepted_at_utc": "2026-07-17T19:46:47.066450+00:00",
+      "accepted_at_utc": "2026-07-20T05:25:23.765488+00:00",
       "required_failed": [],
       "advisory_failed": []
     },
     "local7_safeway_pueblo_meat_2022": {
       "contract_id": "local7_safeway_pueblo_meat_2022",
-      "pack_hash": "c72808ece29755d49625ca98822f878c4b16417c39cd1ee25b3302507601bdea",
+      "pack_hash": "c1682b3d23d44307977050950f6f6df3641f76151ae202c9b37f6b7f817ffb51",
       "scorecard_path": "D:\\Projects\\karl\\Knowledge-Assistant-Rights-Labor\\data\\contracts\\local7_safeway_pueblo_meat_2022\\pack\\pack_scorecard.json",
       "strict_mode": true,
-      "accepted_at_utc": "2026-07-17T19:46:49.444709+00:00",
+      "accepted_at_utc": "2026-07-20T05:25:25.777905+00:00",
       "required_failed": [],
       "advisory_failed": []
     },
