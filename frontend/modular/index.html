@@ -922,6 +922,21 @@
         .dark .citation-link { color: #E8B84A; }
         .dark .citation-link:hover { color: #D4A029; }
 
+        /* Citation source chips — gold bordered, readable on the dark app
+           (blue-on-dark was hard to read). Clicking one jumps to that
+           section in the contract explorer. */
+        .citation-chip {
+            background-color: rgba(212, 160, 41, 0.12);
+            color: #E8B84A;
+            border: 1px solid rgba(212, 160, 41, 0.55);
+            cursor: pointer;
+        }
+        .citation-chip:hover {
+            background-color: rgba(212, 160, 41, 0.24);
+            border-color: rgba(232, 184, 74, 0.85);
+            color: #F6D577;
+        }
+
         /* Popover animation */
         @keyframes popoverIn {
             from { opacity: 0; transform: translateY(8px); }

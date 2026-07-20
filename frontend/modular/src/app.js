@@ -4215,6 +4215,52 @@ const EMBED_THEME_OVERRIDES = (() => {
             if (detailMobile) detailMobile.innerHTML = articleHTML;
         }
 
+        function scrollToExplorerSection(sectionNum) {
+            const raw = safeText(sectionNum);
+            if (!raw) return;
+            const targetId = `section-${raw}`;
+            // Desktop and mobile reading panes render the same ids; scroll the
+            // visible one and flash the brand highlight so the eye lands.
+            requestAnimationFrame(() => {
+                const candidates = [...document.querySelectorAll('[id]')].filter((el) => el.id === targetId);
+                const el = candidates.find((node) => node.offsetParent !== null) || candidates[0];
+                if (!el) return;
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                el.classList.add('section-highlight');
+                setTimeout(() => el.classList.remove('section-highlight'), 2200);
+            });
+        }
+
+        // Citations jump INTO the contract explorer at the cited section
+        // (the 0.9.0 behaviour) rather than popping a separate PDF page. The
+        // reading pane needs the effective-text view, so switch to it for this
+        // navigation without persisting the member's PDF-first preference.
+        async function goToContractSection(articleNum, sectionNum = null) {
+            const article = safeText(articleNum);
+            if (!article) return false;
+            const section = safeText(sectionNum);
+            if (isOriginalPdfViewMode()) {
+                contractViewerMode = 'effective_text';
+                updateContractViewerModeUI();
+            }
+            // Pin the selection before switching tabs so the tab's own viewer
+            // init and this explicit load converge on the cited article rather
+            // than racing (it would otherwise default to the first article).
+            setActiveArticleInToc(article);
+            setActiveTab('contract');
+            await loadArticle(article, { openPdf: false });
+            if (section) scrollToExplorerSection(section);
+            return true;
+        }
+
+        function navigateToCitedSource(sourceRegistryKey) {
+            const source = getCitationSourceRecord(sourceRegistryKey);
+            if (!source) return;
+            goToContractSection(source.article_num, source.section_num).catch((err) => {
+                console.warn('Unable to open cited section:', err);
+            });
+        }
+
         async function navigateToArticle(articleNum, sectionNum = null, partNum = null) {
             setActiveTab('contract');
             const normalizedSectionNum = toPositiveIntOrNull(sectionNum);
@@ -4280,6 +4326,14 @@ const EMBED_THEME_OVERRIDES = (() => {
             const normalizedSourceDocId = safeText(sourceDocId) || null;
             const normalizedSourceRegistryKey = safeText(sourceRegistryKey) || null;
             if (normalizedArticleNum === null && !normalizedTableId) return;
+
+            // Tenant routes have no on-disk pack popover; a bare "Article N,
+            // Section M" link in the answer jumps to that section in the
+            // contract explorer, same as the source chips.
+            if (isTenantRoute() && normalizedArticleNum !== null) {
+                goToContractSection(normalizedArticleNum, normalizedSectionNum).catch(() => {});
+                return;
+            }
 
             const style = preferences.citationStyle || 'popover';
             if (style === 'navigate') {
@@ -5568,17 +5622,17 @@ const EMBED_THEME_OVERRIDES = (() => {
             return head || safeText(source?.document_title) || `Source ${idx + 1}`;
         }
 
-        // Short label for a source chip. The full "doc — Article — Section:
-        // label" string is fine for a viewer header but too long for a chip;
-        // prefer the most specific readable piece and let the viewer show the
-        // rest. (The 0.9.0 badges carried just the Article/Section locator.)
+        // Short label for a source chip. Like the 0.9.0 badges, it references
+        // the article and section ("Article 43 · Section 121"); for appendix /
+        // LOU sections that have no numeric section, it falls back to the short
+        // section label ("Appendix A · Courtesy Clerk wage rates").
         function buildUploadedSourceChipLabel(source) {
-            const sectionLabel = safeText(source?.section_label);
-            if (sectionLabel) return sectionLabel;
-            const articleRef = humanizeArticleRef(source?.article_num, source?.article_heading);
-            const sectionRef = humanizeSectionRef(source?.section_num);
-            const locator = [articleRef, sectionRef].filter(Boolean).join(' · ');
-            if (locator) return locator;
+            let articleRef = humanizeArticleRef(source?.article_num, source?.article_heading);
+            // "APPENDIX A — WAGE RATES" -> "APPENDIX A" keeps the chip tight.
+            if (articleRef.includes(' — ')) articleRef = articleRef.split(' — ')[0];
+            const sectionRef = humanizeSectionRef(source?.section_num) || safeText(source?.section_label);
+            const parts = [articleRef, sectionRef].filter(Boolean);
+            if (parts.length) return parts.join(' · ');
             return safeText(source?.document_title).replace(/\.(md|markdown|txt|json)$/i, '') || 'Source';
         }
 
@@ -5602,15 +5656,15 @@ const EMBED_THEME_OVERRIDES = (() => {
                 const excerpt = safeText(source?.excerpt);
                 return `
                     <button type="button"
-                        class="citation-chip inline-flex max-w-full items-center gap-1 rounded-md bg-ufcw-blue/10 px-2 py-1 text-[11px] font-medium text-ufcw-blue transition-colors hover:bg-ufcw-blue/20"
+                        class="citation-chip inline-flex max-w-full items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium transition-colors"
                         data-source-registry-key="${escapeHtml(sourceRegistryKey)}"
                         ${excerpt ? `title="${escapeHtml(excerpt)}"` : ''}
-                        onclick="openUploadedSourceViewer(this, '${escapeJsSingleQuoted(sourceRegistryKey)}')">
+                        onclick="navigateToCitedSource('${escapeJsSingleQuoted(sourceRegistryKey)}')">
                         <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         <span class="truncate">${escapeHtml(label)}</span>
-                        ${pdfPage ? `<span class="shrink-0 text-ufcw-blue/70">· p.${pdfPage}</span>` : ''}
+                        ${pdfPage ? `<span class="shrink-0 opacity-70">· p.${pdfPage}</span>` : ''}
                     </button>
                 `;
             }).join('');
@@ -5827,11 +5881,12 @@ const EMBED_THEME_OVERRIDES = (() => {
             delete viewer.dataset.sourceRegistryKey;
         }
 
+        // Inline "(Source: … p.N)" links in the answer body resolve to the
+        // matching source chip and jump to that section in the contract
+        // explorer — the same "go to the contract" action as the chip itself.
         function openAnswerCitation(trigger, pageNumber = null) {
             const card = trigger?.closest('.assistant-message-card');
             if (!card) return;
-            const details = card.querySelector('details');
-            if (details) details.open = true;
             const buttons = [...card.querySelectorAll('[data-source-registry-key]')];
             let target = null;
             if (pageNumber) {
@@ -5842,9 +5897,7 @@ const EMBED_THEME_OVERRIDES = (() => {
             }
             target = target || buttons[0] || null;
             if (target) {
-                openUploadedSourceViewer(target, target.dataset.sourceRegistryKey);
-            } else if (details) {
-                details.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                navigateToCitedSource(target.dataset.sourceRegistryKey);
             }
         }
 
@@ -6412,6 +6465,7 @@ Object.assign(window, {
     openUploadedSourceInNewTab,
     openContractPdfAtPage,
     openAnswerCitation,
+    navigateToCitedSource,
     selectMonth,
 });
 
