@@ -5568,57 +5568,59 @@ const EMBED_THEME_OVERRIDES = (() => {
             return head || safeText(source?.document_title) || `Source ${idx + 1}`;
         }
 
+        // Short label for a source chip. The full "doc — Article — Section:
+        // label" string is fine for a viewer header but too long for a chip;
+        // prefer the most specific readable piece and let the viewer show the
+        // rest. (The 0.9.0 badges carried just the Article/Section locator.)
+        function buildUploadedSourceChipLabel(source) {
+            const sectionLabel = safeText(source?.section_label);
+            if (sectionLabel) return sectionLabel;
+            const articleRef = humanizeArticleRef(source?.article_num, source?.article_heading);
+            const sectionRef = humanizeSectionRef(source?.section_num);
+            const locator = [articleRef, sectionRef].filter(Boolean).join(' · ');
+            if (locator) return locator;
+            return safeText(source?.document_title).replace(/\.(md|markdown|txt|json)$/i, '') || 'Source';
+        }
+
         function buildUploadedSourceEvidenceHtml(sources) {
             const uploadedSources = Array.isArray(sources)
                 ? sources.filter((source) => isUploadedSourceRecord(source))
                 : [];
             if (!uploadedSources.length) return '';
 
+            // Compact, always-visible chip row (restores the 0.9.0 readability:
+            // sources scan at a glance instead of hiding behind a "Show"
+            // toggle and stacking as full-width cards). Each chip opens the
+            // in-card PDF viewer at its page; the retrieved passage rides along
+            // as a hover title and is shown in full inside the viewer.
+            const chips = uploadedSources.map((source) => {
+                const sourceRegistryKey = registerCitationSourceRecord(source);
+                const label = buildUploadedSourceChipLabel(source);
+                const pdfPage = Number.isFinite(Number(source?.source_page))
+                    ? Number(source.source_page)
+                    : (Number.isFinite(Number(source?.page_number)) ? Number(source.page_number) : null);
+                const excerpt = safeText(source?.excerpt);
+                return `
+                    <button type="button"
+                        class="citation-chip inline-flex max-w-full items-center gap-1 rounded-md bg-ufcw-blue/10 px-2 py-1 text-[11px] font-medium text-ufcw-blue transition-colors hover:bg-ufcw-blue/20"
+                        data-source-registry-key="${escapeHtml(sourceRegistryKey)}"
+                        ${excerpt ? `title="${escapeHtml(excerpt)}"` : ''}
+                        onclick="openUploadedSourceViewer(this, '${escapeJsSingleQuoted(sourceRegistryKey)}')">
+                        <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span class="truncate">${escapeHtml(label)}</span>
+                        ${pdfPage ? `<span class="shrink-0 text-ufcw-blue/70">· p.${pdfPage}</span>` : ''}
+                    </button>
+                `;
+            }).join('');
+
             return `
                 <div class="uploaded-source-viewer hidden mt-3 rounded-2xl border border-slate-200 bg-slate-50"></div>
-                <details class="mt-3 border-t border-slate-200 pt-3 group">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100">
-                        <span>Supporting Sources (${uploadedSources.length})</span>
-                        <span class="text-xs text-slate-500 group-open:hidden">Show</span>
-                        <span class="hidden text-xs text-slate-500 group-open:inline">Hide</span>
-                    </summary>
-                    <div class="mt-3 space-y-3">
-                        ${uploadedSources.map((source, idx) => {
-                            const sourceRegistryKey = registerCitationSourceRecord(source);
-                            // Build the label from structured fields rather than the
-                            // server citation string: that string embeds section_title,
-                            // which holds the whole section body and rendered as an
-                            // unreadable wall of grey text.
-                            const label = buildUploadedSourceLabel(source, idx);
-                            const subtitle = resolveUploadedSourcePageLabel(source);
-                            const excerpt = safeText(source?.excerpt) || 'No preview excerpt available for this source yet.';
-                            const pdfUrl = safeText(source?.document_source_pdf_url);
-                            const pdfPage = Number.isFinite(Number(source?.source_page)) ? Number(source.source_page) : null;
-                            const buttonLabel = pdfUrl
-                                ? (pdfPage ? `View PDF · Page ${pdfPage}` : 'View PDF')
-                                : 'Open In Document';
-                            return `
-                                <div class="rounded-xl border border-slate-200 bg-white px-3 py-3 shadow-sm">
-                                    <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                                        <div class="min-w-0">
-                                            <p class="text-sm font-semibold text-slate-900">${escapeHtml(label)}</p>
-                                            ${subtitle ? `<p class="mt-0.5 text-xs text-slate-500">${escapeHtml(subtitle)}</p>` : ''}
-                                        </div>
-                                        <button
-                                            type="button"
-                                            class="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg bg-ufcw-blue px-3 py-2 text-xs font-medium text-white hover:bg-ufcw-blue-mid transition-colors"
-                                            data-source-registry-key="${escapeHtml(sourceRegistryKey)}"
-                                            onclick="openUploadedSourceViewer(this, '${escapeJsSingleQuoted(sourceRegistryKey)}')"
-                                        >
-                                            ${escapeHtml(buttonLabel)}
-                                        </button>
-                                    </div>
-                                    <p class="mt-3 text-sm leading-relaxed text-slate-700">${escapeHtml(excerpt)}</p>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                </details>
+                <div class="mt-3 border-t border-slate-200 pt-3">
+                    <p class="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">Sources (${uploadedSources.length})</p>
+                    <div class="flex flex-wrap gap-1.5">${chips}</div>
+                </div>
             `;
         }
 
@@ -5710,6 +5712,12 @@ const EMBED_THEME_OVERRIDES = (() => {
                     ? (pdfPage ? `${resolvedPdf}#page=${pdfPage}` : resolvedPdf)
                     : _buildPdfFrameUrl(resolvedPdf, pdfPage);
                 const headerLabel = buildUploadedSourceLabel(source, 0);
+                // Show the retrieved passage above the PDF — this is the piece
+                // 0.9.0's popover got right (the quoted contract text, in the
+                // reading flow) and improves on it by keeping the real PDF at
+                // the cited page right below.
+                const excerpt = safeText(source?.excerpt);
+                const trimmedExcerpt = excerpt.length > 320 ? `${excerpt.slice(0, 320).trimEnd()}…` : excerpt;
                 viewer.innerHTML = `
                     <div class="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-2">
                         <p class="min-w-0 truncate text-xs font-medium text-slate-700">
@@ -5722,6 +5730,9 @@ const EMBED_THEME_OVERRIDES = (() => {
                                 onclick="this.closest('.uploaded-source-viewer').classList.add('hidden')">Close</button>
                         </div>
                     </div>
+                    ${trimmedExcerpt ? `<div class="border-b border-slate-200 bg-blue-50/60 px-4 py-2">
+                        <p class="text-xs leading-relaxed text-slate-700"><span class="font-semibold text-slate-900">Cited passage:</span> ${escapeHtml(trimmedExcerpt)}</p>
+                    </div>` : ''}
                     <iframe src="${escapeHtml(framedPdf)}" title="Contract PDF" class="w-full rounded-b-2xl border-0 bg-white" style="height: min(70vh, 640px);"></iframe>
                 `;
                 return;
