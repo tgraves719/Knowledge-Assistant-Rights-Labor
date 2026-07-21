@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Form, HTTPException, Query, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import insert, or_, select
 
@@ -26,6 +26,7 @@ from backend.platform.models import (
     DocumentStatus,
     IngestionJob,
     IngestionJobStatus,
+    InviteAudience,
     InviteCode,
     LocalAuthCredential,
     Message,
@@ -620,6 +621,7 @@ def _serialize_document(db, doc: Document) -> dict:
     return {
         "id": doc.id,
         "title": doc.title,
+        "contract_id": doc.contract_id,
         "content_type": doc.content_type,
         "bytes_size": doc.bytes_size,
         "status": doc.status.value,
@@ -2433,11 +2435,14 @@ def _serialize_invite(invite: InviteCode) -> dict:
         "id": invite.id,
         "code": invite.code,
         "join_path": f"/j/{invite.code}",
+        "audience": invite.audience,
         "label": invite.label,
         "contract_id": invite.contract_id,
         "status": status,
         "use_count": invite.use_count,
         "max_uses": invite.max_uses,
+        "first_used_at": invite.first_used_at.isoformat() if invite.first_used_at else None,
+        "last_used_at": invite.last_used_at.isoformat() if invite.last_used_at else None,
         "expires_at": invite.expires_at.isoformat() if invite.expires_at else None,
         "revoked_at": invite.revoked_at.isoformat() if invite.revoked_at else None,
         "created_by": invite.created_by,
@@ -2446,6 +2451,7 @@ def _serialize_invite(invite: InviteCode) -> dict:
 
 
 class InviteCreateRequest(BaseModel):
+    audience: str = InviteAudience.MEMBER.value
     label: str = ""
     contract_id: str | None = None
     expires_at: str | None = None
@@ -2485,6 +2491,19 @@ def create_union_invite(
     if union is None or not union.is_active:
         raise HTTPException(status_code=404, detail="Union not found.")
 
+    audience = str(payload.audience or "").strip().lower() or InviteAudience.MEMBER.value
+    if audience not in (InviteAudience.MEMBER.value, InviteAudience.STEWARD.value):
+        raise HTTPException(status_code=400, detail="audience must be 'member' or 'steward'.")
+
+    contract_id = str(payload.contract_id or "").strip() or None
+    if audience == InviteAudience.MEMBER.value and not contract_id:
+        # Member codes isolate to one contract — a member code without a pin
+        # would leak every contract in the union to a rank-and-file scanner.
+        raise HTTPException(status_code=400, detail="A member code must be pinned to a contract.")
+    if audience == InviteAudience.STEWARD.value and contract_id:
+        # Stewards see (and switch between) every contract, so a pin is meaningless.
+        raise HTTPException(status_code=400, detail="A steward code cannot be pinned to a single contract.")
+
     expires_at = None
     if payload.expires_at:
         try:
@@ -2495,8 +2514,9 @@ def create_union_invite(
     invite = InviteCode(
         union_id=union_id,
         code=_generate_invite_code(db),
+        audience=audience,
         label=str(payload.label or "").strip(),
-        contract_id=(str(payload.contract_id or "").strip() or None),
+        contract_id=contract_id,
         created_by=auth.user_id,
         expires_at=expires_at,
         max_uses=payload.max_uses,
@@ -2508,7 +2528,12 @@ def create_union_invite(
             union_id=union_id,
             actor_user_id=auth.user_id,
             event_type="invite_code_created",
-            event_payload={"invite_id": invite.id, "label": invite.label, "max_uses": invite.max_uses},
+            event_payload={
+                "invite_id": invite.id,
+                "audience": invite.audience,
+                "label": invite.label,
+                "max_uses": invite.max_uses,
+            },
         )
     )
     return _serialize_invite(invite)
@@ -2568,3 +2593,129 @@ def revoke_union_invite(
     result = _serialize_invite(invite)
     result["sessions_disconnected"] = disconnected
     return result
+
+
+def _join_url_for(request: Request, invite: InviteCode) -> str:
+    """The absolute URL a printed QR encodes for this placement."""
+    base = str(request.base_url).rstrip("/")
+    return f"{base}/j/{invite.code}"
+
+
+def _load_scoped_invite(db, auth, union_id: str, invite_id: str) -> InviteCode:
+    _require_union_scope(auth, union_id)
+    invite = db.get(InviteCode, invite_id)
+    if invite is None or invite.union_id != union_id:
+        raise HTTPException(status_code=404, detail="Invite code not found.")
+    return invite
+
+
+@router.get("/unions/{union_id}/invites/{invite_id}/qr")
+def invite_qr_image(
+    union_id: str,
+    invite_id: str,
+    request: Request,
+    format: str = "svg",
+    _auth=Depends(require_roles(Role.UNION_ADMIN.value, Role.SUPER_ADMIN.value)),
+):
+    """Render the join URL as a scannable QR image (SVG by default, PNG on request).
+
+    The QR encodes the permanent /j/{code} landing URL, so a placement can be
+    repointed without reprinting. SVG stays crisp at any print size; PNG is
+    offered for tools that want a raster file.
+    """
+    import segno
+
+    db = get_db(request)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database is not configured.")
+    auth = get_auth_context(request)
+    invite = _load_scoped_invite(db, auth, union_id, invite_id)
+
+    fmt = str(format or "svg").strip().lower()
+    qr = segno.make(_join_url_for(request, invite), error="m")
+    filename = f"karl-qr-{invite.code}.{fmt}"
+    disposition = f'inline; filename="{filename}"'
+
+    import io
+
+    buffer = io.BytesIO()
+    if fmt == "png":
+        qr.save(buffer, kind="png", scale=10, border=2)
+        media_type = "image/png"
+    elif fmt == "svg":
+        qr.save(buffer, kind="svg", scale=10, border=2)
+        media_type = "image/svg+xml"
+    else:
+        raise HTTPException(status_code=400, detail="format must be 'svg' or 'png'.")
+    return Response(content=buffer.getvalue(), media_type=media_type, headers={"Content-Disposition": disposition})
+
+
+@router.get("/unions/{union_id}/invites/{invite_id}/card", response_class=HTMLResponse)
+def invite_printable_card(
+    union_id: str,
+    invite_id: str,
+    request: Request,
+    _auth=Depends(require_roles(Role.UNION_ADMIN.value, Role.SUPER_ADMIN.value)),
+):
+    """A print-ready card (QR + code + label) for a placement — open and print or save as PDF."""
+    import base64
+    import io
+    import html as _html
+
+    import segno
+
+    db = get_db(request)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database is not configured.")
+    auth = get_auth_context(request)
+    invite = _load_scoped_invite(db, auth, union_id, invite_id)
+    union = db.get(Union, union_id)
+    union_name = union.name if union is not None else "Your Union"
+
+    join_url = _join_url_for(request, invite)
+    png_buffer = io.BytesIO()
+    segno.make(join_url, error="m").save(png_buffer, kind="png", scale=10, border=2)
+    png_data_uri = "data:image/png;base64," + base64.b64encode(png_buffer.getvalue()).decode("ascii")
+
+    is_steward = str(invite.audience or "").strip().lower() == InviteAudience.STEWARD.value
+    audience_line = "Steward access — all contracts" if is_steward else "Member access"
+    label = _html.escape(invite.label or "")
+    accent = "#0D3B54"
+    heading = "Scan to open Karl" if not is_steward else "Steward card — scan to open Karl"
+
+    page = f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR card — {_html.escape(invite.code)}</title>
+<style>
+  :root {{ color-scheme: light; }}
+  * {{ box-sizing: border-box; }}
+  body {{ font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; background: #eef2f6; color: #0f172a; }}
+  .sheet {{ display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }}
+  .card {{ width: 3.5in; background: #fff; border: 1px solid #dbe3ea; border-radius: 16px; padding: 22px 22px 18px; text-align: center; box-shadow: 0 10px 30px -18px rgba(13,59,84,.5); }}
+  .eyebrow {{ font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: {accent}; font-weight: 700; margin: 0 0 4px; }}
+  .union {{ font-size: 17px; font-weight: 700; margin: 0 0 2px; }}
+  .audience {{ font-size: 11px; font-weight: 600; color: #475569; margin: 0 0 14px; }}
+  .qr {{ width: 2.1in; height: 2.1in; margin: 0 auto 12px; }}
+  .qr img {{ width: 100%; height: 100%; image-rendering: pixelated; }}
+  .heading {{ font-size: 14px; font-weight: 600; margin: 0 0 6px; }}
+  .code {{ font-family: ui-monospace, Consolas, monospace; font-size: 15px; font-weight: 700; letter-spacing: .06em; }}
+  .url {{ font-size: 10.5px; color: #64748b; word-break: break-all; margin-top: 4px; }}
+  .label {{ font-size: 10px; color: #94a3b8; margin-top: 8px; }}
+  .print-btn {{ position: fixed; top: 16px; right: 16px; background: {accent}; color: #fff; border: none; border-radius: 999px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }}
+  @media print {{ body {{ background: #fff; }} .card {{ border: none; box-shadow: none; }} .print-btn {{ display: none; }} .sheet {{ min-height: auto; }} }}
+</style></head>
+<body>
+  <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+  <div class="sheet"><div class="card">
+    <p class="eyebrow">Powered by Karl</p>
+    <p class="union">{_html.escape(union_name)}</p>
+    <p class="audience">{audience_line}</p>
+    <div class="qr"><img src="{png_data_uri}" alt="QR code for join code {_html.escape(invite.code)}"></div>
+    <p class="heading">{heading}</p>
+    <p class="code">{_html.escape(invite.code)}</p>
+    <p class="url">{_html.escape(join_url)}</p>
+    {f'<p class="label">{label}</p>' if label else ''}
+  </div></div>
+</body></html>"""
+    return HTMLResponse(content=page)

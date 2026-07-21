@@ -2859,32 +2859,77 @@ function inviteStatusBadge(item) {
     return `<span class="rounded-full ${styles[item.status] || 'bg-slate-100'} px-3 py-1 text-xs font-semibold">${escapeHtml(item.status)}</span>`;
 }
 
-async function loadInvites() {
-    const unionId = requireUnion();
-    const data = await api(`/api/admin/unions/${unionId}/invites`);
-    renderList('invite-list', data.items, (item) => `
+function inviteAudienceBadge(item) {
+    const steward = String(item.audience || 'member').toLowerCase() === 'steward';
+    const cls = steward ? 'bg-indigo-100 text-indigo-900' : 'bg-sky-100 text-sky-900';
+    const text = steward ? 'Steward · all contracts' : `Member${item.contract_id ? ` · ${escapeHtml(item.contract_id)}` : ''}`;
+    return `<span class="rounded-full ${cls} px-3 py-1 text-xs font-semibold">${text}</span>`;
+}
+
+function shortWhen(value) {
+    return value ? escapeHtml(String(value).slice(0, 10)) : '—';
+}
+
+function renderInviteCard(item, unionId) {
+    return `
         <div class="rounded-[24px] border border-slate-200 bg-white p-4">
-            <div class="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="font-mono text-base font-bold tracking-wide text-slate-900">${escapeHtml(item.code)}</span>
-                        ${inviteStatusBadge(item)}
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="shrink-0 rounded-2xl border border-slate-200 bg-white p-2">
+                        <img src="/api/admin/unions/${unionId}/invites/${item.id}/qr?format=svg" alt="QR for ${escapeHtml(item.code)}" class="h-24 w-24" loading="lazy">
                     </div>
-                    <div class="mt-1 text-sm text-slate-600">${escapeHtml(item.label || 'No label')}</div>
-                    <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-600">
-                        <span class="rounded-full bg-slate-100 px-3 py-1">joined ${item.use_count}${item.max_uses ? ` / ${item.max_uses}` : ''}</span>
-                        ${item.expires_at ? `<span class="rounded-full bg-slate-100 px-3 py-1">expires ${escapeHtml(String(item.expires_at).slice(0, 10))}</span>` : ''}
-                        <span class="rounded-full bg-slate-100 px-3 py-1">${escapeHtml(item.join_path)}</span>
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="font-mono text-base font-bold tracking-wide text-slate-900">${escapeHtml(item.code)}</span>
+                            ${inviteAudienceBadge(item)}
+                            ${inviteStatusBadge(item)}
+                        </div>
+                        <div class="mt-1 text-sm text-slate-600">${escapeHtml(item.label || 'No label')}</div>
+                        <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-600">
+                            <span class="rounded-full bg-slate-100 px-3 py-1">joined ${item.use_count}${item.max_uses ? ` / ${item.max_uses}` : ''}</span>
+                            <span class="rounded-full bg-slate-100 px-3 py-1">first ${shortWhen(item.first_used_at)}</span>
+                            <span class="rounded-full bg-slate-100 px-3 py-1">last ${shortWhen(item.last_used_at)}</span>
+                            ${item.expires_at ? `<span class="rounded-full bg-slate-100 px-3 py-1">expires ${shortWhen(item.expires_at)}</span>` : ''}
+                            <span class="rounded-full bg-slate-100 px-3 py-1">${escapeHtml(item.join_path)}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <button type="button" class="copy-invite-link rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-900 hover:bg-slate-100" data-join-path="${escapeHtml(item.join_path)}">Copy Link</button>
+                    <a href="/api/admin/unions/${unionId}/invites/${item.id}/qr?format=png" download class="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-900 hover:bg-slate-100">Download PNG</a>
+                    <a href="/api/admin/unions/${unionId}/invites/${item.id}/card" target="_blank" rel="noopener" class="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-900 hover:bg-slate-100">Printable Card</a>
                     ${item.status === 'active' ? `<button type="button" class="revoke-invite rounded-full border border-rose-300 bg-white px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-50" data-invite-id="${item.id}" data-invite-code="${escapeHtml(item.code)}" data-disconnect="false">Revoke</button>` : ''}
                     ${item.status === 'active' || item.use_count > 0 ? `<button type="button" class="revoke-invite rounded-full border border-rose-400 bg-rose-600 px-3 py-1 text-xs font-semibold text-white hover:bg-rose-700" data-invite-id="${item.id}" data-invite-code="${escapeHtml(item.code)}" data-disconnect="true">Revoke + Disconnect</button>` : ''}
                 </div>
             </div>
         </div>
-    `, 'No invite codes yet. Create one per QR placement.');
+    `;
+}
+
+async function loadInvites() {
+    const unionId = requireUnion();
+    await populateInviteContracts(unionId);
+    const data = await api(`/api/admin/unions/${unionId}/invites`);
+    const items = data.items || [];
+    const members = items.filter((it) => String(it.audience || 'member').toLowerCase() !== 'steward');
+    const stewards = items.filter((it) => String(it.audience || 'member').toLowerCase() === 'steward');
+    const usageTotal = (list) => list.reduce((sum, it) => sum + (Number(it.use_count) || 0), 0);
+    const container = document.getElementById('invite-list');
+    if (container) {
+        if (!items.length) {
+            container.innerHTML = '<p class="text-sm text-slate-500">No QR codes yet. Create one per placement.</p>';
+        } else {
+            const section = (title, list) => list.length ? `
+                <div>
+                    <div class="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        <span>${title}</span>
+                        <span class="rounded-full bg-slate-100 px-2 py-0.5 normal-case text-slate-600">${list.length} code${list.length === 1 ? '' : 's'} · ${usageTotal(list)} joined</span>
+                    </div>
+                    <div class="grid gap-3">${list.map((it) => renderInviteCard(it, unionId)).join('')}</div>
+                </div>` : '';
+            container.innerHTML = `<div class="grid gap-6">${section('Member codes', members)}${section('Steward codes', stewards)}</div>`;
+        }
+    }
     document.querySelectorAll('.copy-invite-link').forEach((button) => {
         button.addEventListener('click', () => {
             const url = `${window.location.origin}${button.dataset.joinPath}`;
@@ -2915,13 +2960,49 @@ async function loadInvites() {
     });
 }
 
+function selectedInviteAudience() {
+    return document.querySelector('input[name="invite-audience"]:checked')?.value || 'member';
+}
+
+function syncInviteContractVisibility() {
+    const wrap = document.getElementById('invite-contract-wrap');
+    if (!wrap) return;
+    const steward = selectedInviteAudience() === 'steward';
+    wrap.classList.toggle('hidden', steward);
+}
+
+async function populateInviteContracts(unionId) {
+    const select = document.getElementById('invite-contract');
+    if (!select) return;
+    let contractIds = [];
+    try {
+        const data = await api(`/api/admin/unions/${unionId}/documents`);
+        contractIds = [...new Set((data.items || [])
+            .map((it) => String(it.contract_id || '').trim())
+            .filter(Boolean))].sort();
+    } catch (error) {
+        console.error('Could not load contracts for invite form', error);
+    }
+    const previous = select.value;
+    select.innerHTML = '<option value="">Select a contract…</option>'
+        + contractIds.map((id) => `<option value="${escapeHtml(id)}">${escapeHtml(id)}</option>`).join('');
+    if (previous && contractIds.includes(previous)) select.value = previous;
+}
+
 async function createInvite(event) {
     event.preventDefault();
     const unionId = requireUnion();
+    const audience = selectedInviteAudience();
     const label = document.getElementById('invite-label').value.trim();
     const maxUsesRaw = document.getElementById('invite-max-uses').value;
     const expiresRaw = document.getElementById('invite-expires').value;
-    const payload = { label };
+    const contractId = document.getElementById('invite-contract')?.value || '';
+    if (audience === 'member' && !contractId) {
+        window.alert('Member codes must be pinned to a contract. Pick a contract, or switch the audience to Steward.');
+        return;
+    }
+    const payload = { audience, label };
+    if (audience === 'member') payload.contract_id = contractId;
     if (maxUsesRaw) payload.max_uses = Number(maxUsesRaw);
     if (expiresRaw) payload.expires_at = `${expiresRaw}T23:59:59`;
     await api(`/api/admin/unions/${unionId}/invites`, {
@@ -2930,10 +3011,15 @@ async function createInvite(event) {
         body: JSON.stringify(payload),
     });
     document.getElementById('invite-create-form').reset();
+    syncInviteContractVisibility();
     await loadInvites();
 }
 
 document.getElementById('refresh-invites')?.addEventListener('click', () => run(loadInvites));
 document.getElementById('invite-create-form')?.addEventListener('submit', (event) => run(() => createInvite(event)));
+document.querySelectorAll('input[name="invite-audience"]').forEach((radio) => {
+    radio.addEventListener('change', syncInviteContractVisibility);
+});
+syncInviteContractVisibility();
 
 wire();

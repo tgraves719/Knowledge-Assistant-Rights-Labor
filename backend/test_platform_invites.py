@@ -168,11 +168,13 @@ def test_invite_create_join_and_attribution(tmp_path):
 
         created = client.post(
             f"/api/admin/unions/{union_id}/invites",
-            json={"label": "Pueblo West break room poster", "max_uses": 5},
+            json={"label": "Pueblo West break room poster", "max_uses": 5, "contract_id": "clerks_2022"},
         )
         assert created.status_code == 200, created.text
         invite = created.json()
         assert invite["status"] == "active"
+        assert invite["audience"] == "member"
+        assert invite["contract_id"] == "clerks_2022"
         assert invite["join_path"] == f"/j/{invite['code']}"
         code = invite["code"]
 
@@ -247,7 +249,7 @@ def test_invite_revocation_and_limits_close_the_door(tmp_path):
         # Capped invite: one use only.
         capped = client.post(
             f"/api/admin/unions/{union_id}/invites",
-            json={"label": "steward hand-card", "max_uses": 1},
+            json={"label": "steward hand-card", "max_uses": 1, "contract_id": "clerks_2022"},
         ).json()
         anon = TestClient(api.app)
         first = anon.post(
@@ -277,14 +279,14 @@ def test_invite_revocation_and_limits_close_the_door(tmp_path):
         # Expired invite.
         expired = client.post(
             f"/api/admin/unions/{union_id}/invites",
-            json={"label": "old poster", "expires_at": (datetime.utcnow() - timedelta(days=1)).isoformat()},
+            json={"label": "old poster", "contract_id": "clerks_2022", "expires_at": (datetime.utcnow() - timedelta(days=1)).isoformat()},
         ).json()
         assert TestClient(api.app).get(f"/api/auth/join/{expired['code']}").status_code == 410
 
         # Revocation closes an active code and the landing page reflects it.
         active = client.post(
             f"/api/admin/unions/{union_id}/invites",
-            json={"label": "union board"},
+            json={"label": "union board", "contract_id": "clerks_2022"},
         ).json()
         revoked = client.post(f"/api/admin/unions/{union_id}/invites/{active['id']}/revoke")
         assert revoked.status_code == 200
@@ -350,7 +352,7 @@ def test_guest_join_is_zero_friction_and_disconnectable(tmp_path):
         client = _admin_client(platform)
         invite = client.post(
             f"/api/admin/unions/{union_id}/invites",
-            json={"label": "break room poster"},
+            json={"label": "break room poster", "contract_id": "clerks_2022"},
         ).json()
 
         # One tap: no name, no email, no password — straight to a member session.
@@ -407,6 +409,310 @@ def test_guest_join_is_zero_friction_and_disconnectable(tmp_path):
             .status_code
             == 410
         )
+    finally:
+        api.app.state.platform = prior
+
+
+def test_audience_validation_member_needs_contract_steward_forbids_one(tmp_path):
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, _ = _seed_union_with_admin(platform)
+        client = _admin_client(platform)
+
+        # Member code without a contract is rejected — it would leak every contract.
+        bad_member = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "unpinned member", "audience": "member"},
+        )
+        assert bad_member.status_code == 400
+        assert "pinned to a contract" in bad_member.text
+
+        # Steward code WITH a contract is rejected — stewards see all contracts.
+        bad_steward = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "pinned steward", "audience": "steward", "contract_id": "clerks_2022"},
+        )
+        assert bad_steward.status_code == 400
+        assert "cannot be pinned" in bad_steward.text
+
+        # Unknown audience is rejected.
+        bad_aud = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "weird", "audience": "manager"},
+        )
+        assert bad_aud.status_code == 400
+
+        # Valid steward code needs no contract.
+        good_steward = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "steward business cards", "audience": "steward"},
+        )
+        assert good_steward.status_code == 200, good_steward.text
+        assert good_steward.json()["audience"] == "steward"
+        assert good_steward.json()["contract_id"] is None
+    finally:
+        api.app.state.platform = prior
+
+
+def test_steward_code_grants_steward_role_on_scan(tmp_path):
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, union_slug = _seed_union_with_admin(platform)
+        client = _admin_client(platform)
+        steward_code = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "steward business cards", "audience": "steward"},
+        ).json()
+
+        # Scanning a steward card mints a steward session — role decided server-side.
+        phone = TestClient(api.app)
+        joined = phone.post("/api/auth/session/join-guest", json={"code": steward_code["code"]})
+        assert joined.status_code == 200, joined.text
+        assert joined.json()["user"]["role"] == Role.STEWARD_ADMIN.value
+
+        me = phone.get("/api/auth/session/me")
+        assert me.status_code == 200
+        assert me.json()["role"] == Role.STEWARD_ADMIN.value
+
+        with platform.session_factory() as db:
+            member = db.get(User, joined.json()["user"]["id"])
+            membership = db.scalar(
+                select(UnionMembership).where(UnionMembership.user_id == member.id)
+            )
+            assert membership.role == Role.STEWARD_ADMIN
+    finally:
+        api.app.state.platform = prior
+
+
+def test_invite_usage_timestamps_advance(tmp_path):
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, _ = _seed_union_with_admin(platform)
+        client = _admin_client(platform)
+        invite = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "poster", "contract_id": "clerks_2022"},
+        ).json()
+        assert invite["first_used_at"] is None and invite["last_used_at"] is None
+
+        TestClient(api.app).post("/api/auth/session/join-guest", json={"code": invite["code"]})
+        TestClient(api.app).post("/api/auth/session/join-guest", json={"code": invite["code"]})
+
+        item = next(
+            it for it in client.get(f"/api/admin/unions/{union_id}/invites").json()["items"]
+            if it["id"] == invite["id"]
+        )
+        assert item["use_count"] == 2
+        assert item["first_used_at"] is not None
+        assert item["last_used_at"] is not None
+        assert item["last_used_at"] >= item["first_used_at"]
+    finally:
+        api.app.state.platform = prior
+
+
+def _seed_contract_docs(platform, union_id):
+    """Two single-doc contracts in one union, both member-readable."""
+    from backend.platform.models import ChunkEmbedding, Document, DocumentStatus
+
+    with platform.session_factory() as db:
+        for cid, article in (("clerks_2022", "12"), ("meat_2022", "7")):
+            doc = Document(
+                union_id=union_id,
+                title=f"{cid} agreement",
+                contract_id=cid,
+                storage_key=f"{cid}.txt",
+                content_type="text/plain",
+                status=DocumentStatus.ACTIVE,
+                metadata_json={"ready_for_query": True, "member_visible": True},
+            )
+            db.add(doc)
+            db.flush()
+            db.add(ChunkEmbedding(
+                union_id=union_id,
+                document_id=doc.id,
+                chunk_index=0,
+                chunk_text=f"{cid} article {article} text",
+                metadata_json={"article_num": article, "article_title": f"Article {article}", "section_num": "1"},
+            ))
+        db.commit()
+
+
+def test_pinned_member_cannot_read_sibling_contract_explorer(tmp_path):
+    """Regression: the contract pin must gate the explorer, not just the contract list.
+
+    A member who joined through a clerks-pinned code must get 404 (not the text)
+    when requesting the meat contract's outline or section by id directly.
+    """
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, union_slug = _seed_union_with_admin(platform)
+        _seed_contract_docs(platform, union_id)
+        client = _admin_client(platform)
+        pinned = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "meat board", "contract_id": "clerks_2022"},
+        ).json()
+
+        phone = TestClient(api.app)
+        phone.post("/api/auth/session/join-guest", json={"code": pinned["code"]})
+
+        # The list only offers the pinned contract.
+        contracts = phone.get("/api/member/contracts")
+        assert contracts.status_code == 200
+        listed = contracts.json()
+        assert listed["pinned_contract_id"] == "clerks_2022"
+        assert [c["contract_id"] for c in listed["contracts"]] == ["clerks_2022"]
+
+        # Pinned contract reads fine.
+        assert phone.get("/api/member/contracts/clerks_2022/outline").status_code == 200
+        # Sibling contract is invisible — 404, indistinguishable from "no such contract".
+        assert phone.get("/api/member/contracts/meat_2022/outline").status_code == 404
+        assert phone.get("/api/member/contracts/meat_2022/section?article_num=7").status_code == 404
+    finally:
+        api.app.state.platform = prior
+
+
+def test_steward_session_sees_all_contracts(tmp_path):
+    """A steward (unpinned) sees every contract in the union and can read each."""
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, _ = _seed_union_with_admin(platform)
+        _seed_contract_docs(platform, union_id)
+        client = _admin_client(platform)
+        steward_code = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "steward cards", "audience": "steward"},
+        ).json()
+
+        phone = TestClient(api.app)
+        phone.post("/api/auth/session/join-guest", json={"code": steward_code["code"]})
+
+        contracts = phone.get("/api/member/contracts")
+        assert contracts.status_code == 200
+        body = contracts.json()
+        assert body["pinned_contract_id"] is None
+        assert {c["contract_id"] for c in body["contracts"]} == {"clerks_2022", "meat_2022"}
+        assert phone.get("/api/member/contracts/clerks_2022/outline").status_code == 200
+        assert phone.get("/api/member/contracts/meat_2022/outline").status_code == 200
+    finally:
+        api.app.state.platform = prior
+
+
+def test_invite_qr_and_printable_card_render(tmp_path):
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, _ = _seed_union_with_admin(platform)
+        client = _admin_client(platform)
+        invite = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "poster", "contract_id": "clerks_2022"},
+        ).json()
+
+        svg = client.get(f"/api/admin/unions/{union_id}/invites/{invite['id']}/qr")
+        assert svg.status_code == 200
+        assert svg.headers["content-type"].startswith("image/svg")
+        assert b"<svg" in svg.content
+
+        png = client.get(f"/api/admin/unions/{union_id}/invites/{invite['id']}/qr?format=png")
+        assert png.status_code == 200
+        assert png.headers["content-type"] == "image/png"
+        assert png.content[:8] == b"\x89PNG\r\n\x1a\n"
+
+        card = client.get(f"/api/admin/unions/{union_id}/invites/{invite['id']}/card")
+        assert card.status_code == 200
+        assert invite["code"] in card.text
+        assert f"/j/{invite['code']}" in card.text
+
+        # Anonymous users cannot pull QR assets.
+        assert TestClient(api.app).get(
+            f"/api/admin/unions/{union_id}/invites/{invite['id']}/qr"
+        ).status_code == 401
+    finally:
+        api.app.state.platform = prior
+
+
+def test_tenant_member_app_requires_a_session(tmp_path):
+    """Navigating straight to /u/{slug}/ without a QR-minted session gets the gate."""
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, union_slug = _seed_union_with_admin(platform)
+        client = _admin_client(platform)
+        code = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "poster", "contract_id": "clerks_2022"},
+        ).json()["code"]
+
+        # Anonymous visitor: no session → access-code gate, not the app.
+        anon = TestClient(api.app)
+        gated = anon.get(f"/u/{union_slug}/")
+        assert gated.status_code == 401
+        assert "access code" in gated.text.lower()
+        assert "__KARL_ROUTE_CONTEXT__" not in gated.text  # app shell not served
+
+        # After joining through the code, the same client gets the real app.
+        phone = TestClient(api.app)
+        phone.post("/api/auth/session/join-guest", json={"code": code})
+        opened = phone.get(f"/u/{union_slug}/")
+        assert opened.status_code == 200
+        assert "__KARL_ROUTE_CONTEXT__" in opened.text
+    finally:
+        api.app.state.platform = prior
+
+
+def test_tenant_query_requires_a_session(tmp_path):
+    """A query aimed at a real union tenant is refused without an entitled session."""
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, _ = _seed_union_with_admin(platform)
+        code = _admin_client(platform).post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "poster", "contract_id": "clerks_2022"},
+        ).json()["code"]
+
+        payload = {
+            "question": "what is my wage?",
+            "union_local_id": "ufcw-7",
+            "contract_id": "local7_safeway_pueblo_clerks_2022",
+            "contract_version": "current",
+        }
+        anon = TestClient(api.app)
+        assert anon.post("/api/query", json=payload).status_code == 401
+
+        # An entitled member session gets past the auth gate (may 4xx later for
+        # missing docs, but never 401).
+        phone = TestClient(api.app)
+        phone.post("/api/auth/session/join-guest", json={"code": code})
+        assert phone.post("/api/query", json=payload).status_code != 401
+    finally:
+        api.app.state.platform = prior
+
+
+def test_superadmin_and_tenant_admin_shells_require_auth(tmp_path):
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        _, union_slug = _seed_union_with_admin(platform)
+
+        anon = TestClient(api.app)
+        karl = anon.get("/karl/")
+        assert karl.status_code == 404
+        assert "sign in" in karl.text.lower()
+
+        admin_shell = anon.get(f"/u/{union_slug}/admin")
+        assert admin_shell.status_code == 404
+        assert "sign in" in admin_shell.text.lower()
+
+        # A signed-in union admin reaches their console.
+        client = _admin_client(platform)
+        assert client.get(f"/u/{union_slug}/admin").status_code == 200
     finally:
         api.app.state.platform = prior
 

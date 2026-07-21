@@ -1442,80 +1442,16 @@
 
             <form id="steward-onboarding-form" class="onboarding-form-scroll p-5 md:p-6 space-y-5 flex-1">
                 <p class="text-sm text-slate-600">
-                    Tell me a bit about yourself so I can give you accurate information about your wages and benefits.
+                    Pick the contract you're working in. You can switch to another contract any time from
+                    Settings &mdash; Karl figures out roles, tenure, and wage steps from your questions, so
+                    there's nothing else to set up.
                 </p>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Which contract/store are you under?</label>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Which contract/store are you working in?</label>
                     <select id="onboard-contract" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
                         <option value="">Select your contract...</option>
                     </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">What's your job classification?</label>
-                    <select id="onboard-classification" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
-                        <option value="">Select your role...</option>
-                    </select>
-                    <div id="onboard-role-clarification" class="hidden mt-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900"></div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Full-time or Part-time?</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="relative">
-                            <input type="radio" name="employment_type" value="full_time" class="peer sr-only">
-                            <div class="border-2 border-slate-200 rounded-xl px-4 py-3 cursor-pointer transition-all peer-checked:border-ufcw-blue peer-checked:bg-blue-50">
-                                <p class="font-medium text-slate-700">Full-Time</p>
-                                <p class="text-xs text-slate-500">32+ hrs/week</p>
-                            </div>
-                        </label>
-                        <label class="relative">
-                            <input type="radio" name="employment_type" value="part_time" class="peer sr-only" checked>
-                            <div class="border-2 border-slate-200 rounded-xl px-4 py-3 cursor-pointer transition-all peer-checked:border-ufcw-blue peer-checked:bg-blue-50">
-                                <p class="font-medium text-slate-700">Part-Time</p>
-                                <p class="text-xs text-slate-500">Under 32 hrs</p>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">When did you start? (approximate is fine)</label>
-                    <div class="relative">
-                        <input type="hidden" id="onboard-hire-date" value="">
-                        <div id="onboard-date-trigger" onclick="toggleDatePicker('onboard')" class="date-picker-trigger w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-700">
-                            <span id="onboard-date-display" class="text-slate-400">Select month & year</span>
-                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <div id="onboard-date-picker" class="date-picker-dropdown hidden">
-                            <div class="p-3 border-b border-slate-200 dark:border-slate-600">
-                                <div class="flex items-center justify-between mb-3">
-                                    <button type="button" onclick="changeYear('onboard', -1)" class="year-nav-btn text-slate-600 dark:text-slate-300 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                                    </button>
-                                    <span id="onboard-year-display" class="text-lg font-semibold text-slate-800 dark:text-slate-200">2026</span>
-                                    <button type="button" onclick="changeYear('onboard', 1)" class="year-nav-btn text-slate-600 dark:text-slate-300 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                                    </button>
-                                </div>
-                                <div id="onboard-months" class="grid grid-cols-4 gap-1 text-center"></div>
-                            </div>
-                            <div class="p-2 bg-slate-50 dark:bg-slate-800">
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 text-center">Quick select:</p>
-                                <div class="flex flex-wrap gap-1 justify-center">
-                                    <button type="button" onclick="quickSelect('onboard', 0)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">This year</button>
-                                    <button type="button" onclick="quickSelect('onboard', 1)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">1 yr ago</button>
-                                    <button type="button" onclick="quickSelect('onboard', 5)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">5 yrs ago</button>
-                                    <button type="button" onclick="quickSelect('onboard', 10)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">10 yrs ago</button>
-                                    <button type="button" onclick="quickSelect('onboard', 20)" class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-ufcw-gold hover:text-white">20 yrs ago</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-1">This helps me estimate your wage step</p>
                 </div>
 
                 <div class="pt-2">

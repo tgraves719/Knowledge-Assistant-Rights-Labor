@@ -12,6 +12,7 @@ from backend.platform.auth import AuthContext
 from backend.platform.deps import get_auth_context, get_container, get_db
 from backend.platform.local_auth import LocalAuthError
 from backend.platform.models import (
+    InviteAudience,
     InviteCode,
     LocalAuthCredential,
     MemberTrackingChoiceMode,
@@ -475,6 +476,27 @@ def _resolve_active_invite(db, code: str) -> tuple[InviteCode, Union]:
     return invite, union
 
 
+def _role_for_invite(invite: InviteCode) -> Role:
+    """The role a scanner receives from a code, decided server-side by audience.
+
+    Steward business cards mint steward sessions; every other code is a member.
+    Role authority lives here on the invite, never in client-supplied fields.
+    """
+    if str(invite.audience or "").strip().lower() == InviteAudience.STEWARD.value:
+        return Role.STEWARD_ADMIN
+    return Role.USER
+
+
+def _stamp_invite_use(invite: InviteCode) -> None:
+    """Advance the per-placement usage timeline on a successful join."""
+    now = datetime.utcnow()
+    invite.use_count = int(invite.use_count or 0) + 1
+    if invite.first_used_at is None:
+        invite.first_used_at = now
+    invite.last_used_at = now
+    invite.updated_at = now
+
+
 @router.get("/join/{code}")
 def join_code_info(code: str, request: Request):
     """Public pre-enrollment check for a QR join code (no auth required)."""
@@ -485,6 +507,7 @@ def join_code_info(code: str, request: Request):
     return {
         "valid": True,
         "code": invite.code,
+        "audience": invite.audience,
         "label": invite.label,
         "contract_id": invite.contract_id,
         "union": {"slug": union.slug, "name": union.name},
@@ -537,6 +560,8 @@ def join_session(payload: SessionJoinRequest, request: Request, response: Respon
         db.add(user)
         db.flush()
 
+    granted_role = _role_for_invite(invite)
+
     membership = db.scalar(
         select(UnionMembership).where(
             UnionMembership.user_id == user.id,
@@ -544,10 +569,10 @@ def join_session(payload: SessionJoinRequest, request: Request, response: Respon
         )
     )
     if membership is None:
-        membership = UnionMembership(union_id=union.id, user_id=user.id, role=Role.USER, is_active=True)
+        membership = UnionMembership(union_id=union.id, user_id=user.id, role=granted_role, is_active=True)
         db.add(membership)
     else:
-        membership.role = Role.USER
+        membership.role = granted_role
         membership.is_active = True
 
     try:
@@ -561,7 +586,7 @@ def join_session(payload: SessionJoinRequest, request: Request, response: Respon
             db,
             user=user,
             union=union,
-            role=Role.USER.value,
+            role=granted_role.value,
             ip_address=request.client.host if request.client else None,
             user_agent=request.headers.get("User-Agent"),
         )
@@ -569,8 +594,7 @@ def join_session(payload: SessionJoinRequest, request: Request, response: Respon
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     auth_session.invite_code_id = invite.id
-    invite.use_count = int(invite.use_count or 0) + 1
-    invite.updated_at = datetime.utcnow()
+    _stamp_invite_use(invite)
 
     _set_session_cookie(response, request, container, session_secret=session_secret)
     container.telemetry.record_event(
@@ -579,7 +603,7 @@ def join_session(payload: SessionJoinRequest, request: Request, response: Respon
             user_id=user.id,
             email=user.email,
             full_name=user.full_name,
-            role=Role.USER.value,
+            role=granted_role.value,
             union_id=union.id,
             union_slug=union.slug,
             source="session_join",
@@ -589,7 +613,8 @@ def join_session(payload: SessionJoinRequest, request: Request, response: Respon
         event_type="session_join_success",
         route="/api/auth/session/join",
         metadata={
-            "user_role": Role.USER.value,
+            "user_role": granted_role.value,
+            "invite_audience": invite.audience,
             "invite_code_id": invite.id,
             "invite_code": invite.code,
             "invite_label": invite.label,
@@ -602,11 +627,11 @@ def join_session(payload: SessionJoinRequest, request: Request, response: Respon
             "id": user.id,
             "email": user.email,
             "full_name": user.full_name,
-            "role": Role.USER.value,
+            "role": granted_role.value,
             "union_id": union.id,
             "union_slug": union.slug,
         },
-        "invite": {"code": invite.code, "label": invite.label, "contract_id": invite.contract_id},
+        "invite": {"code": invite.code, "label": invite.label, "audience": invite.audience, "contract_id": invite.contract_id},
     }
 
 
@@ -616,42 +641,45 @@ class SessionGuestJoinRequest(BaseModel):
 
 @router.post("/session/join-guest")
 def join_session_guest(payload: SessionGuestJoinRequest, request: Request, response: Response):
-    """Zero-friction QR enrollment: scanning a valid code starts a member session directly.
+    """Zero-friction QR enrollment: scanning a valid code starts a session directly.
 
-    No credentials are collected — the invite code itself is the admission ticket. Each join
-    creates a lightweight guest identity so quotas, tracking preferences, and telemetry keep
-    working per-member, and the session is attributed to the invite so a misused QR placement
-    can be shut off (and optionally disconnected) individually from the admin console.
+    No credentials are collected — the invite code itself is the admission ticket. The role
+    is decided server-side by the code's audience (steward business cards mint steward
+    sessions; every other code is a member). Each join creates a lightweight guest identity
+    so quotas, tracking preferences, and telemetry keep working per-scanner, and the session
+    is attributed to the invite so a misused QR placement can be shut off (and optionally
+    disconnected) individually from the admin console.
     """
     db = get_db(request)
     if db is None:
         raise HTTPException(status_code=503, detail="Database is not configured.")
     container = get_container(request)
     invite, union = _resolve_active_invite(db, payload.code)
+    granted_role = _role_for_invite(invite)
+    is_steward = granted_role == Role.STEWARD_ADMIN
 
     import uuid as _uuid
 
     guest_tag = _uuid.uuid4().hex[:12]
     user = User(
         email=f"guest-{guest_tag}@join.karl.invalid",
-        full_name="Union member",
+        full_name="Union steward" if is_steward else "Union member",
         is_active=True,
     )
     db.add(user)
     db.flush()
-    db.add(UnionMembership(union_id=union.id, user_id=user.id, role=Role.USER, is_active=True))
+    db.add(UnionMembership(union_id=union.id, user_id=user.id, role=granted_role, is_active=True))
 
     auth_session, session_secret = container.session_auth.create_session(
         db,
         user=user,
         union=union,
-        role=Role.USER.value,
+        role=granted_role.value,
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("User-Agent"),
     )
     auth_session.invite_code_id = invite.id
-    invite.use_count = int(invite.use_count or 0) + 1
-    invite.updated_at = datetime.utcnow()
+    _stamp_invite_use(invite)
 
     _set_session_cookie(response, request, container, session_secret=session_secret)
     container.telemetry.record_event(
@@ -660,7 +688,7 @@ def join_session_guest(payload: SessionGuestJoinRequest, request: Request, respo
             user_id=user.id,
             email=user.email,
             full_name=user.full_name,
-            role=Role.USER.value,
+            role=granted_role.value,
             union_id=union.id,
             union_slug=union.slug,
             source="session_join_guest",
@@ -670,7 +698,8 @@ def join_session_guest(payload: SessionGuestJoinRequest, request: Request, respo
         event_type="session_join_guest_success",
         route="/api/auth/session/join-guest",
         metadata={
-            "user_role": Role.USER.value,
+            "user_role": granted_role.value,
+            "invite_audience": invite.audience,
             "invite_code_id": invite.id,
             "invite_code": invite.code,
             "invite_label": invite.label,
@@ -684,9 +713,9 @@ def join_session_guest(payload: SessionGuestJoinRequest, request: Request, respo
             "id": user.id,
             "email": user.email,
             "full_name": user.full_name,
-            "role": Role.USER.value,
+            "role": granted_role.value,
             "union_id": union.id,
             "union_slug": union.slug,
         },
-        "invite": {"code": invite.code, "label": invite.label, "contract_id": invite.contract_id},
+        "invite": {"code": invite.code, "label": invite.label, "audience": invite.audience, "contract_id": invite.contract_id},
     }

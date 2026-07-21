@@ -3410,6 +3410,28 @@ async def query_contract(request: QueryRequest):
     """
     effective_union_lookup = _query_union_lookup_key(request)
     platform_query_state = _platform_union_query_state(effective_union_lookup)
+    if platform_query_state:
+        # A query aimed at a real union tenant requires a session entitled to it.
+        # The QR join flow mints that session; without it, answering would hand a
+        # union's contract to anyone who knows the slug. (The legacy public /karl/
+        # demo resolves to no union, so platform_query_state is None and it stays open.)
+        #
+        # Enforce only when there's a request auth context: every HTTP request
+        # carries one (anonymous or authenticated) via PlatformContextMiddleware,
+        # so anonymous callers are blocked. A None context means an in-process
+        # direct call (unit tests, internal reuse), not the public attack surface.
+        auth = get_current_auth_context()
+        if auth is not None:
+            union_id = platform_query_state.get("union_id")
+            entitled = bool(
+                auth.is_authenticated
+                and (auth.is_super_admin or (union_id and auth.union_id == union_id))
+            )
+            if not entitled:
+                raise HTTPException(
+                    status_code=401,
+                    detail="Sign in through your union's QR code or access code to ask Karl.",
+                )
     if platform_query_state and platform_query_state["ready_documents"] > 0:
         request = request.model_copy(update={"union_local_id": effective_union_lookup or request.union_local_id})
         return await _query_platform_union_documents(request, query_state=platform_query_state)
@@ -6574,6 +6596,102 @@ FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
 MODULAR_FRONTEND_DIR = FRONTEND_DIR / "modular"
 
 
+def _has_member_session_for(request: Request, union) -> bool:
+    """True if the request carries a live session entitled to this union's app.
+
+    The QR join flow (/j/{code}) is what mints that session; a visitor who just
+    types /u/{slug}/ has no session and must not be handed the working app.
+    Super-admins pass for support. A session bound to a different union does not.
+    """
+    auth = getattr(request.state, "auth_context", None)
+    if auth is None or not getattr(auth, "is_authenticated", False):
+        return False
+    if getattr(auth, "is_super_admin", False):
+        return True
+    return getattr(auth, "union_slug", None) == union.slug
+
+
+def _render_join_gate(*, request: Request, union) -> HTMLResponse:
+    """Access-code prompt shown when someone reaches a union app without a session.
+
+    Entering a code navigates to the same /j/{code} landing the QR points at, so
+    a member who lost their session (or typed the URL directly) has a self-serve
+    way back in without needing the physical poster.
+    """
+    import html as _html
+
+    union_name = _html.escape(getattr(union, "name", "Your Union") or "Your Union")
+    page = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{union_name} | Ask Karl</title>
+  <style>
+    :root {{ color-scheme: dark; }}
+    * {{ box-sizing: border-box; }}
+    body {{
+      margin: 0; min-height: 100vh; font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: #e6edf5; background: linear-gradient(160deg, #081420 0%, #0d3b54 50%, #14506e 100%);
+      display: grid; place-items: center; padding: 24px;
+    }}
+    .card {{
+      width: min(430px, 100%); background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 24px; padding: 30px 26px; backdrop-filter: blur(14px); box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      text-align: center;
+    }}
+    .eyebrow {{ font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: #e8b84a; font-weight: 600; margin: 0 0 12px; }}
+    h1 {{ margin: 0 0 10px; font-size: 1.6rem; }}
+    p {{ margin: 0 0 18px; line-height: 1.6; color: #cbd5e1; font-size: 14.5px; }}
+    label {{ display: block; text-align: left; font-size: 12px; font-weight: 600; color: #cbd5e1; margin: 0 0 6px; }}
+    input {{
+      width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.06); color: #fff; font-size: 16px; letter-spacing: .04em; text-align: center;
+    }}
+    input:focus {{ outline: 2px solid #e8b84a; }}
+    button {{
+      width: 100%; margin-top: 14px; padding: 15px 16px; border: none; border-radius: 14px; cursor: pointer;
+      font-size: 16px; font-weight: 700; color: #1a1305;
+      background: linear-gradient(180deg, #e8b84a 0%, #d4a029 100%);
+    }}
+    button:disabled {{ opacity: .55; cursor: default; }}
+    .error {{ display: none; margin-top: 14px; color: #fecaca; font-size: 14px; }}
+    .error.show {{ display: block; }}
+    .hint {{ font-size: 12.5px; color: #94a3b8; margin-top: 16px; }}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <p class="eyebrow">{union_name} &middot; Karl</p>
+    <h1>Enter your access code</h1>
+    <p>Scan your union's QR code, or type the access code from your poster or steward card to open Karl.</p>
+    <form id="code-form">
+      <label for="code-input">Access code</label>
+      <input id="code-input" name="code" autocomplete="one-time-code" autocapitalize="none" spellcheck="false" placeholder="e.g. k7m2ph9q" required>
+      <button type="submit">Open Karl</button>
+    </form>
+    <div class="error" id="code-error" role="alert"></div>
+    <p class="hint">No code? Ask your union steward for a current QR poster or card.</p>
+  </main>
+  <script>
+    (function () {{
+      var form = document.getElementById("code-form");
+      var input = document.getElementById("code-input");
+      var errorBox = document.getElementById("code-error");
+      form.addEventListener("submit", function (event) {{
+        event.preventDefault();
+        var code = (input.value || "").trim();
+        if (!code) return;
+        errorBox.classList.remove("show");
+        window.location.href = "/j/" + encodeURIComponent(code);
+      }});
+    }})();
+  </script>
+</body>
+</html>"""
+    return HTMLResponse(content=page, status_code=401)
+
+
 def _render_frontend_not_found(*, title: str, heading: str, detail: str, back_href: str) -> HTMLResponse:
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -6876,6 +6994,7 @@ async def serve_join_page(join_code: str):
             "join.html",
             replacements={
                 "__JOIN_CODE__": invite.code,
+                "__INVITE_AUDIENCE__": invite.audience or "member",
                 "__INVITE_LABEL__": invite.label or "",
                 "__UNION_SLUG__": union.slug,
                 "__UNION_NAME__": union.name,
@@ -6904,6 +7023,9 @@ async def serve_tenant_member_embed_frame(union_slug: str, request: Request):
             detail="The union workspace you requested does not exist or is no longer active.",
             back_href="/",
         )
+    if not _has_member_session_for(request, union):
+        # No QR-minted session: prompt for an access code instead of the app.
+        return _render_join_gate(request=request, union=union)
     branding = _serialize_union_bootstrap(union, page_mode="member").get("branding") or {}
     query = request.query_params
     api_base = (query.get("api_base") or "").strip() or str(request.base_url).rstrip("/")
@@ -6936,7 +7058,7 @@ async def serve_tenant_member_embed_frame(union_slug: str, request: Request):
 
 @app.get("/u/{union_slug}/admin")
 @app.get("/u/{union_slug}/admin/index.html")
-async def serve_tenant_admin_frontend(union_slug: str):
+async def serve_tenant_admin_frontend(union_slug: str, request: Request):
     container = getattr(app.state, "platform", None)
     if container is None or container.session_factory is None:
         return _render_frontend_unavailable(
@@ -6953,12 +7075,45 @@ async def serve_tenant_admin_frontend(union_slug: str):
             detail="The union admin page you requested does not exist or is no longer active.",
             back_href="/",
         )
+    # The admin data APIs enforce union_admin/super_admin, but don't serve the
+    # console shell to anyone: require an admin session for this union.
+    from backend.platform.models import Role
+
+    auth = getattr(request.state, "auth_context", None)
+    admin_roles = {Role.UNION_ADMIN.value, Role.STEWARD_ADMIN.value, Role.SUPER_ADMIN.value}
+    entitled = bool(
+        auth
+        and getattr(auth, "is_authenticated", False)
+        and (
+            getattr(auth, "is_super_admin", False)
+            or (getattr(auth, "role", None) in admin_roles and getattr(auth, "union_slug", None) == union.slug)
+        )
+    )
+    if not entitled:
+        return _render_frontend_not_found(
+            title="Sign in required",
+            heading="Sign in to continue",
+            detail="This is your union's Karl administration console. Sign in with a union-admin account to continue.",
+            back_href="/",
+        )
     return _render_modular_html("admin.html", inline_script_asset="admin.js")
 
 
 @app.get("/karl/")
 @app.get("/karl/index.html")
-async def serve_superadmin_frontend():
+async def serve_superadmin_frontend(request: Request):
+    # The superadmin data APIs already require a super-admin session, but serving
+    # the console shell to anyone presents a misleading "superadmin" surface. Gate
+    # the shell too so an unauthenticated visitor sees a sign-in notice, not a
+    # console that looks like it belongs to them.
+    auth = getattr(request.state, "auth_context", None)
+    if auth is None or not getattr(auth, "is_super_admin", False):
+        return _render_frontend_not_found(
+            title="Sign in required",
+            heading="Sign in to continue",
+            detail="This is the Karl administration console. Sign in with a super-admin account to continue.",
+            back_href="/",
+        )
     html_path = MODULAR_FRONTEND_DIR / "superadmin.html"
     if html_path.exists():
         return _render_modular_html("superadmin.html", inline_script_asset="admin.js")

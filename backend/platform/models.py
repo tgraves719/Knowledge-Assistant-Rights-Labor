@@ -38,6 +38,18 @@ class SessionType(str, enum.Enum):
     SUPER_ADMIN = "super_admin"
 
 
+class InviteAudience(str, enum.Enum):
+    """Who a printed QR placement enrolls.
+
+    MEMBER codes enroll rank-and-file members, pinned to one contract for
+    isolation. STEWARD codes enroll stewards, who see every contract in their
+    union and switch between them (no pin).
+    """
+
+    MEMBER = "member"
+    STEWARD = "steward"
+
+
 class DocumentStatus(str, enum.Enum):
     ACTIVE = "active"
     DELETED = "deleted"
@@ -438,12 +450,15 @@ class InviteCode(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     union_id: Mapped[str] = mapped_column(ForeignKey("unions.id"), nullable=False, index=True)
     code: Mapped[str] = mapped_column(String(64), unique=True, nullable=False, index=True)
+    audience: Mapped[str] = mapped_column(String(16), nullable=False, default=InviteAudience.MEMBER.value, index=True)
     label: Mapped[str] = mapped_column(String(255), nullable=False, default="")
     contract_id: Mapped[str | None] = mapped_column(String(255))
     created_by: Mapped[str | None] = mapped_column(ForeignKey("users.id"))
     expires_at: Mapped[datetime | None] = mapped_column(DateTime, index=True)
     max_uses: Mapped[int | None] = mapped_column(Integer)
     use_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    first_used_at: Mapped[datetime | None] = mapped_column(DateTime)
+    last_used_at: Mapped[datetime | None] = mapped_column(DateTime)
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime, index=True)
     metadata_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)

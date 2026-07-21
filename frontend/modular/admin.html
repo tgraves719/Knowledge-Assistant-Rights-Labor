@@ -278,17 +278,36 @@
                     <div class="panel rounded-[28px] p-6">
                         <div class="flex flex-wrap items-center justify-between gap-4">
                             <div>
-                                <div class="section-title">Invite Codes</div>
-                                <h3 class="mt-2 text-xl font-bold text-slate-900">QR join codes for member enrollment</h3>
-                                <p class="mt-2 text-sm leading-6 text-slate-600">Each printed QR placement (break-room poster, union board, steward hand-cards) gets its own code, so you can see where members are joining from and shut down any single placement without reprinting the rest.</p>
+                                <div class="section-title">QR Codes</div>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">QR codes for member &amp; steward enrollment</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600"><strong>Member codes</strong> are pinned to one contract and enroll rank-and-file members isolated to that agreement. <strong>Steward codes</strong> (business cards) enroll stewards, who see every contract in the union and switch between them. Each printed placement gets its own code, so you can see where people are joining from and shut down any single placement &mdash; download a QR image or printable card for each below.</p>
                             </div>
                             <button id="refresh-invites" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
                         </div>
                         <form id="invite-create-form" class="mt-5 grid gap-3 md:grid-cols-2">
+                            <div class="md:col-span-2">
+                                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Audience</label>
+                                <div class="inline-flex rounded-2xl border border-slate-200 bg-slate-50 p-1 text-sm">
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="invite-audience" value="member" class="peer sr-only" checked>
+                                        <span class="block rounded-xl px-4 py-2 font-semibold text-slate-600 peer-checked:bg-slate-900 peer-checked:text-white">Member (per contract)</span>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="invite-audience" value="steward" class="peer sr-only">
+                                        <span class="block rounded-xl px-4 py-2 font-semibold text-slate-600 peer-checked:bg-slate-900 peer-checked:text-white">Steward (all contracts)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="invite-contract-wrap" class="md:col-span-2">
+                                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Contract (required for member codes)</label>
+                                <select id="invite-contract" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm">
+                                    <option value="">Select a contract…</option>
+                                </select>
+                            </div>
                             <input id="invite-label" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Label (e.g. Pueblo West break room poster)">
                             <input id="invite-max-uses" type="number" min="1" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Max uses (optional)">
                             <input id="invite-expires" type="date" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" title="Expiry date (optional)">
-                            <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Create Invite Code</button>
+                            <button class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" type="submit">Create QR Code</button>
                         </form>
                         <div id="invite-list" class="mt-4 grid gap-3"></div>
                     </div>

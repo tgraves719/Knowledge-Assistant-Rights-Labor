@@ -28,6 +28,37 @@ class MemberDataDeletionRequest(BaseModel):
     confirm: bool = False
 
 
+def _pinned_contract_for_session(db, auth) -> str | None:
+    """The contract a member session is locked to, if its invite pinned one.
+
+    Member codes pin to a single contract for isolation; steward codes (and any
+    unattributed session) have no pin and may browse every contract in the union.
+    Super-admins are never pinned. Returns the pinned contract_id or None.
+    """
+    if getattr(auth, "is_super_admin", False):
+        return None
+    session_id = getattr(auth, "session_id", None)
+    if not session_id:
+        return None
+    session = db.get(AuthSession, session_id)
+    invite_id = getattr(session, "invite_code_id", None) if session is not None else None
+    if not invite_id:
+        return None
+    invite = db.get(InviteCode, invite_id)
+    return (getattr(invite, "contract_id", None) or "").strip() or None
+
+
+def _enforce_contract_pin(db, auth, contract_id: str) -> None:
+    """Reject a request for a contract outside the session's pin.
+
+    404 (not 403) so a pinned member cannot even confirm a sibling contract
+    exists — it reads identically to an unknown contract.
+    """
+    pinned = _pinned_contract_for_session(db, auth)
+    if pinned and str(contract_id or "").strip() != pinned:
+        raise HTTPException(status_code=404, detail="No readable documents for this contract.")
+
+
 def _member_document_safety_state(document: Document) -> dict:
     metadata = dict(document.metadata_json or {})
     return {
@@ -88,6 +119,7 @@ def get_member_document_content(
         raise HTTPException(status_code=404, detail="Document not found.")
     if not auth.is_super_admin and auth.union_id != document.union_id:
         raise HTTPException(status_code=403, detail="Union scope mismatch.")
+    _enforce_contract_pin(db, auth, document.contract_id)
     _require_member_safe_document(request, document, allow_redacted_selection=False)
 
     path = get_container(request).storage.open(document.storage_key)
@@ -129,14 +161,7 @@ def list_member_contracts(
         and bool((document.metadata_json or {}).get("member_visible", True))
     ]
 
-    pinned = None
-    session_id = getattr(auth, "session_id", None)
-    if session_id:
-        session = db.get(AuthSession, session_id)
-        invite_id = getattr(session, "invite_code_id", None) if session is not None else None
-        if invite_id:
-            invite = db.get(InviteCode, invite_id)
-            pinned = (getattr(invite, "contract_id", None) or "").strip() or None
+    pinned = _pinned_contract_for_session(db, auth)
 
     seen: dict[str, dict] = {}
     for document in documents:
@@ -176,6 +201,7 @@ def get_member_contract_outline(
     union_id = auth.union_id
     if not union_id and not auth.is_super_admin:
         raise HTTPException(status_code=403, detail="No union scope for this session.")
+    _enforce_contract_pin(db, auth, contract_id)
 
     document_stmt = select(Document).where(
         Document.status == DocumentStatus.ACTIVE,
@@ -266,6 +292,7 @@ def get_member_contract_section(
     union_id = auth.union_id
     if not union_id and not auth.is_super_admin:
         raise HTTPException(status_code=403, detail="No union scope for this session.")
+    _enforce_contract_pin(db, auth, contract_id)
 
     document_stmt = select(Document).where(
         Document.status == DocumentStatus.ACTIVE,
@@ -337,6 +364,7 @@ def get_member_document_source_pdf(
         raise HTTPException(status_code=404, detail="Document not found.")
     if not auth.is_super_admin and auth.union_id != document.union_id:
         raise HTTPException(status_code=403, detail="Union scope mismatch.")
+    _enforce_contract_pin(db, auth, document.contract_id)
     _require_member_safe_document(request, document, allow_redacted_selection=False)
 
     if not document.source_pdf_key:
@@ -370,6 +398,7 @@ def get_member_document_selection(
         raise HTTPException(status_code=404, detail="Document not found.")
     if not auth.is_super_admin and auth.union_id != document.union_id:
         raise HTTPException(status_code=403, detail="Union scope mismatch.")
+    _enforce_contract_pin(db, auth, document.contract_id)
     _require_member_safe_document(request, document, allow_redacted_selection=True)
 
     rows = db.scalars(

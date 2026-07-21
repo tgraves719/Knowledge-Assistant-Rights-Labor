@@ -5146,13 +5146,11 @@ const EMBED_THEME_OVERRIDES = (() => {
             }
             if (!userProfile) return;
 
-            if (userProfile.classification) {
-                document.getElementById('settings-classification').value = userProfile.classification;
-                document.getElementById('onboard-classification').value = userProfile.classification;
-            } else {
-                document.getElementById('settings-classification').value = '';
-                document.getElementById('onboard-classification').value = '';
-            }
+            const settingsClassification = document.getElementById('settings-classification');
+            const onboardClassification = document.getElementById('onboard-classification');
+            const classificationValue = userProfile.classification || '';
+            if (settingsClassification) settingsClassification.value = classificationValue;
+            if (onboardClassification) onboardClassification.value = classificationValue;
             if (userProfile.employment_type) {
                 const radio = document.querySelector(`input[name="settings_employment"][value="${userProfile.employment_type}"]`);
                 if (radio) radio.checked = true;
@@ -5512,8 +5510,20 @@ const EMBED_THEME_OVERRIDES = (() => {
                 hideOnboarding();
                 return;
             }
-            const preferred = getOnboardingFlowPreference();
-            if (preferred === 'steward') {
+            // Role decides the flow when we know it: a steward session (granted
+            // server-side by a steward QR code) always gets the steward contract
+            // picker, never the member form. The localStorage preference is only a
+            // fallback for the unauthenticated public demo, where no role exists.
+            const serverRole = safeText(memberAuth?.user?.role).toLowerCase();
+            let steward;
+            if (serverRole === 'steward_admin' || serverRole === 'union_admin' || serverRole === 'super_admin') {
+                steward = true;
+            } else if (serverRole === 'user') {
+                steward = false;
+            } else {
+                steward = getOnboardingFlowPreference() === 'steward';
+            }
+            if (steward) {
                 ensureMemberOnboardingController().hide();
                 ensureStewardOnboardingController().show();
             } else {

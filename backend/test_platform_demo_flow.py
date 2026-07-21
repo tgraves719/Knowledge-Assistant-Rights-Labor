@@ -450,7 +450,13 @@ def test_tenant_routes_and_bootstrap_resolve_demo_union(tmp_path):
                 union_local_id="demo-local",
                 metadata_json={"auth_policy": {"member_login_required": True}, "branding": {"theme_color": "#123456"}},
             )
-            db.add(union)
+            admin = User(email="demo_admin@example.com", full_name="Demo Admin")
+            db.add_all([union, admin])
+            db.flush()
+            db.add(UnionMembership(union_id=union.id, user_id=admin.id, role=Role.UNION_ADMIN))
+            platform.local_auth.create_or_update_credential(
+                db, user=admin, username="demo_admin", password="demo_password"
+            )
             db.commit()
 
         client = TestClient(api.app)
@@ -461,10 +467,27 @@ def test_tenant_routes_and_bootstrap_resolve_demo_union(tmp_path):
         assert payload["auth_policy"]["member_login_required"] is True
         assert payload["branding"]["theme_color"] == "#123456"
 
+        # Access is gated: an anonymous visitor who navigates straight to a union
+        # route gets the access-code prompt / a sign-in notice, never the app or
+        # a console shell.
+        gated_member = client.get("/u/demo-local/")
+        assert gated_member.status_code == 401
+        assert "access code" in gated_member.text.lower()
+        assert client.get("/u/demo-local/admin").status_code == 404
+        assert client.get("/karl/").status_code == 404
+
+        # A signed-in union admin is entitled to the union's surfaces.
+        login = client.post(
+            "/api/auth/local/login",
+            json={"username": "demo_admin", "password": "demo_password", "union_slug": "demo-local"},
+        )
+        assert login.status_code == 200
+        headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+
         # /u/{slug}/ serves the full app directly (not the widget shell): the
         # widget-in-iframe wrapper is for third-party embedding, and wrapping
         # our own front door in it cost members the full-page experience.
-        member_page = client.get("/u/demo-local/")
+        member_page = client.get("/u/demo-local/", headers=headers)
         assert member_page.status_code == 200
         assert "karl-member-widget" not in member_page.text
         assert '"embedMode": false' in member_page.text or "__KARL_EMBED_MODE__ = false" in member_page.text
@@ -474,19 +497,16 @@ def test_tenant_routes_and_bootstrap_resolve_demo_union(tmp_path):
         assert "karl-member-widget" in host_shell.text
         assert "/static/embed/karl-member.js" in host_shell.text
 
-        member_frame = client.get("/embed/member-frame/demo-local")
+        member_frame = client.get("/embed/member-frame/demo-local", headers=headers)
         assert member_frame.status_code == 200
         assert "window.__KARL_ROUTE_CONTEXT__" in member_frame.text
         assert '"unionSlug": "demo-local"' in member_frame.text or '"unionSlug":"demo-local"' in member_frame.text
         assert "X-Frame-Options" not in member_frame.headers
         assert member_frame.headers.get("Content-Security-Policy") == "frame-ancestors *;"
 
-        admin_page = client.get("/u/demo-local/admin")
+        admin_page = client.get("/u/demo-local/admin", headers=headers)
         assert admin_page.status_code == 200
         assert admin_page.headers.get("X-Frame-Options") == "DENY"
-
-        superadmin_page = client.get("/karl/")
-        assert superadmin_page.status_code == 200
 
         embed_demo = client.get("/embed/member-demo/demo-local")
         assert embed_demo.status_code == 200

@@ -164,6 +164,13 @@
         var code = "__JOIN_CODE__";
         var unionSlug = "__UNION_SLUG__";
         var label = "__INVITE_LABEL__";
+        var audience = "__INVITE_AUDIENCE__";
+        if (audience === "steward") {
+            // Steward business card: same one-tap start, clearer wording.
+            document.querySelector(".eyebrow").textContent = document.querySelector(".eyebrow").textContent + " · Steward";
+            document.getElementById("start-button").textContent = "Open Karl (steward)";
+            document.querySelector(".start-hint").textContent = "Steward access — every contract in your union.";
+        }
         if (label) {
             document.getElementById("placement-label").textContent = "Join code: " + code + " (" + label + ")";
         }
