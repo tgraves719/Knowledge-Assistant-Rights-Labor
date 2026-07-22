@@ -2721,7 +2721,9 @@ def invite_printable_card(
 
     union_name_esc = _html.escape(union_name)
     code_esc = _html.escape(invite.code)
-    join_url_esc = _html.escape(join_url)
+    # Drop the scheme (https://) so the printed URL fits on one line; the QR
+    # still encodes the full join_url.
+    join_url_display = _html.escape(join_url.split("://", 1)[-1])
 
     page = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
@@ -2805,8 +2807,8 @@ def invite_printable_card(
   }}
   .cta svg {{ width: 11px; height: 11px; stroke: var(--gold-light); }}
   .url {{
-    font-family: ui-monospace, Consolas, monospace; font-size: 7.5px;
-    color: var(--ink-400); word-break: break-all; margin: 7px 0 0;
+    font-family: ui-monospace, Consolas, monospace; font-size: 6.5px;
+    color: var(--ink-400); white-space: nowrap; margin: 7px 0 0;
   }}
 
   /* --- Back (logo side): shield mark centered, union + access at the top so
@@ -2820,7 +2822,7 @@ def invite_printable_card(
     font-size: 7.5px; letter-spacing: .18em; text-transform: uppercase;
     color: var(--gold-light); font-weight: 700; margin: 0;
   }}
-  .back-shield {{ width: 1.16in; height: 1.16in; filter: drop-shadow(0 6px 15px rgba(0,0,0,.45)); }}
+  .back-shield {{ width: 1.3in; height: 1.3in; opacity: .8; filter: drop-shadow(0 5px 12px rgba(0,0,0,.35)); }}
   .brand {{
     font-family: ui-monospace, Consolas, monospace; font-size: 6.5px;
     letter-spacing: .2em; text-transform: uppercase; color: rgba(203,213,225,.6); margin: 0;
@@ -2853,7 +2855,7 @@ def invite_printable_card(
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg>
           {cta_line}
         </span>
-        <p class="url">{join_url_esc}</p>
+        <p class="url">{join_url_display}</p>
       </div>
     </div>
     <p class="stage-note">Back · logo side</p>
@@ -2862,7 +2864,7 @@ def invite_printable_card(
         <p class="union">{union_name_esc}</p>
         <p class="audience">{audience_line}</p>
       </div>
-      <svg class="back-shield" viewBox="0 0 200 200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <svg class="back-shield" viewBox="12 22 176 176" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
         <path d="M100 190C50 190,20 150,20 40Q60 40,100 30Z" fill="#4A7A9F"/>
         <path d="M100 190C150 190,180 150,180 40Q140 40,100 30Z" fill="#EECF6D"/>
       </svg>
