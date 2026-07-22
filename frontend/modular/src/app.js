@@ -817,7 +817,7 @@ const EMBED_THEME_OVERRIDES = (() => {
             });
 
             if (saveButton) {
-                saveButton.textContent = tenantMode ? 'Profile managed by union sign-in' : 'Save Profile';
+                saveButton.textContent = tenantMode ? 'Profile managed by union sign-in' : 'Save';
                 saveButton.disabled = tenantMode;
                 saveButton.classList.toggle('opacity-60', tenantMode);
                 saveButton.classList.toggle('cursor-not-allowed', tenantMode);
@@ -2353,9 +2353,14 @@ const EMBED_THEME_OVERRIDES = (() => {
             const subtitle = document.getElementById('header-subtitle');
             const unionName = tenantBootstrap?.union?.name || contract?.union_local_id || 'Union Documents';
             if (subtitle) {
-                subtitle.textContent = contract
-                    ? `${getContractLabel(contract)} | ${unionName}`
-                    : 'Union Document Assistant';
+                if (!contract) {
+                    subtitle.textContent = 'Union Document Assistant';
+                } else if (contract.is_tenant_upload) {
+                    // Generic tenant workspace: show the union, not "… uploaded documents".
+                    subtitle.textContent = unionName;
+                } else {
+                    subtitle.textContent = `${getContractLabel(contract)} | ${unionName}`;
+                }
             }
             const displayContract = document.getElementById('display-contract');
             if (displayContract) {
@@ -5114,28 +5119,9 @@ const EMBED_THEME_OVERRIDES = (() => {
         }
 
         function updateProfileDisplay() {
+            // The profile bar now shows only the active workspace — role and
+            // tenure are no longer collected (Karl infers them in conversation).
             updateContractDisplay();
-            if (!userProfile) {
-                updateInteractionLock();
-                return;
-            }
-
-            document.getElementById('display-classification').textContent =
-                userProfile.classification_display
-                || userProfile.classification
-                || (normalizeRoleClarificationPayload(userProfile.role_clarification) ? 'Clarify role' : 'Not set');
-
-            if (userProfile.months_employed) {
-                const years = Math.floor(userProfile.months_employed / 12);
-                const months = userProfile.months_employed % 12;
-                let tenure = '';
-                if (years > 0) tenure += `${years}y `;
-                if (months > 0 || years === 0) tenure += `${months}m`;
-                document.getElementById('display-tenure').textContent = tenure.trim();
-            } else {
-                document.getElementById('display-tenure').textContent = '--';
-            }
-            syncRoleClarificationPanels();
             updateInteractionLock();
         }
 
@@ -5146,20 +5132,9 @@ const EMBED_THEME_OVERRIDES = (() => {
             }
             if (!userProfile) return;
 
-            const settingsClassification = document.getElementById('settings-classification');
-            const onboardClassification = document.getElementById('onboard-classification');
-            const classificationValue = userProfile.classification || '';
-            if (settingsClassification) settingsClassification.value = classificationValue;
-            if (onboardClassification) onboardClassification.value = classificationValue;
-            if (userProfile.employment_type) {
-                const radio = document.querySelector(`input[name="settings_employment"][value="${userProfile.employment_type}"]`);
-                if (radio) radio.checked = true;
-            }
-            if (userProfile.hire_date) {
-                const hireValue = userProfile.hire_date.substring(0, 7);
-                document.getElementById('settings-hire-date').value = hireValue;
-                initDatePicker('settings', hireValue);
-            }
+            // Classification, employment, and hire-date settings were removed —
+            // Karl gathers those in conversation. Only the workspace/contract and
+            // display preferences remain.
 
             // Sync preferences
             document.getElementById('pref-text-size').value = preferences.textSize || 'medium';
@@ -5178,19 +5153,13 @@ const EMBED_THEME_OVERRIDES = (() => {
                 return;
             }
             const contractId = document.getElementById('settings-contract')?.value;
-            const classification = document.getElementById('settings-classification').value;
-            const employmentType = document.querySelector('input[name="settings_employment"]:checked')?.value;
-            const hireMonth = document.getElementById('settings-hire-date').value;
 
             const data = {};
             if (contractId) data.contract_id = contractId;
-            if (classification) data.classification = classification;
-            if (employmentType) data.employment_type = employmentType;
-            if (hireMonth) data.hire_date = hireMonth + '-01';
 
             const saved = await saveProfile(data);
             if (saved) {
-                alert('Profile saved!');
+                alert('Saved!');
             }
         }
 
