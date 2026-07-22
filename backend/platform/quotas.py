@@ -111,6 +111,7 @@ class QuotaService:
             UsageEvent(
                 union_id=auth.union_id,
                 user_id=auth.user_id,
+                invite_code_id=getattr(auth, "invite_code_id", None),
                 route=route,
                 request_count=1,
                 token_count=max(0, int(token_count)),

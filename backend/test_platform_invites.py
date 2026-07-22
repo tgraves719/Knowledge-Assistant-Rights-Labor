@@ -12,7 +12,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from backend import api
-from backend.platform.auth import HeaderAuthAdapter
+from backend.platform.auth import AuthContext, HeaderAuthAdapter
 from backend.platform.chat_history import ChatHistoryStore
 from backend.platform.crypto import SecretCipher
 from backend.platform.db import Base
@@ -599,6 +599,87 @@ def test_steward_session_sees_all_contracts(tmp_path):
         assert {c["contract_id"] for c in body["contracts"]} == {"clerks_2022", "meat_2022"}
         assert phone.get("/api/member/contracts/clerks_2022/outline").status_code == 200
         assert phone.get("/api/member/contracts/meat_2022/outline").status_code == 200
+    finally:
+        api.app.state.platform = prior
+
+
+def test_usage_is_metered_per_invite_code(tmp_path):
+    """Token/request/cost usage is attributed to the code a member joined through,
+    and the admin invite list reports per-code totals."""
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, union_slug = _seed_union_with_admin(platform)
+        client = _admin_client(platform)
+        invite = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "poster", "contract_id": "clerks_2022"},
+        ).json()
+
+        # A session that joined through this code carries its id on the auth context;
+        # record_usage stamps it onto the usage event.
+        phone = TestClient(api.app)
+        phone.post("/api/auth/session/join-guest", json={"code": invite["code"]})
+        with platform.session_factory() as db:
+            member = db.scalar(select(User).where(User.email.like("guest-%@join.karl.invalid")))
+            auth = AuthContext(
+                user_id=member.id,
+                email=member.email,
+                full_name=member.full_name,
+                role=Role.USER.value,
+                union_id=union_id,
+                union_slug=union_slug,
+                source="session",
+                is_authenticated=True,
+                invite_code_id=invite["id"],
+            )
+            platform.quotas.record_usage(
+                db, auth, route="/api/query", token_count=1500, estimated_cost_usd=0.02
+            )
+            platform.quotas.record_usage(
+                db, auth, route="/api/query", token_count=500, estimated_cost_usd=0.01
+            )
+            db.commit()
+
+        item = next(
+            it for it in client.get(f"/api/admin/unions/{union_id}/invites").json()["items"]
+            if it["id"] == invite["id"]
+        )
+        assert item["total_requests"] == 2
+        assert item["total_tokens"] == 2000
+        assert round(item["total_cost_usd"], 4) == 0.03
+    finally:
+        api.app.state.platform = prior
+
+
+def test_authenticated_session_carries_its_invite_code(tmp_path):
+    """The QR-minted session resolves to an auth context tagged with its code,
+    which is what lets usage be metered per code downstream."""
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, _ = _seed_union_with_admin(platform)
+        invite = _admin_client(platform).post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "poster", "contract_id": "clerks_2022"},
+        ).json()
+
+        phone = TestClient(api.app)
+        phone.post("/api/auth/session/join-guest", json={"code": invite["code"]})
+        cookie = phone.cookies.get(platform.settings.session_cookie_name)
+        with platform.session_factory() as db:
+            resolved = platform.auth_adapter.resolve(
+                db=db,
+                session_cookie=cookie,
+                authorization=None,
+                external_auth_id=None,
+                email=None,
+                full_name=None,
+                requested_role=None,
+                union_slug=None,
+            )
+        assert resolved.is_authenticated
+        assert resolved.invite_code_id == invite["id"]
     finally:
         api.app.state.platform = prior
 

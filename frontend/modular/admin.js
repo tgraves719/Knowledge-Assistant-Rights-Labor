@@ -2887,6 +2887,9 @@ function renderInviteCard(item, unionId) {
                         <div class="mt-1 text-sm text-slate-600">${escapeHtml(item.label || 'No label')}</div>
                         <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-600">
                             <span class="rounded-full bg-slate-100 px-3 py-1">joined ${item.use_count}${item.max_uses ? ` / ${item.max_uses}` : ''}</span>
+                            <span class="rounded-full bg-indigo-50 px-3 py-1 text-indigo-900" title="Questions asked through this code">${Number(item.total_requests || 0).toLocaleString()} asks</span>
+                            <span class="rounded-full bg-indigo-50 px-3 py-1 text-indigo-900" title="Tokens consumed through this code">${Number(item.total_tokens || 0).toLocaleString()} tokens</span>
+                            ${Number(item.total_cost_usd || 0) > 0 ? `<span class="rounded-full bg-indigo-50 px-3 py-1 text-indigo-900" title="Estimated cost">$${Number(item.total_cost_usd).toFixed(4)}</span>` : ''}
                             <span class="rounded-full bg-slate-100 px-3 py-1">first ${shortWhen(item.first_used_at)}</span>
                             <span class="rounded-full bg-slate-100 px-3 py-1">last ${shortWhen(item.last_used_at)}</span>
                             ${item.expires_at ? `<span class="rounded-full bg-slate-100 px-3 py-1">expires ${shortWhen(item.expires_at)}</span>` : ''}
@@ -2914,6 +2917,7 @@ async function loadInvites() {
     const members = items.filter((it) => String(it.audience || 'member').toLowerCase() !== 'steward');
     const stewards = items.filter((it) => String(it.audience || 'member').toLowerCase() === 'steward');
     const usageTotal = (list) => list.reduce((sum, it) => sum + (Number(it.use_count) || 0), 0);
+    const tokenTotal = (list) => list.reduce((sum, it) => sum + (Number(it.total_tokens) || 0), 0);
     const container = document.getElementById('invite-list');
     if (container) {
         if (!items.length) {
@@ -2923,7 +2927,7 @@ async function loadInvites() {
                 <div>
                     <div class="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
                         <span>${title}</span>
-                        <span class="rounded-full bg-slate-100 px-2 py-0.5 normal-case text-slate-600">${list.length} code${list.length === 1 ? '' : 's'} · ${usageTotal(list)} joined</span>
+                        <span class="rounded-full bg-slate-100 px-2 py-0.5 normal-case text-slate-600">${list.length} code${list.length === 1 ? '' : 's'} · ${usageTotal(list)} joined · ${tokenTotal(list).toLocaleString()} tokens</span>
                     </div>
                     <div class="grid gap-3">${list.map((it) => renderInviteCard(it, unionId)).join('')}</div>
                 </div>` : '';

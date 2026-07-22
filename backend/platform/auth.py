@@ -32,6 +32,7 @@ class AuthContext:
     is_authenticated: bool = False
     session_id: str | None = None
     session_type: str | None = None
+    invite_code_id: str | None = None
     clear_session_cookie: bool = False
 
     @property
@@ -99,6 +100,7 @@ class HeaderAuthAdapter:
                     is_authenticated=True,
                     session_id=session_resolution.session.id if session_resolution.session else None,
                     session_type=session_resolution.session.session_type.value if session_resolution.session else None,
+                    invite_code_id=session_resolution.session.invite_code_id if session_resolution.session else None,
                     clear_session_cookie=False,
                 )
         if self._local_auth is not None and authorization:

@@ -12,7 +12,7 @@ from pathlib import Path
 from fastapi import APIRouter, BackgroundTasks, Depends, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from pydantic import BaseModel, Field
-from sqlalchemy import insert, or_, select
+from sqlalchemy import func, insert, or_, select
 
 from backend.platform.db import apply_request_context, apply_service_bootstrap_context
 from backend.platform.deps import get_auth_context, get_container, get_db, require_roles
@@ -2441,6 +2441,11 @@ def _serialize_invite(invite: InviteCode) -> dict:
         "status": status,
         "use_count": invite.use_count,
         "max_uses": invite.max_uses,
+        # Per-code token metering — overwritten with real totals in the list
+        # endpoint; defaulted here so single-invite responses keep the shape.
+        "total_requests": 0,
+        "total_tokens": 0,
+        "total_cost_usd": 0.0,
         "first_used_at": invite.first_used_at.isoformat() if invite.first_used_at else None,
         "last_used_at": invite.last_used_at.isoformat() if invite.last_used_at else None,
         "expires_at": invite.expires_at.isoformat() if invite.expires_at else None,
@@ -2472,7 +2477,28 @@ def list_union_invites(
     invites = db.scalars(
         select(InviteCode).where(InviteCode.union_id == union_id).order_by(InviteCode.created_at.desc())
     ).all()
-    return {"items": [_serialize_invite(invite) for invite in invites]}
+    # One grouped pass over usage_events keeps this O(1) queries regardless of
+    # how many codes a union has printed.
+    usage_rows = db.execute(
+        select(
+            UsageEvent.invite_code_id,
+            func.coalesce(func.sum(UsageEvent.request_count), 0),
+            func.coalesce(func.sum(UsageEvent.token_count), 0),
+            func.coalesce(func.sum(UsageEvent.estimated_cost_usd), 0.0),
+        )
+        .where(UsageEvent.union_id == union_id, UsageEvent.invite_code_id.is_not(None))
+        .group_by(UsageEvent.invite_code_id)
+    ).all()
+    usage_by_code = {
+        code_id: {"total_requests": int(reqs), "total_tokens": int(tokens), "total_cost_usd": round(float(cost), 6)}
+        for code_id, reqs, tokens, cost in usage_rows
+    }
+    items = []
+    for invite in invites:
+        serialized = _serialize_invite(invite)
+        serialized.update(usage_by_code.get(invite.id, {}))
+        items.append(serialized)
+    return {"items": items}
 
 
 @router.post("/unions/{union_id}/invites")

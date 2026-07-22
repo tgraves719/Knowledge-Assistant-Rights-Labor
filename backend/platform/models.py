@@ -308,6 +308,7 @@ class UsageEvent(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     union_id: Mapped[str] = mapped_column(ForeignKey("unions.id"), nullable=False, index=True)
     user_id: Mapped[str | None] = mapped_column(ForeignKey("users.id"))
+    invite_code_id: Mapped[str | None] = mapped_column(ForeignKey("invite_codes.id"), index=True)
     route: Mapped[str] = mapped_column(String(255), nullable=False)
     request_count: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     token_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
