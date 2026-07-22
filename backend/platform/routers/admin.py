@@ -2742,14 +2742,20 @@ def invite_printable_card(
     font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     margin: 0; background: #0a1922; color: var(--ink-100);
   }}
-  .toolbar {{ position: fixed; top: 16px; right: 16px; z-index: 10; }}
-  .print-btn {{
-    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
-    color: #1a1305; border: none; border-radius: 999px;
-    padding: 11px 20px; font-size: 13px; font-weight: 700; cursor: pointer;
-    box-shadow: 0 8px 26px -12px rgba(212,160,41,.6);
+  .toolbar {{ position: fixed; top: 16px; right: 16px; z-index: 10; display: flex; gap: 9px; }}
+  .btn {{
+    border: none; border-radius: 999px; padding: 11px 18px; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 700;
   }}
-  .print-btn:hover {{ filter: brightness(1.06); }}
+  .btn:hover {{ filter: brightness(1.06); }}
+  .btn-gold {{
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+    color: #1a1305; box-shadow: 0 8px 26px -12px rgba(212,160,41,.6);
+  }}
+  .btn-ghost {{
+    background: rgba(255,255,255,.08); color: #e8eef2;
+    border: 1px solid rgba(255,255,255,.28);
+  }}
   .stage {{
     min-height: 100vh; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 22px; padding: 44px 16px 64px;
@@ -2837,8 +2843,12 @@ def invite_printable_card(
     .card.front {{ margin-bottom: 0.35in; page-break-after: always; break-after: page; }}
   }}
 </style></head>
-<body>
-  <div class="toolbar"><button class="print-btn" onclick="window.print()">Print / Save PDF</button></div>
+<body data-card-code="{code_esc}">
+  <div class="toolbar">
+    <button class="btn btn-gold" onclick="window.print()">Print / Save PDF</button>
+    <button class="btn btn-ghost" onclick="downloadFace('front')">PNG · Front</button>
+    <button class="btn btn-ghost" onclick="downloadFace('back')">PNG · Back</button>
+  </div>
   <div class="stage">
     <p class="stage-note">Front · scan side</p>
     <div class="card front">
@@ -2872,4 +2882,59 @@ def invite_printable_card(
     </div>
   </div>
 </body></html>"""
+
+    # Client-side PNG export of each face for print shops (high-DPI raster of
+    # the card via an SVG foreignObject; fully self-contained, no CDN). Kept as
+    # a plain string so its JS braces don't collide with the f-string above.
+    download_script = """
+<script>
+(function () {
+  window.downloadFace = function (which) {
+    var card = document.querySelector('.card.' + which);
+    if (!card) { return; }
+    var W = 3.5 * 96, H = 2 * 96, scale = 4;
+    var css = '';
+    var styles = document.getElementsByTagName('style');
+    for (var i = 0; i < styles.length; i++) { css += styles[i].textContent; }
+    var clone = card.cloneNode(true);
+    clone.style.zoom = '1';
+    clone.style.margin = '0';
+    clone.style.boxShadow = 'none';
+    var xml = new XMLSerializer().serializeToString(clone);
+    var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" + W + "' height='" + H + "'>"
+      + "<foreignObject width='100%' height='100%'>"
+      + "<div xmlns='http://www.w3.org/1999/xhtml'><style>" + css + "</style>" + xml + "</div>"
+      + "</foreignObject></svg>";
+    function fail() {
+      window.alert('Could not export a PNG in this browser. Use \\u201CPrint / Save PDF\\u201D instead.');
+    }
+    var img = new Image();
+    img.onload = function () {
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(W * scale);
+      canvas.height = Math.round(H * scale);
+      var ctx = canvas.getContext('2d');
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.drawImage(img, 0, 0);
+      try {
+        canvas.toBlob(function (blob) {
+          if (!blob) { fail(); return; }
+          var code = document.body.getAttribute('data-card-code') || 'card';
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'karl-card-' + code + '-' + which + '.png';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
+        }, 'image/png');
+      } catch (e) { fail(); }
+    };
+    img.onerror = fail;
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  };
+})();
+</script>
+"""
+    page = page.replace("</body></html>", download_script + "</body></html>")
     return HTMLResponse(content=page)
