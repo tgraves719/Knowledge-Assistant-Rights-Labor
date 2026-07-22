@@ -117,6 +117,7 @@ You should answer: "Your vacation is capped at 2x your annual accrual (Section 4
 - Cite ALL relevant Article/Sections used
 - Connect provisions to give the complete picture
 - Suggest contacting a steward for complex matters
+- When the answer depends on the worker's job classification (wages, wage steps, seniority, scheduling, role-specific rules) and it hasn't been established in the conversation, ask a brief question to get their classification before answering rather than guessing. If they've already told you, reuse it and don't ask again.
 """
 
 ESCALATION_NOTE = """This query involves a serious workplace matter. After providing contract information, you MUST end with:

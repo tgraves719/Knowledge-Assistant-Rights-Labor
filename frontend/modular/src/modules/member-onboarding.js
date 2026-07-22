@@ -317,11 +317,10 @@ export function createMemberOnboardingController(config = {}) {
     }
 
     function getScenePuzzleProgress(sceneName) {
-        if (sceneName === 'm2') return 1;
-        if (sceneName === 'm3') return 2;
-        if (sceneName === 'm4') return 3;
-        if (sceneName === 'm5') return 4;
-        if (sceneName === 'm6') return 5;
+        // Three collection scenes (employer, location, contract) now spread
+        // across the puzzle; finishMember fills the last piece on completion.
+        if (sceneName === 'm2') return 2;
+        if (sceneName === 'm3') return 4;
         return 0;
     }
 
@@ -722,24 +721,11 @@ export function createMemberOnboardingController(config = {}) {
             }
 
             if (step === 3) {
+                // Contract is the last thing we ask a member. Role/classification
+                // and start date are no longer collected — the assistant infers
+                // them from the conversation — so selecting a contract finishes.
                 if (skip) setDepartmentSelection('', 'Not sure yet');
-                showScene('m4');
-                void shieldAddPage();
-                void renderClassificationOptions(draft.contract_id);
-                return;
-            }
-
-            if (step === 4) {
-                if (skip) setClassificationSelection('', 'Not sure yet');
-                showScene('m5');
-                void shieldAddPage();
-                return;
-            }
-
-            if (step === 5) {
-                if (skip) setEmploymentType('');
-                showScene('m6');
-                void shieldAddPage();
+                await finishMember(skip);
                 return;
             }
 
@@ -769,9 +755,6 @@ export function createMemberOnboardingController(config = {}) {
 
             const payload = {};
             if (draft.contract_id) payload.contract_id = draft.contract_id;
-            if (draft.classification) payload.classification = draft.classification;
-            if (draft.employment_type) payload.employment_type = draft.employment_type;
-            if (draft.hire_date) payload.hire_date = draft.hire_date;
 
             const ok = await onSubmitMember(payload);
             if (ok) {
