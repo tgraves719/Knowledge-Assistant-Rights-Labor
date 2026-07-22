@@ -2704,18 +2704,18 @@ def invite_printable_card(
     png_data_uri = "data:image/png;base64," + base64.b64encode(png_buffer.getvalue()).decode("ascii")
 
     is_steward = str(invite.audience or "").strip().lower() == InviteAudience.STEWARD.value
-    audience_line = "Steward access — all contracts" if is_steward else "Member access"
+    audience_line = "Steward access, all contracts" if is_steward else "Member access"
 
     # The printable card echoes the member onboarding scene (see join.html):
     # dark union-blue gradient, soft gold/blue glow, a Playfair-italic hero
     # line, and gold reserved for the single accent. Two faces at standard
-    # 3.5in × 2in business-card proportions — a QR-forward front and a
-    # details back — laid out for clean printing.
+    # 3.5in x 2in business-card proportions: a scan-forward front (QR + join
+    # code + CTA) and a shield-logo back, laid out for clean printing.
     hero_line = "Every contract, one scan." if is_steward else "Know your contract."
     front_sub = (
-        "Steward access to every contract in your union — answered with citations."
+        "Every contract in your union, answered with citations."
         if is_steward
-        else "Answers about wages, scheduling, seniority and more — cited to the contract."
+        else "Cited answers about your union contract, from your phone."
     )
     cta_line = "Scan for steward access" if is_steward else "Scan to join Karl"
 
@@ -2726,7 +2726,7 @@ def invite_printable_card(
     page = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Karl QR card — {code_esc}</title>
+<title>Karl QR card · {code_esc}</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
 <style>
   :root {{
@@ -2768,18 +2768,27 @@ def invite_printable_card(
   }}
   /* Larger, legible preview on screen; true 3.5x2in when printed. */
   @media screen {{ .card {{ zoom: 1.7; }} }}
-  .card::after {{
-    content: ""; position: absolute; left: 16px; right: 16px; bottom: 12px;
+  .front::after {{
+    content: ""; position: absolute; left: 16px; right: 16px; bottom: 11px;
     height: 1px; background: linear-gradient(90deg, transparent, rgba(212,160,41,.55), transparent);
   }}
 
-  /* --- Front: QR-forward --- */
-  .front {{ display: flex; align-items: center; gap: 15px; padding: 15px 17px; }}
+  /* --- Front (scan side): QR + join code on the left, hero + CTA on the right --- */
+  .front {{ display: flex; align-items: center; gap: 15px; padding: 14px 17px; }}
+  .qr-col {{ flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; }}
   .qr-chip {{
-    flex: 0 0 auto; width: 1.46in; height: 1.46in; background: #fff;
-    border-radius: 11px; padding: 7px; box-shadow: 0 4px 14px -6px rgba(0,0,0,.5);
+    width: 1.34in; height: 1.34in; background: #fff;
+    border-radius: 11px; padding: 6px; box-shadow: 0 4px 14px -6px rgba(0,0,0,.5);
   }}
   .qr-chip img {{ width: 100%; height: 100%; display: block; image-rendering: pixelated; }}
+  .qr-code-label {{
+    font-size: 5.5px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--ink-400); font-weight: 700; margin-top: 6px;
+  }}
+  .qr-code {{
+    font-family: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    font-size: 11px; font-weight: 700; letter-spacing: .1em; color: var(--gold-light); margin-top: 1px;
+  }}
   .front-body {{ flex: 1 1 auto; min-width: 0; }}
   .eyebrow {{
     font-size: 7px; letter-spacing: .19em; text-transform: uppercase;
@@ -2787,45 +2796,34 @@ def invite_printable_card(
   }}
   .hero {{
     font-family: "Playfair Display", Georgia, serif; font-style: italic;
-    font-weight: 600; font-size: 20px; line-height: 1.06; margin: 0 0 6px; color: #fff;
+    font-weight: 600; font-size: 19px; line-height: 1.06; margin: 0 0 6px; color: #fff;
   }}
-  .front-sub {{ font-size: 8px; line-height: 1.42; color: var(--ink-300); margin: 0 0 9px; }}
+  .front-sub {{ font-size: 8px; line-height: 1.42; color: var(--ink-300); margin: 0 0 8px; }}
   .cta {{
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 8.5px; font-weight: 700; letter-spacing: .02em; color: var(--gold-light);
   }}
   .cta svg {{ width: 11px; height: 11px; stroke: var(--gold-light); }}
+  .url {{
+    font-family: ui-monospace, Consolas, monospace; font-size: 7.5px;
+    color: var(--ink-400); word-break: break-all; margin: 7px 0 0;
+  }}
 
-  /* --- Back: details --- */
+  /* --- Back (logo side): shield mark centered, union + access at the top so
+     it reads first in a wallet, brand line beneath the shield. --- */
   .back {{
     display: flex; flex-direction: column; align-items: center;
-    justify-content: center; text-align: center; padding: 16px 20px;
+    justify-content: space-between; text-align: center; padding: 15px 18px 13px;
   }}
   .back .union {{ font-size: 13.5px; font-weight: 700; color: #fff; margin: 0 0 3px; }}
   .back .audience {{
-    font-size: 7.5px; letter-spacing: .17em; text-transform: uppercase;
-    color: var(--gold-light); font-weight: 700; margin: 0 0 12px;
+    font-size: 7.5px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--gold-light); font-weight: 700; margin: 0;
   }}
-  .code-chip {{
-    display: inline-block; font-family: "JetBrains Mono", ui-monospace, Consolas, monospace;
-    font-size: 14px; font-weight: 700; letter-spacing: .08em; color: var(--gold-light);
-    border: 1px solid rgba(232,184,74,.5); border-radius: 8px; padding: 5px 13px; margin: 0 0 8px;
-  }}
-  .url {{
-    font-family: ui-monospace, Consolas, monospace; font-size: 8px;
-    color: var(--ink-300); word-break: break-all; max-width: 2.7in; margin: 0 0 9px;
-  }}
-  /* Two-half KARL shield mark as a faint background watermark (exact geometry
-     + DS shield colors from the member app's onboarding avatar). */
-  .shield-bg {{
-    position: absolute; top: 50%; left: 50%; width: 1.7in; height: 1.7in;
-    transform: translate(-50%, -50%); opacity: .16; z-index: 0; pointer-events: none;
-  }}
-  .back > *:not(.shield-bg) {{ position: relative; z-index: 1; }}
+  .back-shield {{ width: 1.16in; height: 1.16in; filter: drop-shadow(0 6px 15px rgba(0,0,0,.45)); }}
   .brand {{
-    position: absolute; bottom: 8px; left: 0; right: 0; text-align: center;
     font-family: ui-monospace, Consolas, monospace; font-size: 6.5px;
-    letter-spacing: .2em; text-transform: uppercase; color: rgba(203,213,225,.5);
+    letter-spacing: .2em; text-transform: uppercase; color: rgba(203,213,225,.6); margin: 0;
   }}
 
   @media print {{
@@ -2842,7 +2840,11 @@ def invite_printable_card(
   <div class="stage">
     <p class="stage-note">Front · scan side</p>
     <div class="card front">
-      <div class="qr-chip"><img src="{png_data_uri}" alt="QR code for join code {code_esc}"></div>
+      <div class="qr-col">
+        <div class="qr-chip"><img src="{png_data_uri}" alt="QR code for join code {code_esc}"></div>
+        <div class="qr-code-label">Join code</div>
+        <div class="qr-code">{code_esc}</div>
+      </div>
       <div class="front-body">
         <p class="eyebrow">{union_name_esc} · Karl</p>
         <h1 class="hero">{hero_line}</h1>
@@ -2851,18 +2853,19 @@ def invite_printable_card(
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg>
           {cta_line}
         </span>
+        <p class="url">{join_url_esc}</p>
       </div>
     </div>
-    <p class="stage-note">Back · details</p>
+    <p class="stage-note">Back · logo side</p>
     <div class="card back">
-      <svg class="shield-bg" viewBox="0 0 200 200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <div class="back-top">
+        <p class="union">{union_name_esc}</p>
+        <p class="audience">{audience_line}</p>
+      </div>
+      <svg class="back-shield" viewBox="0 0 200 200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
         <path d="M100 190C50 190,20 150,20 40Q60 40,100 30Z" fill="#4A7A9F"/>
         <path d="M100 190C150 190,180 150,180 40Q140 40,100 30Z" fill="#EECF6D"/>
       </svg>
-      <p class="union">{union_name_esc}</p>
-      <p class="audience">{audience_line}</p>
-      <span class="code-chip">{code_esc}</span>
-      <p class="url">{join_url_esc}</p>
       <p class="brand">Powered by Karl · Karl Stewardship</p>
     </div>
   </div>
