@@ -6617,22 +6617,35 @@ def _has_member_session_for(request: Request, union) -> bool:
     return getattr(auth, "union_slug", None) == union.slug
 
 
-def _render_join_gate(*, request: Request, union) -> HTMLResponse:
-    """Access-code prompt shown when someone reaches a union app without a session.
+def _render_sign_in_gate(*, request: Request, union=None, emphasis: str = "member", status_code: int = 401) -> HTMLResponse:
+    """Sign-in screen shown when someone reaches a gated surface without a session.
 
-    Entering a code navigates to the same /j/{code} landing the QR points at, so
-    a member who lost their session (or typed the URL directly) has a self-serve
-    way back in without needing the physical poster.
+    Offers two ways in: an access code (the /j/{code} QR path, for members and
+    stewards) and a union sign-in (username/password, for union/super admins).
+    On a successful sign-in the browser is routed by role — super admins to the
+    admin console at /karl/, union staff to their /u/{slug}/admin console, and
+    members to their union app. `emphasis` decides which path is shown first;
+    `union` (when known) brands the page and pre-targets the union.
     """
     import html as _html
 
-    union_name = _html.escape(getattr(union, "name", "Your Union") or "Your Union")
+    union_name = _html.escape(getattr(union, "name", "") or "") if union is not None else ""
+    union_slug = _html.escape(getattr(union, "slug", "") or "") if union is not None else ""
+    eyebrow = f"{union_name} &middot; Karl" if union_name else "Karl"
+    staff_first = "true" if emphasis == "staff" else "false"
+    # A known union means we don't need to ask staff which union they're in.
+    union_field = (
+        ""
+        if union_slug
+        else '<label for="si-union">Union (workspace name)</label>'
+        '<input id="si-union" name="union" autocapitalize="none" spellcheck="false" placeholder="e.g. ufcw-local-7">'
+    )
     page = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{union_name} | Ask Karl</title>
+  <title>{union_name or 'Karl'} | Sign in</title>
   <style>
     :root {{ color-scheme: dark; }}
     * {{ box-sizing: border-box; }}
@@ -6643,59 +6656,130 @@ def _render_join_gate(*, request: Request, union) -> HTMLResponse:
     }}
     .card {{
       width: min(430px, 100%); background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.16);
-      border-radius: 24px; padding: 30px 26px; backdrop-filter: blur(14px); box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-      text-align: center;
+      border-radius: 24px; padding: 28px 26px; backdrop-filter: blur(14px); box-shadow: 0 20px 60px rgba(0,0,0,0.25);
     }}
-    .eyebrow {{ font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: #e8b84a; font-weight: 600; margin: 0 0 12px; }}
-    h1 {{ margin: 0 0 10px; font-size: 1.6rem; }}
-    p {{ margin: 0 0 18px; line-height: 1.6; color: #cbd5e1; font-size: 14.5px; }}
-    label {{ display: block; text-align: left; font-size: 12px; font-weight: 600; color: #cbd5e1; margin: 0 0 6px; }}
+    .eyebrow {{ font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: #e8b84a; font-weight: 600; margin: 0 0 10px; text-align: center; }}
+    h1 {{ margin: 0 0 8px; font-size: 1.5rem; text-align: center; }}
+    .lead {{ margin: 0 0 20px; line-height: 1.55; color: #cbd5e1; font-size: 14px; text-align: center; }}
+    .panel {{ display: none; }}
+    .panel.active {{ display: block; }}
+    label {{ display: block; text-align: left; font-size: 12px; font-weight: 600; color: #cbd5e1; margin: 12px 0 6px; }}
     input {{
-      width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.06); color: #fff; font-size: 16px; letter-spacing: .04em; text-align: center;
+      width: 100%; padding: 13px 15px; border-radius: 13px; border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.06); color: #fff; font-size: 16px;
     }}
+    #si-code {{ letter-spacing: .04em; text-align: center; }}
     input:focus {{ outline: 2px solid #e8b84a; }}
-    button {{
-      width: 100%; margin-top: 14px; padding: 15px 16px; border: none; border-radius: 14px; cursor: pointer;
+    button.primary {{
+      width: 100%; margin-top: 16px; padding: 14px 16px; border: none; border-radius: 13px; cursor: pointer;
       font-size: 16px; font-weight: 700; color: #1a1305;
       background: linear-gradient(180deg, #e8b84a 0%, #d4a029 100%);
     }}
-    button:disabled {{ opacity: .55; cursor: default; }}
-    .error {{ display: none; margin-top: 14px; color: #fecaca; font-size: 14px; }}
+    button.primary:disabled {{ opacity: .55; cursor: default; }}
+    .switch {{ margin-top: 18px; text-align: center; font-size: 13px; color: #94a3b8; }}
+    .switch a {{ color: #e8b84a; text-decoration: none; font-weight: 600; cursor: pointer; }}
+    .error {{ display: none; margin-top: 14px; color: #fecaca; font-size: 14px; text-align: center; }}
     .error.show {{ display: block; }}
-    .hint {{ font-size: 12.5px; color: #94a3b8; margin-top: 16px; }}
+    .hint {{ font-size: 12.5px; color: #94a3b8; margin-top: 14px; text-align: center; }}
   </style>
 </head>
 <body>
   <main class="card">
-    <p class="eyebrow">{union_name} &middot; Karl</p>
-    <h1>Enter your access code</h1>
-    <p>Scan your union's QR code, or type the access code from your poster or steward card to open Karl.</p>
-    <form id="code-form">
-      <label for="code-input">Access code</label>
-      <input id="code-input" name="code" autocomplete="one-time-code" autocapitalize="none" spellcheck="false" placeholder="e.g. k7m2ph9q" required>
-      <button type="submit">Open Karl</button>
-    </form>
-    <div class="error" id="code-error" role="alert"></div>
-    <p class="hint">No code? Ask your union steward for a current QR poster or card.</p>
+    <p class="eyebrow">{eyebrow}</p>
+
+    <section class="panel" id="panel-code">
+      <h1>Enter your access code</h1>
+      <p class="lead">Scan your union's QR code, or type the access code from your poster or steward card.</p>
+      <form id="code-form">
+        <label for="si-code">Access code</label>
+        <input id="si-code" name="code" autocomplete="one-time-code" autocapitalize="none" spellcheck="false" placeholder="e.g. k7m2ph9q" required>
+        <button type="submit" class="primary">Open Karl</button>
+      </form>
+      <p class="switch">Union staff? <a id="to-staff">Sign in with your account</a></p>
+      <p class="hint">No code? Ask your union steward for a current QR poster or card.</p>
+    </section>
+
+    <section class="panel" id="panel-staff">
+      <h1>Union staff sign-in</h1>
+      <p class="lead">Sign in with your union or administrator account.</p>
+      <form id="staff-form">
+        <label for="si-username">Username</label>
+        <input id="si-username" name="username" autocapitalize="none" spellcheck="false" autocomplete="username" required>
+        <label for="si-password">Password</label>
+        <input id="si-password" name="password" type="password" autocomplete="current-password" required>
+        {union_field}
+        <button type="submit" class="primary">Sign in</button>
+      </form>
+      <p class="switch">Have a QR access code instead? <a id="to-code">Enter your code</a></p>
+    </section>
+
+    <div class="error" id="si-error" role="alert"></div>
   </main>
   <script>
     (function () {{
-      var form = document.getElementById("code-form");
-      var input = document.getElementById("code-input");
-      var errorBox = document.getElementById("code-error");
-      form.addEventListener("submit", function (event) {{
-        event.preventDefault();
-        var code = (input.value || "").trim();
-        if (!code) return;
+      var KNOWN_UNION_SLUG = "{union_slug}";
+      var panelCode = document.getElementById("panel-code");
+      var panelStaff = document.getElementById("panel-staff");
+      var errorBox = document.getElementById("si-error");
+      function show(which) {{
         errorBox.classList.remove("show");
+        panelCode.classList.toggle("active", which === "code");
+        panelStaff.classList.toggle("active", which === "staff");
+      }}
+      show({staff_first} ? "staff" : "code");
+      document.getElementById("to-staff").addEventListener("click", function () {{ show("staff"); }});
+      document.getElementById("to-code").addEventListener("click", function () {{ show("code"); }});
+
+      document.getElementById("code-form").addEventListener("submit", function (event) {{
+        event.preventDefault();
+        var code = (document.getElementById("si-code").value || "").trim();
+        if (!code) return;
         window.location.href = "/j/" + encodeURIComponent(code);
+      }});
+
+      var staffForm = document.getElementById("staff-form");
+      staffForm.addEventListener("submit", function (event) {{
+        event.preventDefault();
+        errorBox.classList.remove("show");
+        var button = staffForm.querySelector("button");
+        var body = {{
+          username: (document.getElementById("si-username").value || "").trim(),
+          password: document.getElementById("si-password").value || ""
+        }};
+        var unionInput = document.getElementById("si-union");
+        var unionSlug = KNOWN_UNION_SLUG || (unionInput ? (unionInput.value || "").trim() : "");
+        if (unionSlug) body.union_slug = unionSlug;
+        button.disabled = true; button.textContent = "Signing in…";
+        fetch("/api/auth/session/login", {{
+          method: "POST",
+          headers: {{ "Content-Type": "application/json" }},
+          credentials: "same-origin",
+          body: JSON.stringify(body)
+        }}).then(function (response) {{
+          return response.json().then(function (data) {{ return {{ ok: response.ok, data: data }}; }});
+        }}).then(function (result) {{
+          if (!result.ok) {{
+            errorBox.textContent = (result.data && result.data.detail) || "Sign-in failed. Check your details and try again.";
+            errorBox.classList.add("show");
+            button.disabled = false; button.textContent = "Sign in";
+            return;
+          }}
+          var user = (result.data && result.data.user) || {{}};
+          var role = user.role, slug = user.union_slug;
+          if (role === "super_admin") {{ window.location.href = "/karl/"; }}
+          else if (role === "union_admin" || role === "steward_admin") {{ window.location.href = slug ? ("/u/" + slug + "/admin") : "/karl/"; }}
+          else {{ window.location.href = slug ? ("/u/" + slug + "/") : "/"; }}
+        }}).catch(function () {{
+          errorBox.textContent = "Could not reach Karl. Check your connection and try again.";
+          errorBox.classList.add("show");
+          button.disabled = false; button.textContent = "Sign in";
+        }});
       }});
     }})();
   </script>
 </body>
 </html>"""
-    return HTMLResponse(content=page, status_code=401)
+    return HTMLResponse(content=page, status_code=status_code)
 
 
 def _render_frontend_not_found(*, title: str, heading: str, detail: str, back_href: str) -> HTMLResponse:
@@ -7030,8 +7114,8 @@ async def serve_tenant_member_embed_frame(union_slug: str, request: Request):
             back_href="/",
         )
     if not _has_member_session_for(request, union):
-        # No QR-minted session: prompt for an access code instead of the app.
-        return _render_join_gate(request=request, union=union)
+        # No session: prompt for an access code (or union sign-in) instead of the app.
+        return _render_sign_in_gate(request=request, union=union, emphasis="member")
     branding = _serialize_union_bootstrap(union, page_mode="member").get("branding") or {}
     query = request.query_params
     api_base = (query.get("api_base") or "").strip() or str(request.base_url).rstrip("/")
@@ -7096,13 +7180,28 @@ async def serve_tenant_admin_frontend(union_slug: str, request: Request):
         )
     )
     if not entitled:
-        return _render_frontend_not_found(
-            title="Sign in required",
-            heading="Sign in to continue",
-            detail="This is your union's Karl administration console. Sign in with a union-admin account to continue.",
-            back_href="/",
-        )
+        return _render_sign_in_gate(request=request, union=union, emphasis="staff")
     return _render_modular_html("admin.html", inline_script_asset="admin.js")
+
+
+@app.get("/signin")
+async def serve_sign_in(request: Request):
+    """Canonical sign-in entry: access code or union account.
+
+    Already signed in? Route to where that account belongs rather than showing
+    the form again.
+    """
+    auth = getattr(request.state, "auth_context", None)
+    if auth is not None and getattr(auth, "is_authenticated", False):
+        if getattr(auth, "is_super_admin", False):
+            return RedirectResponse(url="/karl/", status_code=303)
+        slug = getattr(auth, "union_slug", None)
+        role = getattr(auth, "role", None)
+        if slug and role in {"union_admin", "steward_admin"}:
+            return RedirectResponse(url=f"/u/{slug}/admin", status_code=303)
+        if slug:
+            return RedirectResponse(url=f"/u/{slug}/", status_code=303)
+    return _render_sign_in_gate(request=request, union=None, emphasis="staff", status_code=200)
 
 
 @app.get("/karl/")
@@ -7114,12 +7213,8 @@ async def serve_superadmin_frontend(request: Request):
     # console that looks like it belongs to them.
     auth = getattr(request.state, "auth_context", None)
     if auth is None or not getattr(auth, "is_super_admin", False):
-        return _render_frontend_not_found(
-            title="Sign in required",
-            heading="Sign in to continue",
-            detail="This is the Karl administration console. Sign in with a super-admin account to continue.",
-            back_href="/",
-        )
+        # Serve a real sign-in (union account or access code), not a dead end.
+        return _render_sign_in_gate(request=request, union=None, emphasis="staff")
     html_path = MODULAR_FRONTEND_DIR / "superadmin.html"
     if html_path.exists():
         return _render_modular_html("superadmin.html", inline_script_asset="admin.js")

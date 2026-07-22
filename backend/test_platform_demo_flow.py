@@ -473,8 +473,8 @@ def test_tenant_routes_and_bootstrap_resolve_demo_union(tmp_path):
         gated_member = client.get("/u/demo-local/")
         assert gated_member.status_code == 401
         assert "access code" in gated_member.text.lower()
-        assert client.get("/u/demo-local/admin").status_code == 404
-        assert client.get("/karl/").status_code == 404
+        assert client.get("/u/demo-local/admin").status_code == 401
+        assert client.get("/karl/").status_code == 401
 
         # A signed-in union admin is entitled to the union's surfaces.
         login = client.post(

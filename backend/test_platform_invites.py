@@ -784,16 +784,28 @@ def test_superadmin_and_tenant_admin_shells_require_auth(tmp_path):
 
         anon = TestClient(api.app)
         karl = anon.get("/karl/")
-        assert karl.status_code == 404
+        assert karl.status_code == 401
         assert "sign in" in karl.text.lower()
+        assert "/api/auth/session/login" in karl.text  # real sign-in form, not a dead end
 
         admin_shell = anon.get(f"/u/{union_slug}/admin")
-        assert admin_shell.status_code == 404
+        assert admin_shell.status_code == 401
         assert "sign in" in admin_shell.text.lower()
+
+        # The canonical /signin entry serves the form to anonymous visitors.
+        signin = anon.get("/signin")
+        assert signin.status_code == 200
+        assert "access code" in signin.text.lower()
+        assert "/api/auth/session/login" in signin.text
 
         # A signed-in union admin reaches their console.
         client = _admin_client(platform)
         assert client.get(f"/u/{union_slug}/admin").status_code == 200
+
+        # /signin routes an already-authenticated admin to their console.
+        redirected = client.get("/signin", follow_redirects=False)
+        assert redirected.status_code == 303
+        assert redirected.headers["location"] == f"/u/{union_slug}/admin"
     finally:
         api.app.state.platform = prior
 
