@@ -1003,7 +1003,7 @@ function dashboardCard(label, value, detail, trendValues, color = '#0d5c80', opt
         success: 'bg-emerald-100 text-emerald-900',
     }[tone] || 'bg-slate-100 text-slate-700';
     return `
-        <div class="rounded-[28px] border border-slate-200 bg-gradient-to-br ${accentClass} p-4 shadow-sm shadow-slate-200/60">
+        <div class="rounded-[28px] border border-slate-300 bg-gradient-to-br ${accentClass} p-4 shadow-sm shadow-slate-300/70">
             <div class="flex items-start justify-between gap-3">
                 <div class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">${eyebrow}</div>
                 <div class="rounded-full px-3 py-1 text-[11px] font-semibold ${badgeClass}">${label}</div>
