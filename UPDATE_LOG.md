@@ -1,5 +1,91 @@
 # Karl Update Log
 
+## Dual-audience QR, access gating, per-code metering, wage fix, prod deploy (July 21, 2026)
+
+### Overview
+
+Reworked the QR enrollment system into two audiences, closed a real
+unauthenticated-access hole, added per-code token metering, finished the
+role/start-date onboarding removal, fixed a member-facing wage bug that was
+blocking the main CI gate, merged the whole `test/m2-...` branch into `main`,
+and deployed all of it to production (`159.203.91.194`, karlstewardship.com).
+Commits `c6f8685` → `aebc145`.
+
+### QR codes — member vs steward (`c6f8685`)
+
+- `invite_codes.audience` (`member`|`steward`) + `first_used_at`/`last_used_at`
+  (migration `20260720_0010`). Role is decided **server-side** from the code:
+  member codes must pin a contract and enroll rank-and-file members isolated to
+  it; steward codes forbid a pin and enroll stewards (`STEWARD_ADMIN`) who see
+  and switch every contract. Scan-and-enter for both (business cards) — no 2FA.
+- **Real QR generation** (`segno`, pure-Python): admin endpoints
+  `/invites/{id}/qr?format=svg|png` and `/invites/{id}/card` (printable). Admin
+  console shows the QR inline, PNG + card downloads, an audience toggle +
+  contract select, and groups codes into Member/Steward with per-group usage.
+- **Contract-pin leak fixed:** the invite pin is now enforced in the member
+  explorer (outline/section/document/PDF/selection), not just the contract list.
+
+### Access control — require a session to use a union app (`c6f8685`, `427b935`)
+
+- `/api/query` aimed at a real union tenant now requires an entitled session
+  (was **unauthenticated** — anyone with the slug could get contract answers).
+- `/u/{slug}/` and the embed frame serve a **sign-in gate** (access code *or*
+  union login) instead of the app when there's no session. `/karl/` and
+  `/u/{slug}/admin` console shells are gated behind an admin session; a real
+  `_render_sign_in_gate` (with a canonical `GET /signin`) replaced the earlier
+  dead-end notices — the old notice had blocked the console's own login form.
+
+### Per-code token metering (`39bd38c`)
+
+- `usage_events.invite_code_id` (migration `20260721_0011`), populated from the
+  session's originating code via `AuthContext.invite_code_id` in
+  `QuotaService.record_usage`. Admin invite list aggregates
+  `total_requests`/`total_tokens`/`total_cost_usd` per code in one grouped
+  query — so usage is trackable per printed placement, and any single code can
+  be revoked remotely.
+
+### Onboarding & UI cleanup (`a3e9344`, `a69839f`, `aebc145`)
+
+- Removed job-classification, employment, and start-date collection from **both**
+  member and steward onboarding (assistant infers them). Settings and the chat
+  profile bar lost the Role/Tenure fields (kept Workspace). Header subtext no
+  longer says "… uploaded documents". System prompt now asks for classification
+  when an answer depends on it. Fixed the "New Conversation New" button label.
+
+### Wage bug fix — undated lookups quoted a future rate (`f825fde`)
+
+- Root cause: undated "what should I be making?" lookups defaulted to the
+  **latest** dated wage row. After the July-2025 MOA materialized future-dated
+  raises (e.g. Pueblo clerks nonfood/GM @520h: FSAR 2025 = 17.75 → OE+52 2026 =
+  18.00 → OE+104 2027 = 18.25), that meant KARL quoted members the **2027**
+  rate. Fix: `_default_effective_date` caps undated lookups at the row effective
+  **today**, never a future raise — in both `lookup_wage` and
+  `api._select_effective_wage_date`. Surfaced only now because it broke the
+  **main-only** `main-escalation-gate` (via `test_topic_routing`), which never
+  ran while `main` was parked. Two stale tests that hardcoded "FSAR = current"
+  were made deterministic (pin the FSAR date; assert never-future invariant).
+- **Open assumption:** trusts the data's effective dates (that OE+52 went live
+  2026-07-04). If the actual MOA schedules that raise later, the dates in the
+  data are wrong and the fix belongs there instead.
+
+### Branch → main + production
+
+- Fast-forwarded `main` to the branch (they were held separate; now identical),
+  then deployed the droplet through the two migrations. **Verified live:**
+  member walk-in closed (`/u/…` 401 gate), tenant query 401 without a session,
+  sign-in + console gates working, undated wage lookup returns today's rate not
+  2027. Zero-downtime deploy pattern (build while old container serves, then
+  `up -d`). Full backend suite **166 passed / 25 skipped / 0 failed**;
+  `moa_deep_suite` 19/19.
+
+### Still open
+
+- **Admin console design overhaul** + a fancy onboarding-style QR business card
+  — handed off to a fresh session: see `docs/HANDOFF_ADMIN_CONSOLE_OVERHAUL.md`.
+- Register the three pilot QR codes in prod (create in the union-admin console
+  at `/u/ufcw-local-7/admin`, or run the seed script).
+- Confirm the OE+52 raise date against the actual MOA.
+
 ## Unreleased - Org Landing Page & Legal Contact Cleanup (July 18, 2026)
 
 ### Overview
