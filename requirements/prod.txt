@@ -40,6 +40,10 @@ pgvector==0.3.6
 google-genai>=1.0.0
 openai==1.58.1
 
+# QR code generation for member/steward invite links (printable card + PNG/SVG
+# download endpoints in backend/platform/routers/admin.py). Pure-python, no deps.
+segno==1.6.6
+
 # Data / HTTP utilities
 python-dotenv==1.0.1
 httpx==0.28.1
