@@ -1028,38 +1028,38 @@ function dashboardHeroCard(summary, payload, trends) {
             ? 'bg-amber-100 text-amber-900'
             : 'bg-rose-100 text-rose-900';
     return `
-        <div class="rounded-[32px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(14,116,144,0.16),_transparent_42%),linear-gradient(135deg,#0f172a_0%,#0f3b52_42%,#155e75_100%)] p-5 text-white shadow-lg shadow-slate-300/40 md:col-span-2 xl:col-span-2">
+        <div class="rounded-[32px] border border-slate-300 bg-gradient-to-br from-white via-white to-sky-50 p-5 text-slate-900 shadow-sm shadow-slate-300/60 md:col-span-2 xl:col-span-2">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/70">Operations Pulse</div>
-                    <div class="mt-2 text-3xl font-bold tracking-tight">${payload.scope_label}</div>
-                    <div class="mt-2 max-w-2xl text-sm leading-6 text-white/80">Requests, member activity, review pressure, and app friction are all summarized here for a quick read during demos or live operations.</div>
+                    <div class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Operations Pulse</div>
+                    <div class="mt-2 text-3xl font-bold tracking-tight text-slate-950">${payload.scope_label}</div>
+                    <div class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Requests, member activity, review pressure, and app friction are all summarized here for a quick read during demos or live operations.</div>
                 </div>
                 <div class="rounded-full px-4 py-2 text-sm font-semibold ${healthClass}">${healthLabel}</div>
             </div>
             <div class="mt-5 grid gap-3 sm:grid-cols-3">
-                <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3">
-                    <div class="text-[11px] uppercase tracking-[0.18em] text-white/65">Requests today</div>
-                    <div class="mt-2 text-2xl font-bold">${summary.requests_last_24h || 0}</div>
-                    <div class="mt-1 text-xs text-white/70">${summary.tokens_last_24h || 0} tokens</div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                    <div class="text-[11px] uppercase tracking-[0.18em] text-slate-500">Requests today</div>
+                    <div class="mt-2 text-2xl font-bold text-slate-900">${summary.requests_last_24h || 0}</div>
+                    <div class="mt-1 text-xs text-slate-500">${summary.tokens_last_24h || 0} tokens</div>
                 </div>
-                <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3">
-                    <div class="text-[11px] uppercase tracking-[0.18em] text-white/65">People this week</div>
-                    <div class="mt-2 text-2xl font-bold">${summary.active_users_7d || 0}</div>
-                    <div class="mt-1 text-xs text-white/70">${summary.sign_ins_7d || 0} sign-ins • ${summary.member_workspace_loads_7d || 0} workspace loads</div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                    <div class="text-[11px] uppercase tracking-[0.18em] text-slate-500">People this week</div>
+                    <div class="mt-2 text-2xl font-bold text-slate-900">${summary.active_users_7d || 0}</div>
+                    <div class="mt-1 text-xs text-slate-500">${summary.sign_ins_7d || 0} sign-ins • ${summary.member_workspace_loads_7d || 0} workspace loads</div>
                 </div>
-                <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3">
-                    <div class="text-[11px] uppercase tracking-[0.18em] text-white/65">Attention needed</div>
-                    <div class="mt-2 text-2xl font-bold">${issueTotal}</div>
-                    <div class="mt-1 text-xs text-white/70">${summary.pending_alerts || 0} alerts • ${summary.query_failures_7d || 0} failures • ${summary.open_review_items || 0} review items</div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                    <div class="text-[11px] uppercase tracking-[0.18em] text-slate-500">Attention needed</div>
+                    <div class="mt-2 text-2xl font-bold text-slate-900">${issueTotal}</div>
+                    <div class="mt-1 text-xs text-slate-500">${summary.pending_alerts || 0} alerts • ${summary.query_failures_7d || 0} failures • ${summary.open_review_items || 0} review items</div>
                 </div>
             </div>
-            <div class="mt-5 rounded-[24px] border border-white/15 bg-black/10 px-4 py-3">
+            <div class="mt-5 rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-3">
                 <div class="mb-2 flex items-center justify-between gap-3">
-                    <div class="text-sm font-semibold text-white">Seven-day service rhythm</div>
-                    <div class="text-xs text-white/70">${(trends.labels || []).join(' • ')}</div>
+                    <div class="text-sm font-semibold text-slate-900">Seven-day service rhythm</div>
+                    <div class="text-xs text-slate-500">${(trends.labels || []).join(' • ')}</div>
                 </div>
-                ${sparklineSvg(trends.requests, '#f8fafc')}
+                ${sparklineSvg(trends.requests, '#0d5c80')}
             </div>
         </div>
     `;
