@@ -2722,8 +2722,6 @@ def invite_printable_card(
     union_name_esc = _html.escape(union_name)
     code_esc = _html.escape(invite.code)
     join_url_esc = _html.escape(join_url)
-    label = _html.escape(invite.label or "")
-    label_row = f'<p class="placement">Placement · {label}</p>' if label else ""
 
     page = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
@@ -2817,8 +2815,13 @@ def invite_printable_card(
     font-family: ui-monospace, Consolas, monospace; font-size: 8px;
     color: var(--ink-300); word-break: break-all; max-width: 2.7in; margin: 0 0 9px;
   }}
-  .trust {{ font-size: 7.5px; line-height: 1.4; color: var(--ink-400); max-width: 2.6in; margin: 0 0 4px; }}
-  .placement {{ font-size: 7px; color: var(--ink-400); margin: 4px 0 0; }}
+  /* Two-half KARL shield mark as a faint background watermark (exact geometry
+     + DS shield colors from the member app's onboarding avatar). */
+  .shield-bg {{
+    position: absolute; top: 50%; left: 50%; width: 1.7in; height: 1.7in;
+    transform: translate(-50%, -50%); opacity: .16; z-index: 0; pointer-events: none;
+  }}
+  .back > *:not(.shield-bg) {{ position: relative; z-index: 1; }}
   .brand {{
     position: absolute; bottom: 8px; left: 0; right: 0; text-align: center;
     font-family: ui-monospace, Consolas, monospace; font-size: 6.5px;
@@ -2852,12 +2855,14 @@ def invite_printable_card(
     </div>
     <p class="stage-note">Back · details</p>
     <div class="card back">
+      <svg class="shield-bg" viewBox="0 0 200 200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 190C50 190,20 150,20 40Q60 40,100 30Z" fill="#4A7A9F"/>
+        <path d="M100 190C150 190,180 150,180 40Q140 40,100 30Z" fill="#EECF6D"/>
+      </svg>
       <p class="union">{union_name_esc}</p>
       <p class="audience">{audience_line}</p>
       <span class="code-chip">{code_esc}</span>
       <p class="url">{join_url_esc}</p>
-      <p class="trust">Run by your union — never your employer. No sign-up: one scan opens an anonymous session.</p>
-      {label_row}
       <p class="brand">Powered by Karl · Karl Stewardship</p>
     </div>
   </div>
