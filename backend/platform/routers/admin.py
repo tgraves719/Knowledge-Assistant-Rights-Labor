@@ -2835,12 +2835,17 @@ def invite_printable_card(
   }}
 
   @media print {{
-    @page {{ margin: 0.5in; }}
+    /* Each face prints as its own exact 3.5x2in page (no Letter whitespace),
+       square-cornered so the design bleeds to the trim edge. */
+    @page {{ size: 3.5in 2in; margin: 0; }}
     body {{ background: #fff; }}
     .toolbar, .stage-note {{ display: none; }}
     .stage {{ display: block; min-height: auto; padding: 0; gap: 0; }}
-    .card {{ zoom: 1; box-shadow: none; page-break-inside: avoid; break-inside: avoid; margin: 0 auto; }}
-    .card.front {{ margin-bottom: 0.35in; page-break-after: always; break-after: page; }}
+    .card {{
+      zoom: 1; box-shadow: none; border-radius: 0;
+      width: 3.5in; height: 2in; page-break-inside: avoid; break-inside: avoid;
+    }}
+    .card.front {{ page-break-after: always; break-after: page; }}
   }}
 </style></head>
 <body data-card-code="{code_esc}">
@@ -2883,55 +2888,49 @@ def invite_printable_card(
   </div>
 </body></html>"""
 
-    # Client-side PNG export of each face for print shops (high-DPI raster of
-    # the card via an SVG foreignObject; fully self-contained, no CDN). Kept as
-    # a plain string so its JS braces don't collide with the f-string above.
+    # Client-side high-DPI PNG export of each face for print shops. Uses
+    # html2canvas (vendored same-origin, no CDN), which paints the real DOM to
+    # a canvas — reliable across browsers (unlike SVG-foreignObject, which
+    # taints the canvas in Firefox/stricter Chrome) and renders the actual
+    # Playfair font. Kept as a plain string so its JS braces don't collide with
+    # the f-string above.
     download_script = """
+<script src="/static/modular/vendor/html2canvas.min.js"></script>
 <script>
 (function () {
+  function fail() {
+    window.alert('Could not export a PNG. Use \\u201CPrint / Save PDF\\u201D instead.');
+  }
   window.downloadFace = function (which) {
     var card = document.querySelector('.card.' + which);
-    if (!card) { return; }
-    var W = 3.5 * 96, H = 2 * 96, scale = 4;
-    var css = '';
-    var styles = document.getElementsByTagName('style');
-    for (var i = 0; i < styles.length; i++) { css += styles[i].textContent; }
+    if (!card || typeof html2canvas === 'undefined') { fail(); return; }
+    var W = 3.5 * 96, H = 2 * 96;
+    var holder = document.createElement('div');
+    holder.style.cssText = 'position:fixed;left:-99999px;top:0;';
     var clone = card.cloneNode(true);
     clone.style.zoom = '1';
     clone.style.margin = '0';
-    clone.style.boxShadow = 'none';
-    var xml = new XMLSerializer().serializeToString(clone);
-    var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" + W + "' height='" + H + "'>"
-      + "<foreignObject width='100%' height='100%'>"
-      + "<div xmlns='http://www.w3.org/1999/xhtml'><style>" + css + "</style>" + xml + "</div>"
-      + "</foreignObject></svg>";
-    function fail() {
-      window.alert('Could not export a PNG in this browser. Use \\u201CPrint / Save PDF\\u201D instead.');
-    }
-    var img = new Image();
-    img.onload = function () {
-      var canvas = document.createElement('canvas');
-      canvas.width = Math.round(W * scale);
-      canvas.height = Math.round(H * scale);
-      var ctx = canvas.getContext('2d');
-      ctx.setTransform(scale, 0, 0, scale, 0, 0);
-      ctx.drawImage(img, 0, 0);
-      try {
-        canvas.toBlob(function (blob) {
-          if (!blob) { fail(); return; }
-          var code = document.body.getAttribute('data-card-code') || 'card';
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = 'karl-card-' + code + '-' + which + '.png';
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
-        }, 'image/png');
-      } catch (e) { fail(); }
-    };
-    img.onerror = fail;
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    holder.appendChild(clone);
+    document.body.appendChild(holder);
+    var done = false;
+    function finish(ok) { if (done) { return; } done = true; holder.remove(); if (!ok) { fail(); } }
+    var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    ready.then(function () {
+      return html2canvas(clone, { scale: 4, backgroundColor: null, width: W, height: H, logging: false });
+    }).then(function (canvas) {
+      canvas.toBlob(function (blob) {
+        if (!blob) { finish(false); return; }
+        var code = document.body.getAttribute('data-card-code') || 'card';
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'karl-card-' + code + '-' + which + '.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
+        finish(true);
+      }, 'image/png');
+    }).catch(function () { finish(false); });
   };
 })();
 </script>
