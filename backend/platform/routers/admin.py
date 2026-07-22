@@ -2705,43 +2705,161 @@ def invite_printable_card(
 
     is_steward = str(invite.audience or "").strip().lower() == InviteAudience.STEWARD.value
     audience_line = "Steward access — all contracts" if is_steward else "Member access"
+
+    # The printable card echoes the member onboarding scene (see join.html):
+    # dark union-blue gradient, soft gold/blue glow, a Playfair-italic hero
+    # line, and gold reserved for the single accent. Two faces at standard
+    # 3.5in × 2in business-card proportions — a QR-forward front and a
+    # details back — laid out for clean printing.
+    hero_line = "Every contract, one scan." if is_steward else "Know your contract."
+    front_sub = (
+        "Steward access to every contract in your union — answered with citations."
+        if is_steward
+        else "Answers about wages, scheduling, seniority and more — cited to the contract."
+    )
+    cta_line = "Scan for steward access" if is_steward else "Scan to join Karl"
+
+    union_name_esc = _html.escape(union_name)
+    code_esc = _html.escape(invite.code)
+    join_url_esc = _html.escape(join_url)
     label = _html.escape(invite.label or "")
-    accent = "#0D3B54"
-    heading = "Scan to open Karl" if not is_steward else "Steward card — scan to open Karl"
+    label_row = f'<p class="placement">Placement · {label}</p>' if label else ""
 
     page = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>QR card — {_html.escape(invite.code)}</title>
+<title>Karl QR card — {code_esc}</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
 <style>
-  :root {{ color-scheme: light; }}
+  :root {{
+    color-scheme: light;
+    --blue-dark: #0D3B54; --blue-mid: #14506E; --blue-light: #1B6B8A;
+    --gold: #D4A029; --gold-light: #E8B84A;
+    --ink-100: #f1f5f9; --ink-300: #cbd5e1; --ink-400: #94a3b8;
+  }}
   * {{ box-sizing: border-box; }}
-  body {{ font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; background: #eef2f6; color: #0f172a; }}
-  .sheet {{ display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }}
-  .card {{ width: 3.5in; background: #fff; border: 1px solid #dbe3ea; border-radius: 16px; padding: 22px 22px 18px; text-align: center; box-shadow: 0 10px 30px -18px rgba(13,59,84,.5); }}
-  .eyebrow {{ font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: {accent}; font-weight: 700; margin: 0 0 4px; }}
-  .union {{ font-size: 17px; font-weight: 700; margin: 0 0 2px; }}
-  .audience {{ font-size: 11px; font-weight: 600; color: #475569; margin: 0 0 14px; }}
-  .qr {{ width: 2.1in; height: 2.1in; margin: 0 auto 12px; }}
-  .qr img {{ width: 100%; height: 100%; image-rendering: pixelated; }}
-  .heading {{ font-size: 14px; font-weight: 600; margin: 0 0 6px; }}
-  .code {{ font-family: ui-monospace, Consolas, monospace; font-size: 15px; font-weight: 700; letter-spacing: .06em; }}
-  .url {{ font-size: 10.5px; color: #64748b; word-break: break-all; margin-top: 4px; }}
-  .label {{ font-size: 10px; color: #94a3b8; margin-top: 8px; }}
-  .print-btn {{ position: fixed; top: 16px; right: 16px; background: {accent}; color: #fff; border: none; border-radius: 999px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }}
-  @media print {{ body {{ background: #fff; }} .card {{ border: none; box-shadow: none; }} .print-btn {{ display: none; }} .sheet {{ min-height: auto; }} }}
+  body {{
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    margin: 0; background: #0a1922; color: var(--ink-100);
+  }}
+  .toolbar {{ position: fixed; top: 16px; right: 16px; z-index: 10; }}
+  .print-btn {{
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+    color: #1a1305; border: none; border-radius: 999px;
+    padding: 11px 20px; font-size: 13px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 8px 26px -12px rgba(212,160,41,.6);
+  }}
+  .print-btn:hover {{ filter: brightness(1.06); }}
+  .stage {{
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 22px; padding: 44px 16px 64px;
+  }}
+  .stage-note {{
+    font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    color: rgba(203,213,225,.55); text-align: center;
+  }}
+  .card {{
+    position: relative; width: 3.5in; height: 2in; border-radius: 14px;
+    overflow: hidden; color: var(--ink-100);
+    background:
+      radial-gradient(circle at 20% 16%, rgba(212,160,41,.20), transparent 40%),
+      radial-gradient(circle at 88% 4%, rgba(27,107,138,.42), transparent 46%),
+      linear-gradient(135deg, #081420 0%, var(--blue-dark) 46%, var(--blue-mid) 100%);
+    box-shadow: 0 18px 44px -22px rgba(0,0,0,.75);
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }}
+  /* Larger, legible preview on screen; true 3.5x2in when printed. */
+  @media screen {{ .card {{ zoom: 1.7; }} }}
+  .card::after {{
+    content: ""; position: absolute; left: 16px; right: 16px; bottom: 12px;
+    height: 1px; background: linear-gradient(90deg, transparent, rgba(212,160,41,.55), transparent);
+  }}
+
+  /* --- Front: QR-forward --- */
+  .front {{ display: flex; align-items: center; gap: 15px; padding: 15px 17px; }}
+  .qr-chip {{
+    flex: 0 0 auto; width: 1.46in; height: 1.46in; background: #fff;
+    border-radius: 11px; padding: 7px; box-shadow: 0 4px 14px -6px rgba(0,0,0,.5);
+  }}
+  .qr-chip img {{ width: 100%; height: 100%; display: block; image-rendering: pixelated; }}
+  .front-body {{ flex: 1 1 auto; min-width: 0; }}
+  .eyebrow {{
+    font-size: 7px; letter-spacing: .19em; text-transform: uppercase;
+    color: var(--gold-light); font-weight: 700; margin: 0 0 5px;
+  }}
+  .hero {{
+    font-family: "Playfair Display", Georgia, serif; font-style: italic;
+    font-weight: 600; font-size: 20px; line-height: 1.06; margin: 0 0 6px; color: #fff;
+  }}
+  .front-sub {{ font-size: 8px; line-height: 1.42; color: var(--ink-300); margin: 0 0 9px; }}
+  .cta {{
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 8.5px; font-weight: 700; letter-spacing: .02em; color: var(--gold-light);
+  }}
+  .cta svg {{ width: 11px; height: 11px; stroke: var(--gold-light); }}
+
+  /* --- Back: details --- */
+  .back {{
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center; padding: 16px 20px;
+  }}
+  .back .union {{ font-size: 13.5px; font-weight: 700; color: #fff; margin: 0 0 3px; }}
+  .back .audience {{
+    font-size: 7.5px; letter-spacing: .17em; text-transform: uppercase;
+    color: var(--gold-light); font-weight: 700; margin: 0 0 12px;
+  }}
+  .code-chip {{
+    display: inline-block; font-family: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    font-size: 14px; font-weight: 700; letter-spacing: .08em; color: var(--gold-light);
+    border: 1px solid rgba(232,184,74,.5); border-radius: 8px; padding: 5px 13px; margin: 0 0 8px;
+  }}
+  .url {{
+    font-family: ui-monospace, Consolas, monospace; font-size: 8px;
+    color: var(--ink-300); word-break: break-all; max-width: 2.7in; margin: 0 0 9px;
+  }}
+  .trust {{ font-size: 7.5px; line-height: 1.4; color: var(--ink-400); max-width: 2.6in; margin: 0 0 4px; }}
+  .placement {{ font-size: 7px; color: var(--ink-400); margin: 4px 0 0; }}
+  .brand {{
+    position: absolute; bottom: 8px; left: 0; right: 0; text-align: center;
+    font-family: ui-monospace, Consolas, monospace; font-size: 6.5px;
+    letter-spacing: .2em; text-transform: uppercase; color: rgba(203,213,225,.5);
+  }}
+
+  @media print {{
+    @page {{ margin: 0.5in; }}
+    body {{ background: #fff; }}
+    .toolbar, .stage-note {{ display: none; }}
+    .stage {{ display: block; min-height: auto; padding: 0; gap: 0; }}
+    .card {{ zoom: 1; box-shadow: none; page-break-inside: avoid; break-inside: avoid; margin: 0 auto; }}
+    .card.front {{ margin-bottom: 0.35in; page-break-after: always; break-after: page; }}
+  }}
 </style></head>
 <body>
-  <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
-  <div class="sheet"><div class="card">
-    <p class="eyebrow">Powered by Karl</p>
-    <p class="union">{_html.escape(union_name)}</p>
-    <p class="audience">{audience_line}</p>
-    <div class="qr"><img src="{png_data_uri}" alt="QR code for join code {_html.escape(invite.code)}"></div>
-    <p class="heading">{heading}</p>
-    <p class="code">{_html.escape(invite.code)}</p>
-    <p class="url">{_html.escape(join_url)}</p>
-    {f'<p class="label">{label}</p>' if label else ''}
-  </div></div>
+  <div class="toolbar"><button class="print-btn" onclick="window.print()">Print / Save PDF</button></div>
+  <div class="stage">
+    <p class="stage-note">Front · scan side</p>
+    <div class="card front">
+      <div class="qr-chip"><img src="{png_data_uri}" alt="QR code for join code {code_esc}"></div>
+      <div class="front-body">
+        <p class="eyebrow">{union_name_esc} · Karl</p>
+        <h1 class="hero">{hero_line}</h1>
+        <p class="front-sub">{front_sub}</p>
+        <span class="cta">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg>
+          {cta_line}
+        </span>
+      </div>
+    </div>
+    <p class="stage-note">Back · details</p>
+    <div class="card back">
+      <p class="union">{union_name_esc}</p>
+      <p class="audience">{audience_line}</p>
+      <span class="code-chip">{code_esc}</span>
+      <p class="url">{join_url_esc}</p>
+      <p class="trust">Run by your union — never your employer. No sign-up: one scan opens an anonymous session.</p>
+      {label_row}
+      <p class="brand">Powered by Karl · Karl Stewardship</p>
+    </div>
+  </div>
 </body></html>"""
     return HTMLResponse(content=page)

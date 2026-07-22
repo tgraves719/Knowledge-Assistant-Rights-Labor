@@ -610,6 +610,7 @@ function unionCard(union) {
                     <div class="mono mt-1 text-xs text-slate-500">public address=${union.slug}</div>
                 </div>
                 <div class="flex flex-wrap gap-2">
+                    ${routeContext.mode === 'superadmin' && union.slug ? `<a href="/u/${encodeURIComponent(union.slug)}/admin" target="_blank" rel="noopener" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100">Open admin console</a>` : ''}
                     <button class="select-union rounded-full px-4 py-2 text-sm font-semibold ${state.selectedUnion?.id === union.id ? 'bg-slate-900 text-white' : 'border border-slate-300 bg-white text-slate-900'}" data-union-id="${union.id}" data-union-name="${union.name}" data-union-slug="${union.slug}">
                         ${buttonLabel}
                     </button>
