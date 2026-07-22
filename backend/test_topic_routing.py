@@ -313,11 +313,28 @@ def _test_query_embedded_hours_drive_wage_lookup_step() -> None:
     assert str(wage_info.get("step") or "").strip().lower() == "after 520 hours", (
         f"Expected 'After 520 hours' step, got: {wage_info.get('step')}"
     )
-    assert float(wage_info.get("rate") or 0.0) == 17.75, (
-        f"Expected 17.75 rate for 520-hour step, got: {wage_info.get('rate')}"
+    # An undated query resolves to the rate in effect *today*, which shifts as the
+    # MOA's scheduled raises take effect (FSAR 2025-07-05 -> OE+52 2026-07-04 ->
+    # OE+104 2027-07-03). To assert the wage math deterministically, pin the date
+    # to the FSAR schedule and check that exact dated row is selected.
+    fsar = retriever.lookup_wage(
+        classification=intent.classification,
+        hours_worked=520,
+        contract_id=contract_id,
+        effective_date="2025-07-05",
     )
-    assert str(wage_info.get("selected_schedule_label") or "").strip().upper() == "FSAR", (
-        f"Expected FSAR-selected wage step, got: {wage_info.get('selected_schedule_label')}"
+    assert float(fsar.get("rate") or 0.0) == 17.75, (
+        f"Expected 17.75 FSAR rate for 520-hour step, got: {fsar.get('rate')}"
+    )
+    assert str(fsar.get("selected_schedule_label") or "").strip().upper() == "FSAR", (
+        f"Expected FSAR-selected wage step, got: {fsar.get('selected_schedule_label')}"
+    )
+    # And an undated lookup must never return a future scheduled raise.
+    import datetime as _dt
+    today = _dt.date.today().isoformat()
+    undated = wage_info.get("effective_date")
+    assert str(undated or "") <= today, (
+        f"Undated wage lookup returned a future effective date {undated} (today {today})"
     )
 
 

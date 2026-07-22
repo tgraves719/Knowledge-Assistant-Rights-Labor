@@ -214,12 +214,29 @@ def test_courtesy_clerk_fsar_rate_surfaces_in_answer() -> None:
     response = _run_query(request)
     wage_info = dict(response.wage_info or {})
     assert wage_info, "Expected deterministic wage info for courtesy clerk."
-    assert float(wage_info.get("rate") or 0.0) == 17.25, "Expected Courtesy Clerk current payable rate to use the FSAR MOA column."
-    assert str(wage_info.get("selected_schedule_label") or "") == "FSAR", (
-        "Expected wage info to preserve the selected MOA schedule label."
+
+    # "Right now" must resolve to the MOA-amended rate in effect TODAY, not the
+    # pre-MOA base and not a future scheduled raise. The MOA lays out dated steps
+    # (FSAR 2025-07-05 -> OE+52 2026-07-04 -> OE+104 2027-07-03), so the exact
+    # rate advances over time; assert the invariants that must always hold rather
+    # than a single value that goes stale as raises take effect.
+    import datetime as _dt
+    import re as _re
+
+    label = str(wage_info.get("selected_schedule_label") or "")
+    assert _re.match(r"^(FSAR|OE\+\d+)$", label), (
+        f"Expected a MOA schedule label (FSAR/OE+N), got: {label!r}"
     )
-    assert "$17.25" in response.answer, "Expected user-facing answer to reflect the FSAR rate."
-    assert "FSAR" in response.answer, "Expected user-facing answer to disclose the selected MOA schedule label."
+    assert wage_info.get("amendments_applied"), "Expected the MOA amendment to be applied to the rate."
+    effective = str(wage_info.get("effective_date") or "")
+    assert effective <= _dt.date.today().isoformat(), (
+        f"'Right now' returned a future scheduled rate (effective {effective})."
+    )
+    rate = float(wage_info.get("rate") or 0.0)
+    assert rate > 0.0, "Expected a positive resolved rate."
+    # The user-facing answer must disclose the resolved rate and MOA schedule.
+    assert f"${rate:.2f}" in response.answer, "Expected the answer to reflect the resolved rate."
+    assert label in response.answer, "Expected the answer to disclose the selected MOA schedule label."
 
 
 def test_wage_progression_followup_stays_deterministic() -> None:

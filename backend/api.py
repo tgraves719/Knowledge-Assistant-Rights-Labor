@@ -544,14 +544,15 @@ def _select_effective_wage_date(requested_date: Optional[str], available_dates: 
     normalized = sorted({str(date or "").strip() for date in (available_dates or []) if str(date or "").strip()})
     if not normalized:
         return None
-    if requested_date:
-        exact = str(requested_date).strip()
-        if exact in normalized:
-            return exact
-        prior_or_equal = [date for date in normalized if date <= exact]
-        if prior_or_equal:
-            return prior_or_equal[-1]
-    return normalized[-1]
+    # No explicit date → the rate in effect today, not the furthest-future
+    # scheduled raise (contracts now carry MOA-dated future rows).
+    reference = str(requested_date or "").strip() or datetime.date.today().isoformat()
+    if reference in normalized:
+        return reference
+    prior_or_equal = [date for date in normalized if date <= reference]
+    if prior_or_equal:
+        return prior_or_equal[-1]
+    return normalized[0] if not requested_date else normalized[-1]
 
 
 def _load_wage_progression_rows(

@@ -16,6 +16,26 @@ from backend.config import CONTRACT_ID, CONTRACT_MD_FILE, WAGES_DIR
 EFFECTIVE_DATES = ["2022-01-23", "2023-01-22", "2024-01-21"]
 _WAGE_DEFAULT_EFFECTIVE_DATES = EFFECTIVE_DATES.copy()
 
+_ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _default_effective_date(effective_dates: list[str], *, as_of: Optional[str] = None) -> Optional[str]:
+    """The wage date an undated query resolves to: the currently-effective one.
+
+    When a member asks "what should I be making?" with no date, KARL quotes the
+    rate in effect *today*, not the furthest-future scheduled raise. Once a
+    contract carries MOA-dated future rows (e.g. raises through 2027), the old
+    "latest date wins" default would quote a rate that hasn't started yet. So we
+    take the latest effective date that is on or before `as_of` (today by
+    default); if every date is still in the future, fall back to the earliest.
+    """
+    normalized = sorted({str(d).strip() for d in (effective_dates or []) if _ISO_DATE.match(str(d or "").strip())})
+    if not normalized:
+        return effective_dates[-1] if effective_dates else None
+    today = str(as_of or "").strip() or datetime.now().date().isoformat()
+    past_or_present = [d for d in normalized if d <= today]
+    return past_or_present[-1] if past_or_present else normalized[0]
+
 _CLASSIFICATION_HINTS = (
     "classification", "clerk", "manager", "cutter", "wrapper", "deli", "meat",
     "baker", "lead", "shopper", "assistant", "head", "starbucks", "courtesy",
@@ -1270,7 +1290,8 @@ def lookup_wage(
     """Deterministically resolve wage step/rate by classification and tenure."""
     effective_dates = wages_data.get("effective_dates") or _WAGE_DEFAULT_EFFECTIVE_DATES
     if effective_date is None:
-        effective_date = effective_dates[-1]
+        # Undated query → the rate in effect today, never a future scheduled raise.
+        effective_date = _default_effective_date(effective_dates)
 
     classes = wages_data.get("classifications", {}) or {}
     norm_class = _resolve_classification_key(wages_data, classification)
