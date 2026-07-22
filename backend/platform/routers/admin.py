@@ -2828,7 +2828,7 @@ def invite_printable_card(
     font-size: 7.5px; letter-spacing: .18em; text-transform: uppercase;
     color: var(--gold-light); font-weight: 700; margin: 0;
   }}
-  .back-shield {{ width: 1.3in; height: 1.3in; opacity: .8; filter: drop-shadow(0 5px 12px rgba(0,0,0,.35)); }}
+  .back-shield {{ width: 1.3in; height: 1.3in; opacity: .8; }}
   .brand {{
     font-family: ui-monospace, Consolas, monospace; font-size: 6.5px;
     letter-spacing: .2em; text-transform: uppercase; color: rgba(203,213,225,.6); margin: 0;
