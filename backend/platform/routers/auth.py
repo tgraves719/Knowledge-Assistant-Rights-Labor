@@ -479,10 +479,13 @@ def _resolve_active_invite(db, code: str) -> tuple[InviteCode, Union]:
 def _role_for_invite(invite: InviteCode) -> Role:
     """The role a scanner receives from a code, decided server-side by audience.
 
-    Steward business cards mint steward sessions; every other code is a member.
-    Role authority lives here on the invite, never in client-supplied fields.
+    Steward (store-scoped) and union-rep (all-contracts) codes both mint
+    steward_admin sessions — they only differ in contract scope, which the
+    invite enforces separately. Member codes mint plain users. Role authority
+    lives here on the invite, never in client-supplied fields.
     """
-    if str(invite.audience or "").strip().lower() == InviteAudience.STEWARD.value:
+    audience = str(invite.audience or "").strip().lower()
+    if audience in (InviteAudience.STEWARD.value, InviteAudience.UNION_REP.value):
         return Role.STEWARD_ADMIN
     return Role.USER
 
@@ -510,6 +513,7 @@ def join_code_info(code: str, request: Request):
         "audience": invite.audience,
         "label": invite.label,
         "contract_id": invite.contract_id,
+        "contract_ids": list(invite.contract_ids or []),
         "union": {"slug": union.slug, "name": union.name},
     }
 
@@ -631,7 +635,7 @@ def join_session(payload: SessionJoinRequest, request: Request, response: Respon
             "union_id": union.id,
             "union_slug": union.slug,
         },
-        "invite": {"code": invite.code, "label": invite.label, "audience": invite.audience, "contract_id": invite.contract_id},
+        "invite": {"code": invite.code, "label": invite.label, "audience": invite.audience, "contract_id": invite.contract_id, "contract_ids": list(invite.contract_ids or [])},
     }
 
 
@@ -656,14 +660,18 @@ def join_session_guest(payload: SessionGuestJoinRequest, request: Request, respo
     container = get_container(request)
     invite, union = _resolve_active_invite(db, payload.code)
     granted_role = _role_for_invite(invite)
-    is_steward = granted_role == Role.STEWARD_ADMIN
+    audience = str(invite.audience or "").strip().lower()
 
     import uuid as _uuid
 
+    guest_names = {
+        InviteAudience.STEWARD.value: "Union steward",
+        InviteAudience.UNION_REP.value: "Union rep",
+    }
     guest_tag = _uuid.uuid4().hex[:12]
     user = User(
         email=f"guest-{guest_tag}@join.karl.invalid",
-        full_name="Union steward" if is_steward else "Union member",
+        full_name=guest_names.get(audience, "Union member"),
         is_active=True,
     )
     db.add(user)
@@ -717,5 +725,5 @@ def join_session_guest(payload: SessionGuestJoinRequest, request: Request, respo
             "union_id": union.id,
             "union_slug": union.slug,
         },
-        "invite": {"code": invite.code, "label": invite.label, "audience": invite.audience, "contract_id": invite.contract_id},
+        "invite": {"code": invite.code, "label": invite.label, "audience": invite.audience, "contract_id": invite.contract_id, "contract_ids": list(invite.contract_ids or [])},
     }

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-KARL_VERSION = "0.8.110"
+KARL_VERSION = "1.0.0"
 KARL_RELEASE_CHANNEL = "dev"
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]

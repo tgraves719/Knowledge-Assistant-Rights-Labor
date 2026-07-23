@@ -28,34 +28,50 @@ class MemberDataDeletionRequest(BaseModel):
     confirm: bool = False
 
 
-def _pinned_contract_for_session(db, auth) -> str | None:
-    """The contract a member session is locked to, if its invite pinned one.
+def _contract_scope_for_session(db, auth) -> tuple[str | None, list[str] | None]:
+    """The contract scope a member session is locked to by its invite.
 
-    Member codes pin to a single contract for isolation; steward codes (and any
-    unattributed session) have no pin and may browse every contract in the union.
-    Super-admins are never pinned. Returns the pinned contract_id or None.
+    Returns ``(pinned_contract_id, store_allowlist)``:
+    - Tier 1 member codes pin to a single contract → ``(id, None)``;
+    - Tier 2 steward codes scope to their store's contract set → ``(None, [ids])``;
+    - Tier 3 union-rep codes (and any unattributed session) have neither and may
+      browse every contract in the local → ``(None, None)``.
+    Super-admins are never scoped.
     """
     if getattr(auth, "is_super_admin", False):
-        return None
+        return None, None
     session_id = getattr(auth, "session_id", None)
     if not session_id:
-        return None
+        return None, None
     session = db.get(AuthSession, session_id)
     invite_id = getattr(session, "invite_code_id", None) if session is not None else None
     if not invite_id:
-        return None
+        return None, None
     invite = db.get(InviteCode, invite_id)
-    return (getattr(invite, "contract_id", None) or "").strip() or None
+    if invite is None:
+        return None, None
+    pinned = (getattr(invite, "contract_id", None) or "").strip() or None
+    allowlist = [str(c).strip() for c in (getattr(invite, "contract_ids", None) or []) if str(c).strip()] or None
+    return pinned, allowlist
+
+
+def _pinned_contract_for_session(db, auth) -> str | None:
+    """Single-contract pin for a session, if its invite pinned one (Tier 1)."""
+    pinned, _ = _contract_scope_for_session(db, auth)
+    return pinned
 
 
 def _enforce_contract_pin(db, auth, contract_id: str) -> None:
-    """Reject a request for a contract outside the session's pin.
+    """Reject a request for a contract outside the session's scope.
 
-    404 (not 403) so a pinned member cannot even confirm a sibling contract
-    exists — it reads identically to an unknown contract.
+    404 (not 403) so a scoped member/steward cannot even confirm a contract
+    outside their scope exists — it reads identically to an unknown contract.
     """
-    pinned = _pinned_contract_for_session(db, auth)
-    if pinned and str(contract_id or "").strip() != pinned:
+    pinned, allowlist = _contract_scope_for_session(db, auth)
+    cid = str(contract_id or "").strip()
+    if pinned and cid != pinned:
+        raise HTTPException(status_code=404, detail="No readable documents for this contract.")
+    if allowlist and cid not in allowlist:
         raise HTTPException(status_code=404, detail="No readable documents for this contract.")
 
 
@@ -161,11 +177,13 @@ def list_member_contracts(
         and bool((document.metadata_json or {}).get("member_visible", True))
     ]
 
-    pinned = _pinned_contract_for_session(db, auth)
+    pinned, allowlist = _contract_scope_for_session(db, auth)
 
     seen: dict[str, dict] = {}
     for document in documents:
         if pinned and document.contract_id != pinned:
+            continue
+        if allowlist and document.contract_id not in allowlist:
             continue
         entry = seen.setdefault(
             document.contract_id,
@@ -181,7 +199,11 @@ def list_member_contracts(
         if document.source_pdf_key:
             entry["has_source_pdf"] = True
 
-    return {"pinned_contract_id": pinned, "contracts": sorted(seen.values(), key=lambda item: item["contract_id"])}
+    return {
+        "pinned_contract_id": pinned,
+        "allowed_contract_ids": allowlist,
+        "contracts": sorted(seen.values(), key=lambda item: item["contract_id"]),
+    }
 
 
 @router.get("/contracts/{contract_id}/outline")

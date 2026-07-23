@@ -351,6 +351,7 @@ class TenantRetrievalService:
         limit: int = 5,
         document_id: str | None = None,
         contract_id: str | None = None,
+        contract_ids: list[str] | None = None,
         preferred_article_num: str | None = None,
         preferred_topic_tags: list[str] | None = None,
         member_safe_only: bool = True,
@@ -365,6 +366,11 @@ class TenantRetrievalService:
             # contract_id are excluded too — an unscoped document could be from
             # any book, and guessing is exactly the failure being prevented.
             stmt = stmt.where(Document.contract_id == contract_id)
+        elif contract_ids:
+            # Store-scoped steward: restrict to their store's contract set. Same
+            # hard-scope reasoning — NULL-contract documents are excluded so the
+            # steward never sees outside the allowlist.
+            stmt = stmt.where(Document.contract_id.in_(list(contract_ids)))
         ready_documents = db.scalars(stmt).all()
         ready_document_ids = [
             document.id

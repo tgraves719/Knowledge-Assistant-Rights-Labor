@@ -57,7 +57,7 @@ const EMBED_THEME_OVERRIDES = (() => {
         const SESSION_ID_STORAGE_KEY = 'karl_session_id';
         const SESSION_META_STORAGE_KEY = 'karl_session_meta';
         const ONBOARDING_FLOW_STORAGE_KEY = 'karl_onboarding_flow';
-        const KARL_VERSION_FALLBACK = '0.8.110';
+        const KARL_VERSION_FALLBACK = '1.0.0';
         let isHealthy = false;
         let onboardingFactoriesPromise = null;
         let userProfile = null;
@@ -107,6 +107,7 @@ const EMBED_THEME_OVERRIDES = (() => {
         const routeContext = resolveRouteContext();
         let karlInfo = null;
         let currentKarlDocId = null;
+        let currentKarlFilePath = null;
         let contractHistoryById = {};
         let activeContractHistory = null;
         // Tenant members get the printed book loaded in the pane the moment
@@ -3955,6 +3956,113 @@ const EMBED_THEME_OVERRIDES = (() => {
             return processed;
         }
 
+        // Inline markdown: code, bold, italic, links. Input must already be
+        // HTML-escaped so we only introduce the tags we generate here.
+        function _renderKarlInline(escaped) {
+            let out = escaped;
+            out = out.replace(/`([^`]+)`/g, '<code class="rounded bg-slate-100 px-1 py-0.5 text-[0.85em] text-slate-800">$1</code>');
+            out = out.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>');
+            out = out.replace(/(^|[^*])\*([^*\s][^*]*?)\*/g, '$1<em>$2</em>');
+            out = out.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
+                '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
+            return out;
+        }
+
+        // Fuller markdown renderer used by the About KARL explorer: headings,
+        // fenced code, lists, blockquotes, tables, rules and inline formatting.
+        function renderKarlMarkdown(text) {
+            const lines = String(text || '').replace(/\r\n/g, '\n').split('\n');
+            const html = [];
+            let listType = null; // 'ul' | 'ol'
+
+            const closeList = () => {
+                if (listType) { html.push(`</${listType}>`); listType = null; }
+            };
+
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+
+                // Fenced code block
+                const fence = line.match(/^```(\w*)\s*$/);
+                if (fence) {
+                    closeList();
+                    const codeLines = [];
+                    i++;
+                    while (i < lines.length && !/^```\s*$/.test(lines[i])) {
+                        codeLines.push(lines[i]);
+                        i++;
+                    }
+                    html.push(`<pre class="my-3 overflow-x-auto rounded-lg bg-slate-900 p-3 text-[13px] leading-relaxed text-slate-100"><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+                    continue;
+                }
+
+                // Table
+                const nextLine = lines[i + 1] || '';
+                if (line.includes('|') && _isMarkdownTableSeparator(nextLine)) {
+                    closeList();
+                    const tableLines = [line, nextLine];
+                    i += 2;
+                    while (i < lines.length && lines[i].includes('|')) { tableLines.push(lines[i]); i++; }
+                    i -= 1;
+                    html.push(_renderMarkdownTable(tableLines));
+                    continue;
+                }
+
+                // Blank line
+                if (!line.trim()) { closeList(); continue; }
+
+                // Horizontal rule
+                if (/^\s*([-*_])\1{2,}\s*$/.test(line)) { closeList(); html.push('<hr class="my-4 border-slate-200" />'); continue; }
+
+                // Headings
+                const heading = line.match(/^(#{1,6})\s+(.*)$/);
+                if (heading) {
+                    closeList();
+                    const level = heading[1].length;
+                    const sizes = {
+                        1: 'text-2xl font-bold text-slate-900 mt-5 mb-3',
+                        2: 'text-xl font-semibold text-slate-900 mt-5 mb-2 pb-1 border-b border-slate-200',
+                        3: 'text-lg font-semibold text-slate-800 mt-4 mb-2',
+                        4: 'text-base font-semibold text-slate-800 mt-3 mb-1',
+                        5: 'text-sm font-semibold text-slate-700 mt-3 mb-1',
+                        6: 'text-sm font-semibold text-slate-500 mt-3 mb-1',
+                    };
+                    html.push(`<h${level} class="${sizes[level]}">${_renderKarlInline(escapeHtml(heading[2]))}</h${level}>`);
+                    continue;
+                }
+
+                // Blockquote
+                const quote = line.match(/^>\s?(.*)$/);
+                if (quote) {
+                    closeList();
+                    html.push(`<blockquote class="my-2 border-l-4 border-slate-300 pl-3 text-slate-600 italic">${_renderKarlInline(escapeHtml(quote[1]))}</blockquote>`);
+                    continue;
+                }
+
+                // Ordered list
+                const ol = line.match(/^\s*\d+\.\s+(.*)$/);
+                if (ol) {
+                    if (listType !== 'ol') { closeList(); html.push('<ol class="list-decimal ml-6 my-2 space-y-1">'); listType = 'ol'; }
+                    html.push(`<li>${_renderKarlInline(escapeHtml(ol[1]))}</li>`);
+                    continue;
+                }
+
+                // Unordered list
+                const ul = line.match(/^\s*[-*+]\s+(.*)$/);
+                if (ul) {
+                    if (listType !== 'ul') { closeList(); html.push('<ul class="list-disc ml-6 my-2 space-y-1">'); listType = 'ul'; }
+                    html.push(`<li>${_renderKarlInline(escapeHtml(ul[1]))}</li>`);
+                    continue;
+                }
+
+                // Paragraph
+                closeList();
+                html.push(`<p class="my-2">${_renderKarlInline(escapeHtml(line))}</p>`);
+            }
+            closeList();
+            return html.join('\n');
+        }
+
         function renderPopoverMarkdown(text) {
             const rendered = renderMarkdown(text || '');
             return parseCitations(rendered);
@@ -4037,15 +4145,132 @@ const EMBED_THEME_OVERRIDES = (() => {
                         <h1 class="mt-1 text-2xl font-semibold text-slate-900">${escapeHtml(title)}</h1>
                         ${path ? `<p class="mt-2 text-xs text-slate-500">${escapeHtml(path)}</p>` : ''}
                     </header>
-                    <div class="text-sm leading-relaxed text-slate-700 whitespace-pre-wrap">${renderMarkdown(doc.content || '')}</div>
+                    <div class="text-sm leading-relaxed text-slate-700">${renderKarlMarkdown(doc.content || '')}</div>
                 </article>
             `;
+        }
+
+        // ---- Repository explorer (About KARL) ----
+        let karlRepoFiles = null;
+
+        async function loadKarlTree(force = false) {
+            if (karlRepoFiles && !force) return karlRepoFiles;
+            const res = await fetch(`${API_BASE}/api/karl/tree`);
+            if (!res.ok) throw new Error(`Unable to load repository (${res.status})`);
+            const data = await res.json();
+            karlRepoFiles = Array.isArray(data?.files) ? data.files : [];
+            return karlRepoFiles;
+        }
+
+        function renderKarlFileTree(filter = '') {
+            const container = document.getElementById('karl-file-tree');
+            const countEl = document.getElementById('karl-file-count');
+            if (!container) return;
+            const files = Array.isArray(karlRepoFiles) ? karlRepoFiles : [];
+            const needle = safeText(filter).toLowerCase();
+            const matches = needle
+                ? files.filter((f) => safeText(f?.path).toLowerCase().includes(needle))
+                : files;
+
+            if (countEl) {
+                countEl.textContent = needle
+                    ? `${matches.length} of ${files.length} files`
+                    : `${files.length} files`;
+            }
+
+            if (!matches.length) {
+                container.innerHTML = '<p class="text-slate-500 p-2">No matching files.</p>';
+                return;
+            }
+
+            // Group files by top-level directory for readability.
+            const groups = new Map();
+            matches.forEach((f) => {
+                const path = safeText(f?.path);
+                if (!path) return;
+                const slash = path.indexOf('/');
+                const group = slash === -1 ? '(root)' : path.slice(0, slash);
+                if (!groups.has(group)) groups.set(group, []);
+                groups.get(group).push(f);
+            });
+
+            // When filtering, auto-expand; otherwise collapse groups by default.
+            const expanded = Boolean(needle);
+            const parts = [];
+            [...groups.keys()].sort().forEach((group) => {
+                const groupFiles = groups.get(group);
+                const rows = groupFiles.map((f) => {
+                    const path = safeText(f?.path);
+                    const label = escapeHtml(path.includes('/') ? path.slice(path.lastIndexOf('/') + 1) : path);
+                    const active = currentKarlFilePath === path;
+                    return `<button type="button" onclick="loadKarlFile('${escapeHtml(path).replace(/'/g, "\\'")}')"
+                        class="flex w-full items-center gap-1.5 rounded px-2 py-1 text-left text-[13px] ${active ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}"
+                        title="${escapeHtml(path)}">
+                        <span class="truncate">${label}</span>
+                        ${f?.type === 'markdown' ? '<span class="ml-auto shrink-0 text-[9px] uppercase tracking-wide text-slate-400">md</span>' : ''}
+                    </button>`;
+                }).join('');
+                parts.push(`<details ${expanded ? 'open' : ''} class="mb-1">
+                    <summary class="cursor-pointer select-none rounded px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500 hover:bg-slate-100">${escapeHtml(group)} <span class="text-slate-400">(${groupFiles.length})</span></summary>
+                    <div class="ml-1 border-l border-slate-200 pl-1">${rows}</div>
+                </details>`);
+            });
+            container.innerHTML = parts.join('');
+        }
+
+        function handleKarlFileSearch(value) {
+            renderKarlFileTree(value);
+        }
+
+        async function loadKarlFile(path) {
+            const normalized = safeText(path);
+            if (!normalized) return;
+            currentKarlFilePath = normalized;
+            currentKarlDocId = null;
+            const select = document.getElementById('karl-doc-select');
+            if (select) select.value = '';
+            const viewer = document.getElementById('karl-doc-viewer');
+            if (viewer) viewer.innerHTML = '<p class="text-slate-500">Loading file…</p>';
+            renderKarlFileTree(document.getElementById('karl-file-search')?.value || '');
+            try {
+                const res = await fetch(`${API_BASE}/api/karl/file?path=${encodeURIComponent(normalized)}`);
+                if (!res.ok) throw new Error(`Unable to load file (${res.status})`);
+                const file = await res.json();
+                renderKarlFile(file);
+            } catch (error) {
+                if (viewer) viewer.innerHTML = `<p class="text-red-600">${escapeHtml(error.message || 'Unable to load file.')}</p>`;
+            }
+        }
+
+        function renderKarlFile(file) {
+            const viewer = document.getElementById('karl-doc-viewer');
+            if (!viewer) return;
+            const path = safeText(file?.path);
+            const type = safeText(file?.type);
+            const header = `
+                <header class="mb-4 border-b border-slate-200 pb-3">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Repository File</p>
+                    <h1 class="mt-1 break-all font-mono text-lg font-semibold text-slate-900">${escapeHtml(path)}</h1>
+                    ${file?.truncated ? '<p class="mt-1 text-xs text-amber-600">File truncated for display (over 2&nbsp;MB).</p>' : ''}
+                </header>`;
+
+            let body;
+            if (type === 'binary') {
+                body = `<p class="text-slate-500">Binary file (${escapeHtml(String(file?.size ?? 0))} bytes) — not shown.</p>`;
+            } else if (type === 'markdown') {
+                body = `<div class="text-sm leading-relaxed text-slate-700">${renderKarlMarkdown(file?.content || '')}</div>`;
+            } else {
+                body = `<pre class="overflow-x-auto rounded-lg bg-slate-50 p-3 text-[13px] leading-relaxed text-slate-800"><code>${escapeHtml(file?.content || '')}</code></pre>`;
+            }
+            viewer.innerHTML = `<article class="max-w-none">${header}${body}</article>`;
         }
 
         async function loadKarlDoc(docId) {
             const normalizedId = safeText(docId);
             if (!normalizedId) return;
             currentKarlDocId = normalizedId;
+            currentKarlFilePath = null;
+            renderKarlFileTree(document.getElementById('karl-file-search')?.value || '');
             const viewer = document.getElementById('karl-doc-viewer');
             if (viewer) {
                 viewer.innerHTML = '<p class="text-slate-500">Loading KARL document...</p>';
@@ -4074,8 +4299,17 @@ const EMBED_THEME_OVERRIDES = (() => {
 
         async function openKarlTab(docId = null) {
             setActiveTab('karl');
+            // Load the repository explorer in the background; failure here must
+            // not block the curated document view.
+            loadKarlTree()
+                .then(() => renderKarlFileTree(document.getElementById('karl-file-search')?.value || ''))
+                .catch((error) => {
+                    const tree = document.getElementById('karl-file-tree');
+                    if (tree) tree.innerHTML = `<p class="text-red-600 p-2">${escapeHtml(error.message || 'Unable to load repository.')}</p>`;
+                });
             try {
                 await loadKarlInfo();
+                if (currentKarlFilePath) return;
                 const fallbackDocId = safeText(docId) || currentKarlDocId || safeText(karlInfo?.documents?.[0]?.id);
                 if (fallbackDocId) {
                     await loadKarlDoc(fallbackDocId);
@@ -6517,6 +6751,8 @@ Object.assign(window, {
     saveSettingsProfile,
     openKarlTab,
     handleKarlDocChange,
+    handleKarlFileSearch,
+    loadKarlFile,
     toggleDarkMode,
     toggleDeveloperMode,
     clearSession,

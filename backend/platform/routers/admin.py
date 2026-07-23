@@ -2438,6 +2438,7 @@ def _serialize_invite(invite: InviteCode) -> dict:
         "audience": invite.audience,
         "label": invite.label,
         "contract_id": invite.contract_id,
+        "contract_ids": list(invite.contract_ids or []),
         "status": status,
         "use_count": invite.use_count,
         "max_uses": invite.max_uses,
@@ -2459,6 +2460,7 @@ class InviteCreateRequest(BaseModel):
     audience: str = InviteAudience.MEMBER.value
     label: str = ""
     contract_id: str | None = None
+    contract_ids: list[str] | None = None
     expires_at: str | None = None
     max_uses: int | None = Field(default=None, ge=1)
 
@@ -2518,17 +2520,34 @@ def create_union_invite(
         raise HTTPException(status_code=404, detail="Union not found.")
 
     audience = str(payload.audience or "").strip().lower() or InviteAudience.MEMBER.value
-    if audience not in (InviteAudience.MEMBER.value, InviteAudience.STEWARD.value):
-        raise HTTPException(status_code=400, detail="audience must be 'member' or 'steward'.")
+    valid_audiences = (
+        InviteAudience.MEMBER.value,
+        InviteAudience.STEWARD.value,
+        InviteAudience.UNION_REP.value,
+    )
+    if audience not in valid_audiences:
+        raise HTTPException(status_code=400, detail="audience must be 'member', 'steward', or 'union_rep'.")
 
     contract_id = str(payload.contract_id or "").strip() or None
-    if audience == InviteAudience.MEMBER.value and not contract_id:
-        # Member codes isolate to one contract — a member code without a pin
-        # would leak every contract in the union to a rank-and-file scanner.
-        raise HTTPException(status_code=400, detail="A member code must be pinned to a contract.")
-    if audience == InviteAudience.STEWARD.value and contract_id:
-        # Stewards see (and switch between) every contract, so a pin is meaningless.
-        raise HTTPException(status_code=400, detail="A steward code cannot be pinned to a single contract.")
+    # De-dupe while preserving admin-selected order.
+    contract_ids = list(dict.fromkeys(str(c).strip() for c in (payload.contract_ids or []) if str(c).strip()))
+
+    if audience == InviteAudience.MEMBER.value:
+        # Tier 1 — a member code isolates to exactly one contract; without a pin
+        # it would leak every contract in the local to a rank-and-file scanner.
+        if contract_ids:
+            raise HTTPException(status_code=400, detail="A member code takes a single contract, not a contract set.")
+        if not contract_id:
+            raise HTTPException(status_code=400, detail="A member code must be pinned to a contract.")
+    elif audience == InviteAudience.STEWARD.value:
+        # Tier 2 — a steward code is scoped to its store's explicit contract set.
+        if contract_id:
+            raise HTTPException(status_code=400, detail="A steward code uses a contract set (contract_ids), not a single pin.")
+        if not contract_ids:
+            raise HTTPException(status_code=400, detail="A steward code must list at least one contract for its store.")
+    else:  # union_rep — Tier 3 sees every contract, so neither a pin nor a set applies.
+        if contract_id or contract_ids:
+            raise HTTPException(status_code=400, detail="A union-rep code covers all contracts and cannot be scoped to specific ones.")
 
     expires_at = None
     if payload.expires_at:
@@ -2543,6 +2562,7 @@ def create_union_invite(
         audience=audience,
         label=str(payload.label or "").strip(),
         contract_id=contract_id,
+        contract_ids=contract_ids,
         created_by=auth.user_id,
         expires_at=expires_at,
         max_uses=payload.max_uses,
@@ -2558,6 +2578,8 @@ def create_union_invite(
                 "invite_id": invite.id,
                 "audience": invite.audience,
                 "label": invite.label,
+                "contract_id": invite.contract_id,
+                "contract_ids": list(invite.contract_ids or []),
                 "max_uses": invite.max_uses,
             },
         )
@@ -2703,21 +2725,38 @@ def invite_printable_card(
     segno.make(join_url, error="m").save(png_buffer, kind="png", scale=10, border=2)
     png_data_uri = "data:image/png;base64," + base64.b64encode(png_buffer.getvalue()).decode("ascii")
 
-    is_steward = str(invite.audience or "").strip().lower() == InviteAudience.STEWARD.value
-    audience_line = "Steward access, all contracts" if is_steward else "Member access"
+    audience = str(invite.audience or "").strip().lower()
 
     # The printable card echoes the member onboarding scene (see join.html):
     # dark union-blue gradient, soft gold/blue glow, a Playfair-italic hero
     # line, and gold reserved for the single accent. Two faces at standard
     # 3.5in x 2in business-card proportions: a scan-forward front (QR + join
     # code + CTA) and a shield-logo back, laid out for clean printing.
-    hero_line = "Every contract, one scan." if is_steward else "Know your contract."
-    front_sub = (
-        "Every contract in your union, answered with citations."
-        if is_steward
-        else "Cited answers about your union contract, from your phone."
+    # Copy per access tier: member (1 contract), steward (their store),
+    # union rep (all contracts in the local).
+    _card_copy = {
+        InviteAudience.STEWARD.value: (
+            "Steward access, your store",
+            "Your store, one scan.",
+            "Every contract at your store, answered with citations.",
+            "Scan for steward access",
+        ),
+        InviteAudience.UNION_REP.value: (
+            "Union rep access, all contracts",
+            "Every contract, one scan.",
+            "Every contract in your local, answered with citations.",
+            "Scan for union rep access",
+        ),
+    }
+    audience_line, hero_line, front_sub, cta_line = _card_copy.get(
+        audience,
+        (
+            "Member access",
+            "Know your contract.",
+            "Cited answers about your union contract, from your phone.",
+            "Scan to join Karl",
+        ),
     )
-    cta_line = "Scan for steward access" if is_steward else "Scan to join Karl"
 
     union_name_esc = _html.escape(union_name)
     code_esc = _html.escape(invite.code)

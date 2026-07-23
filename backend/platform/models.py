@@ -39,15 +39,18 @@ class SessionType(str, enum.Enum):
 
 
 class InviteAudience(str, enum.Enum):
-    """Who a printed QR placement enrolls.
+    """Who a printed QR placement enrolls — three access tiers.
 
-    MEMBER codes enroll rank-and-file members, pinned to one contract for
-    isolation. STEWARD codes enroll stewards, who see every contract in their
-    union and switch between them (no pin).
+    MEMBER (Tier 1) enrolls rank-and-file members, pinned to one contract for
+    isolation. STEWARD (Tier 2) enrolls stewards scoped to their store — the
+    explicit set of contracts in ``contract_ids`` (e.g. the meat and clerks
+    agreements at one location). UNION_REP (Tier 3) enrolls union reps who see
+    every contract in the local (no pin, no allowlist).
     """
 
     MEMBER = "member"
     STEWARD = "steward"
+    UNION_REP = "union_rep"
 
 
 class DocumentStatus(str, enum.Enum):
@@ -453,7 +456,10 @@ class InviteCode(Base):
     code: Mapped[str] = mapped_column(String(64), unique=True, nullable=False, index=True)
     audience: Mapped[str] = mapped_column(String(16), nullable=False, default=InviteAudience.MEMBER.value, index=True)
     label: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    # Tier 1 (member): single-contract pin. Tier 2 (steward): the store's
+    # explicit allowlist lives in contract_ids. Tier 3 (union_rep): both empty.
     contract_id: Mapped[str | None] = mapped_column(String(255))
+    contract_ids: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
     created_by: Mapped[str | None] = mapped_column(ForeignKey("users.id"))
     expires_at: Mapped[datetime | None] = mapped_column(DateTime, index=True)
     max_uses: Mapped[int | None] = mapped_column(Integer)

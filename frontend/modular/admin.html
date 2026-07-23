@@ -319,22 +319,26 @@
                         <div class="flex flex-wrap items-center justify-between gap-4">
                             <div>
                                 <div class="section-title">QR Codes</div>
-                                <h3 class="mt-2 text-xl font-bold text-slate-900">QR codes for member &amp; steward enrollment</h3>
-                                <p class="mt-2 text-sm leading-6 text-slate-600"><strong>Member codes</strong> are pinned to one contract and enroll rank-and-file members isolated to that agreement. <strong>Steward codes</strong> (business cards) enroll stewards, who see every contract in the union and switch between them. Each printed placement gets its own code, so you can see where people are joining from and shut down any single placement &mdash; download a QR image or printable card for each below.</p>
+                                <h3 class="mt-2 text-xl font-bold text-slate-900">QR codes for three access tiers</h3>
+                                <p class="mt-2 text-sm leading-6 text-slate-600"><strong>Member codes</strong> pin to one contract and enroll rank-and-file members isolated to that agreement. <strong>Steward codes</strong> scope to a store &mdash; the specific contracts you select (e.g. the meat and clerks agreements at one location). <strong>Union rep codes</strong> cover every contract in the local. Each printed placement gets its own code, so you can see where people are joining from and shut down any single placement &mdash; download a QR image or printable card for each below.</p>
                             </div>
                             <button id="refresh-invites" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold">Refresh</button>
                         </div>
                         <form id="invite-create-form" class="mt-5 grid gap-3 md:grid-cols-2">
                             <div class="md:col-span-2">
                                 <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Audience</label>
-                                <div class="inline-flex rounded-2xl border border-slate-200 bg-slate-50 p-1 text-sm">
+                                <div class="inline-flex flex-wrap rounded-2xl border border-slate-200 bg-slate-50 p-1 text-sm">
                                     <label class="cursor-pointer">
                                         <input type="radio" name="invite-audience" value="member" class="peer sr-only" checked>
-                                        <span class="block rounded-xl px-4 py-2 font-semibold text-slate-600 peer-checked:bg-slate-900 peer-checked:text-white">Member (per contract)</span>
+                                        <span class="block rounded-xl px-4 py-2 font-semibold text-slate-600 peer-checked:bg-slate-900 peer-checked:text-white">Member (1 contract)</span>
                                     </label>
                                     <label class="cursor-pointer">
                                         <input type="radio" name="invite-audience" value="steward" class="peer sr-only">
-                                        <span class="block rounded-xl px-4 py-2 font-semibold text-slate-600 peer-checked:bg-slate-900 peer-checked:text-white">Steward (all contracts)</span>
+                                        <span class="block rounded-xl px-4 py-2 font-semibold text-slate-600 peer-checked:bg-slate-900 peer-checked:text-white">Steward (their store)</span>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="invite-audience" value="union_rep" class="peer sr-only">
+                                        <span class="block rounded-xl px-4 py-2 font-semibold text-slate-600 peer-checked:bg-slate-900 peer-checked:text-white">Union rep (all contracts)</span>
                                     </label>
                                 </div>
                             </div>
@@ -343,6 +347,11 @@
                                 <select id="invite-contract" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm">
                                     <option value="">Select a contract…</option>
                                 </select>
+                            </div>
+                            <div id="invite-contracts-wrap" class="md:col-span-2 hidden">
+                                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Store contracts (select every contract at this store)</label>
+                                <div id="invite-contracts" class="grid gap-1.5 rounded-2xl border border-slate-200 p-3 text-sm sm:grid-cols-2"></div>
+                                <p class="mt-1.5 text-xs text-slate-500">Tick each contract the steward should see (e.g. meat + clerks at one location).</p>
                             </div>
                             <input id="invite-label" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Label (e.g. Pueblo West break room poster)">
                             <input id="invite-max-uses" type="number" min="1" class="rounded-2xl border border-slate-200 px-4 py-3 text-sm" placeholder="Max uses (optional)">

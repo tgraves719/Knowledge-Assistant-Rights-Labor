@@ -2861,9 +2861,17 @@ function inviteStatusBadge(item) {
 }
 
 function inviteAudienceBadge(item) {
-    const steward = String(item.audience || 'member').toLowerCase() === 'steward';
-    const cls = steward ? 'bg-indigo-100 text-indigo-900' : 'bg-sky-100 text-sky-900';
-    const text = steward ? 'Steward · all contracts' : `Member${item.contract_id ? ` · ${escapeHtml(item.contract_id)}` : ''}`;
+    const audience = String(item.audience || 'member').toLowerCase();
+    const contractIds = Array.isArray(item.contract_ids) ? item.contract_ids : [];
+    let cls = 'bg-sky-100 text-sky-900';
+    let text = `Member${item.contract_id ? ` · ${escapeHtml(item.contract_id)}` : ''}`;
+    if (audience === 'steward') {
+        cls = 'bg-violet-100 text-violet-900';
+        text = `Steward · ${contractIds.length} contract${contractIds.length === 1 ? '' : 's'}`;
+    } else if (audience === 'union_rep') {
+        cls = 'bg-indigo-100 text-indigo-900';
+        text = 'Union rep · all contracts';
+    }
     return `<span class="rounded-full ${cls} px-3 py-1 text-xs font-semibold">${text}</span>`;
 }
 
@@ -2886,6 +2894,7 @@ function renderInviteCard(item, unionId) {
                             ${inviteStatusBadge(item)}
                         </div>
                         <div class="mt-1 text-sm text-slate-600">${escapeHtml(item.label || 'No label')}</div>
+                        ${Array.isArray(item.contract_ids) && item.contract_ids.length ? `<div class="mt-1 flex flex-wrap gap-1">${item.contract_ids.map((cid) => `<span class="rounded-full bg-violet-50 px-2 py-0.5 text-[11px] text-violet-900">${escapeHtml(cid)}</span>`).join('')}</div>` : ''}
                         <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-600">
                             <span class="rounded-full bg-slate-100 px-3 py-1">joined ${item.use_count}${item.max_uses ? ` / ${item.max_uses}` : ''}</span>
                             <span class="rounded-full bg-indigo-50 px-3 py-1 text-indigo-900" title="Questions asked through this code">${Number(item.total_requests || 0).toLocaleString()} asks</span>
@@ -2915,8 +2924,10 @@ async function loadInvites() {
     await populateInviteContracts(unionId);
     const data = await api(`/api/admin/unions/${unionId}/invites`);
     const items = data.items || [];
-    const members = items.filter((it) => String(it.audience || 'member').toLowerCase() !== 'steward');
-    const stewards = items.filter((it) => String(it.audience || 'member').toLowerCase() === 'steward');
+    const audienceOf = (it) => String(it.audience || 'member').toLowerCase();
+    const members = items.filter((it) => audienceOf(it) === 'member');
+    const stewards = items.filter((it) => audienceOf(it) === 'steward');
+    const unionReps = items.filter((it) => audienceOf(it) === 'union_rep');
     const usageTotal = (list) => list.reduce((sum, it) => sum + (Number(it.use_count) || 0), 0);
     const tokenTotal = (list) => list.reduce((sum, it) => sum + (Number(it.total_tokens) || 0), 0);
     const container = document.getElementById('invite-list');
@@ -2932,7 +2943,7 @@ async function loadInvites() {
                     </div>
                     <div class="grid gap-3">${list.map((it) => renderInviteCard(it, unionId)).join('')}</div>
                 </div>` : '';
-            container.innerHTML = `<div class="grid gap-6">${section('Member codes', members)}${section('Steward codes', stewards)}</div>`;
+            container.innerHTML = `<div class="grid gap-6">${section('Member codes', members)}${section('Steward codes', stewards)}${section('Union rep codes', unionReps)}</div>`;
         }
     }
     document.querySelectorAll('.copy-invite-link').forEach((button) => {
@@ -2970,15 +2981,17 @@ function selectedInviteAudience() {
 }
 
 function syncInviteContractVisibility() {
-    const wrap = document.getElementById('invite-contract-wrap');
-    if (!wrap) return;
-    const steward = selectedInviteAudience() === 'steward';
-    wrap.classList.toggle('hidden', steward);
+    const audience = selectedInviteAudience();
+    // Tier 1 member -> single contract; Tier 2 steward -> multi-select store
+    // set; Tier 3 union rep -> no contract picker (covers all).
+    document.getElementById('invite-contract-wrap')?.classList.toggle('hidden', audience !== 'member');
+    document.getElementById('invite-contracts-wrap')?.classList.toggle('hidden', audience !== 'steward');
 }
 
 async function populateInviteContracts(unionId) {
     const select = document.getElementById('invite-contract');
-    if (!select) return;
+    const checkboxes = document.getElementById('invite-contracts');
+    if (!select && !checkboxes) return;
     let contractIds = [];
     try {
         const data = await api(`/api/admin/unions/${unionId}/documents`);
@@ -2988,10 +3001,21 @@ async function populateInviteContracts(unionId) {
     } catch (error) {
         console.error('Could not load contracts for invite form', error);
     }
-    const previous = select.value;
-    select.innerHTML = '<option value="">Select a contract…</option>'
-        + contractIds.map((id) => `<option value="${escapeHtml(id)}">${escapeHtml(id)}</option>`).join('');
-    if (previous && contractIds.includes(previous)) select.value = previous;
+    if (select) {
+        const previous = select.value;
+        select.innerHTML = '<option value="">Select a contract…</option>'
+            + contractIds.map((id) => `<option value="${escapeHtml(id)}">${escapeHtml(id)}</option>`).join('');
+        if (previous && contractIds.includes(previous)) select.value = previous;
+    }
+    if (checkboxes) {
+        checkboxes.innerHTML = contractIds.length
+            ? contractIds.map((id) => `<label class="flex items-center gap-2"><input type="checkbox" class="invite-store-contract" value="${escapeHtml(id)}"><span class="truncate" title="${escapeHtml(id)}">${escapeHtml(id)}</span></label>`).join('')
+            : '<p class="text-xs text-slate-500">No contracts filed for this union yet.</p>';
+    }
+}
+
+function selectedStoreContracts() {
+    return [...document.querySelectorAll('.invite-store-contract:checked')].map((el) => el.value);
 }
 
 async function createInvite(event) {
@@ -3002,12 +3026,18 @@ async function createInvite(event) {
     const maxUsesRaw = document.getElementById('invite-max-uses').value;
     const expiresRaw = document.getElementById('invite-expires').value;
     const contractId = document.getElementById('invite-contract')?.value || '';
+    const storeContracts = selectedStoreContracts();
     if (audience === 'member' && !contractId) {
-        window.alert('Member codes must be pinned to a contract. Pick a contract, or switch the audience to Steward.');
+        window.alert('Member codes must be pinned to one contract. Pick a contract, or switch the tier.');
+        return;
+    }
+    if (audience === 'steward' && !storeContracts.length) {
+        window.alert('Steward codes cover a store. Tick at least one contract for that store, or switch the tier.');
         return;
     }
     const payload = { audience, label };
     if (audience === 'member') payload.contract_id = contractId;
+    if (audience === 'steward') payload.contract_ids = storeContracts;
     if (maxUsesRaw) payload.max_uses = Number(maxUsesRaw);
     if (expiresRaw) payload.expires_at = `${expiresRaw}T23:59:59`;
     await api(`/api/admin/unions/${unionId}/invites`, {

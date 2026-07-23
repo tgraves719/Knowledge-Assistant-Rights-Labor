@@ -100,6 +100,7 @@ from backend.user.profile import (
     resolve_classification_display_name,
 )
 from backend.karl_docs import get_karl_document, get_karl_info
+from backend.karl_repo import get_repo_file, list_repo_tree
 from backend.platform.middleware import (
     PlatformContextMiddleware,
     QueryGovernanceMiddleware,
@@ -266,44 +267,69 @@ def _build_followup_routing_query(
 def _resolve_scoped_contract_id(
     db, auth, requested_contract_id: str | None, union_id: str | None = None
 ) -> str | None:
-    """Decide which contract a member's query may be answered from.
+    """Back-compat single-contract scope (see `_resolve_query_contract_scope`)."""
+    contract_id, _ = _resolve_query_contract_scope(db, auth, requested_contract_id, union_id)
+    return contract_id
 
-    An invite code can be pinned to a contract: the QR taped to the meat
-    department's board scopes every session that joined through it. That pin
-    wins over whatever the client sends, because the client is untrusted —
-    otherwise a member (or a crafted request) could read out of the other
-    bargaining unit's agreement just by changing a field. Scoping only ever
-    narrows, so honouring a client value is safe; letting one escape a pin is
-    not.
 
-    The requested contract is only applied when the union actually has
-    documents filed under it. QueryRequest.contract_id is required, so every
-    query carries one even against a corpus whose documents predate contract
-    scoping and are all NULL — treating that as a hard filter would match
-    nothing and make KARL answer nothing at all.
+def _resolve_query_contract_scope(
+    db, auth, requested_contract_id: str | None, union_id: str | None = None
+) -> tuple[str | None, list[str] | None]:
+    """Decide which contract(s) a session's query may be answered from.
+
+    Returns ``(contract_id, contract_ids)``:
+    - ``(id, None)`` — a hard single-contract scope. Used for Tier-1 member
+      pins, and for a Tier-2 steward who has selected one contract from their
+      store's set.
+    - ``(None, [ids])`` — an allowlist. A Tier-2 steward code scopes to its
+      store's explicit contract set; with no specific (valid) contract chosen,
+      retrieval is restricted to that whole set and never leaks outside it.
+    - ``(None, None)`` — unscoped (Tier-3 union rep, or a legacy corpus whose
+      documents predate contract scoping).
+
+    Invite scope is authoritative over client-supplied fields, because the
+    client is untrusted — a member (or crafted request) must not read another
+    bargaining unit's agreement by changing a field. Scoping only ever narrows.
     """
     from backend.platform.models import AuthSession, Document, InviteCode
 
+    invite = None
     session_id = getattr(auth, "session_id", None)
     if session_id:
         session = db.get(AuthSession, session_id)
         invite_id = getattr(session, "invite_code_id", None) if session is not None else None
         if invite_id:
             invite = db.get(InviteCode, invite_id)
-            pinned = (getattr(invite, "contract_id", None) or "").strip() if invite is not None else ""
-            if pinned:
-                return pinned
 
     requested = (requested_contract_id or "").strip()
+
+    if invite is not None:
+        # Tier 1 — member pin wins outright.
+        pinned = (getattr(invite, "contract_id", None) or "").strip()
+        if pinned:
+            return pinned, None
+        # Tier 2 — steward store allowlist. A chosen contract inside the store
+        # narrows to it; otherwise the whole store set is the scope.
+        allowlist = [str(c).strip() for c in (getattr(invite, "contract_ids", None) or []) if str(c).strip()]
+        if allowlist:
+            if requested and requested in allowlist:
+                return requested, None
+            return None, allowlist
+        # Tier 3 (union_rep) — no pin, no allowlist: falls through to unscoped.
+
+    # No invite scope: apply a client-requested contract only when the union
+    # actually has documents filed under it. QueryRequest.contract_id is always
+    # present, so treating an unfiled value as a hard filter (against a NULL
+    # legacy corpus) would match nothing and make KARL answer nothing at all.
     if not requested or not union_id:
-        return None
+        return None, None
 
     filed = db.scalar(
         select(Document.id)
         .where(Document.union_id == union_id, Document.contract_id == requested)
         .limit(1)
     )
-    return requested if filed else None
+    return (requested, None) if filed else (None, None)
 
 
 def _platform_followup_scope(previous_retrieval_context: dict | None) -> dict:
@@ -2046,10 +2072,11 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
     with container.session_factory() as db:
         apply_request_context(db, get_current_auth_context())
         followup_scope = _platform_followup_scope(previous_retrieval_context if followup_context_used else {})
-        scoped_contract_id = _resolve_scoped_contract_id(
+        scoped_contract_id, scoped_contract_ids = _resolve_query_contract_scope(
             db, get_current_auth_context(), request.contract_id, query_state["union_id"]
         )
         query_state["scoped_contract_id"] = scoped_contract_id
+        query_state["scoped_contract_ids"] = scoped_contract_ids
         retrieved = []
         if followup_context_used and followup_scope.get("document_id"):
             retrieved = container.retrieval.search(
@@ -2059,6 +2086,7 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
                 limit=12,
                 document_id=followup_scope.get("document_id"),
                 contract_id=scoped_contract_id,
+                contract_ids=scoped_contract_ids,
                 preferred_article_num=followup_scope.get("article_num"),
                 preferred_topic_tags=followup_scope.get("topic_tags") or [],
             )
@@ -2069,6 +2097,7 @@ async def _query_platform_union_documents(request: "QueryRequest", *, query_stat
                 query=routing_question,
                 limit=12,
                 contract_id=scoped_contract_id,
+                contract_ids=scoped_contract_ids,
                 preferred_article_num=followup_scope.get("article_num") if followup_context_used else None,
                 preferred_topic_tags=followup_scope.get("topic_tags") if followup_context_used else None,
             )
@@ -2985,6 +3014,25 @@ class KarlDocumentResponse(BaseModel):
     path: str
     content: str
 
+
+class KarlRepoFile(BaseModel):
+    path: str
+    type: str
+
+
+class KarlRepoTreeResponse(BaseModel):
+    root: str
+    count: int
+    files: list[KarlRepoFile]
+
+
+class KarlRepoFileResponse(BaseModel):
+    path: str
+    type: str
+    size: int
+    truncated: bool
+    content: str
+
 class OnboardingOptionsResponse(BaseModel):
     """Available options for onboarding form."""
     classifications: list[dict]
@@ -3192,6 +3240,23 @@ async def get_karl_runtime_doc(doc_id: str):
         raise HTTPException(status_code=404, detail=f"Unknown KARL document '{doc_id}'.") from exc
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=f"KARL document missing: {exc}.") from exc
+
+
+@app.get("/api/karl/tree", response_model=KarlRepoTreeResponse)
+async def get_karl_repo_tree():
+    """List every git-tracked file in the KARL repository for the explorer."""
+    return KarlRepoTreeResponse(**list_repo_tree())
+
+
+@app.get("/api/karl/file", response_model=KarlRepoFileResponse)
+async def get_karl_repo_file(path: str):
+    """Return the content of a single git-tracked repository file."""
+    try:
+        return KarlRepoFileResponse(**get_repo_file(path))
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=f"Unknown or untracked file '{path}'.") from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"Repository file missing: {exc}.") from exc
 
 
 # =============================================================================

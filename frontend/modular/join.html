@@ -166,10 +166,15 @@
         var label = "__INVITE_LABEL__";
         var audience = "__INVITE_AUDIENCE__";
         if (audience === "steward") {
-            // Steward business card: same one-tap start, clearer wording.
+            // Steward business card: scoped to their store's contracts.
             document.querySelector(".eyebrow").textContent = document.querySelector(".eyebrow").textContent + " · Steward";
             document.getElementById("start-button").textContent = "Open Karl (steward)";
-            document.querySelector(".start-hint").textContent = "Steward access — every contract in your union.";
+            document.querySelector(".start-hint").textContent = "Steward access — every contract at your store.";
+        } else if (audience === "union_rep") {
+            // Union rep business card: every contract in the local.
+            document.querySelector(".eyebrow").textContent = document.querySelector(".eyebrow").textContent + " · Union rep";
+            document.getElementById("start-button").textContent = "Open Karl (union rep)";
+            document.querySelector(".start-hint").textContent = "Union rep access — every contract in your local.";
         }
         if (label) {
             document.getElementById("placement-label").textContent = "Join code: " + code + " (" + label + ")";

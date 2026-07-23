@@ -1,5 +1,110 @@
 # Karl Update Log
 
+## Pilot-readiness: printable QR cards, branded admin consoles, KARL 1.0.0 + repository explorer (July 22, 2026)
+
+### Overview
+
+Turned the invite system into something a real steward can hand out and a print
+shop can reproduce, brought both admin consoles onto the KARL Design System,
+hardened the QR image/card path in production, and shipped the About KARL
+surface as a full auditable view of the repository — the last pieces before the
+first-store pilot. Version stamped **1.0.0**. Branch commits `1327321` →
+`0baf208` on `test/m2-invite-flow-and-m1-corrections`, plus the 1.0.0 /
+repository-explorer work in this change (uncommitted at time of writing).
+
+### Printable onboarding-scene QR business card (`4dc396b` → `0baf208`)
+
+- **Two-sided card built for a wallet and a print shop.** Front (scan side)
+  carries the hero + scan CTA, the QR chip, and directly beneath it the join
+  code (labeled) and the join URL (`karlstewardship.com/j/CODE`, scheme
+  stripped, forced one line) — everything needed to join on one face. Back is
+  the KARL shield mark centered as a logo, union name + access line along the
+  top edge (reads first in a wallet), and "Powered by Karl · Karl Stewardship"
+  beneath, over a faint two-half shield watermark (exact onboarding-avatar path
+  geometry, DS shield colors `#4A7A9F` / `#EECF6D`).
+- **Copy cleanup:** dropped em dashes throughout in favor of commas, and removed
+  the "never your employer" trust line (a commercial license exists, so the
+  claim isn't universally accurate) and the placement label.
+- **Print-shop-ready export, cross-browser.** Replaced the SVG-`foreignObject`
+  rasterizer (tainted the canvas → `SecurityError` in Firefox/stricter Chrome)
+  with vendored same-origin **html2canvas** (MIT, `frontend/modular/vendor/`),
+  which paints the real DOM — no taint, renders the actual Playfair font. Each
+  face exports at scale 4 (1344×768, ~384 DPI) via **PNG · Front / PNG · Back**
+  buttons, and "Print / Save PDF" now emits `@page { size: 3.5in 2in; margin: 0 }`
+  so each face is its own exact business-card page (bleed, no Letter
+  whitespace) — a 2-page print-ready PDF. Dropped the shield `drop-shadow`
+  filter, which html2canvas rasterized as a box around the bounding rect.
+
+### Three access tiers for QR codes (this change)
+
+- **The invite system went from two audiences to three tiers.** Tier 1 **member**
+  stays pinned to one contract; Tier 2 **steward** is now scoped to a *store* —
+  the explicit set of contracts an admin selects (e.g. the meat and clerks
+  agreements at one location); Tier 3 **union rep** covers every contract in the
+  local. Added `InviteAudience.UNION_REP` and a `contract_ids` JSON column on
+  `invite_codes` for the steward store allowlist (migration `20260722_0012`,
+  which also backfills existing `steward` codes — which meant "all contracts" —
+  to `union_rep` so their scope is preserved).
+- **Scope is enforced server-side over the whole set, not just a single pin.**
+  `_resolve_query_contract_scope` returns either a single contract or an
+  allowlist; `retrieval.search` gained a `contract_ids` allowlist filter; and the
+  member explorer (`/api/member/contracts`, outline, section, PDF) rejects any
+  contract outside the store set with a 404, the same isolation a member pin
+  gives but over a set. Steward and union-rep codes both mint `steward_admin`
+  sessions — they differ only in contract scope, which the invite carries.
+- **Admin console + join flow speak three tiers.** The QR form offers
+  member / steward / union rep, with a contract multi-select for the steward
+  store; the invite list groups into three sections and shows each store's
+  contracts; the printable card and join page carry per-tier copy. Nine invite
+  tests updated/added (store-scope isolation, three-tier validation, allowlist
+  query scope) — full invite suite green.
+
+### Prod fix — QR endpoints 500'd on the slim image (`f2f39db`)
+
+- The invite QR PNG/SVG download and printable-card endpoints import `segno` at
+  call time, but `segno` was only in `base.txt`, not the slim `prod.txt` the
+  production image builds from — so both `500`'d with `ModuleNotFoundError` in
+  prod (these endpoints had never been exercised there). `segno` is pure-Python
+  with no dependencies, so it fits the slim-image profile.
+
+### Admin consoles on the KARL Design System (`0426aea`, `8c61a24`, `df6f92c`, `e324ed3`)
+
+- **Both consoles (`admin.html`, `superadmin.html`) now read as the same brand
+  as the member app, zero behavior change.** Light shell on DS neutral (slate)
+  tokens, paper cards with a 1px border + `shadow-sm` — dropped the glass
+  backdrop-blur panels and the 50px drop shadow that violated the DS
+  resting-card rule. Brand carried by the animated diagonal union-blue header
+  gradient lifted from the member onboarding scene (14s drift, reduced-motion
+  safe).
+- **Contrast corrections after the restyle:** deepened the superadmin
+  `platform-panel` tints into a light blue-grey sunken surface so white summary
+  cards regain contrast (was white-on-white), and converted the union-admin
+  "Operations Pulse" hero from dark-blue/white to a light surface with black
+  text and a blue sparkline — the whole snapshot is now light with dark text.
+- Added a `?v=` cache-bust to the `admin.js` include on both consoles so a
+  normal refresh always pulls the current script (stale copies had masked
+  already-shipped fixes during the rapid restyle iterations).
+
+### KARL 1.0.0 + About KARL repository explorer (this change)
+
+- **Version stamped `1.0.0`** (`karl_docs.KARL_VERSION`), surfaced through
+  `/api/karl/info` and the Settings / KARL-tab version lines (static fallbacks
+  and `KARL_VERSION_FALLBACK` updated to match).
+- **The whole git repository is now explorable from About KARL.** New
+  `backend/karl_repo.py` lists **git-tracked files only** (`git ls-files`, so
+  `.gitignore`d secrets never appear) and serves single files; two endpoints
+  `GET /api/karl/tree` and `GET /api/karl/file?path=…` back a searchable,
+  directory-grouped file browser beside the curated Document Library. Path
+  traversal is blocked by a tracked-path allowlist plus a repo-root guard,
+  binaries are detected and skipped, and files are capped at 2 MB
+  (`?path=../etc/passwd` → `404`; verified 655 tracked files served).
+- **Markdown actually renders now.** A fuller `renderKarlMarkdown` handles
+  `#`–`######` headings, fenced code, ordered/unordered lists, blockquotes,
+  rules, tables, and inline bold/italic/code/links — curated docs and any
+  browsed `.md` render as real markdown; other text files render in a code
+  block. Tailwind CSS was rebuilt so the new utility classes ship in
+  `styles/generated.css`.
+
 ## Dual-audience QR, access gating, per-code metering, wage fix, prod deploy (July 21, 2026)
 
 ### Overview

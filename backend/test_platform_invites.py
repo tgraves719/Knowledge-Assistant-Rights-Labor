@@ -413,62 +413,65 @@ def test_guest_join_is_zero_friction_and_disconnectable(tmp_path):
         api.app.state.platform = prior
 
 
-def test_audience_validation_member_needs_contract_steward_forbids_one(tmp_path):
+def test_audience_validation_across_three_tiers(tmp_path):
     platform = _build_platform(tmp_path)
     prior = _with_app(platform)
     try:
         union_id, _ = _seed_union_with_admin(platform)
         client = _admin_client(platform)
 
-        # Member code without a contract is rejected — it would leak every contract.
-        bad_member = client.post(
-            f"/api/admin/unions/{union_id}/invites",
-            json={"label": "unpinned member", "audience": "member"},
-        )
-        assert bad_member.status_code == 400
-        assert "pinned to a contract" in bad_member.text
+        def create(payload):
+            return client.post(f"/api/admin/unions/{union_id}/invites", json=payload)
 
-        # Steward code WITH a contract is rejected — stewards see all contracts.
-        bad_steward = client.post(
-            f"/api/admin/unions/{union_id}/invites",
-            json={"label": "pinned steward", "audience": "steward", "contract_id": "clerks_2022"},
-        )
-        assert bad_steward.status_code == 400
-        assert "cannot be pinned" in bad_steward.text
+        # Tier 1 member: needs exactly one contract, no set.
+        assert create({"audience": "member"}).status_code == 400
+        bad = create({"audience": "member", "contract_ids": ["clerks_2022"]})
+        assert bad.status_code == 400 and "single contract" in bad.text
 
-        # Unknown audience is rejected.
-        bad_aud = client.post(
-            f"/api/admin/unions/{union_id}/invites",
-            json={"label": "weird", "audience": "manager"},
-        )
-        assert bad_aud.status_code == 400
+        # Tier 2 steward: needs a contract set, forbids a single pin.
+        assert create({"audience": "steward"}).status_code == 400
+        pinned_steward = create({"audience": "steward", "contract_id": "clerks_2022"})
+        assert pinned_steward.status_code == 400 and "contract set" in pinned_steward.text
 
-        # Valid steward code needs no contract.
-        good_steward = client.post(
-            f"/api/admin/unions/{union_id}/invites",
-            json={"label": "steward business cards", "audience": "steward"},
-        )
-        assert good_steward.status_code == 200, good_steward.text
-        assert good_steward.json()["audience"] == "steward"
-        assert good_steward.json()["contract_id"] is None
+        # Tier 3 union_rep: forbids any contract scoping.
+        assert create({"audience": "union_rep", "contract_id": "clerks_2022"}).status_code == 400
+        assert create({"audience": "union_rep", "contract_ids": ["clerks_2022"]}).status_code == 400
+
+        # Unknown audience rejected.
+        assert create({"audience": "manager"}).status_code == 400
+
+        # Valid codes for each tier.
+        member = create({"label": "poster", "audience": "member", "contract_id": "clerks_2022"})
+        assert member.status_code == 200 and member.json()["contract_id"] == "clerks_2022"
+
+        steward = create({"label": "pueblo store", "audience": "steward", "contract_ids": ["clerks_2022", "meat_2022"]})
+        assert steward.status_code == 200, steward.text
+        assert steward.json()["audience"] == "steward"
+        assert steward.json()["contract_ids"] == ["clerks_2022", "meat_2022"]
+        assert steward.json()["contract_id"] is None
+
+        union_rep = create({"label": "rep cards", "audience": "union_rep"})
+        assert union_rep.status_code == 200
+        assert union_rep.json()["audience"] == "union_rep"
+        assert union_rep.json()["contract_ids"] == []
     finally:
         api.app.state.platform = prior
 
 
-def test_steward_code_grants_steward_role_on_scan(tmp_path):
+def test_union_rep_code_grants_steward_role_on_scan(tmp_path):
     platform = _build_platform(tmp_path)
     prior = _with_app(platform)
     try:
         union_id, union_slug = _seed_union_with_admin(platform)
         client = _admin_client(platform)
-        steward_code = client.post(
+        rep_code = client.post(
             f"/api/admin/unions/{union_id}/invites",
-            json={"label": "steward business cards", "audience": "steward"},
+            json={"label": "union rep cards", "audience": "union_rep"},
         ).json()
 
-        # Scanning a steward card mints a steward session — role decided server-side.
+        # Scanning a union-rep card mints a steward_admin session — role decided server-side.
         phone = TestClient(api.app)
-        joined = phone.post("/api/auth/session/join-guest", json={"code": steward_code["code"]})
+        joined = phone.post("/api/auth/session/join-guest", json={"code": rep_code["code"]})
         assert joined.status_code == 200, joined.text
         assert joined.json()["user"]["role"] == Role.STEWARD_ADMIN.value
 
@@ -576,29 +579,67 @@ def test_pinned_member_cannot_read_sibling_contract_explorer(tmp_path):
         api.app.state.platform = prior
 
 
-def test_steward_session_sees_all_contracts(tmp_path):
-    """A steward (unpinned) sees every contract in the union and can read each."""
+def test_union_rep_session_sees_all_contracts(tmp_path):
+    """A union rep (Tier 3) sees every contract in the local and can read each."""
     platform = _build_platform(tmp_path)
     prior = _with_app(platform)
     try:
         union_id, _ = _seed_union_with_admin(platform)
         _seed_contract_docs(platform, union_id)
         client = _admin_client(platform)
-        steward_code = client.post(
+        rep_code = client.post(
             f"/api/admin/unions/{union_id}/invites",
-            json={"label": "steward cards", "audience": "steward"},
+            json={"label": "rep cards", "audience": "union_rep"},
         ).json()
 
         phone = TestClient(api.app)
-        phone.post("/api/auth/session/join-guest", json={"code": steward_code["code"]})
+        phone.post("/api/auth/session/join-guest", json={"code": rep_code["code"]})
 
         contracts = phone.get("/api/member/contracts")
         assert contracts.status_code == 200
         body = contracts.json()
         assert body["pinned_contract_id"] is None
+        assert body["allowed_contract_ids"] is None
         assert {c["contract_id"] for c in body["contracts"]} == {"clerks_2022", "meat_2022"}
         assert phone.get("/api/member/contracts/clerks_2022/outline").status_code == 200
         assert phone.get("/api/member/contracts/meat_2022/outline").status_code == 200
+    finally:
+        api.app.state.platform = prior
+
+
+def test_steward_session_scoped_to_store_contracts(tmp_path):
+    """A Tier-2 steward sees only their store's contract set, not the whole local.
+
+    With two contracts filed in the local, a steward code scoped to just the
+    clerks agreement must offer only clerks in the explorer and 404 on the meat
+    agreement — the same isolation a member pin gives, but over a set.
+    """
+    platform = _build_platform(tmp_path)
+    prior = _with_app(platform)
+    try:
+        union_id, _ = _seed_union_with_admin(platform)
+        _seed_contract_docs(platform, union_id)  # clerks_2022 + meat_2022
+        client = _admin_client(platform)
+        steward_code = client.post(
+            f"/api/admin/unions/{union_id}/invites",
+            json={"label": "one-book store", "audience": "steward", "contract_ids": ["clerks_2022"]},
+        ).json()
+        assert steward_code["contract_ids"] == ["clerks_2022"]
+
+        phone = TestClient(api.app)
+        joined = phone.post("/api/auth/session/join-guest", json={"code": steward_code["code"]})
+        assert joined.json()["user"]["role"] == Role.STEWARD_ADMIN.value
+
+        contracts = phone.get("/api/member/contracts")
+        assert contracts.status_code == 200
+        body = contracts.json()
+        assert body["allowed_contract_ids"] == ["clerks_2022"]
+        assert [c["contract_id"] for c in body["contracts"]] == ["clerks_2022"]
+
+        # In-store contract reads; out-of-store contract is invisible (404).
+        assert phone.get("/api/member/contracts/clerks_2022/outline").status_code == 200
+        assert phone.get("/api/member/contracts/meat_2022/outline").status_code == 404
+        assert phone.get("/api/member/contracts/meat_2022/section?article_num=7").status_code == 404
     finally:
         api.app.state.platform = prior
 
@@ -872,3 +913,35 @@ def test_unpinned_invite_falls_back_to_requested_contract():
     # request field must not be allowed to filter everything out.
     unfiled = _FakeDB(objects, has_filed_documents=False)
     assert _resolve_scoped_contract_id(unfiled, auth, "clerks_2022", "union-1") is None
+
+
+def test_steward_store_allowlist_scopes_query_retrieval():
+    """A Tier-2 steward code scopes queries to its store's contract set.
+
+    A chosen contract inside the store narrows to it; anything else (or nothing)
+    restricts retrieval to the whole allowlist and never leaks outside it.
+    """
+    from types import SimpleNamespace
+
+    from backend.api import _resolve_query_contract_scope
+
+    class _FakeDB:
+        def __init__(self, objects):
+            self._objects = objects
+
+        def get(self, model, key):
+            return self._objects.get(key)
+
+        def scalar(self, *_args, **_kwargs):
+            return None
+
+    session = SimpleNamespace(invite_code_id="invite-1")
+    invite = SimpleNamespace(contract_id=None, contract_ids=["clerks_2022", "meat_2022"])
+    db = _FakeDB({"session-1": session, "invite-1": invite})
+    auth = SimpleNamespace(session_id="session-1")
+
+    # A contract inside the store narrows to exactly it.
+    assert _resolve_query_contract_scope(db, auth, "meat_2022", "union-1") == ("meat_2022", None)
+    # No / invalid choice restricts to the whole store allowlist.
+    assert _resolve_query_contract_scope(db, auth, None, "union-1") == (None, ["clerks_2022", "meat_2022"])
+    assert _resolve_query_contract_scope(db, auth, "deli_2022", "union-1") == (None, ["clerks_2022", "meat_2022"])
