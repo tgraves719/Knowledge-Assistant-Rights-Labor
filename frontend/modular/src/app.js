@@ -4158,7 +4158,11 @@ const EMBED_THEME_OVERRIDES = (() => {
             const res = await fetch(`${API_BASE}/api/karl/tree`);
             if (!res.ok) throw new Error(`Unable to load repository (${res.status})`);
             const data = await res.json();
-            karlRepoFiles = Array.isArray(data?.files) ? data.files : [];
+            const files = Array.isArray(data?.files) ? data.files : [];
+            // The explorer is a governance/docs reader: markdown only, so the
+            // tree stays readable and points at the update log, charter, legal
+            // materials, and other narrative docs rather than every source file.
+            karlRepoFiles = files.filter((f) => safeText(f?.type) === 'markdown');
             return karlRepoFiles;
         }
 
@@ -4174,8 +4178,8 @@ const EMBED_THEME_OVERRIDES = (() => {
 
             if (countEl) {
                 countEl.textContent = needle
-                    ? `${matches.length} of ${files.length} files`
-                    : `${files.length} files`;
+                    ? `${matches.length} of ${files.length} markdown files`
+                    : `${files.length} markdown files`;
             }
 
             if (!matches.length) {
@@ -4207,7 +4211,6 @@ const EMBED_THEME_OVERRIDES = (() => {
                         class="flex w-full items-center gap-1.5 rounded px-2 py-1 text-left text-[13px] ${active ? 'bg-amber-400 font-medium text-slate-900' : 'text-slate-200 hover:bg-slate-700/60 hover:text-white'}"
                         title="${escapeHtml(path)}">
                         <span class="truncate">${label}</span>
-                        ${f?.type === 'markdown' ? `<span class="ml-auto shrink-0 text-[9px] uppercase tracking-wide ${active ? 'text-slate-700' : 'text-amber-300/80'}">md</span>` : ''}
                     </button>`;
                 }).join('');
                 parts.push(`<details ${expanded ? 'open' : ''} class="mb-1">

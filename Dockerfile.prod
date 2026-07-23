@@ -29,6 +29,12 @@ COPY backend/ ./backend/
 COPY data/ ./data/
 COPY frontend/ ./frontend/
 COPY README.md ./README.md
+# Governance + project markdown surfaced by the About KARL repository explorer
+# (the container has no .git, so karl_repo walks the filesystem — these dirs
+# must be present in the image or they won't appear).
+COPY legal/ ./legal/
+COPY docs/ ./docs/
+COPY UPDATE_LOG.md SETUP.md CONTRIBUTORS.md CONTRACT_PACK_SPEC_v1.md design-doc.md ./
 
 # Run as a non-root user; pre-create the storage root so the named volume
 # inherits writable ownership on first mount.
