@@ -1973,46 +1973,31 @@
                 <div class="max-w-5xl mx-auto space-y-6">
                     <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                         <div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">KARL</p>
-                            <h2 class="text-2xl font-semibold text-slate-900">Audit Trail And Governance</h2>
-                            <p id="karl-meta-line" class="text-sm text-slate-600 mt-1">KARL v1.0.0</p>
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">KARL</p>
+                            <h2 class="text-2xl font-semibold text-slate-100">Audit Trail And Governance</h2>
+                            <p id="karl-meta-line" class="text-sm text-slate-400 mt-1">KARL v1.0.0</p>
                         </div>
-                        <button onclick="setActiveTab('settings')" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+                        <button onclick="setActiveTab('settings')" class="rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700 transition-colors">
                             Back To Settings
                         </button>
                     </div>
 
-                    <section class="rounded-2xl border border-slate-200 bg-white p-4 md:p-5 shadow-sm">
-                        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-slate-700">Document Library</p>
-                                <p class="text-xs text-slate-500">Jump straight to KARL’s update log, governance charter, release gates, and other legal materials.</p>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <label for="karl-doc-select" class="sr-only">KARL document</label>
-                                <select id="karl-doc-select" onchange="handleKarlDocChange(this.value)" class="min-w-[220px] rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-700">
-                                    <option value="">Select a document...</option>
-                                </select>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                    <section class="rounded-2xl border border-slate-700 bg-slate-800/60 shadow-sm overflow-hidden">
                         <div class="grid grid-cols-1 md:grid-cols-[minmax(0,300px)_1fr]">
-                            <aside class="border-b md:border-b-0 md:border-r border-slate-200 bg-slate-50/60 flex flex-col max-h-[70vh]">
-                                <div class="p-3 border-b border-slate-200">
-                                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Repository Explorer</p>
+                            <aside class="border-b md:border-b-0 md:border-r border-slate-700 bg-slate-900/50 flex flex-col max-h-[72vh]">
+                                <div class="p-3 border-b border-slate-700">
+                                    <p class="text-xs font-semibold uppercase tracking-wider text-amber-300 mb-2">Repository Explorer</p>
                                     <label for="karl-file-search" class="sr-only">Filter files</label>
-                                    <input id="karl-file-search" type="search" oninput="handleKarlFileSearch(this.value)" placeholder="Filter files…" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 placeholder:text-slate-400" />
+                                    <input id="karl-file-search" type="search" oninput="handleKarlFileSearch(this.value)" placeholder="Filter files…" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-1.5 text-sm text-slate-100 placeholder:text-slate-400" />
                                     <p id="karl-file-count" class="mt-2 text-[11px] text-slate-400"></p>
                                 </div>
                                 <div id="karl-file-tree" class="flex-1 overflow-y-auto p-2 text-sm">
-                                    <p class="text-slate-500 p-2">Loading repository…</p>
+                                    <p class="text-slate-300 p-2">Loading repository…</p>
                                 </div>
                             </aside>
                             <div class="min-w-0">
-                                <div id="karl-doc-viewer" class="prose prose-slate max-w-none text-sm leading-relaxed text-slate-700 p-5 overflow-x-auto max-h-[70vh] overflow-y-auto">
-                                    <p class="text-slate-500">Loading KARL materials...</p>
+                                <div id="karl-doc-viewer" class="max-w-none text-sm leading-relaxed text-slate-200 p-5 overflow-x-auto max-h-[72vh] overflow-y-auto">
+                                    <p class="text-slate-400">Loading KARL materials…</p>
                                 </div>
                             </div>
                         </div>

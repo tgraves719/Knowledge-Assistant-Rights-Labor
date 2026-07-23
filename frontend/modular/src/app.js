@@ -3960,11 +3960,11 @@ const EMBED_THEME_OVERRIDES = (() => {
         // HTML-escaped so we only introduce the tags we generate here.
         function _renderKarlInline(escaped) {
             let out = escaped;
-            out = out.replace(/`([^`]+)`/g, '<code class="rounded bg-slate-100 px-1 py-0.5 text-[0.85em] text-slate-800">$1</code>');
-            out = out.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>');
-            out = out.replace(/(^|[^*])\*([^*\s][^*]*?)\*/g, '$1<em>$2</em>');
+            out = out.replace(/`([^`]+)`/g, '<code class="rounded bg-slate-700/70 px-1 py-0.5 text-[0.85em] text-amber-200">$1</code>');
+            out = out.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold text-slate-50">$1</strong>');
+            out = out.replace(/(^|[^*])\*([^*\s][^*]*?)\*/g, '$1<em class="text-slate-100">$2</em>');
             out = out.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
-                '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
+                '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-amber-300 underline decoration-amber-300/40 hover:text-amber-200">$1</a>');
             return out;
         }
 
@@ -3992,7 +3992,7 @@ const EMBED_THEME_OVERRIDES = (() => {
                         codeLines.push(lines[i]);
                         i++;
                     }
-                    html.push(`<pre class="my-3 overflow-x-auto rounded-lg bg-slate-900 p-3 text-[13px] leading-relaxed text-slate-100"><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+                    html.push(`<pre class="my-3 overflow-x-auto rounded-lg border border-slate-700 bg-slate-950 p-3 text-[13px] leading-relaxed text-slate-200"><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
                     continue;
                 }
 
@@ -4012,7 +4012,7 @@ const EMBED_THEME_OVERRIDES = (() => {
                 if (!line.trim()) { closeList(); continue; }
 
                 // Horizontal rule
-                if (/^\s*([-*_])\1{2,}\s*$/.test(line)) { closeList(); html.push('<hr class="my-4 border-slate-200" />'); continue; }
+                if (/^\s*([-*_])\1{2,}\s*$/.test(line)) { closeList(); html.push('<hr class="my-4 border-slate-700" />'); continue; }
 
                 // Headings
                 const heading = line.match(/^(#{1,6})\s+(.*)$/);
@@ -4020,12 +4020,12 @@ const EMBED_THEME_OVERRIDES = (() => {
                     closeList();
                     const level = heading[1].length;
                     const sizes = {
-                        1: 'text-2xl font-bold text-slate-900 mt-5 mb-3',
-                        2: 'text-xl font-semibold text-slate-900 mt-5 mb-2 pb-1 border-b border-slate-200',
-                        3: 'text-lg font-semibold text-slate-800 mt-4 mb-2',
-                        4: 'text-base font-semibold text-slate-800 mt-3 mb-1',
-                        5: 'text-sm font-semibold text-slate-700 mt-3 mb-1',
-                        6: 'text-sm font-semibold text-slate-500 mt-3 mb-1',
+                        1: 'text-2xl font-bold text-slate-50 mt-5 mb-3',
+                        2: 'text-xl font-semibold text-amber-200 mt-5 mb-2 pb-1 border-b border-slate-700',
+                        3: 'text-lg font-semibold text-slate-100 mt-4 mb-2',
+                        4: 'text-base font-semibold text-slate-100 mt-3 mb-1',
+                        5: 'text-sm font-semibold text-slate-200 mt-3 mb-1',
+                        6: 'text-sm font-semibold text-slate-400 mt-3 mb-1',
                     };
                     html.push(`<h${level} class="${sizes[level]}">${_renderKarlInline(escapeHtml(heading[2]))}</h${level}>`);
                     continue;
@@ -4035,7 +4035,7 @@ const EMBED_THEME_OVERRIDES = (() => {
                 const quote = line.match(/^>\s?(.*)$/);
                 if (quote) {
                     closeList();
-                    html.push(`<blockquote class="my-2 border-l-4 border-slate-300 pl-3 text-slate-600 italic">${_renderKarlInline(escapeHtml(quote[1]))}</blockquote>`);
+                    html.push(`<blockquote class="my-2 border-l-4 border-amber-400/60 pl-3 text-slate-300 italic">${_renderKarlInline(escapeHtml(quote[1]))}</blockquote>`);
                     continue;
                 }
 
@@ -4140,12 +4140,12 @@ const EMBED_THEME_OVERRIDES = (() => {
             const path = safeText(doc.path);
             viewer.innerHTML = `
                 <article class="max-w-none">
-                    <header class="mb-6 border-b border-slate-200 pb-4">
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">KARL Library</p>
-                        <h1 class="mt-1 text-2xl font-semibold text-slate-900">${escapeHtml(title)}</h1>
-                        ${path ? `<p class="mt-2 text-xs text-slate-500">${escapeHtml(path)}</p>` : ''}
+                    <header class="mb-6 border-b border-slate-700 pb-4">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">KARL Library</p>
+                        <h1 class="mt-1 text-2xl font-semibold text-slate-100">${escapeHtml(title)}</h1>
+                        ${path ? `<p class="mt-2 text-xs text-slate-400">${escapeHtml(path)}</p>` : ''}
                     </header>
-                    <div class="text-sm leading-relaxed text-slate-700">${renderKarlMarkdown(doc.content || '')}</div>
+                    <div class="text-sm leading-relaxed text-slate-200">${renderKarlMarkdown(doc.content || '')}</div>
                 </article>
             `;
         }
@@ -4179,7 +4179,7 @@ const EMBED_THEME_OVERRIDES = (() => {
             }
 
             if (!matches.length) {
-                container.innerHTML = '<p class="text-slate-500 p-2">No matching files.</p>';
+                container.innerHTML = '<p class="text-slate-400 p-2">No matching files.</p>';
                 return;
             }
 
@@ -4204,15 +4204,15 @@ const EMBED_THEME_OVERRIDES = (() => {
                     const label = escapeHtml(path.includes('/') ? path.slice(path.lastIndexOf('/') + 1) : path);
                     const active = currentKarlFilePath === path;
                     return `<button type="button" onclick="loadKarlFile('${escapeHtml(path).replace(/'/g, "\\'")}')"
-                        class="flex w-full items-center gap-1.5 rounded px-2 py-1 text-left text-[13px] ${active ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}"
+                        class="flex w-full items-center gap-1.5 rounded px-2 py-1 text-left text-[13px] ${active ? 'bg-amber-400 font-medium text-slate-900' : 'text-slate-200 hover:bg-slate-700/60 hover:text-white'}"
                         title="${escapeHtml(path)}">
                         <span class="truncate">${label}</span>
-                        ${f?.type === 'markdown' ? '<span class="ml-auto shrink-0 text-[9px] uppercase tracking-wide text-slate-400">md</span>' : ''}
+                        ${f?.type === 'markdown' ? `<span class="ml-auto shrink-0 text-[9px] uppercase tracking-wide ${active ? 'text-slate-700' : 'text-amber-300/80'}">md</span>` : ''}
                     </button>`;
                 }).join('');
                 parts.push(`<details ${expanded ? 'open' : ''} class="mb-1">
-                    <summary class="cursor-pointer select-none rounded px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500 hover:bg-slate-100">${escapeHtml(group)} <span class="text-slate-400">(${groupFiles.length})</span></summary>
-                    <div class="ml-1 border-l border-slate-200 pl-1">${rows}</div>
+                    <summary class="cursor-pointer select-none rounded px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-300 hover:bg-slate-700/60 hover:text-white">${escapeHtml(group)} <span class="text-slate-500">(${groupFiles.length})</span></summary>
+                    <div class="ml-1 border-l border-slate-700 pl-1">${rows}</div>
                 </details>`);
             });
             container.innerHTML = parts.join('');
@@ -4248,19 +4248,19 @@ const EMBED_THEME_OVERRIDES = (() => {
             const path = safeText(file?.path);
             const type = safeText(file?.type);
             const header = `
-                <header class="mb-4 border-b border-slate-200 pb-3">
-                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Repository File</p>
-                    <h1 class="mt-1 break-all font-mono text-lg font-semibold text-slate-900">${escapeHtml(path)}</h1>
-                    ${file?.truncated ? '<p class="mt-1 text-xs text-amber-600">File truncated for display (over 2&nbsp;MB).</p>' : ''}
+                <header class="mb-4 border-b border-slate-700 pb-3">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">Repository File</p>
+                    <h1 class="mt-1 break-all font-mono text-lg font-semibold text-slate-100">${escapeHtml(path)}</h1>
+                    ${file?.truncated ? '<p class="mt-1 text-xs text-amber-400">File truncated for display (over 2&nbsp;MB).</p>' : ''}
                 </header>`;
 
             let body;
             if (type === 'binary') {
-                body = `<p class="text-slate-500">Binary file (${escapeHtml(String(file?.size ?? 0))} bytes) — not shown.</p>`;
+                body = `<p class="text-slate-400">Binary file (${escapeHtml(String(file?.size ?? 0))} bytes) — not shown.</p>`;
             } else if (type === 'markdown') {
-                body = `<div class="text-sm leading-relaxed text-slate-700">${renderKarlMarkdown(file?.content || '')}</div>`;
+                body = `<div class="text-sm leading-relaxed text-slate-200">${renderKarlMarkdown(file?.content || '')}</div>`;
             } else {
-                body = `<pre class="overflow-x-auto rounded-lg bg-slate-50 p-3 text-[13px] leading-relaxed text-slate-800"><code>${escapeHtml(file?.content || '')}</code></pre>`;
+                body = `<pre class="overflow-x-auto rounded-lg border border-slate-700 bg-slate-950 p-3 text-[13px] leading-relaxed text-slate-200"><code>${escapeHtml(file?.content || '')}</code></pre>`;
             }
             viewer.innerHTML = `<article class="max-w-none">${header}${body}</article>`;
         }
@@ -4299,29 +4299,25 @@ const EMBED_THEME_OVERRIDES = (() => {
 
         async function openKarlTab(docId = null) {
             setActiveTab('karl');
-            // Load the repository explorer in the background; failure here must
-            // not block the curated document view.
-            loadKarlTree()
-                .then(() => renderKarlFileTree(document.getElementById('karl-file-search')?.value || ''))
-                .catch((error) => {
-                    const tree = document.getElementById('karl-file-tree');
-                    if (tree) tree.innerHTML = `<p class="text-red-600 p-2">${escapeHtml(error.message || 'Unable to load repository.')}</p>`;
-                });
+            // Version line first; the explorer is the whole surface now.
+            loadKarlInfo().catch(() => updateKarlVersionUI());
             try {
-                await loadKarlInfo();
-                if (currentKarlFilePath) return;
-                const fallbackDocId = safeText(docId) || currentKarlDocId || safeText(karlInfo?.documents?.[0]?.id);
-                if (fallbackDocId) {
-                    await loadKarlDoc(fallbackDocId);
-                } else {
-                    renderKarlDoc(null);
+                await loadKarlTree();
+                renderKarlFileTree(document.getElementById('karl-file-search')?.value || '');
+                // Land on README so the viewer is never empty; the file must be
+                // in the tree we just loaded, else fall back to the first file.
+                if (!currentKarlFilePath) {
+                    const files = Array.isArray(karlRepoFiles) ? karlRepoFiles : [];
+                    const preferred = files.find((f) => safeText(f?.path).toLowerCase() === 'readme.md')
+                        || files.find((f) => safeText(f?.type) === 'markdown')
+                        || files[0];
+                    if (preferred) await loadKarlFile(preferred.path);
                 }
             } catch (error) {
+                const tree = document.getElementById('karl-file-tree');
+                if (tree) tree.innerHTML = `<p class="text-red-400 p-2">${escapeHtml(error.message || 'Unable to load repository.')}</p>`;
                 const viewer = document.getElementById('karl-doc-viewer');
-                updateKarlVersionUI();
-                if (viewer) {
-                    viewer.innerHTML = `<p class="text-red-600">${escapeHtml(error.message || 'Unable to load KARL materials.')}</p>`;
-                }
+                if (viewer) viewer.innerHTML = `<p class="text-red-400">${escapeHtml(error.message || 'Unable to load KARL materials.')}</p>`;
             }
         }
 
