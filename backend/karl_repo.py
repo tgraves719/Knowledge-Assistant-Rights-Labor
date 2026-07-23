@@ -18,6 +18,17 @@ _MAX_FILE_BYTES = 2 * 1024 * 1024  # 2 MB
 
 _MARKDOWN_SUFFIXES = {".md", ".markdown", ".mdown"}
 
+# Paths kept out of the About KARL explorer entirely — neither listed nor
+# fetchable. The explorer is a member-facing governance/docs viewer, so we
+# exclude bulk contract source data (noise) and the CLA signature ledger, which
+# carries contributors' full legal names that members have no reason to see.
+_EXCLUDED_PREFIXES = ("data/",)
+_EXCLUDED_PATHS = frozenset({"legal/CLA-SIGNATURES.md"})
+
+
+def _is_excluded(path: str) -> bool:
+    return path in _EXCLUDED_PATHS or any(path.startswith(prefix) for prefix in _EXCLUDED_PREFIXES)
+
 # Extensions we are confident are binary; short-circuits null-byte sniffing.
 _BINARY_SUFFIXES = {
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".bmp", ".pdf",
@@ -60,7 +71,7 @@ def _tracked_paths() -> tuple[str, ...]:
             if any(part in skip_dirs for part in rel_parts):
                 continue
             paths.append("/".join(rel_parts))
-    return tuple(sorted(set(paths)))
+    return tuple(sorted(p for p in set(paths) if not _is_excluded(p)))
 
 
 def _classify(path: str) -> str:
